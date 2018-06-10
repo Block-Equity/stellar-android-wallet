@@ -17,11 +17,9 @@ class TradingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (fragmentManager != null) {
-            val fragmentAdapter = TradingPagerAdapter(fragmentManager!!)
-            view.viewPager.adapter = fragmentAdapter
-            view.tabs.setupWithViewPager(viewPager)
-        }
+        val fragmentAdapter = TradingPagerAdapter(childFragmentManager)
+        view.viewPager.adapter = fragmentAdapter
+        view.tabs.setupWithViewPager(viewPager)
     }
 
     companion object {
