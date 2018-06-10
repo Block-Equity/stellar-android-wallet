@@ -17,6 +17,8 @@
     <string name="button_assets">Assets</string>
     <string name="button_send">Send</string>
     <string name="logoDescription">Block-EQ</string>
+    <string name="title_activity_wallets">Wallets</string>
+    <string name="title_activity_my_wallet">My Wallet</string>
 
     <!--Trading Fragment-->
     <string name="tab_trade">Trade</string>

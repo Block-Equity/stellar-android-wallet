@@ -1,9 +1,10 @@
-package blockeq.com.stellarwallet
+package blockeq.com.stellarwallet.activities
 
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.fragments.ReceiveFragment
 import blockeq.com.stellarwallet.fragments.SettingsFragment
 import blockeq.com.stellarwallet.fragments.TradingFragment
@@ -51,7 +52,6 @@ class MainActivity : AppCompatActivity() {
     private fun openFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container, fragment)
-        transaction.addToBackStack(fragment.javaClass.simpleName)
         transaction.commit()
     }
 }

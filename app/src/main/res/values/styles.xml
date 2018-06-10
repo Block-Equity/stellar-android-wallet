@@ -11,6 +11,7 @@
         <item name="selectableItemBackground">?android:selectableItemBackground</item>
         <item name="selectableItemBackgroundBorderless">?android:selectableItemBackground</item>
         <item name="colorControlHighlight">@color/navButtonRippleColor</item>
+        <item name="colorControlNormal">@color/colorPrimary</item>
     </style>
 
     <style name="TitleText" parent="TextAppearance.AppCompat">
