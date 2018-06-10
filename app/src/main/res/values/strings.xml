@@ -13,4 +13,13 @@
     <string name="nav_receive">Receive</string>
     <string name="nav_settings">Settings</string>
 
+    <!--Wallet Fragment-->
+    <string name="button_assets">Assets</string>
+    <string name="button_send">Send</string>
+    <string name="logoDescription">Block-EQ</string>
+
+    <!--Trading Fragment-->
+    <string name="tab_trade">Trade</string>
+    <string name="tab_order_book">Order Book</string>
+    <string name="tab_my_offers">My Offers</string>
 </resources>
