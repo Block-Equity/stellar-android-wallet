@@ -24,9 +24,11 @@ class WalletFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         assetsButton.setOnClickListener {
             startActivity(Intent(activity, WalletsActivity::class.java))
+            activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
         }
         sendButton.setOnClickListener {
             startActivity(Intent(activity, MyWalletActivity::class.java))
+            activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
         }
     }
 }

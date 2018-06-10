@@ -10,8 +10,11 @@ class WalletsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wallets)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        cancelButton.setOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
+        }
     }
 
 }
