@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:contentDescription="@string/logoDescription"
-                    android:src="@mipmap/ic_launcher" />
+                    android:src="@drawable/ic_main_logo_colored" />
 
                 <Button
                     android:id="@+id/sendButton"
