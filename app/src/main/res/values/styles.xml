@@ -18,6 +18,11 @@
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">@dimen/navigation_title</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/lato_bold</item>
+    </style>
+
+    <style name="tabTitle" parent="@android:style/TextAppearance.Widget.TabWidget">
+        <item name="android:fontFamily">@font/lato_bold</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

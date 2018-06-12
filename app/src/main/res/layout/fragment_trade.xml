@@ -12,7 +12,8 @@
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         app:tabSelectedTextColor="@color/colorPrimary"
-        app:tabIndicatorColor="@color/colorPrimary" />
+        app:tabIndicatorColor="@color/colorPrimary"
+        app:tabTextAppearance="@style/tabTitle" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
