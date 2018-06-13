@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <!--Colors-->
+    <color name="white">#FFFFFF</color>
+    <color name="wildSand">#F4F4F4</color>
+    <color name="silverChalice">#A1A1A1</color>
+    <color name="mercury">#E8E8E8</color>
+    <!--Colors-->
+
+    <!--Theme-->
+    <color name="colorPrimary">#4472C6</color>
+    <color name="colorPrimaryDark">#2D62C4</color>
     <color name="colorAccent">#FF4081</color>
+    <!--Theme-->
+
+    <!--Navigation-->
+    <color name="statusBarColor">@color/colorPrimaryDark</color>
+    <color name="bottomNavigationColor">@color/wildSand</color>
+    <color name="unselectedNavItem">@color/silverChalice</color>
+    <color name="selectedNavItem">@color/colorPrimary</color>
+    <color name="navButtonRippleColor">@color/mercury</color>
+    <!--Navigation-->
+
 </resources>

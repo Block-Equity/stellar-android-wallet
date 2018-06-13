@@ -6,4 +6,22 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+
+    <!--Navigation Menu-->
+    <string name="nav_wallet">Wallet</string>
+    <string name="nav_trading">Trading</string>
+    <string name="nav_receive">Receive</string>
+    <string name="nav_settings">Settings</string>
+
+    <!--Wallet Fragment-->
+    <string name="button_assets">Assets</string>
+    <string name="button_send">Send</string>
+    <string name="logoDescription">Block-EQ</string>
+    <string name="title_activity_wallets">Wallets</string>
+    <string name="title_activity_my_wallet">My Wallet</string>
+
+    <!--Trading Fragment-->
+    <string name="tab_trade">Trade</string>
+    <string name="tab_order_book">Order Book</string>
+    <string name="tab_my_offers">My Offers</string>
 </resources>
