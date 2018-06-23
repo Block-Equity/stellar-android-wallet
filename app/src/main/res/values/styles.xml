@@ -6,6 +6,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="PinActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    </style>
+
     <style name="ToolbarTheme" parent="Widget.AppCompat.Toolbar">
         <item name="actionButtonStyle">@style/Widget.AppCompat.ActionButton</item>
         <item name="selectableItemBackground">?android:selectableItemBackground</item>
@@ -15,7 +19,7 @@
     </style>
 
     <style name="BottomNavigationTheme" parent="Widget.Design.BottomNavigationView">
-        <item name="fontFamily">@font/lato_bold</item>
+        <item name="fontFamily">@font/lato_light</item>
     </style>
 
     <style name="TitleText" parent="TextAppearance.AppCompat">
@@ -23,6 +27,12 @@
         <item name="android:textSize">@dimen/navigation_title</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">@font/lato_bold</item>
+    </style>
+
+    <style name="ShortDescription" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:fontFamily">@font/lato_regular</item>
     </style>
 
     <style name="TabTitle" parent="@android:style/TextAppearance.Widget.TabWidget">

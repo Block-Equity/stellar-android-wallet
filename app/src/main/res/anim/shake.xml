@@ -1,0 +1,11 @@
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <translate
+        android:duration="150"
+        android:fromXDelta="-1%"
+        android:repeatCount="3"
+        android:repeatMode="reverse"
+        android:toXDelta="1%" />
+    <translate
+        android:duration="450"
+        android:startOffset="450" />
+</set>

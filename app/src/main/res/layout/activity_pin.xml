@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="@dimen/logo_width"
+        android:layout_height="@dimen/logo_height"
+        android:layout_marginTop="@dimen/text_size_xxxxlarge"
+        android:background="@drawable/ic_main_logo_colored"
+        android:backgroundTint="@color/logoTint" />
+
+    <TextView
+        android:id="@+id/tv_custom_message"
+        style="@style/ShortDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_padding_size_xxxlarge"
+        android:layout_marginTop="@dimen/margin_padding_size_medium"
+        android:layout_marginEnd="@dimen/margin_padding_size_xxxlarge"
+        android:gravity="center"
+        android:text="@string/please_enter_your_pin" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_padding_size_large">
+
+        <com.andrognito.pinlockview.IndicatorDots
+            android:id="@+id/indicatorDots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:dotDiameter="@dimen/dot_diameter"
+            app:dotEmptyBackground="@drawable/dot_empty_background"
+            app:dotFilledBackground="@drawable/dot_filled"
+            app:dotSpacing="@dimen/dot_spacing" />
+
+        <com.andrognito.pinlockview.IndicatorDots
+            android:id="@+id/wrongPinDots"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:dotDiameter="@dimen/dot_diameter"
+            app:dotEmptyBackground="@drawable/wrong_dot_filled"
+            app:dotSpacing="@dimen/dot_spacing" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <com.andrognito.pinlockview.PinLockView
+            android:id="@+id/pinLockView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_padding_size_medium_large"
+            android:layout_marginEnd="@dimen/margin_padding_size_medium_large"
+            app:keypadButtonSize="@dimen/margin_padding_size_xxxlarge"
+            app:keypadDeleteButtonPressedColor="@color/deletePressedColor"
+            app:keypadDeleteButtonSize="@dimen/margin_padding_size_medium_large"
+            app:keypadHorizontalSpacing="@dimen/margin_padding_size_xxlarge"
+            app:keypadShowDeleteButton="true"
+            app:keypadTextColor="@color/white"
+            app:keypadTextSize="@dimen/keypad_size"
+            app:keypadVerticalSpacing="@dimen/keybadSpacing"
+            app:pinLength="4" />
+    </LinearLayout>
+
+</LinearLayout>
