@@ -61,5 +61,6 @@ class PinActivity : AppCompatActivity(), PinLockListener {
     override fun onBackPressed() {
         setResult(RESULT_CANCELED)
         super.onBackPressed()
+        overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
     }
 }
