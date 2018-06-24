@@ -19,7 +19,7 @@
     </style>
 
     <style name="BottomNavigationTheme" parent="Widget.Design.BottomNavigationView">
-        <item name="fontFamily">@font/lato_light</item>
+        <item name="fontFamily">@font/lato_bold</item>
     </style>
 
     <style name="TitleText" parent="TextAppearance.AppCompat">
