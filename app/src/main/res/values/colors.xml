@@ -5,11 +5,15 @@
     <color name="wildSand">#F4F4F4</color>
     <color name="silverChalice">#A1A1A1</color>
     <color name="mercury">#E8E8E8</color>
+    <color name="silver">#C8C8C8</color>
+    <color name="cornflowerBlue">#4791F6</color>
+    <color name="royalBlue">#3E7FEF</color>
+    <color name="puce">#C7808E</color>
     <!--Colors-->
 
     <!--Theme-->
     <color name="colorPrimary">#4472C6</color>
-    <color name="colorPrimaryDark">#2D62C4</color>
+    <color name="colorPrimaryDark">#2C61BB</color>
     <color name="colorAccent">#FF4081</color>
     <!--Theme-->
 
@@ -21,4 +25,9 @@
     <color name="navButtonRippleColor">@color/mercury</color>
     <!--Navigation-->
 
+    <!--Pin-->
+    <color name="deletePressedColor">@color/silver</color>
+    <color name="dotColor">@color/cornflowerBlue</color>
+    <color name="logoTint">@color/royalBlue</color>
+    <color name="wrongDotColor">@color/puce</color>
 </resources>

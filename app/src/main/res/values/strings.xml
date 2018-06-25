@@ -24,4 +24,10 @@
     <string name="tab_trade">Trade</string>
     <string name="tab_order_book">Order Book</string>
     <string name="tab_my_offers">My Offers</string>
+
+    <!--PIN Screen-->
+    <string name="please_enter_your_pin">Please enter your PIN code</string>
+    <string name="pin_correct">PIN Correct!</string>
+    <string name="pin_incorrect">PIN Incorrect!</string>
+    <string name="pin_canceled">PIN Verification Canceled</string>
 </resources>

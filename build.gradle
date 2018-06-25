@@ -33,4 +33,5 @@ ext {
     junitVersion = '4.12'
     testRunnerVersion = '1.0.2'
     espressoVersion = '3.0.2'
+    pinlockviewVersion = '2.1.0'
 }
