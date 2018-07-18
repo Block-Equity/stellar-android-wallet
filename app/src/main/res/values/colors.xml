@@ -9,6 +9,8 @@
     <color name="cornflowerBlue">#4791F6</color>
     <color name="royalBlue">#3E7FEF</color>
     <color name="puce">#C7808E</color>
+    <color name="strongBlue">#0b55b3</color>
+    <color name="gray97">#f7f7f7</color>
     <!--Colors-->
 
     <!--Theme-->
@@ -30,4 +32,10 @@
     <color name="dotColor">@color/cornflowerBlue</color>
     <color name="logoTint">@color/royalBlue</color>
     <color name="wrongDotColor">@color/puce</color>
+
+    <!--Receive-->
+    <color name="qrCodeBackGroundColor">@color/strongBlue</color>
+    <color name="addressBackGroundColor">@color/gray97</color>
+    <color name="addressTextColor">@color/silver</color>
+
 </resources>

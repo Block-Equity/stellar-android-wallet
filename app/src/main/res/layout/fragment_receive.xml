@@ -29,4 +29,68 @@
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
+    
+    <RelativeLayout
+        android:id="@+id/qrcode_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.60"
+        android:orientation="vertical"
+        android:background="@color/qrCodeBackGroundColor">
+
+        <ImageView
+            android:id="@+id/address_qrcode"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_centerInParent="true"
+            android:background="@color/white"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/address_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.40"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:padding="18dp">
+
+        <TextView
+            android:id="@+id/address_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/your_wallet_address"
+            android:textColor="@color/addressTextColor"
+            android:textSize="18sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="25dp"
+            android:layout_below="@+id/address_title"
+            android:orientation="horizontal"
+            android:background="@drawable/rounded_corner">
+
+            <TextView
+                android:id="@+id/address_text"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"
+                android:padding="12dp"
+                android:ellipsize="end"
+                android:background="@color/addressBackGroundColor"
+                android:maxLines="1"
+                android:textSize="24sp" />
+            <ImageButton
+                android:id="@+id/copy_image_button"
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:src="@drawable/ic_copy"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 </LinearLayout>
