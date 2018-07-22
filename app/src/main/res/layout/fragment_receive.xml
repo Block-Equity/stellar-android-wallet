@@ -36,14 +36,14 @@
         android:layout_height="0dp"
         android:layout_weight="0.60"
         android:orientation="vertical"
-        android:background="@color/qrCodeBackGroundColor">
+        android:background="@color/qrCodeLayoutBackGroundColor">
 
         <ImageView
             android:id="@+id/address_qrcode"
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:layout_centerInParent="true"
-            android:background="@color/white"/>
+            android:background="@color/qrCodeBackGroundColor"/>
 
     </RelativeLayout>
 
@@ -53,7 +53,7 @@
         android:layout_height="0dp"
         android:layout_weight="0.40"
         android:orientation="vertical"
-        android:background="@color/white"
+        android:background="@color/addressLayoutBackGroundColor"
         android:padding="18dp">
 
         <TextView

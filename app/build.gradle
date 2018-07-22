@@ -33,6 +33,7 @@ dependencies {
     implementation "com.andrognito.pinlockview:pinlockview:$pinlockviewVersion"
     implementation files("libs/stellar-sdk.jar")
     implementation "com.journeyapps:zxing-android-embedded:$zxingAndroidVersion"
+    implementation "com.github.davidmigloz:number-keyboard:$numberKeyBoardVersion"
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoVersion"

@@ -11,6 +11,7 @@
     <color name="puce">#C7808E</color>
     <color name="strongBlue">#0b55b3</color>
     <color name="gray97">#f7f7f7</color>
+    <color name="lightGray">#cccccc</color>
     <!--Colors-->
 
     <!--Theme-->
@@ -34,8 +35,15 @@
     <color name="wrongDotColor">@color/puce</color>
 
     <!--Receive-->
-    <color name="qrCodeBackGroundColor">@color/strongBlue</color>
+    <color name="qrCodeLayoutBackGroundColor">@color/strongBlue</color>
+    <color name="qrCodeBackGroundColor">@color/white</color>
     <color name="addressBackGroundColor">@color/gray97</color>
     <color name="addressTextColor">@color/silver</color>
+    <color name="addressLayoutBackGroundColor">@color/white</color>
+
+    <!--Send-->
+    <color name="sendToTextColor">@color/silver</color>
+    <color name="sendButtonColor">@color/strongBlue</color>
+    <color name="currencyTextColor">@color/lightGray</color>
 
 </resources>

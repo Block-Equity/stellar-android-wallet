@@ -19,6 +19,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://jitpack.io" }
     }
 }
 
@@ -34,4 +35,6 @@ ext {
     testRunnerVersion = '1.0.2'
     espressoVersion = '3.0.2'
     pinlockviewVersion = '2.1.0'
+    zxingAndroidVersion = '3.6.0'
+    numberKeyBoardVersion = '2.0.1'
 }
