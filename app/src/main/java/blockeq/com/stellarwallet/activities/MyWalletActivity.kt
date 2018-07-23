@@ -42,7 +42,7 @@ class MyWalletActivity : BasePopupActivity() {
     }
 
     private fun initiateScan() {
-        IntentIntegrator(this).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE).initiateScan()
+        IntentIntegrator(this).setBeepEnabled(false).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE).initiateScan()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {

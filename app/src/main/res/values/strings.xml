@@ -34,6 +34,8 @@
     <!--Receive Fragment-->
     <string name="your_wallet_address">YOUR WALLET ADDRESS</string>
     <string name="address_copied_message">Address copied</string>
+
+    <!--Send Screen-->
     <string name="send_to_text">SEND TO</string>
     <string name="next_button_text">NEXT</string>
     <string name="send_button_text">SEND</string>
