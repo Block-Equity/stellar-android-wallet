@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:keyboard="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:layout_marginTop="?attr/actionBarSize"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="16sp"
+            android:text="@string/to"/>
+
+        <TextView
+            android:id="@+id/address_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="16sp"
+            android:text="@string/memo"/>
+
+        <EditText
+            android:id="@+id/memo_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="16sp"
+            android:background="@android:color/transparent"
+            android:hint="@string/optional"
+            android:inputType="text" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/amount_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:background="@android:color/transparent"
+            android:textAlignment="center"
+            android:textColor="@color/strongBlue"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="@color/currencyTextColor"
+            android:text="@string/currency"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.85"
+        android:orientation="vertical"
+        android:gravity="center">
+        <com.davidmiguel.numberkeyboard.NumberKeyboard
+            android:id="@+id/numberKeyboard"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            keyboard:keyboardType="custom"
+            keyboard:leftAuxBtnBackground="@drawable/key_bg_transparent"
+            keyboard:leftAuxBtnIcon="@drawable/ic_decimal_icon"
+            keyboard:numberKeyTextColor="@drawable/key_text_blue"
+            keyboard:numberKeyBackground="@drawable/key_bg_custom"
+            keyboard:rightAuxBtnIcon="@drawable/ic_backspace_custom"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="0.15"
+        android:gravity="center|bottom"
+        android:orientation="vertical" >
+        <Button
+            android:id="@+id/send_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/sendButtonColor"
+            android:textColor="@color/white"
+            android:text="@string/send_button_text"/>
+    </LinearLayout>
+
+</LinearLayout>

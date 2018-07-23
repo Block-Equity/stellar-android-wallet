@@ -30,4 +30,17 @@
     <string name="pin_correct">PIN Correct!</string>
     <string name="pin_incorrect">PIN Incorrect!</string>
     <string name="pin_canceled">PIN Verification Canceled</string>
+    
+    <!--Receive Fragment-->
+    <string name="your_wallet_address">YOUR WALLET ADDRESS</string>
+    <string name="address_copied_message">Address copied</string>
+
+    <!--Send Screen-->
+    <string name="send_to_text">SEND TO</string>
+    <string name="next_button_text">NEXT</string>
+    <string name="send_button_text">SEND</string>
+    <string name="currency">XLM</string>
+    <string name="to">To:</string>
+    <string name="optional">(Optional)</string>
+    <string name="memo">Memo:</string>
 </resources>

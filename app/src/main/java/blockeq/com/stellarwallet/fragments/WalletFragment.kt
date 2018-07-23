@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.activities.MyWalletActivity
+import blockeq.com.stellarwallet.activities.SendActivity
 import blockeq.com.stellarwallet.activities.WalletsActivity
 import kotlinx.android.synthetic.main.fragment_wallet.*
 
