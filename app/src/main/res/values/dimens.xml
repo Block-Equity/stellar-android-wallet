@@ -6,6 +6,10 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
+    <!--Common-->
+    <dimen name="toggle_corner_radius">5dp</dimen>
+    <dimen name="toggle_stroke">1dp</dimen>
+
     <!--Navigation-->
     <dimen name="navigation_title">18sp</dimen>
     <dimen name="actionbar_elevation">0dp</dimen>

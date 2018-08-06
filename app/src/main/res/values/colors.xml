@@ -12,6 +12,9 @@
     <color name="strongBlue">#0b55b3</color>
     <color name="gray97">#f7f7f7</color>
     <color name="lightGray">#cccccc</color>
+    <color name="alto">#D8D8D8</color>
+    <color name="frenchGray">#c8c8cd</color>
+    <color name="terracotta">#E66E64</color>
     <!--Colors-->
 
     <!--Theme-->
@@ -19,6 +22,10 @@
     <color name="colorPrimaryDark">#2C61BB</color>
     <color name="colorAccent">#FF4081</color>
     <!--Theme-->
+
+    <!--Global-->
+    <color name="toggleSelected">@color/alto</color>
+    <color name="toggleUnselected">@color/white</color>
 
     <!--Navigation-->
     <color name="statusBarColor">@color/colorPrimaryDark</color>
@@ -45,5 +52,9 @@
     <color name="sendToTextColor">@color/silver</color>
     <color name="sendButtonColor">@color/strongBlue</color>
     <color name="currencyTextColor">@color/lightGray</color>
+
+    <!--Trade-->
+    <color name="selectorHint">@color/frenchGray</color>
+    <color name="sellSelectorBg">@color/terracotta</color>
 
 </resources>
