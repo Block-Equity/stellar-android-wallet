@@ -29,6 +29,7 @@
             android:id="@+id/spinner"
             style="@style/Widget.AppCompat.DropDownItem.Spinner"
             android:layout_width="match_parent"
+            android:spinnerMode="dialog"
             android:backgroundTint="@color/white"
             android:layout_height="@dimen/spinner_height"
             />

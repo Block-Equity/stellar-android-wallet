@@ -2,19 +2,19 @@ package blockeq.com.stellarwallet.reusables.views
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.DrawableContainer
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.StateListDrawable
 import android.support.v4.content.ContextCompat
 import android.text.InputType
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.reusables.adapters.SpinnerAdapter
 import blockeq.com.stellarwallet.reusables.models.SelectionModel
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
-import android.util.TypedValue
-import android.widget.EditText
-import android.widget.Spinner
 
 
 class CustomSelector @JvmOverloads constructor(
@@ -48,8 +48,13 @@ class CustomSelector @JvmOverloads constructor(
     }
 
     private fun setColor(color: Int) {
-        val editTextGd = editText.background as GradientDrawable
-        editTextGd.setStroke(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+        val editTextSld = editText.background as StateListDrawable
+        val editTextBgChildren = (editTextSld.constantState as DrawableContainer.DrawableContainerState).children
+        val editTextDisabledGd = editTextBgChildren.get(0) as GradientDrawable
+        val editTextEnabledGd = editTextBgChildren.get(1) as GradientDrawable
+        editTextDisabledGd.setStroke(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                1f, resources.displayMetrics).toInt(), color)
+        editTextEnabledGd.setStroke(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 1f, resources.displayMetrics).toInt(), color)
         val spinnerGd = spinnerContainer.background as GradientDrawable
         spinnerGd.setStroke(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,

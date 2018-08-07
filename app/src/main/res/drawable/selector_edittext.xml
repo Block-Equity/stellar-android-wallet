@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <solid android:color="@color/toggleUnselected" />
-
-    <stroke
-        android:width="@dimen/toggle_stroke"
-        android:color="@color/toggleSelected" />
-
-    <corners
-        android:bottomLeftRadius="@dimen/toggle_corner_radius"
-        android:bottomRightRadius="0dp"
-        android:topLeftRadius="@dimen/toggle_corner_radius"
-        android:topRightRadius="0dp" />
-</shape>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/selector_edittext_disabled" android:state_enabled="false"/>
+    <item android:drawable="@drawable/selector_edittext_enabled" />
+</selector>

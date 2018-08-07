@@ -17,6 +17,7 @@ class TradeTab : Fragment(), View.OnClickListener {
 
     private var sellingCurrencies = mutableListOf<SelectionModel>()
     private var buyingCurrencies = mutableListOf<SelectionModel>()
+    private var holdingsAmount = 0f
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_tab_trade, container, false)
@@ -24,6 +25,7 @@ class TradeTab : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        buyingCustomSelector.editText.isEnabled = false
         mockupData(true)
         setupListeners()
     }
@@ -31,15 +33,20 @@ class TradeTab : Fragment(), View.OnClickListener {
     private fun setupListeners() {
         toggleMarket.setOnClickListener(this)
         toggleLimit.setOnClickListener(this)
-
+        tenth.setOnClickListener(this)
+        quarter.setOnClickListener(this)
+        half.setOnClickListener(this)
+        threeQuarters.setOnClickListener(this)
+        all.setOnClickListener(this)
 
         sellingCustomSelector.setSelectionValues(sellingCurrencies)
         sellingCustomSelector.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                holdingsAmount = sellingCurrencies.get(position).holdings
                 holdings.text = getString(R.string.holdings_amount,
-                        sellingCurrencies.get(position).holdings,
+                        holdingsAmount,
                         sellingCurrencies.get(position).label)
                 mockupData(false)
                 buyingCurrencies.removeAt(position)
@@ -62,10 +69,27 @@ class TradeTab : Fragment(), View.OnClickListener {
             R.id.toggleMarket -> {
                 toggleMarket.setBackgroundResource(R.drawable.left_toggle_selected)
                 toggleLimit.setBackgroundResource(R.drawable.right_toggle)
+                buyingCustomSelector.editText.isEnabled = false
             }
             R.id.toggleLimit -> {
                 toggleLimit.setBackgroundResource(R.drawable.right_toggle_selected)
                 toggleMarket.setBackgroundResource(R.drawable.left_toggle)
+                buyingCustomSelector.editText.isEnabled = true
+            }
+            R.id.tenth -> {
+                sellingCustomSelector.editText.setText((0.1 * holdingsAmount).toString())
+            }
+            R.id.quarter -> {
+                sellingCustomSelector.editText.setText((0.25 * holdingsAmount).toString())
+            }
+            R.id.half -> {
+                sellingCustomSelector.editText.setText((0.5 * holdingsAmount).toString())
+            }
+            R.id.threeQuarters -> {
+                sellingCustomSelector.editText.setText((0.75 * holdingsAmount).toString())
+            }
+            R.id.all -> {
+                sellingCustomSelector.editText.setText(holdingsAmount.toString())
             }
         }
     }

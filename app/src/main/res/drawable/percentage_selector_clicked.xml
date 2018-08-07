@@ -4,8 +4,8 @@
     <solid android:color="@color/percentageSelectorClicked" />
 
     <stroke
-        android:width="@dimen/toggle_stroke"
+        android:width="@dimen/common_stroke"
         android:color="@color/percentageSelectorClicked" />
 
-    <corners android:radius="@dimen/toggle_corner_radius" />
+    <corners android:radius="@dimen/common_radius" />
 </shape>

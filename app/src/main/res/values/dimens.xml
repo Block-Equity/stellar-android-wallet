@@ -7,8 +7,9 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <!--Common-->
-    <dimen name="toggle_corner_radius">5dp</dimen>
-    <dimen name="toggle_stroke">1dp</dimen>
+    <dimen name="common_radius">5dp</dimen>
+    <dimen name="common_stroke">1dp</dimen>
+    <dimen name="divider">1dp</dimen>
 
     <!--Navigation-->
     <dimen name="navigation_title">18sp</dimen>

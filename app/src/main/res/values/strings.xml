@@ -34,6 +34,10 @@
     <string name="half">50%</string>
     <string name="three_quarters">75%</string>
     <string name="all">100%</string>
+    <string name="submit">Submit trade</string>
+    <string name="trade_tab_notes">Your market order may not be completely filled depending
+        on amount offered. View the order book to see the amount available at the market rate.
+        Any amount larger than this will be posed as an offer.</string>
 
     <!--PIN Screen-->
     <string name="please_enter_your_pin">Please enter your PIN code</string>

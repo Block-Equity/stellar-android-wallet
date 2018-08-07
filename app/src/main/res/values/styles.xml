@@ -35,6 +35,12 @@
         <item name="android:fontFamily">@font/lato_regular</item>
     </style>
 
+    <style name="LongDescription" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/text_size_micro</item>
+        <item name="android:fontFamily">@font/lato_regular</item>
+    </style>
+
     <style name="holdingsText" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/holdingsColor</item>
         <item name="android:textSize">@dimen/text_size_medium</item>
@@ -55,6 +61,14 @@
     <style name="ButtonStyle" parent="Base.Widget.AppCompat.Button.Borderless">
         <item name="android:textAllCaps">false</item>
         <item name="android:fontFamily">@font/lato_regular</item>
+    </style>
+
+    <style name="PrimaryButtonStyle" parent="ButtonStyle">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">@font/lato_regular</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textColor">@color/primaryButtonText</item>
+        <item name="android:background">@drawable/primary_button</item>
     </style>
 
 </resources>

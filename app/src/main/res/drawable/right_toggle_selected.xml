@@ -4,12 +4,12 @@
     <solid android:color="@color/toggleSelected" />
 
     <stroke
-        android:width="@dimen/toggle_stroke"
+        android:width="@dimen/common_stroke"
         android:color="@color/toggleSelected" />
 
     <corners
         android:bottomLeftRadius="0dp"
-        android:bottomRightRadius="@dimen/toggle_corner_radius"
+        android:bottomRightRadius="@dimen/common_radius"
         android:topLeftRadius="0dp"
-        android:topRightRadius="@dimen/toggle_corner_radius" />
+        android:topRightRadius="@dimen/common_radius" />
 </shape>
