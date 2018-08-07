@@ -39,12 +39,101 @@
 
         <blockeq.com.stellarwallet.reusables.views.CustomSelector
             android:id="@+id/sellingCustomSelector"
-            android:layout_marginTop="@dimen/margin_padding_size_medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:strokeColor="@color/terracotta"
+            android:layout_marginTop="@dimen/margin_padding_size_medium"
             app:hint="@string/selling_hint"
-            app:inputType="decimal">
+            app:inputType="decimal"
+            app:strokeColor="@color/sellSelectorBg">
+
+        </blockeq.com.stellarwallet.reusables.views.CustomSelector>
+
+        <TextView
+            android:id="@+id/holdings"
+            style="@style/holdingsText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_padding_size_medium" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_padding_size_medium"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <Button
+                android:id="@+id/tenth"
+                style="@style/ButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginEnd="@dimen/margin_padding_size_small"
+                android:layout_weight=".2"
+                android:background="@drawable/percentage_selector_bg"
+                android:text="@string/tenth" />
+
+            <Button
+                android:id="@+id/quarter"
+                style="@style/ButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginEnd="@dimen/margin_padding_size_small"
+                android:layout_weight=".2"
+                android:background="@drawable/percentage_selector_bg"
+                android:text="@string/quarter" />
+
+            <Button
+                android:id="@+id/half"
+                style="@style/ButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginEnd="@dimen/margin_padding_size_small"
+                android:layout_weight=".2"
+                android:background="@drawable/percentage_selector_bg"
+                android:text="@string/half" />
+
+            <Button
+                android:id="@+id/threeQuarters"
+                style="@style/ButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginEnd="@dimen/margin_padding_size_small"
+                android:layout_weight=".2"
+                android:background="@drawable/percentage_selector_bg"
+                android:text="@string/three_quarters" />
+
+            <Button
+                android:id="@+id/all"
+                style="@style/ButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_weight=".2"
+                android:background="@drawable/percentage_selector_bg"
+                android:text="@string/all" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_padding_size_medium"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_downward_black_36dp"
+                android:tint="@color/downArrow" />
+        </LinearLayout>
+
+        <blockeq.com.stellarwallet.reusables.views.CustomSelector
+            android:id="@+id/buyingCustomSelector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_padding_size_medium"
+            app:hint="@string/buying_hint"
+            app:inputType="decimal"
+            app:strokeColor="@color/buySelectorBg">
 
         </blockeq.com.stellarwallet.reusables.views.CustomSelector>
 

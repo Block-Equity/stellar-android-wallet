@@ -12,13 +12,13 @@ import blockeq.com.stellarwallet.reusables.models.SelectionModel
 class SpinnerAdapter(val context: Context) : BaseAdapter() {
 
     private var inflater: LayoutInflater? = null
-    private var itemsList: Array<SelectionModel>? = null
+    private var itemsList: MutableList<SelectionModel>? = null
 
     init {
         inflater = LayoutInflater.from(context)
     }
 
-    fun setItemsList(itemsList: Array<SelectionModel>?) {
+    fun setItemsList(itemsList: MutableList<SelectionModel>?) {
         this.itemsList = itemsList
     }
 

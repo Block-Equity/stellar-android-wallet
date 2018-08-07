@@ -15,6 +15,9 @@
     <color name="alto">#D8D8D8</color>
     <color name="frenchGray">#c8c8cd</color>
     <color name="terracotta">#E66E64</color>
+    <color name="black">#000000</color>
+    <color name="gallery">#ececec</color>
+    <color name="mantis">#71CD5C</color>
     <!--Colors-->
 
     <!--Theme-->
@@ -56,5 +59,10 @@
     <!--Trade-->
     <color name="selectorHint">@color/frenchGray</color>
     <color name="sellSelectorBg">@color/terracotta</color>
+    <color name="holdingsColor">@color/black</color>
+    <color name="percentageSelector">@color/gallery</color>
+    <color name="percentageSelectorClicked">@color/lightGray</color>
+    <color name="downArrow">@color/alto</color>
+    <color name="buySelectorBg">@color/mantis</color>
 
 </resources>
