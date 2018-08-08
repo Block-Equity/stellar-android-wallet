@@ -12,7 +12,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.reusables.adapters.SpinnerAdapter
+import blockeq.com.stellarwallet.reusables.adapters.CustomArrayAdapter
 import blockeq.com.stellarwallet.reusables.models.SelectionModel
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
 
@@ -75,9 +75,8 @@ class CustomSelector @JvmOverloads constructor(
     }
 
     fun setSelectionValues(values: MutableList<SelectionModel>) {
-        val spinnerAdapter = SpinnerAdapter(context)
-        spinnerAdapter.setItemsList(values)
-        spinner.adapter = spinnerAdapter
+        val customArrayAdapter = CustomArrayAdapter(context, R.layout.view_generic_spinner_item, values)
+        spinner.adapter = customArrayAdapter
     }
 
 }

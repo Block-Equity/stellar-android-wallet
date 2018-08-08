@@ -37,4 +37,5 @@ ext {
     pinlockviewVersion = '2.1.0'
     zxingAndroidVersion = '3.6.0'
     numberKeyBoardVersion = '2.0.1'
+    searchablespinnerVersion = '1.3.1'
 }

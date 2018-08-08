@@ -1,3 +1,7 @@
 package blockeq.com.stellarwallet.reusables.models
 
-open class SelectionModel(var label: String, var value: Int, var holdings: Float)
+open class SelectionModel(var label: String, var value: Int, var holdings: Float) {
+    override fun toString(): String {
+        return label
+    }
+}

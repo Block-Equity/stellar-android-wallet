@@ -31,6 +31,7 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:$constrainLayoutVersion"
     implementation "io.github.novacrypto:BIP39:$novaCryptoVersion"
     implementation "com.andrognito.pinlockview:pinlockview:$pinlockviewVersion"
+    compile "com.toptoche.searchablespinner:searchablespinnerlibrary:$searchablespinnerVersion"
     implementation files("libs/stellar-sdk.jar")
     implementation "com.journeyapps:zxing-android-embedded:$zxingAndroidVersion"
     implementation "com.github.davidmigloz:number-keyboard:$numberKeyBoardVersion"

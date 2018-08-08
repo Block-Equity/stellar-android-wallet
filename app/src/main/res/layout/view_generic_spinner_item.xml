@@ -7,7 +7,8 @@
 
     <TextView
         android:id="@+id/itemLabel"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
+        android:fontFamily="@font/lato_regular"
         android:textSize="@dimen/text_size_medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

@@ -9,30 +9,40 @@
         android:id="@+id/editText"
         android:layout_width="0dp"
         android:layout_height="@dimen/spinner_height"
-        android:paddingEnd="@dimen/margin_padding_size_medium"
-        android:paddingStart="@dimen/margin_padding_size_medium"
-        android:paddingRight="@dimen/margin_padding_size_medium"
-        android:paddingLeft="@dimen/margin_padding_size_medium"
+        android:layout_weight=".75"
         android:background="@drawable/selector_edittext"
-        android:textColorHint="@color/selectorHint"
         android:fontFamily="@font/lato_regular"
-        android:textSize="@dimen/text_size_medium"
-        android:layout_weight=".75" />
+        android:paddingStart="@dimen/margin_padding_size_medium"
+        android:paddingLeft="@dimen/margin_padding_size_medium"
+        android:paddingEnd="@dimen/margin_padding_size_medium"
+        android:paddingRight="@dimen/margin_padding_size_medium"
+        android:textColorHint="@color/selectorHint"
+        android:textSize="@dimen/text_size_medium" />
 
     <RelativeLayout
         android:id="@+id/spinnerContainer"
         android:layout_width="0dp"
-        android:layout_weight=".25"
         android:layout_height="wrap_content"
+        android:layout_weight=".25"
         android:background="@drawable/selector_spinner">
-        <Spinner
+
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
             android:id="@+id/spinner"
             style="@style/Widget.AppCompat.DropDownItem.Spinner"
             android:layout_width="match_parent"
-            android:spinnerMode="dialog"
-            android:backgroundTint="@color/white"
             android:layout_height="@dimen/spinner_height"
-            />
+            android:backgroundTint="@color/white"
+            android:spinnerMode="dialog">
+
+        </com.toptoche.searchablespinnerlibrary.SearchableSpinner>
+        <!--<Spinner-->
+        <!--android:id="@+id/spinner"-->
+        <!--style="@style/Widget.AppCompat.DropDownItem.Spinner"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:spinnerMode="dialog"-->
+        <!--android:backgroundTint="@color/white"-->
+        <!--android:layout_height="@dimen/spinner_height"-->
+        <!--/>-->
     </RelativeLayout>
 
 </LinearLayout>
