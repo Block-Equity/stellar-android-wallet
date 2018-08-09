@@ -19,6 +19,7 @@
     <color name="gallery">#ececec</color>
     <color name="mantis">#71CD5C</color>
     <color name="funBlue">#1b53b0</color>
+    <color name="apricot">#ee7a70</color>
     <!--Colors-->
 
     <!--Theme-->
@@ -65,12 +66,15 @@
     <!--Trade-->
     <color name="selectorHint">@color/frenchGray</color>
     <color name="sellSelectorBg">@color/terracotta</color>
-    <color name="holdingsColor">@color/black</color>
+    <color name="regularTextColor">@color/black</color>
     <color name="editTextEnabled">@color/white</color>
     <color name="editTextDisabled">@color/alabaster</color>
     <color name="percentageSelector">@color/gallery</color>
     <color name="percentageSelectorClicked">@color/lightGray</color>
     <color name="downArrow">@color/alto</color>
     <color name="buySelectorBg">@color/mantis</color>
+
+    <!--My Offers-->
+    <color name="delete">@color/apricot</color>
 
 </resources>

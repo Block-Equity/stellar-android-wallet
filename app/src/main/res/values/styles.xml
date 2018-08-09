@@ -41,8 +41,8 @@
         <item name="android:fontFamily">@font/lato_regular</item>
     </style>
 
-    <style name="holdingsText" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/holdingsColor</item>
+    <style name="regularText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/regularTextColor</item>
         <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:fontFamily">@font/lato_regular</item>
     </style>
