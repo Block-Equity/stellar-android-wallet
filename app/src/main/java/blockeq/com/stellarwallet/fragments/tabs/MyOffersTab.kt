@@ -1,24 +1,26 @@
 package blockeq.com.stellarwallet.fragments.tabs
 
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.interfaces.OnDeleteRequest
-import blockeq.com.stellarwallet.reusables.adapters.MyOffersAdapter
+import blockeq.com.stellarwallet.adapters.MyOffersAdapter
 import blockeq.com.stellarwallet.models.Currency
 import blockeq.com.stellarwallet.models.MyOffer
 import kotlinx.android.synthetic.main.fragment_tab_my_offers.*
 import java.util.*
-import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
-import android.util.Log
+import android.support.v7.widget.DividerItemDecoration
+import android.widget.Toast
 
 
-class MyOffersTab : Fragment(), OnDeleteRequest {
+class MyOffersTab : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRefreshListener {
 
     private var myOffers = mutableListOf<MyOffer>()
     private lateinit var myOffersAdapter: MyOffersAdapter
@@ -36,6 +38,21 @@ class MyOffersTab : Fragment(), OnDeleteRequest {
         myOffersRv.layoutManager = LinearLayoutManager(context)
         myOffersAdapter = MyOffersAdapter(myOffers, context, this)
         myOffersRv.adapter = myOffersAdapter
+        val dividerItemDecoration = DividerItemDecoration(context,
+                LinearLayoutManager(context).orientation)
+        myOffersRv.addItemDecoration(dividerItemDecoration)
+        swipeRefresh.setOnRefreshListener(this)
+    }
+
+    override fun onRefresh() {
+        //Mockup API call tor refresh
+        val handler = Handler()
+        val runnable = Runnable {
+            swipeRefresh.isRefreshing = false
+            Toast.makeText(context, getText(R.string.refreshed), Toast.LENGTH_SHORT).show()
+        }
+        handler.postDelayed(runnable, 1000)
+        //**********
     }
 
     private fun mockupData() {

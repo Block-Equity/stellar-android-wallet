@@ -12,7 +12,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.reusables.adapters.CustomArrayAdapter
+import blockeq.com.stellarwallet.adapters.CustomArrayAdapter
 import blockeq.com.stellarwallet.models.SelectionModel
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
 

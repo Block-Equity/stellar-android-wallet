@@ -1,4 +1,4 @@
-package blockeq.com.stellarwallet.reusables.adapters
+package blockeq.com.stellarwallet.adapters
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView

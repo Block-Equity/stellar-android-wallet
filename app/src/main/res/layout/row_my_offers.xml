@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:foreground="?attr/selectableItemBackground"
+    android:background="@color/white"
     android:orientation="horizontal"
     android:paddingStart="@dimen/margin_padding_size_medium"
     android:paddingLeft="@dimen/margin_padding_size_medium"

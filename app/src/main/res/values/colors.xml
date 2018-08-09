@@ -29,6 +29,7 @@
     <!--Theme-->
 
     <!--Global-->
+    <color name="fragmentBg">@color/alabaster</color>
     <color name="toggleSelected">@color/alto</color>
     <color name="toggleUnselected">@color/white</color>
     <color name="primaryButtonBg">@color/funBlue</color>
