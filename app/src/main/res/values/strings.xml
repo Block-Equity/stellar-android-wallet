@@ -13,6 +13,12 @@
     <string name="nav_receive">Receive</string>
     <string name="nav_settings">Settings</string>
 
+    <!--Global-->
+    <string name="deleteDialogTitle">Confirmation</string>
+    <string name="deleteDialogText">Are you sure you want to delete this %1s?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
     <!--Wallet Fragment-->
     <string name="button_assets">Assets</string>
     <string name="button_send">Send</string>
@@ -41,6 +47,7 @@
 
     <!--My Offers Fragment-->
     <string name="rowDescription">Sell %1f %2s for %3f %4s at the price of %5f</string>
+    <string name="offer">offer</string>
 
     <!--PIN Screen-->
     <string name="please_enter_your_pin">Please enter your PIN code</string>

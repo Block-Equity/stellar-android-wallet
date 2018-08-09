@@ -8,10 +8,11 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.reusables.models.MyOffer
+import blockeq.com.stellarwallet.interfaces.OnDeleteRequest
+import blockeq.com.stellarwallet.models.MyOffer
 import kotlinx.android.synthetic.main.row_my_offers.view.*
 
-class MyOffersAdapter(private val myOffersList: MutableList<MyOffer>, private val context: Context?)
+class MyOffersAdapter(private val myOffersList: MutableList<MyOffer>, private val context: Context?, private val onDeleteRequest: OnDeleteRequest)
     : RecyclerView.Adapter<MyOffersAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int {
@@ -28,7 +29,7 @@ class MyOffersAdapter(private val myOffersList: MutableList<MyOffer>, private va
                 myOffer.currencyFrom.code, myOffer.amountTo, myOffer.currencyTo.code,
                 (myOffer.amountTo / myOffer.amountFrom))
         holder.delete.setOnClickListener {
-//            onDeleteConfirmationDialog()
+            onDeleteRequest.onDialogOpen(myOffer.id)
         }
     }
 

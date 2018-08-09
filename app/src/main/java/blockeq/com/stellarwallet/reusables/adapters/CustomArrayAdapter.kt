@@ -1,14 +1,13 @@
 package blockeq.com.stellarwallet.reusables.adapters
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.reusables.models.SelectionModel
+import blockeq.com.stellarwallet.models.SelectionModel
 
 open class CustomArrayAdapter(context: Context, private var resource: Int, private var itemsList: MutableList<SelectionModel>?) :
         ArrayAdapter<SelectionModel>(context, resource, itemsList) {

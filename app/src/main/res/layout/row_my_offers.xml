@@ -21,9 +21,9 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="0.2"
-        android:gravity="end">
+        android:gravity="end|center_vertical">
 
         <ImageButton
             android:id="@+id/delete"

@@ -1,4 +1,4 @@
-package blockeq.com.stellarwallet.reusables.models
+package blockeq.com.stellarwallet.models
 
 import java.util.*
 

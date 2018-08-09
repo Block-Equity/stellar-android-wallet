@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.reusables.models.Currency
-import blockeq.com.stellarwallet.reusables.models.SelectionModel
+import blockeq.com.stellarwallet.models.Currency
+import blockeq.com.stellarwallet.models.SelectionModel
 import kotlinx.android.synthetic.main.fragment_tab_trade.*
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
 
