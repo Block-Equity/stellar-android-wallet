@@ -41,10 +41,28 @@
         <item name="android:fontFamily">@font/lato_regular</item>
     </style>
 
-    <style name="regularText" parent="TextAppearance.AppCompat">
+    <style name="RegularText" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/regularTextColor</item>
-        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
         <item name="android:fontFamily">@font/lato_regular</item>
+    </style>
+
+    <style name="BoldText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/regularTextColor</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:fontFamily">@font/lato_bold</item>
+    </style>
+
+    <style name="RegularWhiteText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/regularWhiteTextColor</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:fontFamily">@font/lato_regular</item>
+    </style>
+
+    <style name="ListTitleText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/listTitleTextColor</item>
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:fontFamily">@font/lato_bold</item>
     </style>
 
     <style name="TabTitle" parent="@android:style/TextAppearance.Widget.TabWidget">

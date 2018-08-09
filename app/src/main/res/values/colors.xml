@@ -20,6 +20,7 @@
     <color name="mantis">#71CD5C</color>
     <color name="funBlue">#1b53b0</color>
     <color name="apricot">#ee7a70</color>
+    <color name="paleSky">#6f7785</color>
     <!--Colors-->
 
     <!--Theme-->
@@ -36,7 +37,10 @@
     <color name="primaryButtonPressedBg">@color/royalBlue</color>
     <color name="primaryButtonText">@color/white</color>
     <color name="container">@color/white</color>
-    <color name="divider">@color/gallery</color>
+    <color name="divider">@color/alto</color>
+    <color name="regularTextColor">@color/black</color>
+    <color name="regularWhiteTextColor">@color/white</color>
+    <color name="listTitleTextColor">@color/paleSky</color>
 
     <!--Navigation-->
     <color name="statusBarColor">@color/colorPrimaryDark</color>
@@ -67,7 +71,6 @@
     <!--Trade-->
     <color name="selectorHint">@color/frenchGray</color>
     <color name="sellSelectorBg">@color/terracotta</color>
-    <color name="regularTextColor">@color/black</color>
     <color name="editTextEnabled">@color/white</color>
     <color name="editTextDisabled">@color/alabaster</color>
     <color name="percentageSelector">@color/gallery</color>

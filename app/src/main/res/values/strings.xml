@@ -50,6 +50,14 @@
     <string name="rowDescription">Sell %1f %2s for %3f %4s at the price of %5f</string>
     <string name="offer">offer</string>
 
+    <!--Order Books-->
+    <string name="orderBooksTitle">%1s - %2s </string>
+    <string name="buyOffers">Buy Offers</string>
+    <string name="sellOffers">Sell Offers</string>
+    <string name="offerPrice">%1s Price</string>
+    <string name="offerAmount">%1s Amount</string>
+    <string name="offerValue">%1s Value</string>
+
     <!--PIN Screen-->
     <string name="please_enter_your_pin">Please enter your PIN code</string>
     <string name="pin_correct">PIN Correct!</string>
