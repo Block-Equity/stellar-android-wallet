@@ -1,6 +1,5 @@
 package blockeq.com.stellarwallet.adapters
 
-import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
@@ -9,32 +8,38 @@ import blockeq.com.stellarwallet.fragments.tabs.OrderBookTab
 import blockeq.com.stellarwallet.fragments.tabs.TradeTab
 import blockeq.com.stellarwallet.helpers.TradingTabs
 import blockeq.com.stellarwallet.helpers.TradingTabs.*
-import blockeq.com.stellarwallet.interfaces.OnTradeCurrenciesChange
 
-class TradingPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm), OnTradeCurrenciesChange {
+class TradingPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
-    private lateinit var orderBookTab: OrderBookTab
-    private lateinit var tradeTab: TradeTab
-
-    companion object {
-        val CURRNECY_CHANGE_KEY = "Currency Change Key"
-    }
+    private var orderBookTab: OrderBookTab? = null
+    private var tradeTab: TradeTab? = null
+    private var myOffersTab: MyOffersTab? = null
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
             Trade.ordinal -> {
-                tradeTab = TradeTab()
-                val bundle: Bundle = Bundle()
-                bundle.putSerializable(CURRNECY_CHANGE_KEY, this)
-                tradeTab.arguments = bundle
-                tradeTab
+                if (tradeTab != null) {
+                    tradeTab!!
+                } else {
+                    tradeTab = TradeTab()
+                    tradeTab!!
+                }
             }
             OrderBook.ordinal -> {
-                orderBookTab = OrderBookTab()
-                orderBookTab
+                if (orderBookTab != null) {
+                    orderBookTab!!
+                } else {
+                    orderBookTab = OrderBookTab()
+                    orderBookTab!!
+                }
             }
             else -> {
-                return MyOffersTab()
+                if (myOffersTab != null) {
+                    myOffersTab!!
+                } else {
+                    myOffersTab = MyOffersTab()
+                    myOffersTab!!
+                }
             }
         }
     }
@@ -51,9 +56,5 @@ class TradingPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm), OnTra
                 return MyOffers.title
             }
         }
-    }
-
-    override fun onCurrencyChange(currencyCodeFrom: String?, currencyCodeTo: String?) {
-        orderBookTab.updateTradingCurrencies(currencyCodeFrom, currencyCodeTo)
     }
 }

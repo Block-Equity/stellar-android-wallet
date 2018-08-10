@@ -1,5 +1,6 @@
 package blockeq.com.stellarwallet.fragments.tabs
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.ViewGroup
@@ -7,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.adapters.TradingPagerAdapter.Companion.CURRNECY_CHANGE_KEY
 import blockeq.com.stellarwallet.interfaces.OnTradeCurrenciesChange
 import blockeq.com.stellarwallet.models.Currency
 import blockeq.com.stellarwallet.models.SelectionModel
@@ -25,7 +25,6 @@ class TradeTab : Fragment(), View.OnClickListener {
     private lateinit var onTradeCurrenciesChange: OnTradeCurrenciesChange
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        onTradeCurrenciesChange = arguments?.getSerializable(CURRNECY_CHANGE_KEY) as OnTradeCurrenciesChange
         return inflater.inflate(R.layout.fragment_tab_trade, container, false)
     }
 
@@ -102,6 +101,15 @@ class TradeTab : Fragment(), View.OnClickListener {
             R.id.all -> {
                 sellingCustomSelector.editText.setText(holdingsAmount.toString())
             }
+        }
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        try {
+            onTradeCurrenciesChange = parentFragment as OnTradeCurrenciesChange
+        } catch (e: ClassCastException) {
+
         }
     }
 

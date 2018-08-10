@@ -1,7 +1,5 @@
 package blockeq.com.stellarwallet.interfaces
 
-import java.io.Serializable
-
-interface OnTradeCurrenciesChange : Serializable {
+interface OnTradeCurrenciesChange {
     fun onCurrencyChange(currencyCodeFrom: String?, currencyCodeTo: String?)
 }
