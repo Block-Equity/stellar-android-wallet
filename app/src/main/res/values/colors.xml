@@ -35,6 +35,7 @@
     <color name="toggleUnselected">@color/white</color>
     <color name="primaryButtonBg">@color/funBlue</color>
     <color name="primaryButtonPressedBg">@color/royalBlue</color>
+    <color name="primaryButtonDisabled">@color/silverChalice</color>
     <color name="primaryButtonText">@color/white</color>
     <color name="container">@color/white</color>
     <color name="divider">@color/alto</color>

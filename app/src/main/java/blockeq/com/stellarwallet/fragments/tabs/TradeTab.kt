@@ -13,6 +13,8 @@ import blockeq.com.stellarwallet.models.Currency
 import blockeq.com.stellarwallet.models.SelectionModel
 import kotlinx.android.synthetic.main.fragment_tab_trade.*
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
+import android.text.Editable
+import android.text.TextWatcher
 
 
 class TradeTab : Fragment(), View.OnClickListener {
@@ -43,6 +45,23 @@ class TradeTab : Fragment(), View.OnClickListener {
         half.setOnClickListener(this)
         threeQuarters.setOnClickListener(this)
         all.setOnClickListener(this)
+
+        sellingCustomSelector.editText.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(amount: Editable) {
+                if (selectedSellingCurrency != null) {
+                    if (amount.toString().isNotEmpty()) {
+                        submitTrade.isEnabled = amount.toString().toFloat() <= selectedSellingCurrency!!.holdings
+                    } else {
+                        submitTrade.isEnabled = false
+                    }
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+        })
 
         sellingCustomSelector.setSelectionValues(sellingCurrencies)
         sellingCustomSelector.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
