@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.adapters.TradingPagerAdapter.Companion.CURRNECY_CHANGE_KEY
+import blockeq.com.stellarwallet.interfaces.OnTradeCurrenciesChange
 import blockeq.com.stellarwallet.models.Currency
 import blockeq.com.stellarwallet.models.SelectionModel
 import kotlinx.android.synthetic.main.fragment_tab_trade.*
@@ -17,9 +19,13 @@ class TradeTab : Fragment(), View.OnClickListener {
 
     private var sellingCurrencies = mutableListOf<SelectionModel>()
     private var buyingCurrencies = mutableListOf<SelectionModel>()
+    private var selectedSellingCurrency: SelectionModel? = null
+    private var selectedBuyingCurrency: SelectionModel? = null
     private var holdingsAmount = 0f
+    private lateinit var onTradeCurrenciesChange: OnTradeCurrenciesChange
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        onTradeCurrenciesChange = arguments?.getSerializable(CURRNECY_CHANGE_KEY) as OnTradeCurrenciesChange
         return inflater.inflate(R.layout.fragment_tab_trade, container, false)
     }
 
@@ -40,32 +46,37 @@ class TradeTab : Fragment(), View.OnClickListener {
         all.setOnClickListener(this)
 
         sellingCustomSelector.setSelectionValues(sellingCurrencies)
-        sellingCustomSelector.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        sellingCustomSelector.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                holdingsAmount = sellingCurrencies.get(position).holdings
+                selectedSellingCurrency = sellingCurrencies.get(position)
+                holdingsAmount = selectedSellingCurrency!!.holdings
                 holdings.text = getString(R.string.holdings_amount,
                         holdingsAmount,
-                        sellingCurrencies.get(position).label)
+                        selectedSellingCurrency!!.label)
                 mockupData(false)
                 buyingCurrencies.removeAt(position)
                 buyingCustomSelector.setSelectionValues(buyingCurrencies)
+                onTradeCurrenciesChange.onCurrencyChange(selectedSellingCurrency?.label,
+                        selectedBuyingCurrency?.label)
             }
         }
 
         buyingCustomSelector.setSelectionValues(buyingCurrencies)
-        buyingCustomSelector.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        buyingCustomSelector.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
+                selectedBuyingCurrency = buyingCurrencies.get(position)
+                onTradeCurrenciesChange.onCurrencyChange(selectedSellingCurrency?.label,
+                        selectedBuyingCurrency?.label)
             }
         }
     }
 
     override fun onClick(v: View?) {
-        when(v?.id) {
+        when (v?.id) {
             R.id.toggleMarket -> {
                 toggleMarket.setBackgroundResource(R.drawable.left_toggle_selected)
                 toggleLimit.setBackgroundResource(R.drawable.right_toggle)

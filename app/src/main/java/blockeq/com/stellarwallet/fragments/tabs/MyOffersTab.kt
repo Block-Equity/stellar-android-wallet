@@ -56,6 +56,7 @@ class MyOffersTab : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRefreshLis
     }
 
     private fun mockupData() {
+        myOffers.clear()
         val xlm = Currency(1, "XLM", "Stellar", 38.7832f)
         val cad = Currency(2, "CAD", "Canadian Dollar", 100.00f)
         val btc = Currency(3, "BTC", "Bitcoin", 0.23243414f)

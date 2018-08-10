@@ -10,22 +10,32 @@ import android.widget.TextView
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.models.OrderBook
 import blockeq.com.stellarwallet.models.OrderBookAdapterTypes
+import com.brandongogetap.stickyheaders.exposed.StickyHeaderHandler
 import kotlinx.android.synthetic.main.row_order_books.view.*
 import kotlinx.android.synthetic.main.row_order_books_header.view.*
 import kotlinx.android.synthetic.main.row_order_books_subheader.view.*
 import kotlinx.android.synthetic.main.row_order_books_title.view.*
 
-class OrderBooksAdapter(private val OrderBooksList: MutableList<OrderBook>,
-                        private val currencyCodeFrom: String, private val currencyCodeTo: String,
+class OrderBooksAdapter(private val orderBooksList: MutableList<OrderBook>,
+                        private var currencyCodeFrom: String?, private var currencyCodeTo: String?,
                         private val context: Context?)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyHeaderHandler {
+
+    fun setCurrencies(currencyCodeFrom: String?, currencyCodeTo: String?) {
+        this.currencyCodeTo = currencyCodeTo
+        this.currencyCodeFrom = currencyCodeFrom
+    }
+
+    override fun getAdapterData(): MutableList<*> {
+        return orderBooksList
+    }
 
     override fun getItemViewType(position: Int): Int {
-        return OrderBooksList[position].type.value
+        return orderBooksList[position].type.value
     }
 
     override fun getItemCount(): Int {
-        return OrderBooksList.size
+        return orderBooksList.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -53,7 +63,7 @@ class OrderBooksAdapter(private val OrderBooksList: MutableList<OrderBook>,
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val orderBook = OrderBooksList.get(position)
+        val orderBook = orderBooksList.get(position)
         if (holder is TitleViewHolder) {
             holder.title.text = context?.getString(R.string.orderBooksTitle, currencyCodeTo, currencyCodeFrom)
         } else if (holder is HeaderViewHolder) {
