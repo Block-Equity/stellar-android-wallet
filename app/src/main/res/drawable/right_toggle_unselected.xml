@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <solid android:color="@color/toggleUnselected" />
+
+    <stroke
+        android:width="@dimen/common_stroke"
+        android:color="@color/toggleSelected" />
+
+    <corners
+        android:bottomLeftRadius="0dp"
+        android:bottomRightRadius="@dimen/common_radius"
+        android:topLeftRadius="0dp"
+        android:topRightRadius="@dimen/common_radius" />
+</shape>

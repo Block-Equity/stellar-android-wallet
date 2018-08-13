@@ -22,6 +22,9 @@
     <!--Spinner Heights-->
     <dimen name="spinner_height">45dp</dimen>
 
+    <!--Navigation Heights-->
+    <dimen name="bottom_navigation_height">56dp</dimen>
+
     <!-- Margins & Padding -->
     <dimen name="margin_padding_size_micro">4dp</dimen>
     <dimen name="margin_padding_size_small">8dp</dimen>

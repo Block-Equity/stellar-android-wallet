@@ -11,14 +11,35 @@ import blockeq.com.stellarwallet.helpers.TradingTabs.*
 
 class TradingPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
+    private var orderBookTab: OrderBookTab? = null
+    private var tradeTab: TradeTab? = null
+    private var myOffersTab: MyOffersTab? = null
+
     override fun getItem(position: Int): Fragment {
         return when (position) {
             Trade.ordinal -> {
-                TradeTab()
+                if (tradeTab != null) {
+                    tradeTab!!
+                } else {
+                    tradeTab = TradeTab()
+                    tradeTab!!
+                }
             }
-            OrderBook.ordinal -> OrderBookTab()
+            OrderBook.ordinal -> {
+                if (orderBookTab != null) {
+                    orderBookTab!!
+                } else {
+                    orderBookTab = OrderBookTab()
+                    orderBookTab!!
+                }
+            }
             else -> {
-                return MyOffersTab()
+                if (myOffersTab != null) {
+                    myOffersTab!!
+                } else {
+                    myOffersTab = MyOffersTab()
+                    myOffersTab!!
+                }
             }
         }
     }

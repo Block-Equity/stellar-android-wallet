@@ -70,7 +70,7 @@
             android:textSize="16sp"
             android:background="@android:color/transparent"
             android:textAlignment="center"
-            android:textColor="@color/strongBlue"/>
+            android:textColor="@color/toryBlue"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

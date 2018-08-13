@@ -9,9 +9,18 @@
     <color name="cornflowerBlue">#4791F6</color>
     <color name="royalBlue">#3E7FEF</color>
     <color name="puce">#C7808E</color>
-    <color name="strongBlue">#0b55b3</color>
-    <color name="gray97">#f7f7f7</color>
+    <color name="toryBlue">#0b55b3</color>
+    <color name="alabaster">#f7f7f7</color>
     <color name="lightGray">#cccccc</color>
+    <color name="alto">#D8D8D8</color>
+    <color name="frenchGray">#c8c8cd</color>
+    <color name="terracotta">#E66E64</color>
+    <color name="black">#000000</color>
+    <color name="gallery">#ececec</color>
+    <color name="mantis">#71CD5C</color>
+    <color name="funBlue">#1b53b0</color>
+    <color name="apricot">#ee7a70</color>
+    <color name="paleSky">#6f7785</color>
     <!--Colors-->
 
     <!--Theme-->
@@ -19,6 +28,20 @@
     <color name="colorPrimaryDark">#2C61BB</color>
     <color name="colorAccent">#FF4081</color>
     <!--Theme-->
+
+    <!--Global-->
+    <color name="fragmentBg">@color/alabaster</color>
+    <color name="toggleSelected">@color/alto</color>
+    <color name="toggleUnselected">@color/white</color>
+    <color name="primaryButtonBg">@color/funBlue</color>
+    <color name="primaryButtonPressedBg">@color/royalBlue</color>
+    <color name="primaryButtonDisabled">@color/silverChalice</color>
+    <color name="primaryButtonText">@color/white</color>
+    <color name="container">@color/white</color>
+    <color name="divider">@color/alto</color>
+    <color name="regularTextColor">@color/black</color>
+    <color name="regularWhiteTextColor">@color/white</color>
+    <color name="listTitleTextColor">@color/paleSky</color>
 
     <!--Navigation-->
     <color name="statusBarColor">@color/colorPrimaryDark</color>
@@ -35,15 +58,28 @@
     <color name="wrongDotColor">@color/puce</color>
 
     <!--Receive-->
-    <color name="qrCodeLayoutBackGroundColor">@color/strongBlue</color>
+    <color name="qrCodeLayoutBackGroundColor">@color/toryBlue</color>
     <color name="qrCodeBackGroundColor">@color/white</color>
-    <color name="addressBackGroundColor">@color/gray97</color>
+    <color name="addressBackGroundColor">@color/alabaster</color>
     <color name="addressTextColor">@color/silver</color>
     <color name="addressLayoutBackGroundColor">@color/white</color>
 
     <!--Send-->
     <color name="sendToTextColor">@color/silver</color>
-    <color name="sendButtonColor">@color/strongBlue</color>
+    <color name="sendButtonColor">@color/toryBlue</color>
     <color name="currencyTextColor">@color/lightGray</color>
+
+    <!--Trade-->
+    <color name="selectorHint">@color/frenchGray</color>
+    <color name="sellSelectorBg">@color/terracotta</color>
+    <color name="editTextEnabled">@color/white</color>
+    <color name="editTextDisabled">@color/alabaster</color>
+    <color name="percentageSelector">@color/gallery</color>
+    <color name="percentageSelectorClicked">@color/lightGray</color>
+    <color name="downArrow">@color/alto</color>
+    <color name="buySelectorBg">@color/mantis</color>
+
+    <!--My Offers-->
+    <color name="delete">@color/apricot</color>
 
 </resources>

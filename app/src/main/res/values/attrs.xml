@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomSelector">
+        <attr name="label" format="string" />
+        <attr name="hint" format="string" />
+        <attr name="strokeColor" format="reference" />
+        <attr name="focusColor" format="reference" />
+        <attr name="cetTextColor" format="reference" />
+        <attr name="hintColor" format="reference" />
+        <attr name="enableEditText" format="boolean" />
+        <attr name="inputType">
+            <enum name="number" value="1" />
+            <enum name="decimal" value="2" />
+            <enum name="text" value="3" />
+            <enum name="email" value="4" />
+            <enum name="none" value="5" />
+        </attr>
+    </declare-styleable>
+</resources>

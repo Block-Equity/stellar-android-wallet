@@ -1,14 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView
-        style="@style/TitleText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/tab_trade" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/container"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/margin_padding_size_medium"
+            android:paddingLeft="@dimen/margin_padding_size_medium"
+            android:paddingTop="@dimen/margin_padding_size_large"
+            android:paddingEnd="@dimen/margin_padding_size_medium"
+            android:paddingRight="@dimen/margin_padding_size_medium"
+            android:paddingBottom="@dimen/margin_padding_size_large">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <Button
+                    android:id="@+id/toggleMarket"
+                    style="@style/ButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_weight=".5"
+                    android:background="@drawable/left_toggle_selected"
+                    android:text="@string/market" />
+
+                <Button
+                    android:id="@+id/toggleLimit"
+                    style="@style/ButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_weight=".5"
+                    android:background="@drawable/right_toggle"
+                    android:text="@string/limit" />
+            </LinearLayout>
+
+            <blockeq.com.stellarwallet.reusables.views.CustomSelector
+                android:id="@+id/sellingCustomSelector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_padding_size_medium"
+                app:hint="@string/selling_hint"
+                app:inputType="decimal"
+                app:strokeColor="@color/sellSelectorBg">
+
+            </blockeq.com.stellarwallet.reusables.views.CustomSelector>
+
+            <TextView
+                android:id="@+id/holdings"
+                style="@style/RegularText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_padding_size_medium" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_padding_size_medium"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <Button
+                    android:id="@+id/tenth"
+                    style="@style/ButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_marginEnd="@dimen/margin_padding_size_small"
+                    android:layout_weight=".2"
+                    android:background="@drawable/percentage_selector_bg"
+                    android:text="@string/tenth" />
+
+                <Button
+                    android:id="@+id/quarter"
+                    style="@style/ButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_marginEnd="@dimen/margin_padding_size_small"
+                    android:layout_weight=".2"
+                    android:background="@drawable/percentage_selector_bg"
+                    android:text="@string/quarter" />
+
+                <Button
+                    android:id="@+id/half"
+                    style="@style/ButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_marginEnd="@dimen/margin_padding_size_small"
+                    android:layout_weight=".2"
+                    android:background="@drawable/percentage_selector_bg"
+                    android:text="@string/half" />
+
+                <Button
+                    android:id="@+id/threeQuarters"
+                    style="@style/ButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_marginEnd="@dimen/margin_padding_size_small"
+                    android:layout_weight=".2"
+                    android:background="@drawable/percentage_selector_bg"
+                    android:text="@string/three_quarters" />
+
+                <Button
+                    android:id="@+id/all"
+                    style="@style/ButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_weight=".2"
+                    android:background="@drawable/percentage_selector_bg"
+                    android:text="@string/all" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_padding_size_medium"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_downward_black_36dp"
+                    android:tint="@color/downArrow" />
+            </LinearLayout>
+
+            <blockeq.com.stellarwallet.reusables.views.CustomSelector
+                android:id="@+id/buyingCustomSelector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_padding_size_medium"
+                app:hint="@string/buying_hint"
+                app:inputType="decimal"
+                app:strokeColor="@color/buySelectorBg">
+
+            </blockeq.com.stellarwallet.reusables.views.CustomSelector>
+
+            <Button
+                android:id="@+id/submitTrade"
+                style="@style/PrimaryButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spinner_height"
+                android:layout_marginTop="@dimen/margin_padding_size_medium"
+                android:enabled="false"
+                android:text="@string/submit" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider"
+            android:background="@color/divider" />
+
+        <TextView
+            style="@style/LongDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_padding_size_medium"
+            android:text="@string/trade_tab_notes" />
+
+    </LinearLayout>
+</ScrollView>
