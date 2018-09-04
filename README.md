@@ -1,5 +1,5 @@
 # stellar-android-wallet
-![BlockEQ Logo](https://blockeq.com/1cd9f6a529d1253b979999c7be00f505.png)
+![BlockEQ Logo](https://user-images.githubusercontent.com/2541326/45047883-5bdacd00-b048-11e8-99eb-03c3a790d5f0.png)
 
 
 The open source BlockEQ Stellar wallet for Android.
