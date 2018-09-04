@@ -24,4 +24,9 @@
     <string name="tab_trade">Trade</string>
     <string name="tab_order_book">Order Book</string>
     <string name="tab_my_offers">My Offers</string>
+
+    <!-- Login Strings -->
+    <string name="title_activity_login">Sign in</string>
+    <string name="create_new_wallet">Create new wallet</string>
+    <string name="recover_wallet">Recover wallet</string>
 </resources>

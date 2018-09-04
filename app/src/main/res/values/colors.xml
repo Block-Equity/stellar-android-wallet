@@ -5,12 +5,19 @@
     <color name="wildSand">#F4F4F4</color>
     <color name="silverChalice">#A1A1A1</color>
     <color name="mercury">#E8E8E8</color>
+
+    <color name="blue1">#0043FF</color>
+    <color name="blue2">#006AFF</color>
+    <color name="blue3">#008FFF</color>
+    <color name="blue4">#04B2FF</color>
+    <color name="lightBlue">#2ED6FF</color>
+    <color name="darkBlue">#151B26</color>
     <!--Colors-->
 
     <!--Theme-->
-    <color name="colorPrimary">#4472C6</color>
-    <color name="colorPrimaryDark">#2D62C4</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">@color/blue3</color>
+    <color name="colorPrimaryDark">@color/darkBlue</color>
+    <color name="colorAccent">@color/blue3</color>
     <!--Theme-->
 
     <!--Navigation-->

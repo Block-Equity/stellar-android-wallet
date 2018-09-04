@@ -1,9 +1,12 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/statusBarColor</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:textViewStyle">@font/lato_regular</item>
+        <item name="android:buttonStyle">@font/lato_regular</item>
     </style>
 
     <style name="ToolbarTheme" parent="Widget.AppCompat.Toolbar">
@@ -35,5 +38,10 @@
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Blue.Button" parent="Base.Widget.AppCompat.Button.Borderless" >
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
 
 </resources>
