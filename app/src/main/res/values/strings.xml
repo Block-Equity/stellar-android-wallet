@@ -33,6 +33,8 @@
     <string name="recover_wallet">Recover wallet</string>
     <string name="phrase_warning">Please write down and safely store this phrase. It\'s the ONLY WAY to retrieve your wallet.</string>
     <string name="confirm_written">I have written it down</string>
+    <string name="enter_phrase">Enter Phrase</string>
+    <string name="secret_phrase">Secret Phrase</string>
 
     <!--Trading Fragment-->
     <string name="tab_trade">Trade</string>

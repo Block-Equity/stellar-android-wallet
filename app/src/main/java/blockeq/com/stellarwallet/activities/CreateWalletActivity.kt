@@ -33,6 +33,7 @@ class CreateWalletActivity : AppCompatActivity() {
                 Activity.RESULT_OK -> {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
+                    finish()
                 }
                 Activity.RESULT_CANCELED -> finish()
                 else -> finish()

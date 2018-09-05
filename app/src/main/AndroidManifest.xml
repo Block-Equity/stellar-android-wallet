@@ -38,7 +38,7 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activities.CreateWalletActivity"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activities.PinActivity"
             android:theme="@style/PinActivityTheme" />
@@ -49,6 +49,7 @@
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
             tools:replace="screenOrientation" />
+        <activity android:name=".activities.RecoverWalletActivity"></activity>
     </application>
 
 </manifest>
