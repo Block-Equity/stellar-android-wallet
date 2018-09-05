@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Theme-->
-    <color name="colorPrimary">@color/blue3</color>
+    <color name="colorPrimary">@color/white</color>
     <color name="colorPrimaryDark">@color/darkBlue</color>
-    <color name="colorAccent">@color/blue3</color>
+    <color name="colorAccent">@color/blue2</color>
 
     <!--Colors-->
     <color name="white">#FFFFFF</color>
@@ -53,7 +53,7 @@
     <color name="statusBarColor">@color/colorPrimaryDark</color>
     <color name="bottomNavigationColor">@color/wildSand</color>
     <color name="unselectedNavItem">@color/silverChalice</color>
-    <color name="selectedNavItem">@color/colorPrimary</color>
+    <color name="selectedNavItem">@color/colorAccent</color>
     <color name="navButtonRippleColor">@color/mercury</color>
     <!--Navigation-->
 

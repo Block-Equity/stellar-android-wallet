@@ -2,25 +2,25 @@ package blockeq.com.stellarwallet.activities
 
 import android.app.Activity
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.fragments.SettingsFragment
-import kotlinx.android.synthetic.main.activity_create_wallet.*
+import kotlinx.android.synthetic.main.activity_recover_wallet.*
 
-class CreateWalletActivity : AppCompatActivity() {
+
+class RecoverWalletActivity : AppCompatActivity() {
 
     val PIN_REQUEST_CODE = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create_wallet)
+        setContentView(R.layout.activity_recover_wallet)
 
-        setSupportActionBar(findViewById(R.id.createToolbar))
+        setSupportActionBar(findViewById(R.id.recoverToolbar))
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        confirmButton.setOnClickListener {
+        nextButton.setOnClickListener {
             startActivityForResult(Intent(this, PinActivity::class.java), PIN_REQUEST_CODE)
             overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
         }
@@ -28,7 +28,7 @@ class CreateWalletActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == SettingsFragment.PIN_REQUEST_CODE) {
+        if (requestCode == PIN_REQUEST_CODE) {
             when (resultCode) {
                 Activity.RESULT_OK -> {
                     val intent = Intent(this, MainActivity::class.java)

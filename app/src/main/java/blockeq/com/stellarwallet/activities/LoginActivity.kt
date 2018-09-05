@@ -1,6 +1,5 @@
 package blockeq.com.stellarwallet.activities
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -19,7 +18,7 @@ class LoginActivity : AppCompatActivity() {
             val builder = AlertDialog.Builder(this@LoginActivity)
             val walletLengthList = listOf("Use a 12 word recovery phrase", "Use a 24 word recovery phrase").toTypedArray()
             builder.setTitle("Create Wallet")
-                    .setItems(walletLengthList, DialogInterface.OnClickListener { dialog, which ->
+                    .setItems(walletLengthList) { dialog, which ->
                         // The 'which' argument contains the index position
                         // of the selected item
 
@@ -32,13 +31,13 @@ class LoginActivity : AppCompatActivity() {
                         val intent = Intent(this, CreateWalletActivity::class.java)
                         intent.putExtra("walletLength", walletLength)
                         startActivity(intent)
-                    })
+                    }
             val dialog = builder.create()
             dialog.show()
         }
 
         recoverWalletButton.setOnClickListener {
-
+            startActivity(Intent(this, RecoverWalletActivity::class.java))
         }
     }
 }
