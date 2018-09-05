@@ -8,6 +8,9 @@ import android.view.MenuItem
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.fragments.SettingsFragment
 import kotlinx.android.synthetic.main.activity_create_wallet.*
+import com.soneso.stellarmnemonics.Wallet
+
+
 
 class CreateWalletActivity : AppCompatActivity() {
 
@@ -19,6 +22,11 @@ class CreateWalletActivity : AppCompatActivity() {
 
         setSupportActionBar(findViewById(R.id.createToolbar))
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        val mnemonic = Wallet.generate24WordMnemonic()
+        val words = String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+
 
         confirmButton.setOnClickListener {
             startActivityForResult(Intent(this, PinActivity::class.java), PIN_REQUEST_CODE)
