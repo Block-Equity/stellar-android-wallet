@@ -29,4 +29,8 @@
     <string name="title_activity_login">Sign in</string>
     <string name="create_new_wallet">Create new wallet</string>
     <string name="recover_wallet">Recover wallet</string>
+    <string name="phrase_warning">Please write down and safely store this phrase. It\'s the ONLY WAY to retrieve your wallet.</string>
+    <string name="confirm_written">I have written it down</string>
+
+
 </resources>
