@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        # Material Design Dimensions
+
+        These dimensions are provided as per Material Design Guidelines
+        to adhere to a 8 dp baseline grid. (With the exception of the
+        toolbar and notification bar.)
+
+        Using these dimensions lessens the use of arbitrary dimension
+        choices and magic number wizardry.
+
+        ## References
+
+        - https://www.google.com/design/spec/layout/metrics-keylines.html
+        - https://www.google.com/design/spec/style/typography.html
+    -->
+
+    <!-- Button Heights -->
+    <dimen name="button_height">36dp</dimen>
+
+    <!--Spinner Heights-->
+    <dimen name="spinner_height">45dp</dimen>
+
+    <!--Navigation Heights-->
+    <dimen name="bottom_navigation_height">56dp</dimen>
+
+    <!-- Margins & Padding -->
+    <dimen name="margin_padding_size_micro">4dp</dimen>
+    <dimen name="margin_padding_size_small">8dp</dimen>
+    <dimen name="margin_padding_size_medium">16dp</dimen>
+    <dimen name="margin_padding_size_medium_large">24dp</dimen>
+    <dimen name="margin_padding_size_large">32dp</dimen>
+    <dimen name="margin_padding_size_xlarge">40dp</dimen>
+    <dimen name="margin_padding_size_xxlarge">48dp</dimen>
+    <dimen name="margin_padding_size_xxxlarge">56dp</dimen>
+
+    <!-- Icon sizes -->
+    <dimen name="standard_icon_size">32dp</dimen>
+    <dimen name="launcher_icon_size">48dp</dimen>
+
+    <!-- Touch Target Size-->
+    <dimen name="standard_touch_size">48dp</dimen>
+
+    <!-- Toolbar, 4 dp baseline -->
+    <dimen name="toolbar_margin_size">4dp</dimen>
+    <dimen name="toolbar_elevation">4dp</dimen>
+    <dimen name="toolbar_icon_size">24dp</dimen>
+    <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="toolbar_height_expanded">180dp</dimen>
+
+    <!-- Floating Action Button -->
+    <dimen name="floating_action_button_diameter">56dp</dimen>
+
+    <!-- Notification bar, 2 dp baseline -->
+    <dimen name="notification_margin_size">2dp</dimen>
+    <dimen name="notification_icon_size">22dp</dimen>
+
+    <!-- Font sizes -->
+    <dimen name="text_size_micro">12sp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
+    <dimen name="text_size_large">20sp</dimen>
+    <dimen name="text_size_xlarge">34sp</dimen>
+    <dimen name="text_size_xxlarge">45sp</dimen>
+    <dimen name="text_size_xxxlarge">56sp</dimen>
+    <dimen name="text_size_xxxxlarge">112sp</dimen>
+
+    <!-- Elevation -->
+    <dimen name="card_view_elevation">4dp</dimen>
+    <dimen name="bottom_navigation_elevation">8dp</dimen>
+
+    <!-- Touch target sizes -->
+    <dimen name="minimum_touch_target_size">48dp</dimen>
+
+</resources>

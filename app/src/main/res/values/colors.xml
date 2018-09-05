@@ -1,24 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Theme-->
+    <color name="colorPrimary">@color/blue3</color>
+    <color name="colorPrimaryDark">@color/darkBlue</color>
+    <color name="colorAccent">@color/blue3</color>
+
     <!--Colors-->
     <color name="white">#FFFFFF</color>
     <color name="wildSand">#F4F4F4</color>
     <color name="silverChalice">#A1A1A1</color>
     <color name="mercury">#E8E8E8</color>
+    <color name="silver">#C8C8C8</color>
+    <color name="cornflowerBlue">#4791F6</color>
+    <color name="royalBlue">#3E7FEF</color>
+    <color name="puce">#C7808E</color>
+    <color name="toryBlue">#0b55b3</color>
+    <color name="alabaster">#f7f7f7</color>
+    <color name="lightGray">#cccccc</color>
+    <color name="alto">#D8D8D8</color>
+    <color name="frenchGray">#c8c8cd</color>
+    <color name="terracotta">#E66E64</color>
+    <color name="black">#000000</color>
+    <color name="gallery">#ececec</color>
+    <color name="mantis">#71CD5C</color>
+    <color name="funBlue">#1b53b0</color>
+    <color name="apricot">#ee7a70</color>
+    <color name="paleSky">#6f7785</color>
 
+    <!--Branding Colors-->
     <color name="blue1">#0043FF</color>
     <color name="blue2">#006AFF</color>
     <color name="blue3">#008FFF</color>
     <color name="blue4">#04B2FF</color>
     <color name="lightBlue">#2ED6FF</color>
     <color name="darkBlue">#151B26</color>
-    <!--Colors-->
 
-    <!--Theme-->
-    <color name="colorPrimary">@color/blue3</color>
-    <color name="colorPrimaryDark">@color/darkBlue</color>
-    <color name="colorAccent">@color/blue3</color>
-    <!--Theme-->
+    <!--Global-->
+    <color name="fragmentBg">@color/alabaster</color>
+    <color name="toggleSelected">@color/alto</color>
+    <color name="toggleUnselected">@color/white</color>
+    <color name="primaryButtonBg">@color/funBlue</color>
+    <color name="primaryButtonPressedBg">@color/royalBlue</color>
+    <color name="primaryButtonDisabled">@color/silverChalice</color>
+    <color name="primaryButtonText">@color/white</color>
+    <color name="container">@color/white</color>
+    <color name="divider">@color/alto</color>
+    <color name="regularTextColor">@color/black</color>
+    <color name="regularWhiteTextColor">@color/white</color>
+    <color name="listTitleTextColor">@color/paleSky</color>
 
     <!--Navigation-->
     <color name="statusBarColor">@color/colorPrimaryDark</color>
@@ -27,5 +56,36 @@
     <color name="selectedNavItem">@color/colorPrimary</color>
     <color name="navButtonRippleColor">@color/mercury</color>
     <!--Navigation-->
+
+    <!--Pin-->
+    <color name="deletePressedColor">@color/silver</color>
+    <color name="dotColor">@color/cornflowerBlue</color>
+    <color name="logoTint">@color/royalBlue</color>
+    <color name="wrongDotColor">@color/puce</color>
+
+    <!--Receive-->
+    <color name="qrCodeLayoutBackGroundColor">@color/toryBlue</color>
+    <color name="qrCodeBackGroundColor">@color/white</color>
+    <color name="addressBackGroundColor">@color/alabaster</color>
+    <color name="addressTextColor">@color/silver</color>
+    <color name="addressLayoutBackGroundColor">@color/white</color>
+
+    <!--Send-->
+    <color name="sendToTextColor">@color/silver</color>
+    <color name="sendButtonColor">@color/toryBlue</color>
+    <color name="currencyTextColor">@color/lightGray</color>
+
+    <!--Trade-->
+    <color name="selectorHint">@color/frenchGray</color>
+    <color name="sellSelectorBg">@color/terracotta</color>
+    <color name="editTextEnabled">@color/white</color>
+    <color name="editTextDisabled">@color/alabaster</color>
+    <color name="percentageSelector">@color/gallery</color>
+    <color name="percentageSelectorClicked">@color/lightGray</color>
+    <color name="downArrow">@color/alto</color>
+    <color name="buySelectorBg">@color/mantis</color>
+
+    <!--My Offers-->
+    <color name="delete">@color/apricot</color>
 
 </resources>

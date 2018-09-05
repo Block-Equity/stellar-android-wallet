@@ -6,6 +6,20 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
+    <!--Common-->
+    <dimen name="common_radius">5dp</dimen>
+    <dimen name="common_stroke">1dp</dimen>
+    <dimen name="divider">1dp</dimen>
+
+    <!--Navigation-->
     <dimen name="navigation_title">18sp</dimen>
     <dimen name="actionbar_elevation">0dp</dimen>
+
+    <!--Pin-->
+    <dimen name="dot_diameter">12dp</dimen>
+    <dimen name="dot_spacing">12dp</dimen>
+    <dimen name="logo_width">50dp</dimen>
+    <dimen name="logo_height">50dp</dimen>
+    <dimen name="keypad_size">26sp</dimen>
+    <dimen name="keybadSpacing">12dp</dimen>
 </resources>

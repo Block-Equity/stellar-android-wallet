@@ -13,17 +13,19 @@
     <string name="nav_receive">Receive</string>
     <string name="nav_settings">Settings</string>
 
+    <!--Global-->
+    <string name="deleteDialogTitle">Confirmation</string>
+    <string name="deleteDialogText">Are you sure you want to delete this %1s?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="refreshed">List Refreshed!</string>
+
     <!--Wallet Fragment-->
     <string name="button_assets">Assets</string>
     <string name="button_send">Send</string>
     <string name="logoDescription">Block-EQ</string>
     <string name="title_activity_wallets">Wallets</string>
     <string name="title_activity_my_wallet">My Wallet</string>
-
-    <!--Trading Fragment-->
-    <string name="tab_trade">Trade</string>
-    <string name="tab_order_book">Order Book</string>
-    <string name="tab_my_offers">My Offers</string>
 
     <!-- Login Strings -->
     <string name="title_activity_login">Sign in</string>
@@ -32,5 +34,54 @@
     <string name="phrase_warning">Please write down and safely store this phrase. It\'s the ONLY WAY to retrieve your wallet.</string>
     <string name="confirm_written">I have written it down</string>
 
+    <!--Trading Fragment-->
+    <string name="tab_trade">Trade</string>
+    <string name="market">Market</string>
+    <string name="limit">Limit</string>
+    <string name="tab_order_book">Order Book</string>
+    <string name="tab_my_offers">My Offers</string>
+    <string name="selling_hint">I have</string>
+    <string name="buying_hint">I want</string>
+    <string name="holdings_amount">%1f %2s</string>
+    <string name="tenth">10%</string>
+    <string name="quarter">25%</string>
+    <string name="half">50%</string>
+    <string name="three_quarters">75%</string>
+    <string name="all">100%</string>
+    <string name="submit">Submit trade</string>
+    <string name="trade_tab_notes">Your market order may not be completely filled depending
+        on amount offered. View the order book to see the amount available at the market rate.
+        Any amount larger than this will be posed as an offer.</string>
+
+    <!--My Offers Fragment-->
+    <string name="rowDescription">Sell %1f %2s for %3f %4s at the price of %5f</string>
+    <string name="offer">offer</string>
+
+    <!--Order Books-->
+    <string name="orderBooksTitle">%1s - %2s </string>
+    <string name="buyOffers">Buy Offers</string>
+    <string name="sellOffers">Sell Offers</string>
+    <string name="offerPrice">%1s Price</string>
+    <string name="offerAmount">%1s Amount</string>
+    <string name="offerValue">%1s Value</string>
+
+    <!--PIN Screen-->
+    <string name="please_enter_your_pin">Please enter your PIN code</string>
+    <string name="pin_correct">PIN Correct!</string>
+    <string name="pin_incorrect">PIN Incorrect!</string>
+    <string name="pin_canceled">PIN Verification Canceled</string>
+
+    <!--Receive Fragment-->
+    <string name="your_wallet_address">YOUR WALLET ADDRESS</string>
+    <string name="address_copied_message">Address copied</string>
+
+    <!--Send Screen-->
+    <string name="send_to_text">SEND TO</string>
+    <string name="next_button_text">NEXT</string>
+    <string name="send_button_text">SEND</string>
+    <string name="currency">XLM</string>
+    <string name="to">To:</string>
+    <string name="optional">(Optional)</string>
+    <string name="memo">Memo:</string>
 
 </resources>

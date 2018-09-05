@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="1">
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/spinner_height"
+        android:layout_weight=".75"
+        android:background="@drawable/selector_edittext"
+        android:fontFamily="@font/lato_regular"
+        android:paddingStart="@dimen/margin_padding_size_medium"
+        android:paddingLeft="@dimen/margin_padding_size_medium"
+        android:paddingEnd="@dimen/margin_padding_size_medium"
+        android:paddingRight="@dimen/margin_padding_size_medium"
+        android:textColorHint="@color/selectorHint"
+        android:textSize="@dimen/text_size_medium" />
+
+    <RelativeLayout
+        android:id="@+id/spinnerContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".25"
+        android:background="@drawable/selector_spinner">
+
+        <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+            android:id="@+id/spinner"
+            style="@style/Widget.AppCompat.DropDownItem.Spinner"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spinner_height"
+            android:backgroundTint="@color/white"
+            android:spinnerMode="dialog">
+
+        </com.toptoche.searchablespinnerlibrary.SearchableSpinner>
+        <!--<Spinner-->
+        <!--android:id="@+id/spinner"-->
+        <!--style="@style/Widget.AppCompat.DropDownItem.Spinner"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:spinnerMode="dialog"-->
+        <!--android:backgroundTint="@color/white"-->
+        <!--android:layout_height="@dimen/spinner_height"-->
+        <!--/>-->
+    </RelativeLayout>
+
+</LinearLayout>
