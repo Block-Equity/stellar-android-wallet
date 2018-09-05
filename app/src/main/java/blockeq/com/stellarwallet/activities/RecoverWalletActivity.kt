@@ -2,11 +2,12 @@ package blockeq.com.stellarwallet.activities
 
 import android.app.Activity
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import blockeq.com.stellarwallet.R
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
+
 
 class RecoverWalletActivity : AppCompatActivity() {
 
@@ -31,7 +32,7 @@ class RecoverWalletActivity : AppCompatActivity() {
             when (resultCode) {
                 Activity.RESULT_OK -> {
                     val intent = Intent(this, MainActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     startActivity(intent)
                 }
                 Activity.RESULT_CANCELED -> finish()
