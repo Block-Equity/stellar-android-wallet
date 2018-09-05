@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity() {
                             24
                         }
 
-                        val intent = Intent(this, MainActivity::class.java)
+                        val intent = Intent(this, CreateWalletActivity::class.java)
                         intent.putExtra("walletLength", walletLength)
                         startActivity(intent)
                     })
