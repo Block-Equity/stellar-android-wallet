@@ -17,20 +17,25 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-    <TextView
+    <EditText
+        android:id="@+id/phraseEditText"
+        android:layout_below="@id/recoverToolbar"
+        android:layout_above="@id/nextButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/createToolbar"
-        android:text="@string/phrase_warning"
-        android:layout_margin="@dimen/activity_vertical_margin"
-        android:gravity="center"/>
+        android:layout_height="match_parent"
+        style="@style/RegularText"
+        android:padding="@dimen/activity_vertical_margin"
+        android:background="@android:color/transparent"
+        android:textSize="@dimen/text_size_medium"
+        android:gravity="top"/>
+
 
     <Button
-        android:id="@+id/confirmButton"
+        android:id="@+id/nextButton"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/confirm_written"
+        android:text="@string/next_button_text"
         android:layout_margin="@dimen/activity_vertical_margin"
         android:layout_marginBottom="10dp"
         style="@style/PrimaryButtonStyle"/>

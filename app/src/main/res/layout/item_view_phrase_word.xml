@@ -11,7 +11,8 @@
         android:id="@+id/numberItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_size_medium"
+        android:textColor="@color/silverChalice"
         android:text="1" />
 
     <TextView
@@ -20,7 +21,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="stellar"
-        android:textSize="16sp"
+        style="@style/RegularText"
+        android:textSize="@dimen/text_size_medium"
         android:textColor="@color/colorPrimaryDark"
         app:layout_constraintStart_toEndOf="@+id/numberItem" />
 

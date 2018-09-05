@@ -3,7 +3,7 @@
     <!--Theme-->
     <color name="colorPrimary">@color/white</color>
     <color name="colorPrimaryDark">@color/darkBlue</color>
-    <color name="colorAccent">@color/blue3</color>
+    <color name="colorAccent">@color/blue2</color>
 
     <!--Colors-->
     <color name="white">#FFFFFF</color>

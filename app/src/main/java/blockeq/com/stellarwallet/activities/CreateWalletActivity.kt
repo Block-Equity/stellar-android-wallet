@@ -32,8 +32,8 @@ class CreateWalletActivity : AppCompatActivity() {
             when (resultCode) {
                 Activity.RESULT_OK -> {
                     val intent = Intent(this, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     startActivity(intent)
-                    finish()
                 }
                 Activity.RESULT_CANCELED -> finish()
                 else -> finish()

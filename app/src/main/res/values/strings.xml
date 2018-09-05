@@ -28,7 +28,6 @@
     <string name="title_activity_my_wallet">My Wallet</string>
 
     <!-- Login Strings -->
-    <string name="title_activity_login">Sign in</string>
     <string name="create_new_wallet">Create new wallet</string>
     <string name="recover_wallet">Recover wallet</string>
     <string name="phrase_warning">Please write down and safely store this phrase. It\'s the ONLY WAY to retrieve your wallet.</string>
@@ -74,13 +73,13 @@
     <string name="pin_canceled">PIN Verification Canceled</string>
 
     <!--Receive Fragment-->
-    <string name="your_wallet_address">YOUR WALLET ADDRESS</string>
+    <string name="your_wallet_address">Your Wallet Address</string>
     <string name="address_copied_message">Address copied</string>
 
     <!--Send Screen-->
-    <string name="send_to_text">SEND TO</string>
-    <string name="next_button_text">NEXT</string>
-    <string name="send_button_text">SEND</string>
+    <string name="send_to_text">Send To</string>
+    <string name="next_button_text">Next</string>
+    <string name="send_button_text">Send</string>
     <string name="currency">XLM</string>
     <string name="to">To:</string>
     <string name="optional">(Optional)</string>
