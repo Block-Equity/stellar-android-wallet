@@ -28,7 +28,7 @@
     <Button
         android:id="@+id/recoverWalletButton"
         android:text="@string/recover_wallet"
-        style="@style/ButtonStyle"
+        style="@style/PrimaryButtonStyle"
         android:background="@color/blue4"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
