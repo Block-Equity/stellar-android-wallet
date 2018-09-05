@@ -40,12 +40,6 @@
             android:name=".activities.CreateWalletActivity"
             android:theme="@style/AppTheme"/>
         <activity
-            android:name=".activities.WalletsActivity"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".activities.MyWalletActivity"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".activities.PinActivity"
             android:theme="@style/PinActivityTheme" />
         <activity
