@@ -11,10 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan">
+            android:name=".activities.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -23,11 +22,18 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activities.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".activities.WalletsActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activities.MyWalletActivity"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.CreateWalletActivity"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".activities.PinActivity"
             android:theme="@style/PinActivityTheme" />

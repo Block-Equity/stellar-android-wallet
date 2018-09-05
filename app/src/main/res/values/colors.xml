@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Theme-->
+    <color name="colorPrimary">@color/blue3</color>
+    <color name="colorPrimaryDark">@color/darkBlue</color>
+    <color name="colorAccent">@color/blue3</color>
+
     <!--Colors-->
     <color name="white">#FFFFFF</color>
     <color name="wildSand">#F4F4F4</color>
@@ -21,13 +26,14 @@
     <color name="funBlue">#1b53b0</color>
     <color name="apricot">#ee7a70</color>
     <color name="paleSky">#6f7785</color>
-    <!--Colors-->
 
-    <!--Theme-->
-    <color name="colorPrimary">#4472C6</color>
-    <color name="colorPrimaryDark">#2C61BB</color>
-    <color name="colorAccent">#FF4081</color>
-    <!--Theme-->
+    <!--Branding Colors-->
+    <color name="blue1">#0043FF</color>
+    <color name="blue2">#006AFF</color>
+    <color name="blue3">#008FFF</color>
+    <color name="blue4">#04B2FF</color>
+    <color name="lightBlue">#2ED6FF</color>
+    <color name="darkBlue">#151B26</color>
 
     <!--Global-->
     <color name="fragmentBg">@color/alabaster</color>

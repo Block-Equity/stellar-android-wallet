@@ -1,9 +1,12 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/statusBarColor</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:textViewStyle">@font/lato_regular</item>
+        <item name="android:buttonStyle">@font/lato_regular</item>
     </style>
 
     <style name="PinActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
