@@ -1,16 +1,10 @@
 package blockeq.com.stellarwallet.activities
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
@@ -38,8 +32,6 @@ class CreateWalletActivity : AppCompatActivity() {
         }
         val words = String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
 
-//        mnemonicGridView.adapter = MnemonicAdapter(this, words)
-
         for (i in words.indices) {
             val item_view = layoutInflater.inflate(R.layout.item_view_phrase_word, null)
 
@@ -60,38 +52,6 @@ class CreateWalletActivity : AppCompatActivity() {
         confirmButton.setOnClickListener {
             startActivityForResult(Intent(this, PinActivity::class.java), PIN_REQUEST_CODE)
             overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
-        }
-    }
-
-    class MnemonicAdapter(private var activity: Activity, private var items: ArrayList<String>): BaseAdapter() {
-
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = if (convertView == null) {
-                    (activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
-                            .inflate(R.layout.item_view_phrase_word, parent, false)
-                } else {
-                    convertView
-                }
-
-            val numberTextView = view!!.findViewById<TextView>(R.id.numberItem)
-            val wordTextView = view.findViewById<TextView>(R.id.wordItem)
-
-            numberTextView.text = (position +1).toString()
-            wordTextView.text = items[position]
-
-            return view
-        }
-
-        override fun getItem(i: Int): String {
-            return items[i]
-        }
-
-        override fun getItemId(i: Int): Long {
-            return i.toLong()
-        }
-
-        override fun getCount(): Int {
-            return items.size
         }
     }
 
