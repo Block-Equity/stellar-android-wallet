@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="10dp"
+    android:padding="8dp"
     android:background="@drawable/background_item_view_phrase_word"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical">
 
     <TextView
         android:id="@+id/numberItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_medium"
+        android:textSize="@dimen/text_size_small"
         android:textColor="@color/silverChalice"
         android:text="1" />
 
@@ -19,11 +19,11 @@
         android:id="@+id/wordItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_toRightOf="@id/numberItem"
+        android:layout_marginLeft="8dp"
         android:text="stellar"
         style="@style/RegularText"
         android:textSize="@dimen/text_size_medium"
-        android:textColor="@color/colorPrimaryDark"
-        app:layout_constraintStart_toEndOf="@+id/numberItem" />
+        android:textColor="@color/colorPrimaryDark" />
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

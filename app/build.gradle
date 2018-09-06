@@ -30,16 +30,16 @@ dependencies {
     implementation "com.android.support:design:$supportLibraryVersion"
     implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
     implementation "com.android.support.constraint:constraint-layout:$constrainLayoutVersion"
-    implementation "com.github.stellar:java-stellar-sdk:$javaStellarVersion"
+    implementation "com.google.android:flexbox:$flexboxVersion"
     implementation "io.github.novacrypto:BIP39:$novaCryptoVersion"
     implementation "com.andrognito.pinlockview:pinlockview:$pinlockviewVersion"
     implementation "com.toptoche.searchablespinner:searchablespinnerlibrary:$searchablespinnerVersion"
-    implementation files('libs/stellar-sdk.jar')
+    implementation files("libs/stellar-sdk.jar")
     implementation "com.journeyapps:zxing-android-embedded:$zxingAndroidVersion"
     implementation "com.github.davidmigloz:number-keyboard:$numberKeyBoardVersion"
     implementation "com.brandongogetap:stickyheaders:$stickyheadersVersion"
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoVersion"
-    implementation files('libs/soneso-java-stellar-mnemonics-1.0.jar')
+
 }
