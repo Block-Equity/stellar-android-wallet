@@ -6,12 +6,11 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
 
 
 class RecoverWalletActivity : AppCompatActivity() {
-
-    val PIN_REQUEST_CODE = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

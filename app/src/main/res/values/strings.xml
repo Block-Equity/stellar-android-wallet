@@ -68,6 +68,7 @@
 
     <!--PIN Screen-->
     <string name="please_enter_your_pin">Please enter your PIN code</string>
+    <string name="please_create_a_pin">Please create a PIN code. Do not reuse your phone PIN</string>
     <string name="pin_correct">PIN Correct!</string>
     <string name="pin_incorrect">PIN Incorrect!</string>
     <string name="pin_canceled">PIN Verification Canceled</string>

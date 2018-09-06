@@ -13,40 +13,59 @@ class PinActivity : AppCompatActivity(), PinLockListener {
 
     // Correct PIN example. later on, this would be fetched from the Local Storage
     companion object {
+        const val PIN_REQUEST_CODE = 0
         const val CORRECT_PIN = "1234"
         const val RESULT_FAIL = 2
+        const val RESULT_CONFIRM_PIN = 3
     }
+
+    private var needConfirm = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pin)
         pinLockView.setPinLockListener(this)
         pinLockView.attachIndicatorDots(indicatorDots)
+
+        val message = intent.getStringExtra("message")
+        needConfirm = intent.getBooleanExtra("need_confirm", false)
+
+        // Check if keychain contains a pin
+        if (!message.isNullOrEmpty()) {
+            tv_custom_message.text = message
+        }
     }
 
     override fun onEmpty() {
     }
 
     override fun onComplete(pin: String?) {
-        if (pin != CORRECT_PIN) {
-            showWrongPinDots(true)
-            val shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
-            shakeAnimation.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(arg0: Animation) {}
-                override fun onAnimationRepeat(arg0: Animation) {}
-                override fun onAnimationEnd(arg0: Animation) {
-                    showWrongPinDots(false)
-                    pinLockView.resetPinLockView()
-                    setResult(RESULT_FAIL)
-                    finish()
-                    overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
-                }
-            })
-            wrongPinDots.startAnimation(shakeAnimation)
-        } else {
-            setResult(RESULT_OK)
-            finish()
-            overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
+        when {
+            needConfirm -> {
+                setResult(RESULT_CONFIRM_PIN)
+                finish()
+            }
+            pin != CORRECT_PIN -> {
+                showWrongPinDots(true)
+                val shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
+                shakeAnimation.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(arg0: Animation) {}
+                    override fun onAnimationRepeat(arg0: Animation) {}
+                    override fun onAnimationEnd(arg0: Animation) {
+                        showWrongPinDots(false)
+                        pinLockView.resetPinLockView()
+                        setResult(RESULT_FAIL)
+                        finish()
+                        overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
+                    }
+                })
+                wrongPinDots.startAnimation(shakeAnimation)
+            }
+            else -> {
+                setResult(RESULT_OK)
+                finish()
+                overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
+            }
         }
     }
 

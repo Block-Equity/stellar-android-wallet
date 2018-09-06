@@ -8,13 +8,13 @@ import android.view.MenuItem
 import android.widget.LinearLayout
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
+import blockeq.com.stellarwallet.activities.PinActivity.Companion.RESULT_CONFIRM_PIN
 import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_create_wallet.*
 
 
 class CreateWalletActivity : AppCompatActivity() {
-
-    val PIN_REQUEST_CODE = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,8 +22,6 @@ class CreateWalletActivity : AppCompatActivity() {
 
         setSupportActionBar(findViewById(R.id.createToolbar))
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
-
 
         val mnemonic = if (intent.getIntExtra("walletLength", 12) == 12) {
             Wallet.generate12WordMnemonic()
@@ -50,7 +48,10 @@ class CreateWalletActivity : AppCompatActivity() {
 
 
         confirmButton.setOnClickListener {
-            startActivityForResult(Intent(this, PinActivity::class.java), PIN_REQUEST_CODE)
+            val intent = Intent(this, PinActivity::class.java)
+            intent.putExtra("message", getString(R.string.please_create_a_pin))
+            intent.putExtra("need_confirm", true)
+            startActivityForResult(intent, PIN_REQUEST_CODE)
             overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
         }
     }
@@ -63,6 +64,10 @@ class CreateWalletActivity : AppCompatActivity() {
                     val intent = Intent(this, MainActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     startActivity(intent)
+                }
+                RESULT_CONFIRM_PIN -> {
+                    startActivityForResult(Intent(this, PinActivity::class.java), PIN_REQUEST_CODE)
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
                 }
                 Activity.RESULT_CANCELED -> finish()
                 else -> finish()
