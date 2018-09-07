@@ -27,11 +27,15 @@ class LoginActivity : AppCompatActivity() {
             val keyStoreWrapper = KeyStoreWrapper(applicationContext, "pin_keystore")
 
             val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair("1234")
-            val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
+            if (masterKey == null) {
+                text.text = "Failed to decrypt!"
+            } else {
+                val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
 
-            if (!data.isNullOrEmpty()) {
-                val decryptedData = cipherWrapper.decrypt(data, masterKey?.private)
-                text.text = decryptedData
+                if (!data.isNullOrEmpty()) {
+                    val decryptedData = cipherWrapper.decrypt(data, masterKey?.private)
+                    text.text = decryptedData
+                }
             }
         }
 
