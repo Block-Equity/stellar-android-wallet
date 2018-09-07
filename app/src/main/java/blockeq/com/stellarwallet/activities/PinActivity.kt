@@ -1,5 +1,6 @@
 package blockeq.com.stellarwallet.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -20,6 +21,7 @@ class PinActivity : AppCompatActivity(), PinLockListener {
     }
 
     private var needConfirm = false
+    private var PIN : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +31,7 @@ class PinActivity : AppCompatActivity(), PinLockListener {
 
         val message = intent.getStringExtra("message")
         needConfirm = intent.getBooleanExtra("need_confirm", false)
+        PIN = intent.getStringExtra("pin")
 
         // Check if keychain contains a pin
         if (!message.isNullOrEmpty()) {
@@ -42,10 +45,10 @@ class PinActivity : AppCompatActivity(), PinLockListener {
     override fun onComplete(pin: String?) {
         when {
             needConfirm -> {
-                setResult(RESULT_CONFIRM_PIN)
+                setResult(RESULT_CONFIRM_PIN, Intent().putExtra("pin", pin))
                 finish()
             }
-            pin != CORRECT_PIN -> {
+            pin != PIN -> {
                 showWrongPinDots(true)
                 val shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
                 shakeAnimation.setAnimationListener(object : Animation.AnimationListener {
@@ -54,15 +57,12 @@ class PinActivity : AppCompatActivity(), PinLockListener {
                     override fun onAnimationEnd(arg0: Animation) {
                         showWrongPinDots(false)
                         pinLockView.resetPinLockView()
-                        setResult(RESULT_FAIL)
-                        finish()
-                        overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
                     }
                 })
                 wrongPinDots.startAnimation(shakeAnimation)
             }
             else -> {
-                setResult(RESULT_OK)
+                setResult(RESULT_OK, Intent().putExtra("pin", pin))
                 finish()
                 overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
             }

@@ -1,6 +1,7 @@
 package blockeq.com.stellarwallet.activities
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -10,11 +11,15 @@ import android.widget.TextView
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.RESULT_CONFIRM_PIN
+import blockeq.com.stellarwallet.encryption.CipherWrapper
+import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_create_wallet.*
 
 
 class CreateWalletActivity : AppCompatActivity() {
+
+    private var mnemonicString : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +33,7 @@ class CreateWalletActivity : AppCompatActivity() {
         } else {
             Wallet.generate24WordMnemonic()
         }
+        mnemonicString = String(mnemonic)
         val words = String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
 
         for (i in words.indices) {
@@ -61,12 +67,38 @@ class CreateWalletActivity : AppCompatActivity() {
         if (requestCode == PIN_REQUEST_CODE) {
             when (resultCode) {
                 Activity.RESULT_OK -> {
+                    var pin = data!!.getStringExtra("pin")
+
+                    val keyStoreWrapper = KeyStoreWrapper(applicationContext, "pin_keystore")
+                    keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin)
+
+                    // Wipe the PIN
+                    pin = ""
+
+                    val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
+                    val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
+
+                    val encryptedData = cipherWrapper.encrypt(mnemonicString!!, masterKey?.public)
+
+                    // Wipe the mnemonic
+                    mnemonicString = ""
+
+                    val sharedPref = getSharedPreferences(
+                            getString(R.string.preference_file_key), Context.MODE_PRIVATE) ?: return
+                    with (sharedPref.edit()) {
+                        putString(getString(R.string.encrypted_mnemonic), encryptedData)
+                        apply()
+                    }
+
                     val intent = Intent(this, MainActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     startActivity(intent)
                 }
                 RESULT_CONFIRM_PIN -> {
-                    startActivityForResult(Intent(this, PinActivity::class.java), PIN_REQUEST_CODE)
+                    val pin = data!!.getStringExtra("pin")
+                    val intent = Intent(this, PinActivity::class.java)
+                    intent.putExtra("pin", pin)
+                    startActivityForResult(intent, PIN_REQUEST_CODE)
                     overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
                 }
                 Activity.RESULT_CANCELED -> finish()
