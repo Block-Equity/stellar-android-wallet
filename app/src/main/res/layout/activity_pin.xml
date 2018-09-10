@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
     android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/rootLayout">
 
     <ImageView
         android:layout_width="@dimen/logo_width"

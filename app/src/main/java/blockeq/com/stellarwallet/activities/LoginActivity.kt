@@ -14,6 +14,8 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        setupUI()
     }
 
     //region User Interface
@@ -23,7 +25,7 @@ class LoginActivity : BaseActivity() {
         text.text = data
 
         test.setOnClickListener {
-            val keyStoreWrapper = KeyStoreWrapper(applicationContext, "pin_keystore")
+            val keyStoreWrapper = KeyStoreWrapper(applicationContext)
 
             val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair("1234")
             if (masterKey == null) {

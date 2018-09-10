@@ -24,7 +24,7 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
     }
 
     operator fun get(key: String): String? {
-        return sharedPreferences.getString(key, null)
+            return sharedPreferences.getString(key, "")
     }
 
     operator fun <T> get(key: String, klass: Class<T>): T? {
