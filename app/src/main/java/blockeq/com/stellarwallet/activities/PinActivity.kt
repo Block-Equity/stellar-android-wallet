@@ -3,6 +3,7 @@ package blockeq.com.stellarwallet.activities
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -40,6 +41,7 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         pinViewState = getPinState()
         phrase = pinViewState!!.phrase
         //Encrypt mnemonic here after pin confirmation
+        Log.v("PinActivity", phrase)
 
         // Check if keychain contains a pin
         if (!message.isNullOrEmpty()) {
