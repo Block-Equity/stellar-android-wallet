@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.RESULT_CONFIRM_PIN
 import blockeq.com.stellarwallet.encryption.CipherWrapper
@@ -53,12 +54,7 @@ class CreateWalletActivity : AppCompatActivity(), View.OnClickListener {
                     // Wipe the mnemonic
                     mnemonicString = ""
 
-                    val sharedPref = getSharedPreferences(
-                            getString(R.string.preference_file_key), Context.MODE_PRIVATE) ?: return
-                    with (sharedPref.edit()) {
-                        putString(getString(R.string.encrypted_mnemonic), encryptedData)
-                        apply()
-                    }
+                    WalletApplication.localStore!![getString(R.string.encrypted_mnemonic)] = encryptedData
 
                     val intent = Intent(this, MainActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)

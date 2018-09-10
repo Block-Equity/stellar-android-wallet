@@ -15,8 +15,7 @@ class WalletApplication : Application() {
     companion object {
         private val PRIVATE_MODE = 0
         private val PREF_NAME = "WalletStorage"
-        private var sharedPreferences: SharedPreferences? = null
-        private var localStore: LocalStore? = null
+        var localStore: LocalStore? = null
 
         private var instance: WalletApplication? = null
 
@@ -27,7 +26,7 @@ class WalletApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        sharedPreferences = WalletApplication.instance!!.getSharedPreferences(PREF_NAME, PRIVATE_MODE)
+        val sharedPreferences = WalletApplication.instance!!.getSharedPreferences(PREF_NAME, PRIVATE_MODE)
         localStore = LocalStore(sharedPreferences!!, Gson())
     }
 
