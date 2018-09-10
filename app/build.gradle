@@ -31,6 +31,7 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
     implementation "com.android.support.constraint:constraint-layout:$constrainLayoutVersion"
     implementation "com.google.android:flexbox:$flexboxVersion"
+    implementation 'com.google.code.gson:gson:2.8.5'
     implementation "io.github.novacrypto:BIP39:$novaCryptoVersion"
     implementation "com.andrognito.pinlockview:pinlockview:$pinlockviewVersion"
     implementation "com.toptoche.searchablespinner:searchablespinnerlibrary:$searchablespinnerVersion"

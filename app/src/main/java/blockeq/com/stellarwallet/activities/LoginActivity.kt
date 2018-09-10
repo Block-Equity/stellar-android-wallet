@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.R.id.*
 import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import kotlinx.android.synthetic.main.activity_login.*

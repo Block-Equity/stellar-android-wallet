@@ -1,6 +1,5 @@
 package blockeq.com.stellarwallet.activities
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -33,6 +32,7 @@ class CreateWalletActivity : AppCompatActivity() {
         } else {
             Wallet.generate24WordMnemonic()
         }
+
         mnemonicString = String(mnemonic)
         val words = String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
 
@@ -66,7 +66,7 @@ class CreateWalletActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PIN_REQUEST_CODE) {
             when (resultCode) {
-                Activity.RESULT_OK -> {
+                RESULT_OK -> {
                     var pin = data!!.getStringExtra("pin")
 
                     val keyStoreWrapper = KeyStoreWrapper(applicationContext, "pin_keystore")
@@ -101,7 +101,7 @@ class CreateWalletActivity : AppCompatActivity() {
                     startActivityForResult(intent, PIN_REQUEST_CODE)
                     overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
                 }
-                Activity.RESULT_CANCELED -> finish()
+                RESULT_CANCELED -> finish()
                 else -> finish()
             }
         }
