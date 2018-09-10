@@ -7,7 +7,8 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.R.id.*
+import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
+import blockeq.com.stellarwallet.models.PinViewState
 import com.andrognito.pinlockview.PinLockListener
 import kotlinx.android.synthetic.main.activity_pin.*
 
@@ -23,6 +24,8 @@ class PinActivity : AppCompatActivity(), PinLockListener {
 
     private var needConfirm = false
     private var PIN : String? = null
+    private var phrase : String? = null
+    private var pinViewState: PinViewState? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +36,10 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         val message = intent.getStringExtra("message")
         needConfirm = intent.getBooleanExtra("need_confirm", false)
         PIN = intent.getStringExtra("pin")
+
+        pinViewState = getPinState()
+        phrase = pinViewState!!.phrase
+        //Encrypt mnemonic here after pin confirmation
 
         // Check if keychain contains a pin
         if (!message.isNullOrEmpty()) {
@@ -82,5 +89,13 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         setResult(RESULT_CANCELED)
         super.onBackPressed()
         overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
+    }
+
+    private fun getPinState(): PinViewState {
+        val intent = getIntent()
+        val bundle = intent.getExtras()
+
+        val state = bundle.getParcelable<PinViewState>(PinFlowController.OBJECT)
+        return state
     }
 }

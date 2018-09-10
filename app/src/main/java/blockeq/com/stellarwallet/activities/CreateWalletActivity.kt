@@ -13,6 +13,8 @@ import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CO
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.RESULT_CONFIRM_PIN
 import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
+import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
+import blockeq.com.stellarwallet.models.PinViewState
 import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_create_wallet.*
 
@@ -20,6 +22,7 @@ import kotlinx.android.synthetic.main.activity_create_wallet.*
 class CreateWalletActivity : AppCompatActivity(), View.OnClickListener {
 
     private var mnemonicString : String? = null
+    private var pinViewState : PinViewState? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -139,11 +142,16 @@ class CreateWalletActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun launchPINView() {
-        val intent = Intent(this, PinActivity::class.java)
+        /*val intent = Intent(this, PinActivity::class.java)
         intent.putExtra("message", getString(R.string.please_create_a_pin))
         intent.putExtra("need_confirm", true)
         startActivityForResult(intent, PIN_REQUEST_CODE)
-        overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+        overridePendingTransition(R.anim.slide_in_up, R.anim.stay)*/
+        PinFlowController.launchPinActivity(this, getPinViewState())
+    }
+
+    private fun getPinViewState(): PinViewState {
+        return PinViewState(getString(R.string.please_create_a_pin), false, "", mnemonicString!!)
     }
     //endregion
 }
