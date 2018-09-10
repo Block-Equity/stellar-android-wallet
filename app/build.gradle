@@ -14,6 +14,9 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    androidExtensions {
+        experimental = true
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -30,6 +33,7 @@ dependencies {
     implementation "com.android.support:design:$supportLibraryVersion"
     implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
     implementation "com.android.support.constraint:constraint-layout:$constrainLayoutVersion"
+    implementation "com.google.android:flexbox:$flexboxVersion"
     implementation "io.github.novacrypto:BIP39:$novaCryptoVersion"
     implementation "com.andrognito.pinlockview:pinlockview:$pinlockviewVersion"
     implementation "com.toptoche.searchablespinner:searchablespinnerlibrary:$searchablespinnerVersion"
@@ -40,5 +44,4 @@ dependencies {
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoVersion"
-
 }

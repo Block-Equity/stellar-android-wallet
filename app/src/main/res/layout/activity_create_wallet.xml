@@ -7,7 +7,7 @@
     tools:context=".activities.CreateWalletActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/createToolbar"
+        android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -18,12 +18,28 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <TextView
+        android:id="@+id/warningPhraseTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/createToolbar"
+        android:layout_below="@+id/toolBar"
         android:text="@string/phrase_warning"
         android:layout_margin="@dimen/activity_vertical_margin"
         android:gravity="center"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/warningPhraseTextView">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/mnemonicGridView"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            app:flexWrap="wrap"/>
+
+    </ScrollView>
 
     <Button
         android:id="@+id/confirmButton"
@@ -33,6 +49,7 @@
         android:text="@string/confirm_written"
         android:layout_margin="@dimen/activity_vertical_margin"
         android:layout_marginBottom="10dp"
-        style="@style/PrimaryButtonStyle"/>
+        style="@style/PrimaryButtonStyle"
+        android:background="@color/blue2"/>
 
 </RelativeLayout>

@@ -4,6 +4,7 @@
     package="blockeq.com.stellarwallet">
 
     <application
+        android:name=".WalletApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
