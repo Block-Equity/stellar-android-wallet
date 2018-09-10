@@ -3,5 +3,9 @@ package blockeq.com.stellarwallet.models
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
+enum class PinType {
+    CREATE, CHECK
+}
+
 @Parcelize
-class PinViewState (var message: String, var confirm: Boolean = false, var pin: String, var phrase: String): Parcelable
+class PinViewState (var type: PinType, var message: String, var pin: String, var phrase: String): Parcelable

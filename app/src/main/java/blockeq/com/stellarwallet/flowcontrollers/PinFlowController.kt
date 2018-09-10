@@ -10,9 +10,9 @@ import blockeq.com.stellarwallet.models.PinViewState
 
 object PinFlowController {
 
-    private val TAG = PinFlowController::class.java!!.getSimpleName()
+    private val TAG = PinFlowController::class.java.simpleName
 
-    val OBJECT = "object"
+    const val OBJECT = "object"
 
     fun launchPinActivity(context: Context, pinViewState: PinViewState) {
         val intent = Intent(context, PinActivity::class.java)

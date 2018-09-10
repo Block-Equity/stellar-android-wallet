@@ -19,11 +19,13 @@ import javax.security.auth.x500.X500Principal
 /**
  * This class wraps [KeyStore] class apis with some additional possibilities.
  */
-class KeyStoreWrapper(private val context: Context, defaultKeyStoreName: String) {
+class KeyStoreWrapper(private val context: Context) {
+
+    private val DEFAULT_KEYSTORE_NAME = "pin_keystore"
 
     private val keyStore: KeyStore = createAndroidKeyStore()
 
-    private val defaultKeyStoreFile = File(context.filesDir, defaultKeyStoreName)
+    private val defaultKeyStoreFile = File(context.filesDir, DEFAULT_KEYSTORE_NAME)
     private val defaultKeyStore = createDefaultKeyStore()
 
     /**

@@ -1,14 +1,18 @@
 package blockeq.com.stellarwallet.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
+import blockeq.com.stellarwallet.encryption.CipherWrapper
+import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
+import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
 import com.andrognito.pinlockview.PinLockListener
 import kotlinx.android.synthetic.main.activity_pin.*
@@ -18,12 +22,10 @@ class PinActivity : AppCompatActivity(), PinLockListener {
     // Correct PIN example. later on, this would be fetched from the Local Storage
     companion object {
         const val PIN_REQUEST_CODE = 0
-        const val CORRECT_PIN = "1234"
         const val RESULT_FAIL = 2
-        const val RESULT_CONFIRM_PIN = 3
     }
 
-    private var needConfirm = false
+    private var needConfirm = true
     private var PIN : String? = null
     private var phrase : String? = null
     private var pinViewState: PinViewState? = null
@@ -34,14 +36,10 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         pinLockView.setPinLockListener(this)
         pinLockView.attachIndicatorDots(indicatorDots)
 
-        val message = intent.getStringExtra("message")
-        needConfirm = intent.getBooleanExtra("need_confirm", false)
-        PIN = intent.getStringExtra("pin")
-
         pinViewState = getPinState()
         phrase = pinViewState!!.phrase
-        //Encrypt mnemonic here after pin confirmation
-        Log.v("PinActivity", phrase)
+        val message = pinViewState!!.message
+        PIN = pinViewState!!.pin
 
         // Check if keychain contains a pin
         if (!message.isNullOrEmpty()) {
@@ -52,34 +50,65 @@ class PinActivity : AppCompatActivity(), PinLockListener {
     override fun onEmpty() {
     }
 
-    override fun onComplete(pin: String?) {
+    override fun onComplete(pin: String) {
         when {
-            needConfirm -> {
-                setResult(RESULT_CONFIRM_PIN, Intent().putExtra("pin", pin))
-                finish()
+            (pinViewState!!.type == PinType.CREATE && needConfirm) -> {
+                PIN = pin
+                pinLockView.resetPinLockView()
+
+                tv_custom_message.text = getString(R.string.please_reenter_your_pin)
+                needConfirm = false
             }
-            pin != PIN -> {
-                showWrongPinDots(true)
-                val shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
-                shakeAnimation.setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationStart(arg0: Animation) {}
-                    override fun onAnimationRepeat(arg0: Animation) {}
-                    override fun onAnimationEnd(arg0: Animation) {
-                        showWrongPinDots(false)
-                        pinLockView.resetPinLockView()
-                    }
-                })
-                wrongPinDots.startAnimation(shakeAnimation)
+            pin != PIN -> onIncorrectPin()
+            pinViewState!!.type == PinType.CREATE -> {
+                setResult(Activity.RESULT_OK)
+
+                val keyStoreWrapper = KeyStoreWrapper(applicationContext)
+                keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin)
+
+                val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
+                val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
+
+                val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
+
+                WalletApplication.localStore!![getString(R.string.encrypted_mnemonic)] = encryptedData
+
+                val intent = Intent(this, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
             }
             else -> {
-                setResult(RESULT_OK, Intent().putExtra("pin", pin))
-                finish()
-                overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
+                setResult(Activity.RESULT_OK)
+                finishActivity()
             }
+
         }
     }
 
     override fun onPinChange(pinLength: Int, intermediatePin: String?) {
+    }
+
+    private fun onIncorrectPin() {
+        showWrongPinDots(true)
+        val shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
+        shakeAnimation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(arg0: Animation) {}
+            override fun onAnimationRepeat(arg0: Animation) {}
+            override fun onAnimationEnd(arg0: Animation) {
+                showWrongPinDots(false)
+                pinLockView.resetPinLockView()
+                if (pinViewState!!.type != PinType.CREATE) {
+                    setResult(RESULT_FAIL)
+                    finishActivity()
+                }
+            }
+        })
+        wrongPinDots.startAnimation(shakeAnimation)
+    }
+
+    private fun finishActivity() {
+        finish()
+        overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
     }
 
     private fun showWrongPinDots(show: Boolean) {
@@ -94,8 +123,8 @@ class PinActivity : AppCompatActivity(), PinLockListener {
     }
 
     private fun getPinState(): PinViewState {
-        val intent = getIntent()
-        val bundle = intent.getExtras()
+        val intent = intent
+        val bundle = intent.extras
 
         val state = bundle.getParcelable<PinViewState>(PinFlowController.OBJECT)
         return state
