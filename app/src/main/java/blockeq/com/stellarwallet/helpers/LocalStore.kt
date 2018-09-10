@@ -7,41 +7,33 @@ import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 
 
-class LocalStore(sharedPreferences: SharedPreferences, gson: Gson) {
-
-    private val sharedPreferences: SharedPreferences
-    private val gson: Gson
+class LocalStore(private val sharedPreferences: SharedPreferences, private val gson: Gson) {
 
     companion object {
         const val KEY_ENCRYPTED_PHRASE = "kEncryptedPhrase"
         const val KEY_PIN_DATA = "kPinData"
     }
 
-    init {
-        this.sharedPreferences = sharedPreferences
-        this.gson = gson
-    }
-
-    private operator fun set(key: String, value: String) {
+    operator fun set(key: String, value: String) {
         sharedPreferences.edit().putString(key, value).apply()
     }
 
-    private operator fun <T> set(key: String, obj: T) {
+    operator fun <T> set(key: String, obj: T) {
         val json = gson.toJson(obj)
         set(key, json)
     }
 
-    private operator fun get(key: String): String? {
+    operator fun get(key: String): String? {
         return sharedPreferences.getString(key, null)
     }
 
-    private operator fun <T> get(key: String, klass: Class<T>): T? {
+    operator fun <T> get(key: String, klass: Class<T>): T? {
         val json = get(key) ?: return null
-        try {
-            return gson.fromJson(json, klass)
+        return try {
+            gson.fromJson(json, klass)
         } catch (e: JsonSyntaxException) {
             Log.w("LocalStoreImpl", "unable to convert json", e)
-            return null
+            null
         }
     }
 
