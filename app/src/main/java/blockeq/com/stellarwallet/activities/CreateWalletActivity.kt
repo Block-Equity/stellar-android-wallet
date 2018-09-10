@@ -1,9 +1,7 @@
 package blockeq.com.stellarwallet.activities
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.LinearLayout
@@ -20,7 +18,7 @@ import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_create_wallet.*
 
 
-class CreateWalletActivity : AppCompatActivity(), View.OnClickListener {
+class CreateWalletActivity : BaseActivity(), View.OnClickListener {
 
     private var mnemonicString : String? = null
     private var pinViewState : PinViewState? = null
@@ -29,7 +27,6 @@ class CreateWalletActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_wallet)
 
-        setupUI()
         setOnClickListeners()
     }
 
@@ -73,15 +70,15 @@ class CreateWalletActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    //region User Interface
     override fun onClick(v: View?) {
-        val item_id = v!!.id
-        when (item_id) {
+        val itemId = v!!.id
+        when (itemId) {
             R.id.confirmButton -> launchPINView()
         }
     }
 
-    //region User Interface
-    private fun setupUI() {
+    override fun setupUI() {
         setupActionBar()
         setupMnemonicView()
     }
