@@ -6,6 +6,9 @@ import android.view.MenuItem
 import android.view.View
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
+import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
+import blockeq.com.stellarwallet.models.PinType
+import blockeq.com.stellarwallet.models.PinViewState
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
 
 
@@ -42,8 +45,7 @@ class RecoverWalletActivity : BaseActivity() {
         nextButton.setOnClickListener {
             val wordCount = getWordCount(phraseEditText.text.toString())
             if (wordCount == 12 || wordCount == 24) {
-                startActivityForResult(Intent(this, PinActivity::class.java), PIN_REQUEST_CODE)
-                overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+                launchPINView(phraseEditText.text.toString())
             } else {
                 showErrorMessage()
             }
@@ -61,7 +63,14 @@ class RecoverWalletActivity : BaseActivity() {
 
     //endregion
 
+    //region Helper functions
     private fun getWordCount(word : String) : Int {
         return word.split(" ".toRegex()).size
     }
+
+    private fun launchPINView(mnemonic: String) {
+        val pinViewState = PinViewState(PinType.CREATE, getString(R.string.please_create_a_pin), "", mnemonic)
+        PinFlowController.launchPinActivity(this, pinViewState)
+    }
+    //endregions
 }
