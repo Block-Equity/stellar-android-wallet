@@ -2,6 +2,7 @@ package blockeq.com.stellarwallet.helpers
 
 import android.content.SharedPreferences
 import android.util.Log
+import blockeq.com.stellarwallet.models.PinViewState
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 
@@ -13,7 +14,7 @@ class LocalStore(sharedPreferences: SharedPreferences, gson: Gson) {
 
     companion object {
         const val KEY_ENCRYPTED_PHRASE = "kEncryptedPhrase"
-        const val CUSTOM_FIELDS = "kCustomFields"
+        const val KEY_PIN_DATA = "kPinData"
     }
 
     init {
@@ -42,24 +43,27 @@ class LocalStore(sharedPreferences: SharedPreferences, gson: Gson) {
             Log.w("LocalStoreImpl", "unable to convert json", e)
             return null
         }
-
     }
 
     fun clearUserData() {
         val editor = sharedPreferences.edit()
         editor.remove(KEY_ENCRYPTED_PHRASE)
-        editor.remove(CUSTOM_FIELDS)
+        editor.remove(KEY_PIN_DATA)
         editor.apply()
     }
 
-    /*
-    Example of setting/getting an object with gson serialization
-    var customFields: CustomField?
-        get() = get<CustomField>(CUSTOM_FIELDS, CustomField::class.java)
-        set(customField) = set<CustomField>(CUSTOM_FIELDS, customField)
-     */
+    fun clearPINData() {
+        val editor = sharedPreferences.edit()
+        editor.remove(KEY_PIN_DATA)
+        editor.apply()
+    }
 
-    var stripeCustomerId: String?
+    var pinViewState: PinViewState?
+        get() = get<PinViewState>(KEY_PIN_DATA, PinViewState::class.java)
+        set(viewState) = set<PinViewState>(KEY_PIN_DATA, viewState!!)
+
+
+    var encryptedPhrase: String?
         get() = get(KEY_ENCRYPTED_PHRASE)
-        set(stripeCustomerId) = set(KEY_ENCRYPTED_PHRASE, stripeCustomerId)
+        set(encryptedPhrase) = set(KEY_ENCRYPTED_PHRASE, encryptedPhrase)
 }
