@@ -22,6 +22,7 @@ class LoginActivity : BaseActivity() {
     override fun setupUI() {
         val data = WalletApplication.localStore!![getString(R.string.encrypted_mnemonic)]
 
+        // TODO: For encryption testing purposes
         text.text = data
 
         test.setOnClickListener {

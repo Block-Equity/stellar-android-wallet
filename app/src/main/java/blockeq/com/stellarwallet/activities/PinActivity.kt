@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -71,9 +70,6 @@ class PinActivity : AppCompatActivity(), PinLockListener {
                 val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
 
                 val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
-
-                // Wipe the mnemonic
-                pinViewState!!.phrase = ""
 
                 WalletApplication.localStore!![getString(R.string.encrypted_mnemonic)] = encryptedData
 

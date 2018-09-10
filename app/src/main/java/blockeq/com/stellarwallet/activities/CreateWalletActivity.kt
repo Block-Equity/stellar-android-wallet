@@ -7,10 +7,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
-import blockeq.com.stellarwallet.encryption.CipherWrapper
-import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
@@ -102,11 +99,6 @@ class CreateWalletActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun launchPINView() {
-        /*val intent = Intent(this, PinActivity::class.java)
-        intent.putExtra("message", getString(R.string.please_create_a_pin))
-        intent.putExtra("need_confirm", true)
-        startActivityForResult(intent, PIN_REQUEST_CODE)
-        overridePendingTransition(R.anim.slide_in_up, R.anim.stay)*/
         PinFlowController.launchPinActivity(this, getPinViewState())
     }
 
