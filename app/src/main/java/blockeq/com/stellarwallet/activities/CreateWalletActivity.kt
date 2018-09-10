@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -87,8 +88,10 @@ class CreateWalletActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setupActionBar() {
-        setSupportActionBar(findViewById(R.id.createToolbar))
+        val toolBar = findViewById<Toolbar>(R.id.toolBar)
+        setSupportActionBar(toolBar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        toolBar.setNavigationOnClickListener { onBackPressed() }
     }
 
     //TODO: Setup as a reusable view as we will have this in future settings for users
@@ -108,7 +111,7 @@ class CreateWalletActivity : AppCompatActivity(), View.OnClickListener {
 
             val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT)
-            layoutParams.setMargins(LAYOUT_MARGINS, 16, 16, 16)
+            layoutParams.setMargins(LAYOUT_MARGINS, LAYOUT_MARGINS, LAYOUT_MARGINS, LAYOUT_MARGINS)
 
             mnemonicGridView.addView(item_view, i, layoutParams)
         }
