@@ -3,7 +3,6 @@ package blockeq.com.stellarwallet.activities
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.fragments.ReceiveFragment
 import blockeq.com.stellarwallet.fragments.SettingsFragment
@@ -11,17 +10,16 @@ import blockeq.com.stellarwallet.fragments.TradingFragment
 import blockeq.com.stellarwallet.fragments.WalletFragment
 import blockeq.com.stellarwallet.helpers.disableShiftMode
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.navigationView)
-        bottomNavigation.disableShiftMode()
-        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        bottomNavigation.selectedItemId = R.id.nav_wallet
+        setupUI()
     }
+
+    //region Navigation
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -54,4 +52,18 @@ class MainActivity : AppCompatActivity() {
         transaction.replace(R.id.container, fragment)
         transaction.commit()
     }
+
+    //endregion
+
+    override fun setupUI() {
+        setupNav()
+    }
+
+    private fun setupNav() {
+        val bottomNavigation: BottomNavigationView = findViewById(R.id.navigationView)
+        bottomNavigation.disableShiftMode()
+        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        bottomNavigation.selectedItemId = R.id.nav_wallet
+    }
+    //endregion
 }
