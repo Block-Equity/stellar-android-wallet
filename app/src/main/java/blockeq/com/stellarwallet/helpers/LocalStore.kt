@@ -43,6 +43,8 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         val editor = sharedPreferences.edit()
         editor.remove(KEY_ENCRYPTED_PHRASE)
         editor.remove(KEY_PIN_DATA)
+        editor.remove(KEY_STELLAR_ACCOUNT_PUBLIC_KEY)
+        editor.remove(KEY_STELLAR_BALANCES_KEY)
         editor.apply()
     }
 
