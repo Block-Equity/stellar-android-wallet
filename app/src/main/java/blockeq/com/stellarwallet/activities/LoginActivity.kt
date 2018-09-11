@@ -7,7 +7,10 @@ import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
+import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.helpers.LocalStore.Companion.KEY_ENCRYPTED_PHRASE
+import blockeq.com.stellarwallet.models.PinType
+import blockeq.com.stellarwallet.models.PinViewState
 import kotlinx.android.synthetic.main.activity_login.*
 
 
@@ -19,9 +22,23 @@ class LoginActivity : BaseActivity() {
         setupUI()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PinActivity.PIN_REQUEST_CODE) {
+            when (resultCode) {
+                PinActivity.RESULT_FAIL ->  WalletApplication.localStore!!.clearUserData()
+                else -> finish()
+            }
+        }
+    }
+
     //region User Interface
     override fun setupUI() {
         val data = WalletApplication.localStore!![KEY_ENCRYPTED_PHRASE]
+
+        if (data != null && !data.isEmpty()) {
+            launchPINView(data)
+        }
 
         // TODO: For encryption testing purposes
         text.text = data
@@ -74,5 +91,12 @@ class LoginActivity : BaseActivity() {
     }
 
 
+    //endregion
+
+    //region Helper functions
+    private fun launchPINView(mnemonic : String) {
+        val pinViewState = PinViewState(PinType.CHECK, "", "", mnemonic)
+        PinFlowController.launchPinActivity(this, pinViewState)
+    }
     //endregion
 }

@@ -2,8 +2,10 @@ package blockeq.com.stellarwallet.activities
 
 import android.app.Activity
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -14,23 +16,57 @@ import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.helpers.LocalStore.Companion.KEY_ENCRYPTED_PHRASE
 import blockeq.com.stellarwallet.helpers.LocalStore.Companion.KEY_STELLAR_ACCOUNT_PUBLIC_KEY
+import blockeq.com.stellarwallet.helpers.LocalStore.Companion.KEY_STELLAR_BALANCES_KEY
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
 import com.andrognito.pinlockview.PinLockListener
 import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_pin.*
+import org.stellar.sdk.KeyPair
+import org.stellar.sdk.Server
+import org.stellar.sdk.requests.ErrorResponse
+import org.stellar.sdk.responses.AccountResponse
 
 class PinActivity : AppCompatActivity(), PinLockListener {
 
     companion object {
         const val PIN_REQUEST_CODE = 0
         const val RESULT_FAIL = 2
+
+        const val PROD_SERVER = "https://horizon.stellar.org"
+        const val TEST_SERVER = "https://horizon-testnet.stellar.org"
+
+        const val MAX_ATTEMPTS = 3
+        private val TAG = PinActivity::class.java.simpleName
+
+        private class LoadAccount : AsyncTask<KeyPair, Void, AccountResponse>() {
+            override fun doInBackground(vararg pair: KeyPair) : AccountResponse? {
+                val server = Server(PROD_SERVER)
+                var account : AccountResponse? = null
+                try {
+                    account = server.accounts().account(pair[0])
+
+                } catch (error : ErrorResponse) {
+                    Log.d(TAG, error.body.toString())
+                }
+
+                return account
+            }
+
+            override fun onPostExecute(result: AccountResponse?) {
+                if (result != null) {
+                    WalletApplication.localStore!![KEY_STELLAR_BALANCES_KEY] = result.balances
+                }
+            }
+
+        }
     }
 
     private var needConfirm = true
     private var PIN : String? = null
     private var phrase : String? = null
     private var pinViewState: PinViewState? = null
+    private var numAttempts = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,38 +88,51 @@ class PinActivity : AppCompatActivity(), PinLockListener {
     }
 
     override fun onComplete(pin: String) {
-        when {
-            (pinViewState!!.type == PinType.CREATE && needConfirm) -> {
-                PIN = pin
-                pinLockView.resetPinLockView()
+        when (pinViewState!!.type) {
+            PinType.CREATE -> {
+                when {
+                    needConfirm -> {
+                        PIN = pin
+                        pinLockView.resetPinLockView()
 
-                tv_custom_message.text = getString(R.string.please_reenter_your_pin)
-                needConfirm = false
+                        tv_custom_message.text = getString(R.string.please_reenter_your_pin)
+                        needConfirm = false
+                    }
+                    pin != PIN -> onIncorrectPin()
+                    else -> {
+                        setResult(Activity.RESULT_OK)
+
+                        val keyStoreWrapper = KeyStoreWrapper(applicationContext)
+                        keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin)
+
+                        val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
+                        val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
+
+                        val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
+
+                        WalletApplication.localStore!![KEY_ENCRYPTED_PHRASE] = encryptedData
+                        generateStellarAddress(pinViewState!!.phrase)
+
+                        launchWallet()
+                    }
+                }
             }
-            pin != PIN -> onIncorrectPin()
-            pinViewState!!.type == PinType.CREATE -> {
-                setResult(Activity.RESULT_OK)
-
+            PinType.CHECK -> {
+                val encryptedPhrase = pinViewState!!.phrase
                 val keyStoreWrapper = KeyStoreWrapper(applicationContext)
-                keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin)
 
                 val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
-                val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
+                if (masterKey == null) {
+                    onIncorrectPin()
+                } else {
+                    val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
+                    val decryptedData = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
 
-                val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
+                    generateStellarAddress(decryptedData)
 
-                WalletApplication.localStore!![KEY_ENCRYPTED_PHRASE] = encryptedData
-                generateStellarAddress(pinViewState!!.phrase)
-
-                val intent = Intent(this, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(intent)
+                    launchWallet()
+                }
             }
-            else -> {
-                setResult(Activity.RESULT_OK)
-                finishActivity()
-            }
-
         }
     }
 
@@ -99,7 +148,8 @@ class PinActivity : AppCompatActivity(), PinLockListener {
             override fun onAnimationEnd(arg0: Animation) {
                 showWrongPinDots(false)
                 pinLockView.resetPinLockView()
-                if (pinViewState!!.type != PinType.CREATE) {
+                numAttempts++
+                if (pinViewState!!.type == PinType.CHECK && numAttempts == MAX_ATTEMPTS) {
                     setResult(RESULT_FAIL)
                     finishActivity()
                 }
@@ -131,11 +181,20 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         return bundle.getParcelable(PinFlowController.OBJECT)
     }
 
+    private fun launchWallet() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+    }
+
     //region Generate Stellar Account
     private fun generateStellarAddress(mnemonic : String) {
         val keyPair = Wallet.createKeyPair(mnemonic.toCharArray(), null, 0)
 
         WalletApplication.localStore!![KEY_STELLAR_ACCOUNT_PUBLIC_KEY] = keyPair.accountId
+
+        LoadAccount().execute(keyPair)
     }
+
     //endregion
 }
