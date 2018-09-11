@@ -36,7 +36,7 @@ class LoginActivity : BaseActivity() {
                 val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
 
                 if (data != null && !data.isEmpty()) {
-                    val decryptedData = cipherWrapper.decrypt(data, masterKey?.private)
+                    val decryptedData = cipherWrapper.decrypt(data, masterKey.private)
                     text.text = decryptedData
                 }
             }
@@ -55,7 +55,7 @@ class LoginActivity : BaseActivity() {
         val builder = AlertDialog.Builder(this@LoginActivity)
         val walletLengthList = listOf("Use a 12 word recovery phrase", "Use a 24 word recovery phrase").toTypedArray()
         builder.setTitle("Create Wallet")
-                .setItems(walletLengthList) { dialog, which ->
+                .setItems(walletLengthList) { _, which ->
                     // The 'which' argument contains the index position
                     // of the selected item
 

@@ -135,7 +135,7 @@ class PinActivity : AppCompatActivity(), PinLockListener {
     private fun generateStellarAddress(mnemonic : String) {
         val keyPair = Wallet.createKeyPair(mnemonic.toCharArray(), null, 0)
 
-        WalletApplication.localStore!![KEY_STELLAR_ACCOUNT_PUBLIC_KEY] = keyPair.publicKey
+        WalletApplication.localStore!![KEY_STELLAR_ACCOUNT_PUBLIC_KEY] = keyPair.accountId
     }
     //endregion
 }
