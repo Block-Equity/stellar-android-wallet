@@ -12,14 +12,16 @@ import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
+import blockeq.com.stellarwallet.helpers.LocalStore.Companion.KEY_ENCRYPTED_PHRASE
+import blockeq.com.stellarwallet.helpers.LocalStore.Companion.KEY_STELLAR_ACCOUNT_PUBLIC_KEY
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
 import com.andrognito.pinlockview.PinLockListener
+import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_pin.*
 
 class PinActivity : AppCompatActivity(), PinLockListener {
 
-    // Correct PIN example. later on, this would be fetched from the Local Storage
     companion object {
         const val PIN_REQUEST_CODE = 0
         const val RESULT_FAIL = 2
@@ -41,7 +43,6 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         val message = pinViewState!!.message
         PIN = pinViewState!!.pin
 
-        // Check if keychain contains a pin
         if (!message.isNullOrEmpty()) {
             tv_custom_message.text = message
         }
@@ -71,7 +72,8 @@ class PinActivity : AppCompatActivity(), PinLockListener {
 
                 val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
 
-                WalletApplication.localStore!![getString(R.string.encrypted_mnemonic)] = encryptedData
+                WalletApplication.localStore!![KEY_ENCRYPTED_PHRASE] = encryptedData
+                generateStellarAddress(pinViewState!!.phrase)
 
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -126,7 +128,14 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         val intent = intent
         val bundle = intent.extras
 
-        val state = bundle.getParcelable<PinViewState>(PinFlowController.OBJECT)
-        return state
+        return bundle.getParcelable(PinFlowController.OBJECT)
     }
+
+    //region Generate Stellar Account
+    private fun generateStellarAddress(mnemonic : String) {
+        val keyPair = Wallet.createKeyPair(mnemonic.toCharArray(), null, 0)
+
+        WalletApplication.localStore!![KEY_STELLAR_ACCOUNT_PUBLIC_KEY] = keyPair.accountId
+    }
+    //endregion
 }

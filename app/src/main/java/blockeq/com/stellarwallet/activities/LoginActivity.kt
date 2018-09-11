@@ -7,6 +7,7 @@ import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
+import blockeq.com.stellarwallet.helpers.LocalStore.Companion.KEY_ENCRYPTED_PHRASE
 import kotlinx.android.synthetic.main.activity_login.*
 
 
@@ -20,7 +21,7 @@ class LoginActivity : BaseActivity() {
 
     //region User Interface
     override fun setupUI() {
-        val data = WalletApplication.localStore!![getString(R.string.encrypted_mnemonic)]
+        val data = WalletApplication.localStore!![KEY_ENCRYPTED_PHRASE]
 
         // TODO: For encryption testing purposes
         text.text = data
@@ -35,7 +36,7 @@ class LoginActivity : BaseActivity() {
                 val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
 
                 if (data != null && !data.isEmpty()) {
-                    val decryptedData = cipherWrapper.decrypt(data, masterKey?.private)
+                    val decryptedData = cipherWrapper.decrypt(data, masterKey.private)
                     text.text = decryptedData
                 }
             }
@@ -54,7 +55,7 @@ class LoginActivity : BaseActivity() {
         val builder = AlertDialog.Builder(this@LoginActivity)
         val walletLengthList = listOf("Use a 12 word recovery phrase", "Use a 24 word recovery phrase").toTypedArray()
         builder.setTitle("Create Wallet")
-                .setItems(walletLengthList) { dialog, which ->
+                .setItems(walletLengthList) { _, which ->
                     // The 'which' argument contains the index position
                     // of the selected item
 

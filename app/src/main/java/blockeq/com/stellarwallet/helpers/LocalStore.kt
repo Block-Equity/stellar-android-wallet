@@ -12,6 +12,7 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
     companion object {
         const val KEY_ENCRYPTED_PHRASE = "kEncryptedPhrase"
         const val KEY_PIN_DATA = "kPinData"
+        const val KEY_STELLAR_ACCOUNT_PUBLIC_KEY = "kStellarAccountPublicKey"
     }
 
     operator fun set(key: String, value: String) {
