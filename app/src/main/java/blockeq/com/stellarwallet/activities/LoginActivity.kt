@@ -26,10 +26,7 @@ class LoginActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PinActivity.PIN_REQUEST_CODE) {
             when (resultCode) {
-                PinActivity.RESULT_FAIL -> {
-                    // Wipe the user data
-
-                }
+                PinActivity.RESULT_FAIL ->  WalletApplication.localStore!!.clearUserData()
                 else -> finish()
             }
         }
