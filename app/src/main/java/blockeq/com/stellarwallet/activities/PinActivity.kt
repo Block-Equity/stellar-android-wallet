@@ -2,8 +2,10 @@ package blockeq.com.stellarwallet.activities
 
 import android.app.Activity
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -22,6 +24,8 @@ import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_pin.*
 import org.stellar.sdk.KeyPair
 import org.stellar.sdk.Server
+import org.stellar.sdk.requests.ErrorResponse
+import org.stellar.sdk.responses.AccountResponse
 
 class PinActivity : AppCompatActivity(), PinLockListener {
 
@@ -33,6 +37,29 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         const val TEST_SERVER = "https://horizon-testnet.stellar.org"
 
         const val MAX_ATTEMPTS = 3
+        private val TAG = PinActivity::class.java.simpleName
+
+        private class LoadAccount : AsyncTask<KeyPair, Void, AccountResponse>() {
+            override fun doInBackground(vararg pair: KeyPair) : AccountResponse? {
+                val server = Server(PROD_SERVER)
+                var account : AccountResponse? = null
+                try {
+                    account = server.accounts().account(pair[0])
+
+                } catch (error : ErrorResponse) {
+                    Log.d(TAG, error.body.toString())
+                }
+
+                return account
+            }
+
+            override fun onPostExecute(result: AccountResponse?) {
+                if (result != null) {
+                    WalletApplication.localStore!![KEY_STELLAR_BALANCES_KEY] = result.balances
+                }
+            }
+
+        }
     }
 
     private var needConfirm = true
@@ -166,14 +193,8 @@ class PinActivity : AppCompatActivity(), PinLockListener {
 
         WalletApplication.localStore!![KEY_STELLAR_ACCOUNT_PUBLIC_KEY] = keyPair.accountId
 
-        loadAccountDetails(keyPair)
+        LoadAccount().execute(keyPair)
     }
 
-    private fun loadAccountDetails(pair : KeyPair) {
-        val server = Server(PROD_SERVER)
-        val account = server.accounts().account(pair)
-
-        WalletApplication.localStore!![KEY_STELLAR_BALANCES_KEY] = account.balances
-    }
     //endregion
 }
