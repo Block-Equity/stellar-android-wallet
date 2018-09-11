@@ -35,6 +35,7 @@
     <string name="confirm_written">I have written it down</string>
     <string name="enter_phrase">Enter Phrase</string>
     <string name="secret_phrase">Secret Phrase</string>
+    <string name="invalid_word_count">Invalid number of words (must be 12 or 24).</string>
 
     <!--Trading Fragment-->
     <string name="tab_trade">Trade</string>
