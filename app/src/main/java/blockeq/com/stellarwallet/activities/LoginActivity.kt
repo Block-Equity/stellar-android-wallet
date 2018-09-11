@@ -28,7 +28,7 @@ class LoginActivity : BaseActivity() {
             when (resultCode) {
                 PinActivity.RESULT_FAIL -> {
                     // Wipe the user data
-                    
+
                 }
                 else -> finish()
             }
