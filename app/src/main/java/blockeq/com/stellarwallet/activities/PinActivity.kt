@@ -21,7 +21,6 @@ import blockeq.com.stellarwallet.helpers.SupportedMnemonic
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
 import com.andrognito.pinlockview.PinLockListener
-import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_pin.*
 import org.stellar.sdk.KeyPair
 import org.stellar.sdk.Server
@@ -40,7 +39,24 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         const val MAX_ATTEMPTS = 3
         private val TAG = PinActivity::class.java.simpleName
 
-        private class LoadAccount : AsyncTask<KeyPair, Void, AccountResponse>() {
+        private class GenerateStellarAddressTask : AsyncTask<String, Void, KeyPair>() {
+            override fun doInBackground(vararg mnemonic: String) : KeyPair? {
+                val keyPair = SupportedMnemonic.createKeyPair(mnemonic[0].toCharArray(), null, 0)
+
+                WalletApplication.localStore!![KEY_STELLAR_ACCOUNT_PUBLIC_KEY] = keyPair.accountId
+
+                return keyPair
+            }
+
+            override fun onPostExecute(keyPair: KeyPair?) {
+                if (keyPair != null) {
+                    LoadAccountTask().execute(keyPair)
+                }
+            }
+
+        }
+
+        private class LoadAccountTask : AsyncTask<KeyPair, Void, AccountResponse>() {
             override fun doInBackground(vararg pair: KeyPair) : AccountResponse? {
                 val server = Server(PROD_SERVER)
                 var account : AccountResponse? = null
@@ -80,7 +96,7 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         val message = pinViewState!!.message
         PIN = pinViewState!!.pin
 
-        if (!message.isNullOrEmpty()) {
+        if (!message.isEmpty()) {
             tv_custom_message.text = message
         }
     }
@@ -112,7 +128,7 @@ class PinActivity : AppCompatActivity(), PinLockListener {
                         val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
 
                         WalletApplication.localStore!![KEY_ENCRYPTED_PHRASE] = encryptedData
-                        generateStellarAddress(pinViewState!!.phrase)
+                        GenerateStellarAddressTask().execute(pinViewState!!.phrase)
 
                         launchWallet()
                     }
@@ -129,7 +145,7 @@ class PinActivity : AppCompatActivity(), PinLockListener {
                     val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
                     val decryptedData = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
 
-                    generateStellarAddress(decryptedData)
+                    GenerateStellarAddressTask().execute(decryptedData)
 
                     launchWallet()
                 }
@@ -187,15 +203,4 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
     }
-
-    //region Generate Stellar Account
-    private fun generateStellarAddress(mnemonic : String) {
-        val keyPair = SupportedMnemonic.createKeyPair(mnemonic.toCharArray(), null, 0)
-
-        WalletApplication.localStore!![KEY_STELLAR_ACCOUNT_PUBLIC_KEY] = keyPair.accountId
-
-        LoadAccount().execute(keyPair)
-    }
-
-    //endregion
 }
