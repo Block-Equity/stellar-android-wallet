@@ -12,7 +12,7 @@
         android:background="@color/white"
         android:padding="16dp">
         <TextView
-            style="@style/TitleText"
+            style="@style/NavTitleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/send_to_text"

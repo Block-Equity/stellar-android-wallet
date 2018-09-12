@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="?attr/colorPrimary">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -55,4 +56,36 @@
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wallet"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        style="@style/NavTitleText"
+        android:textSize="28sp"
+        android:textColor="@color/black"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue2">
+
+        <TextView
+            android:id="@+id/assetNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stellar Lumens (XLM)"
+            style="@style/RegularWhiteText"/>
+
+        <TextView
+            android:id="@+id/balanceTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100000"
+            android:layout_below="@id/assetNameTextView"
+            style="@style/NavTitleText"/>
+
+    </RelativeLayout>
+
 </LinearLayout>

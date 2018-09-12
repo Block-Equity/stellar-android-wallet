@@ -25,7 +25,7 @@
         <item name="fontFamily">@font/lato_bold</item>
     </style>
 
-    <style name="TitleText" parent="TextAppearance.AppCompat">
+    <style name="NavTitleText" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">@dimen/navigation_title</item>
         <item name="android:textStyle">bold</item>
