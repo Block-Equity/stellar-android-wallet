@@ -27,6 +27,8 @@
     <string name="title_activity_wallets">Wallets</string>
     <string name="title_activity_my_wallet">Wallet</string>
     <string name="learn_more">Learn more</string>
+    <string name="activity">ACTIVITY</string>
+    <string name="amount">AMOUNT</string>
 
     <!-- Login Strings -->
     <string name="create_new_wallet">Create new wallet</string>

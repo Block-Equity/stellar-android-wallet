@@ -57,72 +57,117 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Wallet"
-        android:layout_margin="@dimen/activity_vertical_margin"
-        style="@style/TitleText"
-        android:textSize="28sp"
-        android:textColor="@color/black"/>
-
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/blue2"
-        android:padding="@dimen/activity_vertical_margin">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/assetNameTextView"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Stellar Lumens (XLM)"
-            style="@style/RegularWhiteText"/>
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/balanceTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="10000.00"
-            android:layout_below="@id/assetNameTextView"
-            style="@style/TitleText"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_activity_my_wallet"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                style="@style/TitleText"
+                android:textSize="28sp"
+                android:textColor="@color/black"/>
 
-    </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/blue2"
+                android:padding="@dimen/activity_vertical_margin">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/darkBlue"
-        android:padding="@dimen/activity_vertical_margin">
+                <TextView
+                    android:id="@+id/assetNameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Stellar Lumens (XLM)"
+                    style="@style/RegularWhiteText"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Available: "
-            style="@style/RegularWhiteText"/>
+                <TextView
+                    android:id="@+id/balanceTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10000.00"
+                    android:layout_below="@id/assetNameTextView"
+                    style="@style/ShortDescription"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:textSize="@dimen/title_text_size"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1.0000 XLM"
-            style="@style/RegularWhiteText"/>
+            </RelativeLayout>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/darkBlue"
+                android:padding="@dimen/activity_vertical_margin">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Available: "
+                    style="@style/RegularWhiteText"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1.0000 XLM"
+                    style="@style/RegularWhiteText"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
 
 
-        <TextView
-            android:id="@+id/learnMoreButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/learn_more"
-            android:textSize="@dimen/text_size_micro"
-            android:padding="8dp"
-            android:background="@color/paleSky"
-            style="@style/RegularWhiteText"/>
+                <TextView
+                    android:id="@+id/learnMoreButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/learn_more"
+                    android:textSize="@dimen/text_size_micro"
+                    android:padding="8dp"
+                    android:background="@color/paleSky"
+                    style="@style/RegularWhiteText"/>
 
-    </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_vertical_margin">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/activity"
+                    android:textSize="@dimen/text_size_micro"
+                    android:textColor="@color/silverChalice"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/amount"
+                    android:textSize="@dimen/text_size_micro"
+                    android:textColor="@color/silverChalice"/>
+
+            </LinearLayout>
+
+            <View style="@style/Divider"/>
+
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>
