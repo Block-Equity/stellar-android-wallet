@@ -25,15 +25,15 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:id="@+id/assetsButton"
-                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/recieveButton"
+                    style="@style/ButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:fontFamily="@font/lato_bold"
-                    android:text="@string/button_assets"
-                    android:textColor="@color/colorPrimary" />
+                    android:text="@string/button_receive"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textColor="@color/blue3" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -44,14 +44,15 @@
 
                 <Button
                     android:id="@+id/sendButton"
-                    style="?android:attr/buttonBarButtonStyle"
+                    style="@style/ButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:fontFamily="@font/lato_bold"
                     android:text="@string/button_send"
-                    android:textColor="@color/colorPrimary" />
+                    android:textSize="@dimen/text_size_medium"
+                    android:textColor="@color/blue3" />
+
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
 
@@ -97,6 +98,14 @@
                     style="@style/ShortDescription"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:textSize="@dimen/title_text_size"/>
+
+                <ImageView
+                    android:id="@+id/assetsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_dropdown"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"/>
 
             </RelativeLayout>
 
