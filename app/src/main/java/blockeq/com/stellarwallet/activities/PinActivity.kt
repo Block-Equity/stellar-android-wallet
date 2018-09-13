@@ -44,7 +44,6 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         private class GenerateStellarAddressTask : AsyncTask<String, Void, KeyPair>() {
             override fun doInBackground(vararg mnemonic: String) : KeyPair? {
                 val keyPair = SupportedMnemonic.createKeyPair(mnemonic[0].toCharArray(), null, USER_INDEX)
-
                 WalletApplication.localStore!![KEY_STELLAR_ACCOUNT_PUBLIC_KEY] = keyPair.accountId
 
                 return keyPair
@@ -55,7 +54,6 @@ class PinActivity : AppCompatActivity(), PinLockListener {
                     LoadAccountTask().execute(keyPair)
                 }
             }
-
         }
 
         private class LoadAccountTask : AsyncTask<KeyPair, Void, AccountResponse>() {
@@ -77,7 +75,6 @@ class PinActivity : AppCompatActivity(), PinLockListener {
                     WalletApplication.localStore!![KEY_STELLAR_BALANCES_KEY] = result.balances
                 }
             }
-
         }
     }
 
