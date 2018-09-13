@@ -2,6 +2,7 @@ package blockeq.com.stellarwallet
 
 import android.support.multidex.MultiDexApplication
 import blockeq.com.stellarwallet.helpers.LocalStore
+import blockeq.com.stellarwallet.models.Session
 import com.google.gson.Gson
 
 
@@ -18,6 +19,8 @@ class WalletApplication : MultiDexApplication() {
 
         // Use LocalStore for SharedPreferences
         var localStore: LocalStore? = null
+
+        var session : Session? = null
 
         fun applicationContext(): WalletApplication {
             return instance!!

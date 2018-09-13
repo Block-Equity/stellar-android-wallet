@@ -15,6 +15,7 @@ import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.helpers.SupportedMnemonic
+import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnWalletSeedCreated
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
@@ -25,7 +26,7 @@ import org.stellar.sdk.Server
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 
-class PinActivity : AppCompatActivity(), PinLockListener, OnWalletSeedCreated {
+class PinActivity : AppCompatActivity(), PinLockListener, OnWalletSeedCreated, OnLoadAccount {
 
     companion object {
         const val PIN_REQUEST_CODE = 0
@@ -37,7 +38,7 @@ class PinActivity : AppCompatActivity(), PinLockListener, OnWalletSeedCreated {
         const val MAX_ATTEMPTS = 3
         private val TAG = PinActivity::class.java.simpleName
 
-        class LoadAccountTask : AsyncTask<KeyPair, Void, AccountResponse>() {
+        class LoadAccountTask(private val listener: OnLoadAccount) : AsyncTask<KeyPair, Void, AccountResponse>() {
             override fun doInBackground(vararg pair: KeyPair) : AccountResponse? {
                 val server = Server(PROD_SERVER)
                 var account : AccountResponse? = null
@@ -52,9 +53,7 @@ class PinActivity : AppCompatActivity(), PinLockListener, OnWalletSeedCreated {
             }
 
             override fun onPostExecute(result: AccountResponse?) {
-                if (result != null) {
-                    WalletApplication.localStore!!.balances = result.balances
-                }
+                listener.onLoadAccount(result)
             }
         }
     }
@@ -188,9 +187,20 @@ class PinActivity : AppCompatActivity(), PinLockListener, OnWalletSeedCreated {
 
     //endregion
 
+
+    //region Call backs
+
     override fun onWalletSeedCreated(keyPair : KeyPair?) {
         if (keyPair != null) {
-            PinActivity.Companion.LoadAccountTask().execute(keyPair)
+            PinActivity.Companion.LoadAccountTask(this).execute(keyPair)
         }
     }
+
+    override fun onLoadAccount(result: AccountResponse?) {
+        if (result != null) {
+            WalletApplication.localStore!!.balances = result.balances
+        }
+    }
+
+    //endregion
 }
