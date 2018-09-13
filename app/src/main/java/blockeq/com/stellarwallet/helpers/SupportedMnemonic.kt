@@ -14,23 +14,6 @@ class SupportedMnemonic {
         const val ALGORITHM_API_19 = "PBKDF2withHmacSHA1And8BIT"
         const val ALGORITHM_API_26 = "PBKDF2WithHmacSHA512"
 
-        fun supportedSeed(mnemonic: CharArray, passphrase: CharArray?): ByteArray {
-            var saltChars = charArrayOf('m', 'n', 'e', 'm', 'o', 'n', 'i', 'c')
-            if (passphrase != null) {
-                saltChars = PrimitiveUtil.concatCharArrays(saltChars, passphrase)
-            }
-
-            val salt = PrimitiveUtil.toBytes(saltChars)
-
-            try {
-                val ks = PBEKeySpec(mnemonic, salt, 2048, 512)
-                val skf = SecretKeyFactory.getInstance(ALGORITHM_API_19)
-                return skf.generateSecret(ks).encoded
-            } catch (var6: Exception) {
-                throw MnemonicException("Fatal error when generating seed from mnemonic!")
-            }
-        }
-
         @Throws(MnemonicException::class)
         fun createSeed(mnemonic: CharArray, passphrase: CharArray?): ByteArray {
             var saltChars = charArrayOf('m', 'n', 'e', 'm', 'o', 'n', 'i', 'c')
@@ -42,7 +25,11 @@ class SupportedMnemonic {
 
             try {
                 val ks = PBEKeySpec(mnemonic, salt, 2048, 512)
-                val skf = SecretKeyFactory.getInstance(ALGORITHM_API_26)
+                val skf = if (BuildConfig.VERSION_CODE >= 26) {
+                    SecretKeyFactory.getInstance(ALGORITHM_API_26)
+                } else {
+                    SecretKeyFactory.getInstance(ALGORITHM_API_19)
+                }
                 return skf.generateSecret(ks).encoded
             } catch (var6: Exception) {
                 throw MnemonicException("Fatal error when generating seed from mnemonic!")
@@ -51,13 +38,9 @@ class SupportedMnemonic {
 
         @Throws(WalletException::class)
         fun createKeyPair(mnemonic: CharArray, passphrase: CharArray?, index: Int): KeyPair {
-            val bip39Seed = if (BuildConfig.VERSION_CODE >= 26) {
-                createSeed(mnemonic, passphrase)
-            } else {
-                supportedSeed(mnemonic, passphrase)
-            }
+            val masterSeed = createSeed(mnemonic, passphrase)
 
-            val masterPrivateKey = Ed25519Derivation.fromSecretSeed(bip39Seed)
+            val masterPrivateKey = Ed25519Derivation.fromSecretSeed(masterSeed)
             val purpose = masterPrivateKey.derived(44)
             val coinType = purpose.derived(148)
             val account = coinType.derived(index)
