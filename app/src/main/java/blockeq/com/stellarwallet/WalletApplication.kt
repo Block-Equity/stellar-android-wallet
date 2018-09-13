@@ -1,11 +1,11 @@
 package blockeq.com.stellarwallet
 
-import android.app.Application
+import android.support.multidex.MultiDexApplication
 import blockeq.com.stellarwallet.helpers.LocalStore
 import com.google.gson.Gson
 
 
-class WalletApplication : Application() {
+class WalletApplication : MultiDexApplication() {
 
     init {
         instance = this
