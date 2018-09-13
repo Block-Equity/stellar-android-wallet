@@ -21,7 +21,6 @@ import blockeq.com.stellarwallet.helpers.SupportedMnemonic
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
 import com.andrognito.pinlockview.PinLockListener
-import kotlinx.android.synthetic.main.activity_pin.*
 import org.stellar.sdk.KeyPair
 import org.stellar.sdk.Server
 import org.stellar.sdk.requests.ErrorResponse
@@ -35,6 +34,8 @@ class PinActivity : AppCompatActivity(), PinLockListener {
 
         const val PROD_SERVER = "https://horizon.stellar.org"
         const val TEST_SERVER = "https://horizon-testnet.stellar.org"
+
+        const val USER_INDEX = 0
 
         const val MAX_ATTEMPTS = 3
         private val TAG = PinActivity::class.java.simpleName

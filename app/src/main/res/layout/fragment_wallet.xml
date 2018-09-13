@@ -174,7 +174,6 @@
 
             <View style="@style/Divider"/>
 
-
         </LinearLayout>
 
     </ScrollView>
