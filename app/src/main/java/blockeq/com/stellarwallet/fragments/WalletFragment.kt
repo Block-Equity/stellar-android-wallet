@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.MyWalletActivity
-import blockeq.com.stellarwallet.activities.SendActivity
 import blockeq.com.stellarwallet.activities.WalletsActivity
 import kotlinx.android.synthetic.main.fragment_wallet.*
 
@@ -23,6 +23,9 @@ class WalletFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setupUI()
+
         assetsButton.setOnClickListener {
             startActivity(Intent(activity, WalletsActivity::class.java))
             activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
@@ -31,5 +34,17 @@ class WalletFragment : Fragment() {
             startActivity(Intent(activity, MyWalletActivity::class.java))
             activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
         }
+    }
+
+    private fun setupUI() {
+        loadBalance()
+    }
+
+    private fun loadBalance() {
+        val balances = WalletApplication.localStore!!.balances
+
+//        balances!!.forEach {
+//
+//        }
     }
 }
