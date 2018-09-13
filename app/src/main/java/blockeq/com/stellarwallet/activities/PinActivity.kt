@@ -21,6 +21,7 @@ import blockeq.com.stellarwallet.helpers.SupportedMnemonic
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
 import com.andrognito.pinlockview.PinLockListener
+import kotlinx.android.synthetic.main.activity_pin.*
 import org.stellar.sdk.KeyPair
 import org.stellar.sdk.Server
 import org.stellar.sdk.requests.ErrorResponse
