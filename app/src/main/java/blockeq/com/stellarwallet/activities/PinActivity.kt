@@ -15,6 +15,7 @@ import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.helpers.SupportedMnemonic
+import blockeq.com.stellarwallet.interfaces.OnWalletSeedCreated
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
 import com.andrognito.pinlockview.PinLockListener
@@ -24,7 +25,7 @@ import org.stellar.sdk.Server
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 
-class PinActivity : AppCompatActivity(), PinLockListener, SupportedMnemonic.Companion.OnWalletSeedCreated {
+class PinActivity : AppCompatActivity(), PinLockListener, OnWalletSeedCreated {
 
     companion object {
         const val PIN_REQUEST_CODE = 0
@@ -36,7 +37,7 @@ class PinActivity : AppCompatActivity(), PinLockListener, SupportedMnemonic.Comp
         const val MAX_ATTEMPTS = 3
         private val TAG = PinActivity::class.java.simpleName
 
-        private class LoadAccountTask : AsyncTask<KeyPair, Void, AccountResponse>() {
+        class LoadAccountTask : AsyncTask<KeyPair, Void, AccountResponse>() {
             override fun doInBackground(vararg pair: KeyPair) : AccountResponse? {
                 val server = Server(PROD_SERVER)
                 var account : AccountResponse? = null

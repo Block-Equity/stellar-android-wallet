@@ -2,6 +2,7 @@ package blockeq.com.stellarwallet.helpers
 
 import android.os.AsyncTask
 import blockeq.com.stellarwallet.WalletApplication
+import blockeq.com.stellarwallet.interfaces.OnWalletSeedCreated
 import com.soneso.stellarmnemonics.WalletException
 import com.soneso.stellarmnemonics.derivation.Ed25519Derivation
 import com.soneso.stellarmnemonics.mnemonic.MnemonicException
@@ -17,10 +18,6 @@ class SupportedMnemonic {
     companion object {
 
         const val USER_INDEX = 0
-
-        interface OnWalletSeedCreated {
-            fun onWalletSeedCreated(keyPair: KeyPair?)
-        }
 
         class GenerateStellarAddressTask(private val listener: OnWalletSeedCreated) : AsyncTask<String, Void, KeyPair>() {
 
