@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        style="@style/TitleText"
+        style="@style/NavTitleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/title_activity_wallets" />

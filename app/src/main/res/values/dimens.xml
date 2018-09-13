@@ -10,6 +10,7 @@
     <dimen name="common_radius">5dp</dimen>
     <dimen name="common_stroke">1dp</dimen>
     <dimen name="divider">1dp</dimen>
+    <dimen name="title_text_size">28sp</dimen>
 
     <!--Navigation-->
     <dimen name="navigation_title">18sp</dimen>

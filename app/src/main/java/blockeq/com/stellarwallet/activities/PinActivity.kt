@@ -17,6 +17,7 @@ import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.helpers.LocalStore.Companion.KEY_ENCRYPTED_PHRASE
 import blockeq.com.stellarwallet.helpers.LocalStore.Companion.KEY_STELLAR_ACCOUNT_PUBLIC_KEY
 import blockeq.com.stellarwallet.helpers.LocalStore.Companion.KEY_STELLAR_BALANCES_KEY
+import blockeq.com.stellarwallet.helpers.SupportedMnemonic
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
 import com.andrognito.pinlockview.PinLockListener
@@ -35,6 +36,8 @@ class PinActivity : AppCompatActivity(), PinLockListener {
 
         const val PROD_SERVER = "https://horizon.stellar.org"
         const val TEST_SERVER = "https://horizon-testnet.stellar.org"
+
+        const val USER_INDEX = 0
 
         const val MAX_ATTEMPTS = 3
         private val TAG = PinActivity::class.java.simpleName
@@ -189,7 +192,7 @@ class PinActivity : AppCompatActivity(), PinLockListener {
 
     //region Generate Stellar Account
     private fun generateStellarAddress(mnemonic : String) {
-        val keyPair = Wallet.createKeyPair(mnemonic.toCharArray(), null, 0)
+        val keyPair = SupportedMnemonic.createKeyPair(mnemonic.toCharArray(), null, USER_INDEX)
 
         WalletApplication.localStore!![KEY_STELLAR_ACCOUNT_PUBLIC_KEY] = keyPair.accountId
 

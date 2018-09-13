@@ -21,11 +21,14 @@
     <string name="refreshed">List Refreshed!</string>
 
     <!--Wallet Fragment-->
-    <string name="button_assets">Assets</string>
+    <string name="button_receive">Receive</string>
     <string name="button_send">Send</string>
     <string name="logoDescription">Block-EQ</string>
     <string name="title_activity_wallets">Wallets</string>
     <string name="title_activity_my_wallet">Wallet</string>
+    <string name="learn_more">Learn more</string>
+    <string name="activity">ACTIVITY</string>
+    <string name="amount">AMOUNT</string>
 
     <!-- Login Strings -->
     <string name="create_new_wallet">Create new wallet</string>

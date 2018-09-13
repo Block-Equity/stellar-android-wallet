@@ -27,6 +27,13 @@
 
     <style name="TitleText" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">@dimen/title_text_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/lato_bold</item>
+    </style>
+
+    <style name="NavTitleText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">@dimen/navigation_title</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">@font/lato_bold</item>
@@ -90,6 +97,12 @@
         <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:textColor">@color/primaryButtonText</item>
         <item name="android:background">@drawable/primary_button</item>
+    </style>
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
     </style>
 
 </resources>
