@@ -37,6 +37,8 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         const val PROD_SERVER = "https://horizon.stellar.org"
         const val TEST_SERVER = "https://horizon-testnet.stellar.org"
 
+        const val USER_INDEX = 0
+
         const val MAX_ATTEMPTS = 3
         private val TAG = PinActivity::class.java.simpleName
 
@@ -190,7 +192,7 @@ class PinActivity : AppCompatActivity(), PinLockListener {
 
     //region Generate Stellar Account
     private fun generateStellarAddress(mnemonic : String) {
-        val keyPair = SupportedMnemonic.createKeyPair(mnemonic.toCharArray(), null, 0)
+        val keyPair = SupportedMnemonic.createKeyPair(mnemonic.toCharArray(), null, USER_INDEX)
 
         WalletApplication.localStore!![KEY_STELLAR_ACCOUNT_PUBLIC_KEY] = keyPair.accountId
 
