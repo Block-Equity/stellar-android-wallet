@@ -8,7 +8,6 @@ import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
-import blockeq.com.stellarwallet.helpers.LocalStore.Companion.KEY_ENCRYPTED_PHRASE
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
 import kotlinx.android.synthetic.main.activity_login.*
@@ -34,7 +33,7 @@ class LoginActivity : BaseActivity() {
 
     //region User Interface
     override fun setupUI() {
-        val data = WalletApplication.localStore!![KEY_ENCRYPTED_PHRASE]
+        val data = WalletApplication.localStore!!.encryptedPhrase
 
         if (data != null && !data.isEmpty()) {
             launchPINView(data)

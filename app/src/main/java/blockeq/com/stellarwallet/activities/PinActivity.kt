@@ -14,9 +14,6 @@ import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
-import blockeq.com.stellarwallet.helpers.LocalStore.Companion.KEY_ENCRYPTED_PHRASE
-import blockeq.com.stellarwallet.helpers.LocalStore.Companion.KEY_STELLAR_ACCOUNT_PUBLIC_KEY
-import blockeq.com.stellarwallet.helpers.LocalStore.Companion.KEY_STELLAR_BALANCES_KEY
 import blockeq.com.stellarwallet.helpers.SupportedMnemonic
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
@@ -44,7 +41,7 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         private class GenerateStellarAddressTask : AsyncTask<String, Void, KeyPair>() {
             override fun doInBackground(vararg mnemonic: String) : KeyPair? {
                 val keyPair = SupportedMnemonic.createKeyPair(mnemonic[0].toCharArray(), null, USER_INDEX)
-                WalletApplication.localStore!![KEY_STELLAR_ACCOUNT_PUBLIC_KEY] = keyPair.accountId
+                WalletApplication.localStore!!.publicKey = keyPair.accountId
 
                 return keyPair
             }
@@ -72,7 +69,7 @@ class PinActivity : AppCompatActivity(), PinLockListener {
 
             override fun onPostExecute(result: AccountResponse?) {
                 if (result != null) {
-                    WalletApplication.localStore!![KEY_STELLAR_BALANCES_KEY] = result.balances
+                    WalletApplication.localStore!!.balances = result.balances
                 }
             }
         }
@@ -126,7 +123,7 @@ class PinActivity : AppCompatActivity(), PinLockListener {
 
                         val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
 
-                        WalletApplication.localStore!![KEY_ENCRYPTED_PHRASE] = encryptedData
+                        WalletApplication.localStore!!.encryptedPhrase = encryptedData
                         GenerateStellarAddressTask().execute(pinViewState!!.phrase)
 
                         launchWallet()
