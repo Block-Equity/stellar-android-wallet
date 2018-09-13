@@ -24,7 +24,7 @@ import org.stellar.sdk.Server
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 
-class PinActivity : AppCompatActivity(), PinLockListener {
+class PinActivity : AppCompatActivity(), PinLockListener, SupportedMnemonic.Companion.OnWalletSeedCreated {
 
     companion object {
         const val PIN_REQUEST_CODE = 0
@@ -33,25 +33,8 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         const val PROD_SERVER = "https://horizon.stellar.org"
         const val TEST_SERVER = "https://horizon-testnet.stellar.org"
 
-        const val USER_INDEX = 0
-
         const val MAX_ATTEMPTS = 3
         private val TAG = PinActivity::class.java.simpleName
-
-        private class GenerateStellarAddressTask : AsyncTask<String, Void, KeyPair>() {
-            override fun doInBackground(vararg mnemonic: String) : KeyPair? {
-                val keyPair = SupportedMnemonic.createKeyPair(mnemonic[0].toCharArray(), null, USER_INDEX)
-                WalletApplication.localStore!!.publicKey = keyPair.accountId
-
-                return keyPair
-            }
-
-            override fun onPostExecute(keyPair: KeyPair?) {
-                if (keyPair != null) {
-                    LoadAccountTask().execute(keyPair)
-                }
-            }
-        }
 
         private class LoadAccountTask : AsyncTask<KeyPair, Void, AccountResponse>() {
             override fun doInBackground(vararg pair: KeyPair) : AccountResponse? {
@@ -124,7 +107,7 @@ class PinActivity : AppCompatActivity(), PinLockListener {
                         val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
 
                         WalletApplication.localStore!!.encryptedPhrase = encryptedData
-                        GenerateStellarAddressTask().execute(pinViewState!!.phrase)
+                        SupportedMnemonic.Companion.GenerateStellarAddressTask(this).execute(pinViewState!!.phrase)
 
                         launchWallet()
                     }
@@ -141,13 +124,15 @@ class PinActivity : AppCompatActivity(), PinLockListener {
                     val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
                     val decryptedData = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
 
-                    GenerateStellarAddressTask().execute(decryptedData)
+                    SupportedMnemonic.Companion.GenerateStellarAddressTask(this).execute(decryptedData)
 
                     launchWallet()
                 }
             }
         }
     }
+
+    //region User Interface
 
     override fun onPinChange(pinLength: Int, intermediatePin: String?) {
     }
@@ -198,5 +183,13 @@ class PinActivity : AppCompatActivity(), PinLockListener {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
+    }
+
+    //endregion
+
+    override fun onWalletSeedCreated(keyPair : KeyPair?) {
+        if (keyPair != null) {
+            PinActivity.Companion.LoadAccountTask().execute(keyPair)
+        }
     }
 }

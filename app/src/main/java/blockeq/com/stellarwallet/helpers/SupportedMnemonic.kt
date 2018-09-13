@@ -1,5 +1,7 @@
 package blockeq.com.stellarwallet.helpers
 
+import android.os.AsyncTask
+import blockeq.com.stellarwallet.WalletApplication
 import com.soneso.stellarmnemonics.WalletException
 import com.soneso.stellarmnemonics.derivation.Ed25519Derivation
 import com.soneso.stellarmnemonics.mnemonic.MnemonicException
@@ -13,6 +15,27 @@ import org.stellar.sdk.KeyPair
 
 class SupportedMnemonic {
     companion object {
+
+        const val USER_INDEX = 0
+
+        interface OnWalletSeedCreated {
+            fun onWalletSeedCreated(keyPair: KeyPair?)
+        }
+
+        class GenerateStellarAddressTask(private val listener: OnWalletSeedCreated) : AsyncTask<String, Void, KeyPair>() {
+
+            override fun doInBackground(vararg mnemonic: String) : KeyPair? {
+                val keyPair = SupportedMnemonic.createKeyPair(mnemonic[0].toCharArray(), null, USER_INDEX)
+                WalletApplication.localStore!!.publicKey = keyPair.accountId
+
+                return keyPair
+            }
+
+            override fun onPostExecute(keyPair: KeyPair?) {
+                listener.onWalletSeedCreated(keyPair)
+            }
+        }
+
 
         @Throws(MnemonicException::class)
         fun createSeed(mnemonic: CharArray, passphrase: CharArray?): ByteArray {

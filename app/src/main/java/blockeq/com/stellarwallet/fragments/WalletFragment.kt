@@ -43,8 +43,12 @@ class WalletFragment : Fragment() {
     private fun loadBalance() {
         val balances = WalletApplication.localStore!!.balances
 
-//        balances!!.forEach {
-//
-//        }
+        if (balances != null) {
+            balances.forEach {
+
+            }
+        } else {
+
+        }
     }
 }
