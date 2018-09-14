@@ -40,8 +40,11 @@
     <string name="invalid_word_count">Invalid number of words (must be 12 or 24).</string>
 
     <!--Settings Fragment-->
-
-
+    <string name="recovery">Recovery</string>
+    <string name="view_phrase">View Phrase</string>
+    <string name="wallet">Wallet</string>
+    <string name="clear_wallet">Clear Wallet</string>
+    
     <!--Trading Fragment-->
     <string name="tab_trade">Trade</string>
     <string name="market">Market</string>
