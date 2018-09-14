@@ -26,20 +26,11 @@
         android:layout_margin="@dimen/activity_vertical_margin"
         android:gravity="center"/>
 
-    <ScrollView
+    <blockeq.com.stellarwallet.reusables.views.MnemonicView
+        android:id="@+id/mnemonicView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/warningPhraseTextView">
-
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/mnemonicGridView"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_vertical_margin"
-            app:flexWrap="wrap"/>
-
-    </ScrollView>
+        android:layout_below="@id/warningPhraseTextView" />
 
     <Button
         android:id="@+id/confirmButton"

@@ -54,27 +54,9 @@ class CreateWalletActivity : BaseActivity(), View.OnClickListener {
         toolBar.setNavigationOnClickListener { onBackPressed() }
     }
 
-    //TODO: Setup as a reusable view as we will have this in future settings for users
     private fun setupMnemonicView() {
-
-        val mnemonicPhrase = getMnemonic()
-        val LAYOUT_MARGINS = 16
-
-        for (i in mnemonicPhrase.indices) {
-            val item_view = layoutInflater.inflate(R.layout.item_view_phrase_word, null)
-
-            val numberTextView = item_view!!.findViewById<TextView>(R.id.numberItem)
-            val wordTextView = item_view.findViewById<TextView>(R.id.wordItem)
-
-            numberTextView.text = (i + 1).toString()
-            wordTextView.text = mnemonicPhrase[i]
-
-            val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT)
-            layoutParams.setMargins(LAYOUT_MARGINS, LAYOUT_MARGINS, LAYOUT_MARGINS, LAYOUT_MARGINS)
-
-            mnemonicGridView.addView(item_view, i, layoutParams)
-        }
+        mnemonicView.mnemonic = getMnemonic()
+        mnemonicView.loadMnemonic()
     }
 
     //endregion

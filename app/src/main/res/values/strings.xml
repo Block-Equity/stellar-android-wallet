@@ -44,7 +44,7 @@
     <string name="view_phrase">View Phrase</string>
     <string name="wallet">Wallet</string>
     <string name="clear_wallet">Clear Wallet</string>
-    
+
     <!--Trading Fragment-->
     <string name="tab_trade">Trade</string>
     <string name="market">Market</string>
