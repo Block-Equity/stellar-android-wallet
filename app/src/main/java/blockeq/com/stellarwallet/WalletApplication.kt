@@ -4,6 +4,9 @@ import android.support.multidex.MultiDexApplication
 import blockeq.com.stellarwallet.helpers.LocalStore
 import blockeq.com.stellarwallet.models.Session
 import com.google.gson.Gson
+import org.bouncycastle.jce.provider.BouncyCastleProvider
+import java.security.Provider
+import java.security.Security
 
 
 class WalletApplication : MultiDexApplication() {
@@ -29,6 +32,10 @@ class WalletApplication : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
+
+        Security.removeProvider("BC")
+        Security.insertProviderAt(BouncyCastleProvider() as Provider?, 1)
+
         val sharedPreferences = getSharedPreferences(PREF_NAME, PRIVATE_MODE)
         localStore = LocalStore(sharedPreferences!!, Gson())
     }

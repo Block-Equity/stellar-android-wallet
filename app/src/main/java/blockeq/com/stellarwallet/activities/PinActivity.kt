@@ -14,7 +14,7 @@ import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
-import blockeq.com.stellarwallet.helpers.SupportedMnemonic
+import blockeq.com.stellarwallet.helpers.GenerateStellarAddress
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnWalletSeedCreated
 import blockeq.com.stellarwallet.models.PinType
@@ -107,7 +107,7 @@ class PinActivity : AppCompatActivity(), PinLockListener, OnWalletSeedCreated, O
                         val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
 
                         WalletApplication.localStore!!.encryptedPhrase = encryptedData
-                        SupportedMnemonic.Companion.GenerateStellarAddressTask(this).execute(pinViewState!!.phrase)
+                        GenerateStellarAddress.Companion.GenerateStellarAddressTask(this).execute(pinViewState!!.phrase)
 
                         launchWallet()
                     }
@@ -124,7 +124,7 @@ class PinActivity : AppCompatActivity(), PinLockListener, OnWalletSeedCreated, O
                     val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
                     val decryptedData = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
 
-                    SupportedMnemonic.Companion.GenerateStellarAddressTask(this).execute(decryptedData)
+                    GenerateStellarAddress.Companion.GenerateStellarAddressTask(this).execute(decryptedData)
 
                     launchWallet()
                 }
