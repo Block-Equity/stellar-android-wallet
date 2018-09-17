@@ -84,28 +84,28 @@
 
                 <TextView
                     android:id="@+id/assetNameTextView"
+                    style="@style/RegularWhiteText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Stellar Lumens (XLM)"
-                    style="@style/RegularWhiteText"/>
+                    android:text="Stellar Lumens (XLM)" />
 
                 <TextView
                     android:id="@+id/balanceTextView"
+                    style="@style/ShortDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10000.00"
                     android:layout_below="@id/assetNameTextView"
-                    style="@style/ShortDescription"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:textSize="@dimen/title_text_size"/>
+                    android:text="10000.00"
+                    android:textSize="@dimen/title_text_size" />
 
                 <ImageView
                     android:id="@+id/assetsButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_dropdown"
                     android:layout_alignParentRight="true"
-                    android:layout_centerInParent="true"/>
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_dropdown" />
 
             </RelativeLayout>
 

@@ -1,7 +1,7 @@
 package blockeq.com.stellarwallet.models
 
-enum class ActivityType {
+enum class TransactionType {
     SEND, RECEIVE
 }
 
-data class AccountActivityItem (var activityType: ActivityType, var amount: String)
+data class AccountActivityItem (var activityType: TransactionType, var amount: String)
