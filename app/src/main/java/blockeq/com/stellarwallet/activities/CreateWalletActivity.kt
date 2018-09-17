@@ -17,12 +17,19 @@ import kotlinx.android.synthetic.main.activity_create_wallet.*
 
 class CreateWalletActivity : BaseActivity(), View.OnClickListener {
 
+    companion object {
+        const val INTENT_DISPLAY_PHRASE = "INTENT_DISPLAY_PHRASE"
+        const val DECRYPTED_PHRASE = "DECRYPTED_PHRASE"
+    }
+
     private var mnemonicString : String? = null
+    private var isDisplayPhraseOnly = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_wallet)
 
+        loadIntent()
         setupUI()
         setOnClickListeners()
     }
@@ -43,6 +50,9 @@ class CreateWalletActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun setupUI() {
+        if (isDisplayPhraseOnly) {
+            confirmButton.visibility = View.GONE
+        }
         setupActionBar()
         setupMnemonicView()
     }
@@ -69,15 +79,20 @@ class CreateWalletActivity : BaseActivity(), View.OnClickListener {
 
     //region Helper functions
     private fun getMnemonic(): ArrayList<String> {
-        val mnemonic = if (intent.getIntExtra("walletLength", 12) == 12) {
-            Wallet.generate12WordMnemonic()
+        if (isDisplayPhraseOnly) {
+            val words = mnemonicString!!.split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
+            return words
         } else {
-            Wallet.generate24WordMnemonic()
-        }
+            val mnemonic = if (intent.getIntExtra("walletLength", 12) == 12) {
+                Wallet.generate12WordMnemonic()
+            } else {
+                Wallet.generate24WordMnemonic()
+            }
 
-        mnemonicString = String(mnemonic)
-        val words = String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
-        return words
+            mnemonicString = String(mnemonic)
+            val words = String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
+            return words
+        }
     }
 
     private fun launchPINView() {
@@ -86,6 +101,11 @@ class CreateWalletActivity : BaseActivity(), View.OnClickListener {
 
     private fun getPinViewState(): PinViewState {
         return PinViewState(PinType.CREATE, getString(R.string.please_create_a_pin), "", mnemonicString!!)
+    }
+
+    private fun loadIntent() {
+        isDisplayPhraseOnly = intent.getBooleanExtra(INTENT_DISPLAY_PHRASE, false)
+        mnemonicString = intent.getStringExtra(DECRYPTED_PHRASE)
     }
     //endregion
 }

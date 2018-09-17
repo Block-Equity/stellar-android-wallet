@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
+import blockeq.com.stellarwallet.activities.CreateWalletActivity
+import blockeq.com.stellarwallet.activities.CreateWalletActivity.Companion.INTENT_DISPLAY_PHRASE
 import blockeq.com.stellarwallet.activities.LoginActivity
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.RESULT_FAIL
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
@@ -19,15 +21,11 @@ import kotlinx.android.synthetic.main.fragment_settings.*
 
 class SettingsFragment : Fragment() {
 
-    var lastClicked : Int? = null
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_settings, container, false)
 
     companion object {
         fun newInstance(): SettingsFragment = SettingsFragment()
-        const val PIN_REQUEST_CODE = 0
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,52 +34,26 @@ class SettingsFragment : Fragment() {
         setupUI()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PIN_REQUEST_CODE) {
-            when (resultCode) {
-                RESULT_OK-> {
-                    if (lastClicked == clearWalletButton.id) {
-                       wipeAndRestart()
-                    } else  {
-                        // Launch view phrase activity?
-
-                    }
-                }
-                RESULT_FAIL -> wipeAndRestart()
-            }
-        }
-    }
-
     //region User Interface
 
     private fun setupUI() {
         viewPhraseButton.setOnClickListener {
-            lastClicked = it.id
-
+            val phrase = WalletApplication.localStore!!.encryptedPhrase!!
+            launchPINView(phrase, PinType.VIEW_PHRASE)
         }
 
         clearWalletButton.setOnClickListener {
-            lastClicked = it.id
             val phrase = WalletApplication.localStore!!.encryptedPhrase!!
-            launchPINView(phrase)
-
+            launchPINView(phrase, PinType.CLEAR_WALLET)
         }
     }
 
     //endregion
 
     //region Helper functions
-    private fun launchPINView(mnemonic : String) {
-        val pinViewState = PinViewState(PinType.CHECK, "", "", mnemonic)
+    private fun launchPINView(mnemonic : String, type: PinType) {
+        val pinViewState = PinViewState(type, "", "", mnemonic)
         PinFlowController.launchPinActivity(activity!!, pinViewState)
-    }
-
-    private fun wipeAndRestart() {
-        WalletApplication.localStore!!.clearUserData()
-        val intent = Intent(activity, LoginActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        startActivity(intent)
     }
     //endregion
 }
