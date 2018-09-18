@@ -1,22 +1,21 @@
 package blockeq.com.stellarwallet.fragments
 
+import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import blockeq.com.stellarwallet.R
-import kotlinx.android.synthetic.main.fragment_receive.*
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
-import android.content.ClipData
-import android.widget.Toast
+import kotlinx.android.synthetic.main.fragment_receive.*
 
 
-class ReceiveFragment : Fragment() {
+class ReceiveFragment : BaseFragment() {
 
     private var address = "GD5HQAPT5KOIKMY35QREYSS34BC3O4FFNTE2DTXUZI4YSJSUXP5QRQS3"
 

@@ -45,7 +45,7 @@ class CreateWalletActivity : BaseActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         val itemId = v!!.id
         when (itemId) {
-            R.id.confirmButton -> launchPINView()
+            R.id.confirmButton -> launchPINView(PinType.CREATE, getString(R.string.please_create_a_pin), mnemonicString!!)
         }
     }
 
@@ -93,14 +93,6 @@ class CreateWalletActivity : BaseActivity(), View.OnClickListener {
             val words = String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
             return words
         }
-    }
-
-    private fun launchPINView() {
-        PinFlowController.launchPinActivity(this, getPinViewState(), false)
-    }
-
-    private fun getPinViewState(): PinViewState {
-        return PinViewState(PinType.CREATE, getString(R.string.please_create_a_pin), "", mnemonicString!!)
     }
 
     private fun loadIntent() {

@@ -13,7 +13,7 @@ import blockeq.com.stellarwallet.models.PinViewState
 import kotlinx.android.synthetic.main.fragment_settings.*
 
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_settings, container, false)
@@ -33,21 +33,12 @@ class SettingsFragment : Fragment() {
     private fun setupUI() {
         viewPhraseButton.setOnClickListener {
             val phrase = WalletApplication.localStore!!.encryptedPhrase!!
-            launchPINView(phrase, PinType.VIEW_PHRASE)
+            launchPINView(PinType.VIEW_PHRASE, "", phrase)
         }
 
         clearWalletButton.setOnClickListener {
             val phrase = WalletApplication.localStore!!.encryptedPhrase!!
-            launchPINView(phrase, PinType.CLEAR_WALLET)
+            launchPINView(PinType.CLEAR_WALLET, "", phrase)
         }
     }
-
-    //endregion
-
-    //region Helper functions
-    private fun launchPINView(mnemonic : String, type: PinType) {
-        val pinViewState = PinViewState(type, "", "", mnemonic)
-        PinFlowController.launchPinActivity(activity!!, pinViewState, false)
-    }
-    //endregion
 }
