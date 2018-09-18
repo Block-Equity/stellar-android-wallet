@@ -39,5 +39,4 @@ class WalletApplication : MultiDexApplication() {
         val sharedPreferences = getSharedPreferences(PREF_NAME, PRIVATE_MODE)
         localStore = LocalStore(sharedPreferences!!, Gson())
     }
-
 }

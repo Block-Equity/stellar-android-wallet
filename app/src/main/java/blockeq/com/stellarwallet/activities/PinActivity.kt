@@ -3,7 +3,6 @@ package blockeq.com.stellarwallet.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -23,7 +22,7 @@ import kotlinx.android.synthetic.main.activity_pin.*
 import org.stellar.sdk.KeyPair
 import org.stellar.sdk.responses.AccountResponse
 
-class PinActivity : AppCompatActivity(), PinLockListener, OnWalletSeedCreated, OnLoadAccount {
+class PinActivity : BaseActivity(), PinLockListener, OnWalletSeedCreated, OnLoadAccount {
 
     companion object {
         const val PIN_REQUEST_CODE = 0
@@ -81,7 +80,7 @@ class PinActivity : AppCompatActivity(), PinLockListener, OnWalletSeedCreated, O
                         val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
 
                         WalletApplication.localStore!!.encryptedPhrase = encryptedData
-                        StellarAddress.Companion.GenerateStellarAddressTask(this).execute(pinViewState!!.phrase)
+                        StellarAddress.Companion.Generate(this).execute(pinViewState!!.phrase)
 
                         launchWallet()
                     }
@@ -98,7 +97,7 @@ class PinActivity : AppCompatActivity(), PinLockListener, OnWalletSeedCreated, O
                     val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
                     val decryptedData = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
 
-                    StellarAddress.Companion.GenerateStellarAddressTask(this).execute(decryptedData)
+                    StellarAddress.Companion.Generate(this).execute(decryptedData)
 
                     launchWallet()
                 }

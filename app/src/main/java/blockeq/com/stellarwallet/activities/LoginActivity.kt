@@ -33,30 +33,6 @@ class LoginActivity : BaseActivity() {
 
     //region User Interface
     override fun setupUI() {
-        val data = WalletApplication.localStore!!.encryptedPhrase
-
-        if (data != null && !data.isEmpty()) {
-            launchPINView(data)
-        }
-
-        // TODO: For encryption testing purposes
-        text.text = data
-
-        test.setOnClickListener {
-            val keyStoreWrapper = KeyStoreWrapper(applicationContext)
-
-            val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair("1234")
-            if (masterKey == null) {
-                text.text = "Failed to decrypt!"
-            } else {
-                val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
-
-                if (data != null && !data.isEmpty()) {
-                    val decryptedData = cipherWrapper.decrypt(data, masterKey.private)
-                    text.text = decryptedData
-                }
-            }
-        }
 
         createWalletButton.setOnClickListener {
             showDialog()
@@ -90,12 +66,5 @@ class LoginActivity : BaseActivity() {
     }
 
 
-    //endregion
-
-    //region Helper functions
-    private fun launchPINView(mnemonic : String) {
-        val pinViewState = PinViewState(PinType.CHECK, "", "", mnemonic)
-        PinFlowController.launchPinActivity(this, pinViewState)
-    }
     //endregion
 }
