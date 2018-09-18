@@ -9,8 +9,8 @@ import android.widget.TextView
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.models.AvailableBalance
 import blockeq.com.stellarwallet.models.TotalBalance
-import blockeq.com.stellarwallet.models.TransactionItem
-import blockeq.com.stellarwallet.models.TransactionType
+import blockeq.com.stellarwallet.models.AccountEffect
+import blockeq.com.stellarwallet.models.EffectType
 
 
 class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -62,7 +62,7 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
             items[position] is TotalBalance -> TransactionViewType.TOTAL.value
             items[position] is AvailableBalance -> TransactionViewType.AVAILABLE.value
             items[position] is Pair<*, *> -> TransactionViewType.HEADER.value
-            items[position] is TransactionItem -> TransactionViewType.TRANSACTION.value
+            items[position] is AccountEffect -> TransactionViewType.TRANSACTION.value
             else -> 0
         }
     }
@@ -167,14 +167,14 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
     }
 
     private fun configureTransactionViewHolder(viewHolder : TransactionViewHolder, position : Int) {
-        val transaction = items[position] as TransactionItem
+        val transaction = items[position] as AccountEffect
 
         viewHolder.amount!!.text = transaction.amount
-        viewHolder.date!!.text = transaction.date
+        viewHolder.date!!.text = transaction.createdAt
 
-        viewHolder.transactionType!!.text = when(transaction.transactionType) {
-            TransactionType.RECEIVE -> TransactionType.RECEIVE.value
-            TransactionType.SEND -> TransactionType.SEND.value
+        viewHolder.transactionType!!.text = when(transaction.type) {
+            EffectType.RECEIVE -> EffectType.RECEIVE.value
+            EffectType.SEND -> EffectType.SEND.value
         }
     }
 
