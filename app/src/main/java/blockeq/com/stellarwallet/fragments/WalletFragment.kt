@@ -3,8 +3,8 @@ package blockeq.com.stellarwallet.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.stellar.sdk.responses.AccountResponse
 
 
-class WalletFragment : Fragment(), OnLoadAccount {
+class WalletFragment : BaseFragment(), OnLoadAccount {
 
     private var handler = Handler()
     private var runnableCode : Runnable? = null

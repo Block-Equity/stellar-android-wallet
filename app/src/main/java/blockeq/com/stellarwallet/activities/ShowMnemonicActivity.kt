@@ -4,18 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
-import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.models.PinType
-import blockeq.com.stellarwallet.models.PinViewState
 import com.soneso.stellarmnemonics.Wallet
-import kotlinx.android.synthetic.main.activity_create_wallet.*
+import kotlinx.android.synthetic.main.activity_show_mnemonic.*
 
 
-class CreateWalletActivity : BaseActivity(), View.OnClickListener {
+class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
 
     companion object {
         const val INTENT_DISPLAY_PHRASE = "INTENT_DISPLAY_PHRASE"
@@ -27,7 +23,7 @@ class CreateWalletActivity : BaseActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create_wallet)
+        setContentView(R.layout.activity_show_mnemonic)
 
         loadIntent()
         setupUI()
@@ -45,7 +41,7 @@ class CreateWalletActivity : BaseActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         val itemId = v!!.id
         when (itemId) {
-            R.id.confirmButton -> launchPINView()
+            R.id.confirmButton -> launchPINView(PinType.CREATE, getString(R.string.please_create_a_pin), mnemonicString!!, false)
         }
     }
 
@@ -93,14 +89,6 @@ class CreateWalletActivity : BaseActivity(), View.OnClickListener {
             val words = String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
             return words
         }
-    }
-
-    private fun launchPINView() {
-        PinFlowController.launchPinActivity(this, getPinViewState())
-    }
-
-    private fun getPinViewState(): PinViewState {
-        return PinViewState(PinType.CREATE, getString(R.string.please_create_a_pin), "", mnemonicString!!)
     }
 
     private fun loadIntent() {

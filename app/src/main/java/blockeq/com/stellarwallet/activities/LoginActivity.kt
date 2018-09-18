@@ -5,11 +5,6 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
-import blockeq.com.stellarwallet.encryption.CipherWrapper
-import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
-import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
-import blockeq.com.stellarwallet.models.PinType
-import blockeq.com.stellarwallet.models.PinViewState
 import kotlinx.android.synthetic.main.activity_login.*
 
 
@@ -57,7 +52,7 @@ class LoginActivity : BaseActivity() {
                         24
                     }
 
-                    val intent = Intent(this, CreateWalletActivity::class.java)
+                    val intent = Intent(this, ShowMnemonicActivity::class.java)
                     intent.putExtra("walletLength", walletLength)
                     startActivity(intent)
                 }
