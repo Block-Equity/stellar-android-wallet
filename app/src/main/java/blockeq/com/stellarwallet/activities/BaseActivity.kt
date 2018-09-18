@@ -21,7 +21,7 @@ open class BaseActivity : AppCompatActivity() {
             val data = WalletApplication.localStore!!.encryptedPhrase
 
             if (data != null && !data.isEmpty()) {
-                launchPINView(data)
+                launchLoginPINView(data)
             }
         }
     }
@@ -29,9 +29,9 @@ open class BaseActivity : AppCompatActivity() {
 
     //region Helper Functions
 
-    open fun launchPINView(mnemonic : String) {
+    open fun launchLoginPINView(mnemonic : String) {
         val pinViewState = PinViewState(PinType.CHECK, "", "", mnemonic)
-        PinFlowController.launchPinActivity(this, pinViewState)
+        PinFlowController.launchPinActivity(this, pinViewState, true)
     }
 
     //endregion

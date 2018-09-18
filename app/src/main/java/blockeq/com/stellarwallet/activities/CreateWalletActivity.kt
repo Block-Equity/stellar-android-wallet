@@ -96,7 +96,7 @@ class CreateWalletActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun launchPINView() {
-        PinFlowController.launchPinActivity(this, getPinViewState())
+        PinFlowController.launchPinActivity(this, getPinViewState(), false)
     }
 
     private fun getPinViewState(): PinViewState {

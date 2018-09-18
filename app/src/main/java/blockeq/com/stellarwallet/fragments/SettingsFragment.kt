@@ -53,7 +53,7 @@ class SettingsFragment : Fragment() {
     //region Helper functions
     private fun launchPINView(mnemonic : String, type: PinType) {
         val pinViewState = PinViewState(type, "", "", mnemonic)
-        PinFlowController.launchPinActivity(activity!!, pinViewState)
+        PinFlowController.launchPinActivity(activity!!, pinViewState, false)
     }
     //endregion
 }
