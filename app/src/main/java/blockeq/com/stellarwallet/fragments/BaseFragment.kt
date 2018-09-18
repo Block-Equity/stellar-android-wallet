@@ -9,14 +9,9 @@ import blockeq.com.stellarwallet.models.PinViewState
 open class BaseFragment : Fragment() {
     //region Helper Functions
 
-    open fun launchLoginPINView(mnemonic : String) {
-        val pinViewState = PinViewState(PinType.CHECK, "", "", mnemonic)
-        PinFlowController.launchPinActivity(context!!, pinViewState, true)
-    }
-
-    open fun launchPINView(pinType: PinType, message: String, mnemonic : String) {
+    open fun launchPINView(pinType: PinType, message: String, mnemonic: String, isLoginLaunch: Boolean) {
         val pinViewState = PinViewState(pinType, message, "", mnemonic)
-        PinFlowController.launchPinActivity(context!!, pinViewState, false)
+        PinFlowController.launchPinActivity(context!!, pinViewState, isLoginLaunch)
     }
 
     //endregion

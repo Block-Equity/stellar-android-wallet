@@ -1,15 +1,12 @@
 package blockeq.com.stellarwallet.fragments
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
-import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.models.PinType
-import blockeq.com.stellarwallet.models.PinViewState
 import kotlinx.android.synthetic.main.fragment_settings.*
 
 
@@ -33,12 +30,12 @@ class SettingsFragment : BaseFragment() {
     private fun setupUI() {
         viewPhraseButton.setOnClickListener {
             val phrase = WalletApplication.localStore!!.encryptedPhrase!!
-            launchPINView(PinType.VIEW_PHRASE, "", phrase)
+            launchPINView(PinType.VIEW_PHRASE, "", phrase, false)
         }
 
         clearWalletButton.setOnClickListener {
             val phrase = WalletApplication.localStore!!.encryptedPhrase!!
-            launchPINView(PinType.CLEAR_WALLET, "", phrase)
+            launchPINView(PinType.CLEAR_WALLET, "", phrase, false)
         }
     }
 }

@@ -41,7 +41,7 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         val itemId = v!!.id
         when (itemId) {
-            R.id.confirmButton -> launchPINView(PinType.CREATE, getString(R.string.please_create_a_pin), mnemonicString!!)
+            R.id.confirmButton -> launchPINView(PinType.CREATE, getString(R.string.please_create_a_pin), mnemonicString!!, false)
         }
     }
 
