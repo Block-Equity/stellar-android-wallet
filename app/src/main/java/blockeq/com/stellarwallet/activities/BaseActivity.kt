@@ -14,23 +14,25 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val data = WalletApplication.localStore!!.encryptedPhrase
 
-        if (data != null && !data.isEmpty()) {
-            launchPINView(data)
+        if (WalletApplication.appReturnedFromBackground) {
+            WalletApplication.appReturnedFromBackground =  false
+
+            val data = WalletApplication.localStore!!.encryptedPhrase
+
+            if (data != null && !data.isEmpty()) {
+                launchPINView(data)
+            }
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        WalletApplication.session = null
-    }
 
     //region Helper Functions
-    fun launchPINView(mnemonic : String) {
+
+    open fun launchPINView(mnemonic : String) {
         val pinViewState = PinViewState(PinType.CHECK, "", "", mnemonic)
         PinFlowController.launchPinActivity(this, pinViewState)
     }
-    //endregion
 
+    //endregion
 }
