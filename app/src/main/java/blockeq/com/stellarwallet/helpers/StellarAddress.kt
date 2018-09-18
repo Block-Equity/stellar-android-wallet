@@ -8,12 +8,12 @@ import com.soneso.stellarmnemonics.Wallet
 import org.stellar.sdk.KeyPair
 
 
-class GenerateStellarAddress {
+class StellarAddress {
     companion object {
 
         const val USER_INDEX = 0
 
-        class GenerateStellarAddressTask(private val listener: OnWalletSeedCreated) : AsyncTask<String, Void, KeyPair>() {
+        class Generate(private val listener: OnWalletSeedCreated) : AsyncTask<String, Void, KeyPair>() {
 
             override fun doInBackground(vararg mnemonic: String) : KeyPair? {
                 val keyPair = Wallet.createKeyPair(mnemonic[0].toCharArray(), null, USER_INDEX)

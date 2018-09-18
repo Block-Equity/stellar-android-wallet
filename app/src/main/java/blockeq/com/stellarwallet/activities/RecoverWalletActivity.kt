@@ -68,7 +68,7 @@ class RecoverWalletActivity : BaseActivity() {
         return word.split(" ".toRegex()).size
     }
 
-    private fun launchPINView(mnemonic: String) {
+    override fun launchPINView(mnemonic: String) {
         val pinViewState = PinViewState(PinType.CREATE, getString(R.string.please_create_a_pin), "", mnemonic)
         PinFlowController.launchPinActivity(this, pinViewState)
     }

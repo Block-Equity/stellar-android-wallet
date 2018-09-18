@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.MyWalletActivity
-import blockeq.com.stellarwallet.activities.PinActivity
 import blockeq.com.stellarwallet.activities.WalletsActivity
 import blockeq.com.stellarwallet.adapters.WalletRecyclerViewAdapter
 import blockeq.com.stellarwallet.helpers.Constants.Companion.DEFAULT_ACCOUNT_BALANCE
@@ -19,6 +18,7 @@ import blockeq.com.stellarwallet.helpers.Constants.Companion.LUMENS_ASSET_TYPE
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.models.AvailableBalance
 import blockeq.com.stellarwallet.models.TotalBalance
+import blockeq.com.stellarwallet.services.networking.Horizon
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.stellar.sdk.responses.AccountResponse
 
@@ -114,7 +114,7 @@ class WalletFragment : Fragment(), OnLoadAccount {
         runnableCode = object : Runnable {
             override fun run() {
 
-                PinActivity.Companion.LoadAccountTask(this@WalletFragment)
+                Horizon.Companion.LoadAccountTask(this@WalletFragment)
                         .execute(WalletApplication.session!!.keyPair)
 
                 handler.postDelayed(this, 5000)

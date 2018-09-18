@@ -2,10 +2,7 @@ package blockeq.com.stellarwallet.activities
 
 import android.app.Activity
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -14,48 +11,24 @@ import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
-import blockeq.com.stellarwallet.helpers.GenerateStellarAddress
+import blockeq.com.stellarwallet.helpers.StellarAddress
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnWalletSeedCreated
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
+import blockeq.com.stellarwallet.services.networking.Horizon
 import com.andrognito.pinlockview.PinLockListener
 import kotlinx.android.synthetic.main.activity_pin.*
 import org.stellar.sdk.KeyPair
-import org.stellar.sdk.Server
-import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 
-class PinActivity : AppCompatActivity(), PinLockListener, OnWalletSeedCreated, OnLoadAccount {
+class PinActivity : BaseActivity(), PinLockListener, OnWalletSeedCreated, OnLoadAccount {
 
     companion object {
         const val PIN_REQUEST_CODE = 0
         const val RESULT_FAIL = 2
 
-        const val PROD_SERVER = "https://horizon.stellar.org"
-        const val TEST_SERVER = "https://horizon-testnet.stellar.org"
-
         const val MAX_ATTEMPTS = 3
-        private val TAG = PinActivity::class.java.simpleName
-
-        class LoadAccountTask(private val listener: OnLoadAccount) : AsyncTask<KeyPair, Void, AccountResponse>() {
-            override fun doInBackground(vararg pair: KeyPair) : AccountResponse? {
-                val server = Server(PROD_SERVER)
-                var account : AccountResponse? = null
-                try {
-                    account = server.accounts().account(pair[0])
-
-                } catch (error : ErrorResponse) {
-                    Log.d(TAG, error.body.toString())
-                }
-
-                return account
-            }
-
-            override fun onPostExecute(result: AccountResponse?) {
-                listener.onLoadAccount(result)
-            }
-        }
     }
 
     private var needConfirm = true
@@ -107,7 +80,7 @@ class PinActivity : AppCompatActivity(), PinLockListener, OnWalletSeedCreated, O
                         val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
 
                         WalletApplication.localStore!!.encryptedPhrase = encryptedData
-                        GenerateStellarAddress.Companion.GenerateStellarAddressTask(this).execute(pinViewState!!.phrase)
+                        StellarAddress.Companion.Generate(this).execute(pinViewState!!.phrase)
 
                         launchWallet()
                     }
@@ -123,7 +96,7 @@ class PinActivity : AppCompatActivity(), PinLockListener, OnWalletSeedCreated, O
 
                     when {
                         pinViewState!!.type == PinType.CHECK -> {
-                            GenerateStellarAddress.Companion.GenerateStellarAddressTask(this).execute(decryptedData)
+                            StellarAddress.Companion.Generate(this).execute(decryptedData)
                             launchWallet()
                         }
                         pinViewState!!.type == PinType.CLEAR_WALLET -> wipeAndRestart()
@@ -208,7 +181,7 @@ class PinActivity : AppCompatActivity(), PinLockListener, OnWalletSeedCreated, O
 
     override fun onWalletSeedCreated(keyPair : KeyPair?) {
         if (keyPair != null) {
-            PinActivity.Companion.LoadAccountTask(this).execute(keyPair)
+            Horizon.Companion.LoadAccountTask(this).execute(keyPair)
         }
     }
 
