@@ -8,7 +8,7 @@ import com.soneso.stellarmnemonics.Wallet
 import org.stellar.sdk.KeyPair
 
 
-class GenerateStellarAddress {
+class StellarAddress {
     companion object {
 
         const val USER_INDEX = 0
