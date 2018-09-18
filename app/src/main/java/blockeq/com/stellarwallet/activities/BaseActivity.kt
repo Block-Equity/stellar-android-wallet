@@ -29,9 +29,9 @@ open class BaseActivity : AppCompatActivity() {
 
     //region Helper Functions
 
-    open fun launchPINView(pinType: PinType, message: String, mnemonic: String, isLoginLaunch: Boolean) {
+    open fun launchPINView(pinType: PinType, message: String, mnemonic: String, isLogin: Boolean) {
         val pinViewState = PinViewState(pinType, message, "", mnemonic)
-        PinFlowController.launchPinActivity(this, pinViewState, isLoginLaunch)
+        PinFlowController.launchPinActivity(this, pinViewState, isLogin)
     }
 
     //endregion
