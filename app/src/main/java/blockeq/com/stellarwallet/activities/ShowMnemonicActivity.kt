@@ -4,18 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
-import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.models.PinType
-import blockeq.com.stellarwallet.models.PinViewState
 import com.soneso.stellarmnemonics.Wallet
-import kotlinx.android.synthetic.main.activity_create_wallet.*
+import kotlinx.android.synthetic.main.activity_show_mnemonic.*
 
 
-class CreateWalletActivity : BaseActivity(), View.OnClickListener {
+class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
 
     companion object {
         const val INTENT_DISPLAY_PHRASE = "INTENT_DISPLAY_PHRASE"
@@ -27,7 +23,7 @@ class CreateWalletActivity : BaseActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create_wallet)
+        setContentView(R.layout.activity_show_mnemonic)
 
         loadIntent()
         setupUI()

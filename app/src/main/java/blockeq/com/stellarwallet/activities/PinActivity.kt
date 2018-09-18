@@ -102,9 +102,9 @@ class PinActivity : BaseActivity(), PinLockListener, OnWalletSeedCreated, OnLoad
                         pinViewState!!.type == PinType.CLEAR_WALLET -> wipeAndRestart()
 
                         pinViewState!!.type == PinType.VIEW_PHRASE -> {
-                            val intent = Intent(this, CreateWalletActivity::class.java)
-                            intent.putExtra(CreateWalletActivity.INTENT_DISPLAY_PHRASE, true)
-                            intent.putExtra(CreateWalletActivity.DECRYPTED_PHRASE, decryptedData)
+                            val intent = Intent(this, ShowMnemonicActivity::class.java)
+                            intent.putExtra(ShowMnemonicActivity.INTENT_DISPLAY_PHRASE, true)
+                            intent.putExtra(ShowMnemonicActivity.DECRYPTED_PHRASE, decryptedData)
                             startActivity(intent)
                             finish()
                         }
