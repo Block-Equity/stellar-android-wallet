@@ -182,6 +182,7 @@ class PinActivity : BaseActivity(), PinLockListener, OnWalletSeedCreated, OnLoad
     override fun onWalletSeedCreated(keyPair : KeyPair?) {
         if (keyPair != null) {
             Horizon.Companion.LoadAccountTask(this).execute(keyPair)
+            Horizon.Companion.LoadEffectsTask().execute(keyPair)
         }
     }
 
