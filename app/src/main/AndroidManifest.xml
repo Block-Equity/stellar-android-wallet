@@ -41,7 +41,7 @@
             android:theme="@style/AppTheme" />
         <activity
             android:screenOrientation="portrait"
-            android:name=".activities.CreateWalletActivity"
+            android:name=".activities.ShowMnemonicActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:screenOrientation="portrait"

@@ -3,14 +3,12 @@ package blockeq.com.stellarwallet.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.MyWalletActivity
-import blockeq.com.stellarwallet.activities.PinActivity
 import blockeq.com.stellarwallet.activities.WalletsActivity
 import blockeq.com.stellarwallet.helpers.Constants.Companion.DEFAULT_ACCOUNT_BALANCE
 import blockeq.com.stellarwallet.helpers.Constants.Companion.LUMENS_ASSET_TYPE
@@ -19,7 +17,7 @@ import blockeq.com.stellarwallet.services.networking.Horizon
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.stellar.sdk.responses.AccountResponse
 
-class WalletFragment : Fragment(), OnLoadAccount {
+class WalletFragment : BaseFragment(), OnLoadAccount {
 
     var handler = Handler()
     private var runnableCode : Runnable? = null

@@ -86,20 +86,31 @@ class PinActivity : BaseActivity(), PinLockListener, OnWalletSeedCreated, OnLoad
                     }
                 }
             }
-            PinType.CHECK -> {
+            else -> {
                 val encryptedPhrase = pinViewState!!.phrase
-                val keyStoreWrapper = KeyStoreWrapper(applicationContext)
+                val masterKey = isCorrectPinMasterKey(pin)
 
-                val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
-                if (masterKey == null) {
-                    onIncorrectPin()
-                } else {
+                if (masterKey != null) {
                     val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
                     val decryptedData = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
 
-                    StellarAddress.Companion.Generate(this).execute(decryptedData)
+                    when {
+                        pinViewState!!.type == PinType.CHECK -> {
+                            StellarAddress.Companion.Generate(this).execute(decryptedData)
+                            launchWallet()
+                        }
+                        pinViewState!!.type == PinType.CLEAR_WALLET -> wipeAndRestart()
 
-                    launchWallet()
+                        pinViewState!!.type == PinType.VIEW_PHRASE -> {
+                            val intent = Intent(this, ShowMnemonicActivity::class.java)
+                            intent.putExtra(ShowMnemonicActivity.INTENT_DISPLAY_PHRASE, true)
+                            intent.putExtra(ShowMnemonicActivity.DECRYPTED_PHRASE, decryptedData)
+                            startActivity(intent)
+                            finish()
+                        }
+                    }
+                } else {
+                    onIncorrectPin()
                 }
             }
         }
@@ -120,9 +131,14 @@ class PinActivity : BaseActivity(), PinLockListener, OnWalletSeedCreated, OnLoad
                 showWrongPinDots(false)
                 pinLockView.resetPinLockView()
                 numAttempts++
-                if (pinViewState!!.type == PinType.CHECK && numAttempts == MAX_ATTEMPTS) {
-                    setResult(RESULT_FAIL)
-                    finishActivity()
+                if (numAttempts == MAX_ATTEMPTS) {
+
+                    if (pinViewState!!.type == PinType.CHECK) {
+                        setResult(RESULT_FAIL)
+                        finishActivity()
+                    } else {
+                        wipeAndRestart()
+                    }
                 }
             }
         })
@@ -175,5 +191,20 @@ class PinActivity : BaseActivity(), PinLockListener, OnWalletSeedCreated, OnLoad
         }
     }
 
+    //endregion
+
+    //region Encryption and Decryption
+    private fun isCorrectPinMasterKey(pin: String) : java.security.KeyPair? {
+        val keyStoreWrapper = KeyStoreWrapper(applicationContext)
+
+        return keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
+    }
+
+    private fun wipeAndRestart() {
+        WalletApplication.localStore!!.clearUserData()
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+    }
     //endregion
 }
