@@ -36,7 +36,7 @@ open class BaseActivity : AppCompatActivity() {
 
     open fun launchPINView(pinType: PinType, message: String, mnemonic : String) {
         val pinViewState = PinViewState(pinType, message, "", mnemonic)
-        PinFlowController.launchPinActivity(this, pinViewState, true)
+        PinFlowController.launchPinActivity(this, pinViewState, false)
     }
 
     //endregion
