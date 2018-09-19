@@ -7,6 +7,7 @@ import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import org.stellar.sdk.KeyPair
 import org.stellar.sdk.Server
 import org.stellar.sdk.requests.ErrorResponse
+import org.stellar.sdk.requests.RequestBuilder
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.Page
 import org.stellar.sdk.responses.effects.EffectResponse
@@ -43,7 +44,7 @@ class Horizon {
                 val server = Server(PROD_SERVER)
                 var effectResults : Page<EffectResponse>? = null
                 try {
-                    effectResults = server.effects().forAccount(pair[0]).execute()
+                    effectResults = server.effects().order(RequestBuilder.Order.DESC).forAccount(pair[0]).execute()
                 } catch (error : ErrorResponse) {
                     Log.d(TAG, error.body.toString())
                 }
