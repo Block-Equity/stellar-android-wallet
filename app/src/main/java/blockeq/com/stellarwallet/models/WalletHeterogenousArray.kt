@@ -8,7 +8,6 @@ import org.stellar.sdk.responses.effects.AccountCreditedEffectResponse
 import org.stellar.sdk.responses.effects.AccountDebitedEffectResponse
 import org.stellar.sdk.responses.effects.EffectResponse
 import org.stellar.sdk.responses.effects.TradeEffectResponse
-import org.stellar.sdk.xdr.AssetType
 
 class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: AvailableBalance,
                               pair: Pair<*, *>, effectsList: ArrayList<EffectResponse>?) : ArrayList<Any>() {
@@ -54,18 +53,18 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
     //endregion
 
     private fun addFilteredEffects(list: ArrayList<EffectResponse>?) {
-        val filteredEffects = getFilteredEffects(list, AssetType.ASSET_TYPE_NATIVE)
+        val filteredEffects = getFilteredEffects(list, "native")
         if (filteredEffects != null) {
-            array.add(convertEffectsToAccountEffects(filteredEffects))
+            array.addAll(convertEffectsToAccountEffects(filteredEffects))
         }
     }
 
-    private fun getFilteredEffects(list: ArrayList<EffectResponse>?, assetType: AssetType) : ArrayList<EffectResponse>? {
+    private fun getFilteredEffects(list: ArrayList<EffectResponse>?, assetType: String) : ArrayList<EffectResponse>? {
         if (list == null) return null
 
         return (list.filter {
-            (it.type == EffectType.RECEIVED.value && (it as AccountCreditedEffectResponse).asset == assetType) ||
-            (it.type == EffectType.SENT.value && (it as AccountDebitedEffectResponse).asset == assetType) ||
+            (it.type == EffectType.RECEIVED.value && getAssetCode(it) == assetType) ||
+            (it.type == EffectType.SENT.value && getAssetCode(it) == assetType) ||
             (it.type != EffectType.RECEIVED.value && it.type != EffectType.SENT.value)
         } as ArrayList)
         //TODO: Map -> cast to concrete subclasses
