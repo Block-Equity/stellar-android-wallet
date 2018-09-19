@@ -7,10 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.models.AvailableBalance
-import blockeq.com.stellarwallet.models.TotalBalance
-import blockeq.com.stellarwallet.models.AccountEffect
-import blockeq.com.stellarwallet.models.EffectType
+import blockeq.com.stellarwallet.models.*
 
 
 class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -27,7 +24,8 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
     }
 
     enum class TransactionViewType(val value :Int) {
-        TOTAL(0), AVAILABLE(1), HEADER(2), TRANSACTION(3)
+        TOTAL(0), AVAILABLE(1), HEADER(2),
+        ACCOUNT_EFFECT(3), TRADE_EFFECT(4)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -46,9 +44,13 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
                 val v = inflater.inflate(R.layout.item_header_transaction_list, parent, false)
                 TransactionHeaderViewHolder(v)
             }
+            TransactionViewType.TRADE_EFFECT.value -> {
+                val v = inflater.inflate(R.layout., parent, false)
+                TradeEffectViewHolder(v)
+            }
             else -> {
-                val v = inflater.inflate(R.layout.item_transaction, parent, false)
-                TransactionViewHolder(v)
+                val v = inflater.inflate(R.layout.item_account_effect, parent, false)
+                AccountEffectViewHolder(v)
             }
         }
     }
@@ -62,7 +64,8 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
             items[position] is TotalBalance -> TransactionViewType.TOTAL.value
             items[position] is AvailableBalance -> TransactionViewType.AVAILABLE.value
             items[position] is Pair<*, *> -> TransactionViewType.HEADER.value
-            items[position] is AccountEffect -> TransactionViewType.TRANSACTION.value
+            items[position] is AccountEffect -> TransactionViewType.ACCOUNT_EFFECT.value
+            items[position] is TradeEffect -> TransactionViewType.TRADE_EFFECT.value
             else -> 0
         }
     }
@@ -81,9 +84,12 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
                 val vh = holder as TransactionHeaderViewHolder
                 configureTransactionHeaderViewHolder(vh, position)
             }
-            TransactionViewType.TRANSACTION.value -> {
-                val vh = holder as TransactionViewHolder
-                configureTransactionViewHolder(vh, position)
+            TransactionViewType.ACCOUNT_EFFECT.value -> {
+                val vh = holder as AccountEffectViewHolder
+                configureAccountEffectViewHolder(vh, position)
+            }
+            TransactionViewType.TRADE_EFFECT.value -> {
+
             }
         }
     }
@@ -135,7 +141,19 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
         }
     }
 
-    class TransactionViewHolder(v : View) : RecyclerView.ViewHolder(v) {
+    class AccountEffectViewHolder(v : View) : RecyclerView.ViewHolder(v) {
+        var amount : TextView? = null
+        var date : TextView? = null
+        var transactionType : TextView? = null
+
+        init {
+            amount = v.findViewById(R.id.amountTextView)
+            date = v.findViewById(R.id.dateTextView)
+            transactionType = v.findViewById(R.id.transactionTypeTextView)
+        }
+    }
+
+    class TradeEffectViewHolder(v : View) : RecyclerView.ViewHolder(v) {
         var amount : TextView? = null
         var date : TextView? = null
         var transactionType : TextView? = null
@@ -166,7 +184,7 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
         viewHolder.amountTextView!!.text = pair.second.toString()
     }
 
-    private fun configureTransactionViewHolder(viewHolder : TransactionViewHolder, position : Int) {
+    private fun configureAccountEffectViewHolder(viewHolder : AccountEffectViewHolder, position : Int) {
         val transaction = items[position] as AccountEffect
 
         viewHolder.amount!!.text = transaction.amount
