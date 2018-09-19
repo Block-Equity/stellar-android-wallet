@@ -45,7 +45,7 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
                 TransactionHeaderViewHolder(v)
             }
             TransactionViewType.TRADE_EFFECT.value -> {
-                val v = inflater.inflate(R.layout., parent, false)
+                val v = inflater.inflate(R.layout.item_account_effect, parent, false)
                 TradeEffectViewHolder(v)
             }
             else -> {
@@ -89,6 +89,8 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
                 configureAccountEffectViewHolder(vh, position)
             }
             TransactionViewType.TRADE_EFFECT.value -> {
+                val vh = holder as TradeEffectViewHolder
+                configureTradeEffectViewHolder(vh, position)
 
             }
         }
@@ -191,13 +193,21 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
         viewHolder.date!!.text = transaction.createdAt
 
         viewHolder.transactionType!!.text = when(transaction.type) {
-            EffectType.RECEIVED.value -> EffectType.RECEIVED.value
-            EffectType.SENT.value -> EffectType.SENT.value
-            EffectType.CREATED.value -> EffectType.CREATED.value
-            EffectType.REMOVED.value -> EffectType.REMOVED.value
-            EffectType.TRADE.value -> EffectType.TRADE.value
-            else -> ""
+            EffectType.RECEIVED.value -> "Received"
+            EffectType.SENT.value -> "Sent"
+            EffectType.CREATED.value -> "Account created"
+            EffectType.REMOVED.value -> "Account Removed"
+            else -> "Error"
         }
+    }
+
+    private fun configureTradeEffectViewHolder(viewHolder : TradeEffectViewHolder, position : Int) {
+        val trade = items[position] as TradeEffect
+
+        viewHolder.amount!!.text = trade.boughtAmount //TODO: Equals which ever asset is the selected one? Adding braces depending on that
+        viewHolder.date!!.text = trade.createdAt
+
+        viewHolder.transactionType!!.text = "Trade " + trade.soldAsset + " for " + trade.boughtAsset
     }
 
     //endregion
