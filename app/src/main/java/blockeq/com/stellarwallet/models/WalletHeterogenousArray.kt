@@ -1,9 +1,12 @@
 package blockeq.com.stellarwallet.models
 
+import org.stellar.sdk.responses.effects.AccountCreditedEffectResponse
+import org.stellar.sdk.responses.effects.AccountDebitedEffectResponse
 import org.stellar.sdk.responses.effects.EffectResponse
+import org.stellar.sdk.xdr.AssetType
 
 class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: AvailableBalance,
-                              pair: Pair<*, *>, effectsList: ArrayList<EffectResponse>) : ArrayList<Any>() {
+                              pair: Pair<*, *>, effectsList: ArrayList<EffectResponse>?) : ArrayList<Any>() {
 
     companion object {
         const val TOTAL_INDEX = 0
@@ -18,7 +21,7 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
         array.add(totalBalance)
         array.add(availableBalance)
         array.add(pair)
-        array.add(effectsList)
+        addFilteredEffects(effectsList)
     }
 
     //region Update methods
@@ -40,9 +43,27 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
 
     fun updateEffectsList(list: ArrayList<EffectResponse>) {
         array.subList(EFFECTS_LIST_INDEX, array.size).clear()
-        array.add(list)
+        addFilteredEffects(list)
     }
 
     //endregion
+
+    private fun addFilteredEffects(list: ArrayList<EffectResponse>?) {
+        val filteredEffects = getFilteredEffects(list, AssetType.ASSET_TYPE_NATIVE)
+        if (filteredEffects != null) {
+            array.add(filteredEffects)
+        }
+    }
+
+    private fun getFilteredEffects(list: ArrayList<EffectResponse>?, assetType: AssetType) : ArrayList<EffectResponse>? {
+        if (list == null) return null
+
+        return (list.filter {
+            it.type == EffectType.CREATED.value ||
+                    (it.type == EffectType.RECEIVED.value && (it as AccountCreditedEffectResponse).asset == assetType) ||
+                    (it.type == EffectType.SENT.value && (it as AccountDebitedEffectResponse).asset == assetType)
+        } as ArrayList)
+        //TODO: Map -> cast to concrete subclasses
+    }
 
 }
