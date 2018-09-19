@@ -3,6 +3,7 @@ package blockeq.com.stellarwallet.services.networking
 import android.os.AsyncTask
 import android.util.Log
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
+import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import org.stellar.sdk.KeyPair
 import org.stellar.sdk.Server
 import org.stellar.sdk.requests.ErrorResponse
@@ -37,7 +38,7 @@ class Horizon {
             }
         }
 
-        class LoadEffectsTask() : AsyncTask<KeyPair, Void, ArrayList<EffectResponse>?>() {
+        class LoadEffectsTask(private val listener: OnLoadEffects) : AsyncTask<KeyPair, Void, ArrayList<EffectResponse>?>() {
             override fun doInBackground(vararg pair: KeyPair?): ArrayList<EffectResponse>? {
                 val server = Server(PROD_SERVER)
                 var effectResults : Page<EffectResponse>? = null
@@ -51,7 +52,7 @@ class Horizon {
             }
 
             override fun onPostExecute(result: ArrayList<EffectResponse>?) {
-                super.onPostExecute(result)
+                listener.onLoadEffects(result)
             }
 
         }

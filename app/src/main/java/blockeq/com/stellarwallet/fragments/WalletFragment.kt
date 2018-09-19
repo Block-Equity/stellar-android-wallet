@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,18 +15,23 @@ import blockeq.com.stellarwallet.adapters.WalletRecyclerViewAdapter
 import blockeq.com.stellarwallet.helpers.Constants.Companion.DEFAULT_ACCOUNT_BALANCE
 import blockeq.com.stellarwallet.helpers.Constants.Companion.LUMENS_ASSET_TYPE
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
+import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.models.AvailableBalance
 import blockeq.com.stellarwallet.models.TotalBalance
+import blockeq.com.stellarwallet.models.WalletHeterogenousArray
 import blockeq.com.stellarwallet.services.networking.Horizon
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.stellar.sdk.responses.AccountResponse
+import org.stellar.sdk.responses.effects.EffectResponse
 
 
-class WalletFragment : BaseFragment(), OnLoadAccount {
+class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     private var handler = Handler()
     private var runnableCode : Runnable? = null
     private var adapter : WalletRecyclerViewAdapter? = null
+    private var effectsList : java.util.ArrayList<EffectResponse>? = null
+    private var recyclerViewArrayList: WalletHeterogenousArray? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_wallet, container, false)
@@ -39,8 +43,8 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupUI()
         startPollingAccount()
+        setupUI()
 
         sendButton.setOnClickListener {
             startActivity(Intent(activity, MyWalletActivity::class.java))
@@ -59,7 +63,10 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
     }
 
     private fun bindAdapter() {
-        adapter = WalletRecyclerViewAdapter(getHeterogenousArray())
+        recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(loadBalance()),
+                AvailableBalance(loadBalance()), Pair("Activity", "Amount"), effectsList)
+
+        adapter = WalletRecyclerViewAdapter(recyclerViewArrayList!!.array)
         adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
             override fun onAssetDropdownClicked(view: View, position: Int) {
                 startActivity(Intent(activity, WalletsActivity::class.java))
@@ -92,20 +99,22 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
         }
     }
 
-    private fun getHeterogenousArray() : ArrayList<Any> {
-        val array = ArrayList<Any>()
-        array.add(TotalBalance(loadBalance()))
-        array.add(AvailableBalance(loadBalance()))
-        array.add(Pair("Activity", "Amount"))
+    //region Call backs
 
-        return array
+    override fun onLoadAccount(result: AccountResponse?) {
+        if (result != null) {
+            WalletApplication.localStore!!.balances = result.balances
+        }
     }
 
-    private fun updateBalance() {
-        // Change item
-
-        adapter!!.notifyItemChanged(0)
+    override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
+        if (result != null) {
+            recyclerViewArrayList!!.updateEffectsList(result)
+            adapter!!.notifyDataSetChanged()
+        }
     }
+
+    //endregion
 
 
     //region API Polling
@@ -114,20 +123,24 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
         runnableCode = object : Runnable {
             override fun run() {
 
-                Horizon.Companion.LoadAccountTask(this@WalletFragment)
-                        .execute(WalletApplication.session!!.keyPair)
+                if (WalletApplication.session != null) {
+
+                    Horizon.Companion.LoadAccountTask(this@WalletFragment)
+                            .execute(WalletApplication.session!!.keyPair)
+
+                    Horizon.Companion.LoadEffectsTask(this@WalletFragment)
+                            .execute(WalletApplication.session!!.keyPair)
+                }
 
                 handler.postDelayed(this, 5000)
             }
         }
+
+        handler.post(runnableCode)
     }
 
     private fun endPollingAccount() {
         handler.removeCallbacks(runnableCode)
-    }
-
-    override fun onLoadAccount(result: AccountResponse?) {
-        updateBalance()
     }
 
     //endregion

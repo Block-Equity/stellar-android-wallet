@@ -173,8 +173,11 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
         viewHolder.date!!.text = transaction.createdAt
 
         viewHolder.transactionType!!.text = when(transaction.type) {
-            EffectType.RECEIVE -> EffectType.RECEIVE.value
-            EffectType.SEND -> EffectType.SEND.value
+            EffectType.RECEIVED -> EffectType.RECEIVED.value
+            EffectType.SENT -> EffectType.SENT.value
+            EffectType.CREATED -> EffectType.CREATED.value
+            EffectType.REMOVED -> EffectType.REMOVED.value
+            EffectType.TRADE -> EffectType.TRADE.value
         }
     }
 

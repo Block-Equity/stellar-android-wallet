@@ -12,17 +12,12 @@ import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.helpers.StellarAddress
-import blockeq.com.stellarwallet.interfaces.OnLoadAccount
-import blockeq.com.stellarwallet.interfaces.OnWalletSeedCreated
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
-import blockeq.com.stellarwallet.services.networking.Horizon
 import com.andrognito.pinlockview.PinLockListener
 import kotlinx.android.synthetic.main.activity_pin.*
-import org.stellar.sdk.KeyPair
-import org.stellar.sdk.responses.AccountResponse
 
-class PinActivity : BaseActivity(), PinLockListener, OnWalletSeedCreated, OnLoadAccount {
+class PinActivity : BaseActivity(), PinLockListener {
 
     companion object {
         const val PIN_REQUEST_CODE = 0
@@ -80,7 +75,7 @@ class PinActivity : BaseActivity(), PinLockListener, OnWalletSeedCreated, OnLoad
                         val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
 
                         WalletApplication.localStore!!.encryptedPhrase = encryptedData
-                        StellarAddress.Companion.Generate(this).execute(pinViewState!!.phrase)
+                        StellarAddress.Companion.Generate().execute(pinViewState!!.phrase)
 
                         launchWallet()
                     }
@@ -96,7 +91,7 @@ class PinActivity : BaseActivity(), PinLockListener, OnWalletSeedCreated, OnLoad
 
                     when {
                         pinViewState!!.type == PinType.CHECK -> {
-                            StellarAddress.Companion.Generate(this).execute(decryptedData)
+                            StellarAddress.Companion.Generate().execute(decryptedData)
                             launchWallet()
                         }
                         pinViewState!!.type == PinType.CLEAR_WALLET -> wipeAndRestart()
@@ -176,23 +171,6 @@ class PinActivity : BaseActivity(), PinLockListener, OnWalletSeedCreated, OnLoad
 
     //endregion
 
-
-    //region Call backs
-
-    override fun onWalletSeedCreated(keyPair : KeyPair?) {
-        if (keyPair != null) {
-            Horizon.Companion.LoadAccountTask(this).execute(keyPair)
-            Horizon.Companion.LoadEffectsTask().execute(keyPair)
-        }
-    }
-
-    override fun onLoadAccount(result: AccountResponse?) {
-        if (result != null) {
-            WalletApplication.localStore!!.balances = result.balances
-        }
-    }
-
-    //endregion
 
     //region Encryption and Decryption
     private fun isCorrectPinMasterKey(pin: String) : java.security.KeyPair? {
