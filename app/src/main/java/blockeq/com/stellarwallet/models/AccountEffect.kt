@@ -6,6 +6,5 @@ enum class EffectType(val value : String) {
     TRADE("trade")
 }
 
-data class AccountEffect (var type: EffectType, var createdAt: String,
-                          var assetType: String?, var assetCode: String?,
-                          var amount: String?)
+data class AccountEffect (var type: String, var createdAt: String,
+                          var assetCode: String?, var amount: String?)
