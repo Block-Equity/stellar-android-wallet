@@ -115,6 +115,13 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     override fun onLoadAccount(result: AccountResponse?) {
         if (result != null) {
+
+            result.balances?.forEach {
+                if (it.assetType == LUMENS_ASSET_TYPE) {
+                    recyclerViewArrayList!!.updateTotalBalance(TotalBalance(it.balance))
+                }
+            }
+
             WalletApplication.localStore!!.balances = result.balances
         }
     }
