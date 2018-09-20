@@ -254,6 +254,6 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
 
     private fun truncateDecimalPlaces(string: String?): String {
         if (string == null) return ""
-        return string
+        return String.format("%.4f", string.toDouble())
     }
 }
