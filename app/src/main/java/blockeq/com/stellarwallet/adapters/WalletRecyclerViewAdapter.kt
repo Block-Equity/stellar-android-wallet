@@ -8,6 +8,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.models.*
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
+import org.threeten.bp.format.DateTimeFormatter
+import java.util.*
 
 
 class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -190,7 +194,7 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
         val transaction = items[position] as AccountEffect
 
         viewHolder.amount!!.text = transaction.amount
-        viewHolder.date!!.text = transaction.createdAt
+        viewHolder.date!!.text = getFormattedDate(transaction.createdAt)
 
         viewHolder.transactionType!!.text = when(transaction.type) {
             EffectType.RECEIVED.value -> "Received"
@@ -205,10 +209,16 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
         val trade = items[position] as TradeEffect
 
         viewHolder.amount!!.text = trade.boughtAmount //TODO: Equals which ever asset is the selected one? Adding braces depending on that
-        viewHolder.date!!.text = trade.createdAt
+        viewHolder.date!!.text = getFormattedDate(trade.createdAt)
 
         viewHolder.transactionType!!.text = "Trade " + trade.soldAsset + " for " + trade.boughtAsset
     }
 
     //endregion
+
+    private fun getFormattedDate(str: String):String {
+        val formatter = DateTimeFormatter.ofPattern("MMM dd, uuuu", Locale.ENGLISH)
+                .withZone(ZoneId.of("UTC"))
+        return formatter.format(Instant.parse(str))
+    }
 }
