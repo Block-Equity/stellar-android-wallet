@@ -13,13 +13,13 @@ class StellarAddress {
 
         const val USER_INDEX = 0
 
-        class Generate : AsyncTask<String, Void, KeyPair>() {
+        class Generate : AsyncTask<String, Void, Void>() {
 
-            override fun doInBackground(vararg mnemonic: String) : KeyPair? {
+            override fun doInBackground(vararg mnemonic: String): Void? {
                 val keyPair = Wallet.createKeyPair(mnemonic[0].toCharArray(), null, USER_INDEX)
                 WalletApplication.localStore!!.publicKey = keyPair.accountId
                 WalletApplication.session = Session(keyPair)
-                return keyPair
+                return null
             }
 
         }
