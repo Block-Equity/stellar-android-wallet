@@ -205,6 +205,24 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
             EffectType.SENT.value -> "Sent"
             EffectType.CREATED.value -> "Account created"
             EffectType.REMOVED.value -> "Account Removed"
+            EffectType.ACCOUNT_HOME_DOMAIN_UPDATED.value -> "Account home domain updated"
+            EffectType.ACCOUNT_FLAGS_UPDATED.value -> "Account flags updated"
+            EffectType.ACCOUNT_INFLATION_DESTINATION_UPDATED.value -> "Account inflation destination updated"
+            EffectType.SIGNER_CREATED.value -> "Signer created"
+            EffectType.SIGNER_REMOVED.value -> "Signer removed"
+            EffectType.SIGNER_UPDATED.value -> "Signer updated"
+            EffectType.TRUSTLINE_CREATED.value -> "Trustline created"
+            EffectType.TRUSTLINE_REMOVED.value -> "Trustline removed"
+            EffectType.TRUSTLINE_UPDATED.value -> "Trustline updated"
+            EffectType.TRUSTLINE_AUTHORIZED.value -> "Trustline authorized"
+            EffectType.TRUSTLINE_DEAUTHORIZED.value -> "Trustline deauthorized"
+            EffectType.OFFER_CREATED.value -> "Offer created"
+            EffectType.OFFER_REMOVED.value -> "Offer removed"
+            EffectType.OFFER_UPDATED.value -> "Offer updated"
+            EffectType.DATA_CREATED.value -> "Data created"
+            EffectType.DATA_REMOVED.value -> "Data removed"
+            EffectType.DATA_UPDATED.value -> "Data updated"
+            EffectType.SEQUENCE_BUMPED.value -> "Sequence bumped"
             else -> "Error"
         }
 
@@ -212,6 +230,8 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
             viewHolder.dot!!.setColorFilter(context.resources.getColor(R.color.mantis), PorterDuff.Mode.SRC_IN)
         } else if (transaction.type == EffectType.SENT.value) {
             viewHolder.dot!!.setColorFilter(context.resources.getColor(R.color.apricot), PorterDuff.Mode.SRC_IN)
+            val bracketedText = "(" + viewHolder.amount!!.text + ")"
+            viewHolder.amount!!.text = bracketedText
         }
     }
 
