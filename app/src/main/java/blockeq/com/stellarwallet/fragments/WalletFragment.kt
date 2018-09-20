@@ -1,12 +1,15 @@
 package blockeq.com.stellarwallet.fragments
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.MyWalletActivity
@@ -57,6 +60,8 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         endPollingAccount()
     }
 
+    //region User Interface
+
     private fun setupUI() {
         bindAdapter()
         loadBalance()
@@ -99,6 +104,13 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         }
     }
 
+    private fun displayNoNetwork() {
+        Toast.makeText(activity, getString(R.string.no_network), Toast.LENGTH_SHORT).show()
+
+    }
+
+    //endregion
+
     //region Call backs
 
     override fun onLoadAccount(result: AccountResponse?) {
@@ -123,13 +135,15 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         runnableCode = object : Runnable {
             override fun run() {
 
-                if (WalletApplication.session != null) {
+                if (WalletApplication.session != null && isNetworkAvailable()) {
 
                     Horizon.Companion.LoadAccountTask(this@WalletFragment)
                             .execute(WalletApplication.session!!.keyPair)
 
                     Horizon.Companion.LoadEffectsTask(this@WalletFragment)
                             .execute(WalletApplication.session!!.keyPair)
+                } else {
+                    displayNoNetwork()
                 }
 
                 handler.postDelayed(this, 5000)
@@ -141,6 +155,12 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     private fun endPollingAccount() {
         handler.removeCallbacks(runnableCode)
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected
     }
 
     //endregion
