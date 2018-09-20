@@ -14,6 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/RegularText"
+        android:textSize="@dimen/text_size_medium"
         android:layout_toEndOf="@+id/iconImageView"
         android:text="Sent"/>
 
@@ -23,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/transactionTypeTextView"
         style="@style/LongDescription"
+        android:layout_marginTop="@dimen/margin_padding_size_small"
         android:textColor="@color/paleSky"
         android:text="Sep 12, 2018"/>
 
@@ -31,6 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/RegularText"
+        android:textSize="@dimen/text_size_medium"
         android:text="2.0000"
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"/>

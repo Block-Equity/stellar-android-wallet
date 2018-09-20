@@ -174,13 +174,13 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
     private fun configureTotalBalanceViewHolder(viewHolder : TotalBalanceViewHolder,
                                                 position : Int) {
         val totalBalance = items[position] as TotalBalance
-        viewHolder.balance!!.text = totalBalance.balance
+        viewHolder.balance!!.text = truncateDecimalPlaces(totalBalance.balance)
     }
 
     private fun configureAvailableBalanceViewHolder(viewHolder : AvailableBalanceViewHolder,
                                                 position : Int) {
         val availableBalance = items[position] as AvailableBalance
-        viewHolder.balance!!.text = availableBalance.balance
+        viewHolder.balance!!.text = truncateDecimalPlaces(availableBalance.balance)
     }
 
     private fun configureTransactionHeaderViewHolder(viewHolder : TransactionHeaderViewHolder,
@@ -193,7 +193,7 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
     private fun configureAccountEffectViewHolder(viewHolder : AccountEffectViewHolder, position : Int) {
         val transaction = items[position] as AccountEffect
 
-        viewHolder.amount!!.text = transaction.amount
+        viewHolder.amount!!.text = truncateDecimalPlaces(transaction.amount)
         viewHolder.date!!.text = getFormattedDate(transaction.createdAt)
 
         viewHolder.transactionType!!.text = when(transaction.type) {
@@ -208,7 +208,7 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
     private fun configureTradeEffectViewHolder(viewHolder : TradeEffectViewHolder, position : Int) {
         val trade = items[position] as TradeEffect
 
-        viewHolder.amount!!.text = trade.boughtAmount //TODO: Equals which ever asset is the selected one? Adding braces depending on that
+        viewHolder.amount!!.text = truncateDecimalPlaces(trade.boughtAmount) //TODO: Equals which ever asset is the selected one? Adding braces depending on that
         viewHolder.date!!.text = getFormattedDate(trade.createdAt)
 
         viewHolder.transactionType!!.text = "Trade " + trade.soldAsset + " for " + trade.boughtAsset
@@ -220,5 +220,10 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
         val formatter = DateTimeFormatter.ofPattern("MMM dd, uuuu", Locale.ENGLISH)
                 .withZone(ZoneId.of("UTC"))
         return formatter.format(Instant.parse(str))
+    }
+
+    private fun truncateDecimalPlaces(string: String?): String {
+        if (string == null) return ""
+        return string
     }
 }
