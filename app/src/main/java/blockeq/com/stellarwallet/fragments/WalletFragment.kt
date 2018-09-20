@@ -71,7 +71,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(loadBalance()),
                 AvailableBalance(loadBalance()), Pair("Activity", "Amount"), effectsList)
 
-        adapter = WalletRecyclerViewAdapter(recyclerViewArrayList!!.array)
+        adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList!!.array)
         adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
             override fun onAssetDropdownClicked(view: View, position: Int) {
                 startActivity(Intent(activity, WalletsActivity::class.java))

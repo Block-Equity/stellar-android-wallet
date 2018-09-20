@@ -1,5 +1,7 @@
 package blockeq.com.stellarwallet.adapters
 
+import android.content.Context
+import android.graphics.PorterDuff
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +16,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 
 
-class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var onAssetsDropdownListener : OnAssetDropdownListener? = null
     private var onLearnMoreListener : OnLearnMoreButtonListener? = null
@@ -151,11 +153,13 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
         var amount : TextView? = null
         var date : TextView? = null
         var transactionType : TextView? = null
+        var dot : ImageView? = null
 
         init {
             amount = v.findViewById(R.id.amountTextView)
             date = v.findViewById(R.id.dateTextView)
             transactionType = v.findViewById(R.id.transactionTypeTextView)
+            dot = v.findViewById(R.id.iconImageView)
         }
     }
 
@@ -202,6 +206,12 @@ class WalletRecyclerViewAdapter(var items : ArrayList<Any>) : RecyclerView.Adapt
             EffectType.CREATED.value -> "Account created"
             EffectType.REMOVED.value -> "Account Removed"
             else -> "Error"
+        }
+
+        if (transaction.type == EffectType.RECEIVED.value) {
+            viewHolder.dot!!.setColorFilter(context.resources.getColor(R.color.mantis), PorterDuff.Mode.SRC_IN)
+        } else if (transaction.type == EffectType.SENT.value) {
+            viewHolder.dot!!.setColorFilter(context.resources.getColor(R.color.apricot), PorterDuff.Mode.SRC_IN)
         }
     }
 
