@@ -4,10 +4,7 @@ import org.stellar.sdk.AssetTypeCreditAlphaNum
 import org.stellar.sdk.AssetTypeCreditAlphaNum12
 import org.stellar.sdk.AssetTypeCreditAlphaNum4
 import org.stellar.sdk.AssetTypeNative
-import org.stellar.sdk.responses.effects.AccountCreditedEffectResponse
-import org.stellar.sdk.responses.effects.AccountDebitedEffectResponse
-import org.stellar.sdk.responses.effects.EffectResponse
-import org.stellar.sdk.responses.effects.TradeEffectResponse
+import org.stellar.sdk.responses.effects.*
 
 class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: AvailableBalance,
                               pair: Pair<*, *>, effectsList: ArrayList<EffectResponse>?) : ArrayList<Any>() {
@@ -118,6 +115,8 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
             return effectResponse.amount
         } else if (effectResponse is AccountDebitedEffectResponse) {
             return effectResponse.amount
+        } else if (effectResponse is AccountCreatedEffectResponse) {
+            return effectResponse.startingBalance
         } else {
             return null
         }
