@@ -10,6 +10,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.models.*
+import blockeq.com.stellarwallet.utils.StringFormat.Companion.getFormattedDate
+import blockeq.com.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
@@ -238,22 +240,12 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     private fun configureTradeEffectViewHolder(viewHolder : TradeEffectViewHolder, position : Int) {
         val trade = items[position] as TradeEffect
 
-        viewHolder.amount!!.text = truncateDecimalPlaces(trade.boughtAmount) //TODO: Equals which ever asset is the selected one? Adding braces depending on that
+        //TODO: Equals which ever asset is the selected one? Adding braces depending on that
+        viewHolder.amount!!.text = truncateDecimalPlaces(trade.boughtAmount)
         viewHolder.date!!.text = getFormattedDate(trade.createdAt)
 
         viewHolder.transactionType!!.text = "Trade " + trade.soldAsset + " for " + trade.boughtAsset
     }
 
     //endregion
-
-    private fun getFormattedDate(str: String):String {
-        val formatter = DateTimeFormatter.ofPattern("MMM dd, uuuu", Locale.ENGLISH)
-                .withZone(ZoneId.of("UTC"))
-        return formatter.format(Instant.parse(str))
-    }
-
-    private fun truncateDecimalPlaces(string: String?): String {
-        if (string == null) return ""
-        return String.format("%.4f", string.toDouble())
-    }
 }
