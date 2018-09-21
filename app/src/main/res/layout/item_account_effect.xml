@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="@dimen/activity_vertical_margin"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iconImageView"
+        android:src="@drawable/colored_dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginEnd="@dimen/activity_vertical_margin"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/iconImageView">
+
+        <TextView
+            android:id="@+id/transactionTypeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/RegularText"
+            android:textSize="@dimen/text_size_medium"
+            android:text="Sent" />
+
+        <TextView
+            android:id="@+id/dateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/LongDescription"
+            android:layout_marginTop="@dimen/margin_padding_size_small"
+            android:textColor="@color/paleSky"
+            android:text="Sep 12, 2018" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/amountTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/RegularText"
+        android:textSize="@dimen/text_size_medium"
+        android:text="2.0000"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>

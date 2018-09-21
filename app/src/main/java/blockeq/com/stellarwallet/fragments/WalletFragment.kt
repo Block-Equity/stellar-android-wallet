@@ -3,24 +3,37 @@ package blockeq.com.stellarwallet.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.MyWalletActivity
 import blockeq.com.stellarwallet.activities.WalletsActivity
+import blockeq.com.stellarwallet.adapters.WalletRecyclerViewAdapter
 import blockeq.com.stellarwallet.helpers.Constants.Companion.DEFAULT_ACCOUNT_BALANCE
 import blockeq.com.stellarwallet.helpers.Constants.Companion.LUMENS_ASSET_TYPE
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
+import blockeq.com.stellarwallet.interfaces.OnLoadEffects
+import blockeq.com.stellarwallet.models.AvailableBalance
+import blockeq.com.stellarwallet.models.TotalBalance
+import blockeq.com.stellarwallet.models.WalletHeterogenousArray
 import blockeq.com.stellarwallet.services.networking.Horizon
+import blockeq.com.stellarwallet.utils.NetworkUtils
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.stellar.sdk.responses.AccountResponse
+import org.stellar.sdk.responses.effects.EffectResponse
 
-class WalletFragment : BaseFragment(), OnLoadAccount {
 
-    var handler = Handler()
+class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
+
+    private var handler = Handler()
     private var runnableCode : Runnable? = null
+    private var adapter : WalletRecyclerViewAdapter? = null
+    private var effectsList : java.util.ArrayList<EffectResponse>? = null
+    private var recyclerViewArrayList: WalletHeterogenousArray? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_wallet, container, false)
@@ -32,13 +45,9 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupUI()
         startPollingAccount()
+        setupUI()
 
-        assetsButton.setOnClickListener {
-            startActivity(Intent(activity, WalletsActivity::class.java))
-            activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
-        }
         sendButton.setOnClickListener {
             startActivity(Intent(activity, MyWalletActivity::class.java))
             activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
@@ -50,23 +59,80 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
         endPollingAccount()
     }
 
+    //region User Interface
+
     private fun setupUI() {
+        bindAdapter()
         loadBalance()
     }
 
-    private fun loadBalance() {
+    private fun bindAdapter() {
+        recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(loadBalance()),
+                AvailableBalance(loadBalance()), Pair("Activity", "Amount"), effectsList)
+
+        adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList!!.array)
+        adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
+            override fun onAssetDropdownClicked(view: View, position: Int) {
+                startActivity(Intent(activity, WalletsActivity::class.java))
+                activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+            }
+
+        })
+        adapter!!.setOnLearnMoreButtonListener(object : WalletRecyclerViewAdapter.OnLearnMoreButtonListener {
+            override fun onLearnMoreButtonClicked(view: View, position: Int) {
+
+            }
+
+        })
+        walletRecyclerView.adapter = adapter
+        walletRecyclerView.layoutManager = LinearLayoutManager(activity)
+    }
+
+    private fun loadBalance() : String {
         val balances = WalletApplication.localStore!!.balances
 
         if (balances != null) {
             balances.forEach {
                 if (it.assetType == LUMENS_ASSET_TYPE) {
-                    balanceTextView.text = it.balance
+                    return it.balance
                 }
             }
+            return DEFAULT_ACCOUNT_BALANCE
         } else {
-            balanceTextView.text = DEFAULT_ACCOUNT_BALANCE
+            return DEFAULT_ACCOUNT_BALANCE
         }
     }
+
+    private fun displayNoNetwork() {
+        Toast.makeText(activity, getString(R.string.no_network), Toast.LENGTH_SHORT).show()
+
+    }
+
+    //endregion
+
+    //region Call backs
+
+    override fun onLoadAccount(result: AccountResponse?) {
+        if (result != null) {
+
+            result.balances?.forEach {
+                if (it.assetType == LUMENS_ASSET_TYPE) {
+                    recyclerViewArrayList!!.updateTotalBalance(TotalBalance(it.balance))
+                }
+            }
+
+            WalletApplication.localStore!!.balances = result.balances
+        }
+    }
+
+    override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
+        if (result != null) {
+            recyclerViewArrayList!!.updateEffectsList(result)
+            adapter!!.notifyDataSetChanged()
+        }
+    }
+
+    //endregion
 
 
     //region API Polling
@@ -75,20 +141,26 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
         runnableCode = object : Runnable {
             override fun run() {
 
-                Horizon.Companion.LoadAccountTask(this@WalletFragment)
-                        .execute(WalletApplication.session!!.keyPair)
+                if (WalletApplication.session != null && NetworkUtils(activity!!).isNetworkAvailable()) {
+
+                    Horizon.Companion.LoadAccountTask(this@WalletFragment)
+                            .execute(WalletApplication.session!!.keyPair)
+
+                    Horizon.Companion.LoadEffectsTask(this@WalletFragment)
+                            .execute(WalletApplication.session!!.keyPair)
+                } else {
+                    displayNoNetwork()
+                }
 
                 handler.postDelayed(this, 5000)
             }
         }
+
+        handler.post(runnableCode)
     }
 
     private fun endPollingAccount() {
         handler.removeCallbacks(runnableCode)
-    }
-
-    override fun onLoadAccount(result: AccountResponse?) {
-        loadBalance()
     }
 
     //endregion
