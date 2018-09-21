@@ -4,13 +4,13 @@ import android.os.Bundle
 import blockeq.com.stellarwallet.R
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_base_popup.*
-import kotlinx.android.synthetic.main.content_my_wallet.*
+import kotlinx.android.synthetic.main.content_send_to_address.*
 import android.widget.Toast
 import android.content.Intent
 
 
 
-class MyWalletActivity : BasePopupActivity() {
+class SendToAddressActivity : BasePopupActivity() {
 
     var availableBalance = "6.02 XLM"
     val ADDRESS_DATA = "ADDRESS"
@@ -20,7 +20,7 @@ class MyWalletActivity : BasePopupActivity() {
     }
 
     override fun setContent(): Int {
-        return R.layout.content_my_wallet
+        return R.layout.content_send_to_address
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

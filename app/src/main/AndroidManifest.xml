@@ -36,7 +36,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activities.MyWalletActivity"
+            android:name=".activities.SendToAddressActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
