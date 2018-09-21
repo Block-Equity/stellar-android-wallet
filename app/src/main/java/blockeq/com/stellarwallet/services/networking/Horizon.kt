@@ -2,8 +2,12 @@ package blockeq.com.stellarwallet.services.networking
 
 import android.os.AsyncTask
 import android.util.Log
+import blockeq.com.stellarwallet.WalletApplication
+import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
+import blockeq.com.stellarwallet.utils.StringFormat
+import kotlinx.android.synthetic.main.activity_base_popup.*
 import org.stellar.sdk.KeyPair
 import org.stellar.sdk.Server
 import org.stellar.sdk.requests.ErrorResponse
@@ -56,6 +60,16 @@ class Horizon {
                 listener.onLoadEffects(result)
             }
 
+        }
+
+        fun getBalance() : String {
+            WalletApplication.localStore!!.balances?.forEach {
+                if (it.assetType == Constants.LUMENS_ASSET_TYPE) {
+                    //TODO: When switching assets, get the right balance for asset
+                    return StringFormat.truncateDecimalPlaces(it.balance)
+                }
+            }
+            return Constants.DEFAULT_ACCOUNT_BALANCE
         }
     }
 }

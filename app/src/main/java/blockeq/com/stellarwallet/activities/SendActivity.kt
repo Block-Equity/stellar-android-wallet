@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
 import kotlinx.android.synthetic.main.activity_base_popup.*
 import kotlinx.android.synthetic.main.contents_send.*
@@ -18,8 +19,6 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener {
     private var amountText: String = ""
     private var amount: Double = 0.0
 
-    var availableBalance = "6.02 XLM"
-
     override fun setTitle(): Int {
         return R.string.title_activity_my_wallet
     }
@@ -30,7 +29,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        titleText.text = availableBalance
+        titleText.text = getBalance() + " XLM"
 
         amount_text.text = "0"
         numberKeyboard.setListener(this)

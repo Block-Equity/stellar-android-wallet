@@ -7,6 +7,7 @@ import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
+import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
 import blockeq.com.stellarwallet.utils.StringFormat
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_base_popup.*
@@ -29,7 +30,7 @@ class SendToAddressActivity : BasePopupActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        loadBalance()
+        titleText.text = getBalance() + " XLM"
 
         camera_image_button.setOnClickListener { initiateScan() }
 
@@ -37,7 +38,7 @@ class SendToAddressActivity : BasePopupActivity() {
             val address = addressEditText.text.toString()
             if (address.length == STELLAR_ADDRESS_LENGTH) {
                 val intent = Intent(this, SendActivity::class.java).apply {
-                    putExtra(ADDRESS_DATA, addressEditText.text)
+                    putExtra(ADDRESS_DATA, address)
                 }
                 startActivity(intent)
 
@@ -52,14 +53,5 @@ class SendToAddressActivity : BasePopupActivity() {
 
     private fun initiateScan() {
         IntentIntegrator(this).setBeepEnabled(false).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE).initiateScan()
-    }
-
-    private fun loadBalance() {
-        WalletApplication.localStore!!.balances?.forEach {
-            if (it.assetType == Constants.LUMENS_ASSET_TYPE) {
-                //TODO: When switching assets, get the right balance for asset
-                titleText.text = StringFormat.truncateDecimalPlaces(it.balance) + " XLM"
-            }
-        }
     }
 }

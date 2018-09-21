@@ -22,6 +22,7 @@ import blockeq.com.stellarwallet.models.AvailableBalance
 import blockeq.com.stellarwallet.models.TotalBalance
 import blockeq.com.stellarwallet.models.WalletHeterogenousArray
 import blockeq.com.stellarwallet.services.networking.Horizon
+import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
 import blockeq.com.stellarwallet.utils.NetworkUtils
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.stellar.sdk.responses.AccountResponse
@@ -69,12 +70,11 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     private fun setupUI() {
         bindAdapter()
-        loadBalance()
     }
 
     private fun bindAdapter() {
-        recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(loadBalance()),
-                AvailableBalance(loadBalance()), Pair("Activity", "Amount"), effectsList)
+        recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(getBalance()),
+                AvailableBalance(getBalance()), Pair("Activity", "Amount"), effectsList)
 
         adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList!!.array)
         adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
@@ -92,21 +92,6 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         })
         walletRecyclerView.adapter = adapter
         walletRecyclerView.layoutManager = LinearLayoutManager(activity)
-    }
-
-    private fun loadBalance() : String {
-        val balances = WalletApplication.localStore!!.balances
-
-        if (balances != null) {
-            balances.forEach {
-                if (it.assetType == LUMENS_ASSET_TYPE) {
-                    return it.balance
-                }
-            }
-            return DEFAULT_ACCOUNT_BALANCE
-        } else {
-            return DEFAULT_ACCOUNT_BALANCE
-        }
     }
 
     private fun displayNoNetwork() {
