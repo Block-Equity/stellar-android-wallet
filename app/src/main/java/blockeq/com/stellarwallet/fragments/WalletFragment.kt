@@ -1,8 +1,6 @@
 package blockeq.com.stellarwallet.fragments
 
-import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
@@ -23,6 +21,7 @@ import blockeq.com.stellarwallet.models.AvailableBalance
 import blockeq.com.stellarwallet.models.TotalBalance
 import blockeq.com.stellarwallet.models.WalletHeterogenousArray
 import blockeq.com.stellarwallet.services.networking.Horizon
+import blockeq.com.stellarwallet.utils.NetworkUtils
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
@@ -142,7 +141,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         runnableCode = object : Runnable {
             override fun run() {
 
-                if (WalletApplication.session != null && isNetworkAvailable()) {
+                if (WalletApplication.session != null && NetworkUtils(activity!!).isNetworkAvailable()) {
 
                     Horizon.Companion.LoadAccountTask(this@WalletFragment)
                             .execute(WalletApplication.session!!.keyPair)
@@ -162,14 +161,6 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     private fun endPollingAccount() {
         handler.removeCallbacks(runnableCode)
-    }
-
-    // TODO: Use RxAndroid and improve the overall architecture of network calls
-    // Moving this to Horizon.kt
-    private fun isNetworkAvailable(): Boolean {
-        val connectivityManager = activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetworkInfo = connectivityManager.activeNetworkInfo
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected
     }
 
     //endregion
