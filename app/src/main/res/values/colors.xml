@@ -71,7 +71,7 @@
     <color name="addressLayoutBackGroundColor">@color/white</color>
 
     <!--Send-->
-    <color name="sendToTextColor">@color/silver</color>
+    <color name="sendToTextColor">@color/silverChalice</color>
     <color name="sendButtonColor">@color/toryBlue</color>
     <color name="currencyTextColor">@color/lightGray</color>
 
