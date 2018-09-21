@@ -164,6 +164,8 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         handler.removeCallbacks(runnableCode)
     }
 
+    // TODO: Use RxAndroid and improve the overall architecture of network calls
+    // Moving this to Horizon.kt
     private fun isNetworkAvailable(): Boolean {
         val connectivityManager = activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
