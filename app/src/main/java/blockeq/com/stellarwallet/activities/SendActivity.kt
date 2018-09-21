@@ -37,7 +37,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener {
 
         val address = intent.getStringExtra(ADDRESS_DATA)
 
-        findViewById<TextView>(R.id.address_text).apply {
+        findViewById<TextView>(R.id.addressEditText).apply {
             text = address
         }
 

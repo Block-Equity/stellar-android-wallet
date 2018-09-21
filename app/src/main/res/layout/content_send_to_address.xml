@@ -19,24 +19,26 @@
             android:textColor="@color/sendToTextColor"/>
 
         <LinearLayout
+            android:id="@+id/addressLayout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:layout_marginTop="25dp"
             android:layout_below="@+id/address_title"
             android:orientation="horizontal"
             android:background="@drawable/rounded_corner">
 
-            <TextView
-                android:id="@+id/address_text"
+            <EditText
+                android:id="@+id/addressEditText"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.8"
                 android:padding="12dp"
-                android:ellipsize="end"
                 android:background="@color/addressBackGroundColor"
-                android:maxLines="1"
-                android:gravity="center"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:scrollHorizontally="true"
+                android:digits="@string/stellar_address_alphabet"
+                android:inputType="textCapCharacters"
+                android:hint="@string/send_address_hint" />
 
             <ImageButton
                 android:id="@+id/camera_image_button"

@@ -48,7 +48,7 @@
             android:background="@drawable/rounded_corner">
 
             <TextView
-                android:id="@+id/address_text"
+                android:id="@+id/addressEditText"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.8"

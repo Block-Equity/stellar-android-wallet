@@ -6,6 +6,7 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="stellar_address_alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</string>
 
     <!--Navigation Menu-->
     <string name="nav_wallet">Wallet</string>
@@ -98,5 +99,6 @@
     <string name="to">To:</string>
     <string name="optional">(Optional)</string>
     <string name="memo">Memo:</string>
+    <string name="send_address_hint">Enter address here</string>
 
 </resources>

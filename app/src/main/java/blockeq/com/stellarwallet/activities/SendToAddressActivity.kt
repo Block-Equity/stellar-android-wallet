@@ -2,13 +2,16 @@ package blockeq.com.stellarwallet.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.animation.AnimationUtils
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants
+import blockeq.com.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
 import blockeq.com.stellarwallet.utils.StringFormat
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_base_popup.*
 import kotlinx.android.synthetic.main.content_send_to_address.*
+import kotlinx.android.synthetic.main.view_custom_selector.*
 
 
 class SendToAddressActivity : BasePopupActivity() {
@@ -30,16 +33,20 @@ class SendToAddressActivity : BasePopupActivity() {
 
         camera_image_button.setOnClickListener { initiateScan() }
 
-        next_button.isEnabled = false
         next_button.setOnClickListener {
+            val address = addressEditText.text.toString()
+            if (address.length == STELLAR_ADDRESS_LENGTH) {
+                val intent = Intent(this, SendActivity::class.java).apply {
+                    putExtra(ADDRESS_DATA, addressEditText.text)
+                }
+                startActivity(intent)
 
-            val intent = Intent(this, SendActivity::class.java).apply {
-                putExtra(ADDRESS_DATA, address_text.text)
+                this.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+            } else {
+                // Shake animation on the text
+                val shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
+                addressLayout.startAnimation(shakeAnimation)
             }
-            startActivity(intent)
-
-            this.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
-
         }
     }
 

@@ -26,7 +26,7 @@ class ReceiveActivity : BasePopupActivity() {
 
         val pubAddress = WalletApplication.localStore!!.publicKey
 
-        address_text.text = pubAddress
+        addressEditText.text = pubAddress
         generateQRCode(pubAddress!!, address_qrcode, 500)
         copy_image_button.setOnClickListener { copyAddressToClipBoard(pubAddress)  }
     }
