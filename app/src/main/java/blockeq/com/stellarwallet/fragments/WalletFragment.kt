@@ -11,6 +11,7 @@ import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.MyWalletActivity
+import blockeq.com.stellarwallet.activities.ReceiveActivity
 import blockeq.com.stellarwallet.activities.WalletsActivity
 import blockeq.com.stellarwallet.adapters.WalletRecyclerViewAdapter
 import blockeq.com.stellarwallet.helpers.Constants.Companion.DEFAULT_ACCOUNT_BALANCE
@@ -47,6 +48,11 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
         startPollingAccount()
         setupUI()
+
+        receiveButton.setOnClickListener {
+            startActivity(Intent(activity, ReceiveActivity::class.java))
+            activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+        }
 
         sendButton.setOnClickListener {
             startActivity(Intent(activity, MyWalletActivity::class.java))
