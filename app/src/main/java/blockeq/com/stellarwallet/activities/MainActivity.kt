@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.fragments.ReceiveFragment
 import blockeq.com.stellarwallet.fragments.SettingsFragment
 import blockeq.com.stellarwallet.fragments.TradingFragment
 import blockeq.com.stellarwallet.fragments.WalletFragment
@@ -31,11 +30,6 @@ class MainActivity : BaseActivity() {
             R.id.nav_trading -> {
                 val tradingFragment = TradingFragment.newInstance()
                 openFragment(tradingFragment)
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.nav_receive -> {
-                val receiveFragment = ReceiveFragment.newInstance()
-                openFragment(receiveFragment)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.nav_settings -> {

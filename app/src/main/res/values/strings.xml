@@ -86,6 +86,7 @@
     <string name="pin_canceled">PIN Verification Canceled</string>
 
     <!--Receive Fragment-->
+    <string name="receive_title">Receive</string>
     <string name="your_wallet_address">Your Wallet Address</string>
     <string name="address_copied_message">Address copied</string>
 
