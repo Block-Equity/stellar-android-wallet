@@ -1,12 +1,11 @@
 package blockeq.com.stellarwallet.activities
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import blockeq.com.stellarwallet.R
 import kotlinx.android.synthetic.main.activity_base_popup.*
 
-abstract class BasePopupActivity : AppCompatActivity() {
+abstract class BasePopupActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
