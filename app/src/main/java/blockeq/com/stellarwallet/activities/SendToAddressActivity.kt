@@ -50,7 +50,8 @@ class SendToAddressActivity : BasePopupActivity() {
     private fun loadBalance() {
         WalletApplication.localStore!!.balances?.forEach {
             if (it.assetType == Constants.LUMENS_ASSET_TYPE) {
-                titleText.text = StringFormat.truncateDecimalPlaces(it.balance)
+                //TODO: When switching assets, get the right balance for asset
+                titleText.text = StringFormat.truncateDecimalPlaces(it.balance) + " XLM"
             }
         }
     }
