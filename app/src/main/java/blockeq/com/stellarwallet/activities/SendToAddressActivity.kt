@@ -1,18 +1,18 @@
 package blockeq.com.stellarwallet.activities
 
+import android.content.Intent
 import android.os.Bundle
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
+import blockeq.com.stellarwallet.helpers.Constants
+import blockeq.com.stellarwallet.utils.StringFormat
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_base_popup.*
 import kotlinx.android.synthetic.main.content_send_to_address.*
-import android.widget.Toast
-import android.content.Intent
-
 
 
 class SendToAddressActivity : BasePopupActivity() {
 
-    var availableBalance = "6.02 XLM"
     val ADDRESS_DATA = "ADDRESS"
 
     override fun setTitle(): Int {
@@ -25,7 +25,9 @@ class SendToAddressActivity : BasePopupActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        titleText.text = availableBalance
+
+        loadBalance()
+
         camera_image_button.setOnClickListener { initiateScan() }
 
         next_button.isEnabled = false
@@ -45,18 +47,11 @@ class SendToAddressActivity : BasePopupActivity() {
         IntentIntegrator(this).setBeepEnabled(false).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE).initiateScan()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        if (result != null) {
-            if (result.contents == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
-            } else {
-                address_text.text = result.contents
-                next_button.isEnabled = true
+    private fun loadBalance() {
+        WalletApplication.localStore!!.balances?.forEach {
+            if (it.assetType == Constants.LUMENS_ASSET_TYPE) {
+                titleText.text = StringFormat.truncateDecimalPlaces(it.balance)
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
         }
     }
-
 }
