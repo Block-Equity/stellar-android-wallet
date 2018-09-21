@@ -67,7 +67,7 @@
     <color name="qrCodeLayoutBackGroundColor">@color/toryBlue</color>
     <color name="qrCodeBackGroundColor">@color/white</color>
     <color name="addressBackGroundColor">@color/alabaster</color>
-    <color name="addressTextColor">@color/silver</color>
+    <color name="addressTextColor">@color/silverChalice</color>
     <color name="addressLayoutBackGroundColor">@color/white</color>
 
     <!--Send-->
