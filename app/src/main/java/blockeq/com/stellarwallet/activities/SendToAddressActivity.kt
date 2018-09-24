@@ -3,6 +3,7 @@ package blockeq.com.stellarwallet.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
 import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
@@ -44,5 +45,19 @@ class SendToAddressActivity : BasePopupActivity() {
 
     private fun initiateScan() {
         IntentIntegrator(this).setBeepEnabled(false).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE).initiateScan()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        if (result != null) {
+            if (result.contents == null) {
+                Toast.makeText(this, "Scan cancelled", Toast.LENGTH_LONG).show()
+            } else {
+                addressEditText.setText(result.contents)
+                next_button.isEnabled = true
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 }
