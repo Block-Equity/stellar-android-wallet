@@ -4,13 +4,18 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
+import blockeq.com.stellarwallet.interfaces.OnSendPayment
+import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
+import blockeq.com.stellarwallet.utils.StringFormat.Companion.getNumDecimals
+import blockeq.com.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
 import kotlinx.android.synthetic.main.activity_base_popup.*
 import kotlinx.android.synthetic.main.contents_send.*
 
 
-class SendActivity : BasePopupActivity(), NumberKeyboardListener {
+class SendActivity : BasePopupActivity(), NumberKeyboardListener, OnSendPayment {
 
     private val MAX_ALLOWED_DECIMALS = 4
     val ADDRESS_DATA = "ADDRESS"
@@ -31,7 +36,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener {
         super.onCreate(savedInstanceState)
         titleText.text = getBalance() + " XLM"
 
-        amount_text.text = "0"
+        amountTextView.text = "0"
         numberKeyboard.setListener(this)
 
         val address = intent.getStringExtra(ADDRESS_DATA)
@@ -40,9 +45,13 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener {
             text = address
         }
 
-
-        send_button.setOnClickListener { Toast.makeText(this, "send clicked", Toast.LENGTH_LONG).show() }
+        send_button.setOnClickListener {
+            Horizon.Companion.SendTask(this, address, WalletApplication.session!!.keyPair,
+                    memoTextView.text.toString(), amountTextView.text.toString()).execute()
+        }
     }
+
+    //region User Interface
 
     override fun onNumberClicked(number: Int) {
         if (amountText.isEmpty() && number == 0) {
@@ -86,32 +95,21 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener {
         }
     }
 
-    /**
-     * Shows amount in UI.
-     */
     private fun showAmount(amount: String) {
-        amount_text.text = if (amount.isEmpty()) "0" else amount
+        amountTextView.text = if (amount.isEmpty()) "0" else amount
     }
 
-    /**
-     * Calculate the number of decimals of the string.
-     */
-    private fun getNumDecimals(num: String): Int {
-        return if (!hasDecimalPoint(num)) {
-            0
-        } else num.substring(num.indexOf('.') + 1, num.length).length
+    //endregion
+
+    //region Horizon callbacks
+    override fun OnSendSuccess() {
+        Toast.makeText(this, getString(R.string.send_success_message), Toast.LENGTH_LONG).show()
+        launchWallet()
+        
     }
 
-    /**
-     * Checks whether the string has a comma.
-     */
-    private fun hasDecimalPoint(text: String): Boolean {
-        for (i in 0 until text.length) {
-            if (text[i] == '.') {
-                return true
-            }
-        }
-        return false
+    override fun onSendError() {
+        Toast.makeText(this, getString(R.string.send_error_message), Toast.LENGTH_LONG).show()
     }
-
+    //endregion
 }

@@ -1,5 +1,6 @@
 package blockeq.com.stellarwallet.activities
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
@@ -32,6 +33,12 @@ open class BaseActivity : AppCompatActivity() {
     open fun launchPINView(pinType: PinType, message: String, mnemonic: String, isLogin: Boolean) {
         val pinViewState = PinViewState(pinType, message, "", mnemonic)
         PinFlowController.launchPinActivity(this, pinViewState, isLogin)
+    }
+
+    fun launchWallet() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
     }
 
     //endregion

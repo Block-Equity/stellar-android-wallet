@@ -63,19 +63,21 @@ class Horizon {
         }
 
         class SendTask(private val listener: OnSendPayment, private val destAddress: String,
-                       private val memo: String, private val amount : String) : AsyncTask<KeyPair, Void, Void>() {
+                       private val sourceKeyPair: KeyPair,
+                       private val memo: String, private val amount : String) : AsyncTask<Void, Void, ErrorResponse>() {
 
-            override fun doInBackground(vararg params: KeyPair?): Void? {
+            override fun doInBackground(vararg params: Void?): ErrorResponse? {
                 val server = Server(PROD_SERVER)
-                val sourceKeyPair = params[0]!!
                 val destKeyPair = KeyPair.fromAccountId(destAddress)
+
+                Network.usePublicNetwork()
 
                 try {
                     // Check if destination account exists
                     server.accounts().account(destKeyPair)
                 } catch (error : ErrorResponse) {
                     Log.d(TAG, error.body.toString())
-                    listener.onSendError()
+                    return error
                 }
 
                 try {
@@ -87,18 +89,13 @@ class Horizon {
                             // optional and does not affect how Stellar treats the transaction.
                             .addMemo(Memo.text(memo))
                             .build()
+
                     transaction.sign(sourceKeyPair)
 
                     try {
                         val response = server.submitTransaction(transaction)
-
-                        if (response.isSuccess) {
-                            listener.OnSendSuccess()
-                        } else {
-                            listener.onSendError()
-                        }
                     } catch (e: Exception) {
-                        listener.onSendError()
+                        return e as ErrorResponse
                         // If the result is unknown (no response body, timeout etc.) we simply resubmit
                         // already built transaction:
                         // SubmitTransactionResponse response = server.submitTransaction(transaction);
@@ -107,10 +104,18 @@ class Horizon {
 
                 } catch (error : ErrorResponse) {
                     Log.d(TAG, error.body.toString())
-                    listener.onSendError()
+                    return error
                 }
 
                 return null
+            }
+
+            override fun onPostExecute(result: ErrorResponse?) {
+                if (result != null) {
+                    listener.onSendError()
+                } else {
+                    listener.OnSendSuccess()
+                }
             }
         }
 
