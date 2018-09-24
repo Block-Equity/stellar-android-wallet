@@ -92,16 +92,8 @@ class Horizon {
 
                     transaction.sign(sourceKeyPair)
 
-                    try {
-                        val response = server.submitTransaction(transaction)
-                    } catch (e: Exception) {
-                        return e as ErrorResponse
-                        // If the result is unknown (no response body, timeout etc.) we simply resubmit
-                        // already built transaction:
-                        // SubmitTransactionResponse response = server.submitTransaction(transaction);
-                    }
-
-
+                    val response = server.submitTransaction(transaction)
+                    
                 } catch (error : ErrorResponse) {
                     Log.d(TAG, error.body.toString())
                     return error
