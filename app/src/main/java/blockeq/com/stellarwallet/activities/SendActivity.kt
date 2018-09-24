@@ -11,6 +11,7 @@ import blockeq.com.stellarwallet.interfaces.OnSendPayment
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
+import blockeq.com.stellarwallet.utils.NetworkUtils
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
@@ -58,9 +59,13 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, OnSendPayment 
         if (requestCode == PinActivity.PIN_REQUEST_CODE) {
             when (resultCode) {
                 Activity.RESULT_OK -> {
-                    progressBar.visibility = View.VISIBLE
-                    Horizon.Companion.SendTask(this, address, WalletApplication.session!!.keyPair,
-                            memoTextView.text.toString(), amountTextView.text.toString()).execute()
+                    if (NetworkUtils(this).isNetworkAvailable()) {
+                        progressBar.visibility = View.VISIBLE
+                        Horizon.Companion.SendTask(this, address, WalletApplication.session!!.keyPair,
+                                memoTextView.text.toString(), amountTextView.text.toString()).execute()
+                    } else {
+                        NetworkUtils(this).displayNoNetwork()
+                    }
                 }
                 PinActivity.RESULT_FAIL ->  WalletApplication.localStore!!.clearUserData()
                 Activity.RESULT_CANCELED -> {}

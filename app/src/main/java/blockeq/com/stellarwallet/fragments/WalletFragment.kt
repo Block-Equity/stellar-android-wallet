@@ -7,14 +7,12 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
-import blockeq.com.stellarwallet.activities.SendToAddressActivity
 import blockeq.com.stellarwallet.activities.ReceiveActivity
+import blockeq.com.stellarwallet.activities.SendToAddressActivity
 import blockeq.com.stellarwallet.activities.WalletsActivity
 import blockeq.com.stellarwallet.adapters.WalletRecyclerViewAdapter
-import blockeq.com.stellarwallet.helpers.Constants.Companion.DEFAULT_ACCOUNT_BALANCE
 import blockeq.com.stellarwallet.helpers.Constants.Companion.LUMENS_ASSET_TYPE
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
@@ -94,11 +92,6 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         walletRecyclerView.layoutManager = LinearLayoutManager(activity)
     }
 
-    private fun displayNoNetwork() {
-        Toast.makeText(activity, getString(R.string.no_network), Toast.LENGTH_SHORT).show()
-
-    }
-
     //endregion
 
     //region Call backs
@@ -140,7 +133,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
                     Horizon.Companion.LoadEffectsTask(this@WalletFragment)
                             .execute(WalletApplication.session!!.keyPair)
                 } else {
-                    displayNoNetwork()
+                    NetworkUtils(activity!!).displayNoNetwork()
                 }
 
                 handler.postDelayed(this, 5000)
