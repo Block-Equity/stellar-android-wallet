@@ -6,16 +6,16 @@ import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
+import blockeq.com.stellarwallet.interfaces.OnSendPayment
 import blockeq.com.stellarwallet.utils.StringFormat
-import kotlinx.android.synthetic.main.activity_base_popup.*
-import org.stellar.sdk.KeyPair
-import org.stellar.sdk.Server
+import org.stellar.sdk.*
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.requests.RequestBuilder
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.Page
 import org.stellar.sdk.responses.effects.EffectResponse
-import java.util.ArrayList
+import java.util.*
+
 
 class Horizon {
     companion object {
@@ -60,6 +60,58 @@ class Horizon {
                 listener.onLoadEffects(result)
             }
 
+        }
+
+        class SendTask(private val listener: OnSendPayment, private val destAddress: String,
+                       private val memo: String, private val amount : String) : AsyncTask<KeyPair, Void, Void>() {
+
+            override fun doInBackground(vararg params: KeyPair?): Void? {
+                val server = Server(PROD_SERVER)
+                val sourceKeyPair = params[0]!!
+                val destKeyPair = KeyPair.fromAccountId(destAddress)
+
+                try {
+                    // Check if destination account exists
+                    server.accounts().account(destKeyPair)
+                } catch (error : ErrorResponse) {
+                    Log.d(TAG, error.body.toString())
+                    listener.onSendError()
+                }
+
+                try {
+                    val sourceAccount = server.accounts().account(sourceKeyPair)
+
+                    val transaction = Transaction.Builder(sourceAccount)
+                            .addOperation(PaymentOperation.Builder(destKeyPair, AssetTypeNative(), amount).build())
+                            // A memo allows you to add your own metadata to a transaction. It's
+                            // optional and does not affect how Stellar treats the transaction.
+                            .addMemo(Memo.text(memo))
+                            .build()
+                    transaction.sign(sourceKeyPair)
+
+                    try {
+                        val response = server.submitTransaction(transaction)
+
+                        if (response.isSuccess) {
+                            listener.OnSendSuccess()
+                        } else {
+                            listener.onSendError()
+                        }
+                    } catch (e: Exception) {
+                        listener.onSendError()
+                        // If the result is unknown (no response body, timeout etc.) we simply resubmit
+                        // already built transaction:
+                        // SubmitTransactionResponse response = server.submitTransaction(transaction);
+                    }
+
+
+                } catch (error : ErrorResponse) {
+                    Log.d(TAG, error.body.toString())
+                    listener.onSendError()
+                }
+
+                return null
+            }
         }
 
         fun getBalance() : String {
