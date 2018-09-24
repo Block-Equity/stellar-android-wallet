@@ -90,9 +90,13 @@ class PinActivity : BaseActivity(), PinLockListener {
                     val decryptedData = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
 
                     when {
-                        pinViewState!!.type == PinType.CHECK -> {
+                        pinViewState!!.type == PinType.LOGIN -> {
                             StellarAddress.Companion.Generate().execute(decryptedData)
                             launchWallet()
+                        }
+                        pinViewState!!.type == PinType.CHECK -> {
+                            setResult(Activity.RESULT_OK)
+                            finishActivity()
                         }
                         pinViewState!!.type == PinType.CLEAR_WALLET -> wipeAndRestart()
 
@@ -128,7 +132,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                 numAttempts++
                 if (numAttempts == MAX_ATTEMPTS) {
 
-                    if (pinViewState!!.type == PinType.CHECK) {
+                    if (pinViewState!!.type == PinType.LOGIN) {
                         setResult(RESULT_FAIL)
                         finishActivity()
                     } else {
@@ -162,6 +166,8 @@ class PinActivity : BaseActivity(), PinLockListener {
 
         return bundle.getParcelable(PinFlowController.OBJECT)
     }
+
+
 
     //endregion
 

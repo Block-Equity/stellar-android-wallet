@@ -22,7 +22,7 @@ open class BaseActivity : AppCompatActivity() {
             val data = WalletApplication.localStore!!.encryptedPhrase
 
             if (data != null && !data.isEmpty()) {
-                launchPINView(PinType.CHECK, "", data, true)
+                launchPINView(PinType.LOGIN, "", data, true)
             }
         }
     }

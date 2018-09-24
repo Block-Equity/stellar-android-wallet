@@ -1,11 +1,14 @@
 package blockeq.com.stellarwallet.activities
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.interfaces.OnSendPayment
+import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.getNumDecimals
@@ -17,12 +20,14 @@ import kotlinx.android.synthetic.main.contents_send.*
 
 class SendActivity : BasePopupActivity(), NumberKeyboardListener, OnSendPayment {
 
-    private val MAX_ALLOWED_DECIMALS = 4
-    val ADDRESS_DATA = "ADDRESS"
-
+    companion object {
+        const val MAX_ALLOWED_DECIMALS = 4
+        const val ADDRESS_DATA = "ADDRESS"
+    }
 
     private var amountText: String = ""
     private var amount: Double = 0.0
+    private var address: String = ""
 
     override fun setTitle(): Int {
         return R.string.title_activity_my_wallet
@@ -39,17 +44,35 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, OnSendPayment 
         amountTextView.text = "0"
         numberKeyboard.setListener(this)
 
-        val address = intent.getStringExtra(ADDRESS_DATA)
+        address = intent.getStringExtra(ADDRESS_DATA)
         addressEditText.text = address
 
         send_button.setOnClickListener {
-            progressBar.visibility = View.VISIBLE
-            Horizon.Companion.SendTask(this, address, WalletApplication.session!!.keyPair,
-                    memoTextView.text.toString(), amountTextView.text.toString()).execute()
+            val data = WalletApplication.localStore!!.encryptedPhrase
+
+            if (data != null && !data.isEmpty()) {
+                launchPINView(PinType.CHECK, "", data, false)
+            }
         }
     }
 
     //region User Interface
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PinActivity.PIN_REQUEST_CODE) {
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    progressBar.visibility = View.VISIBLE
+                    Horizon.Companion.SendTask(this, address, WalletApplication.session!!.keyPair,
+                            memoTextView.text.toString(), amountTextView.text.toString()).execute()
+                }
+                PinActivity.RESULT_FAIL ->  WalletApplication.localStore!!.clearUserData()
+                Activity.RESULT_CANCELED -> {}
+                else -> finish()
+            }
+        }
+    }
 
     override fun onNumberClicked(number: Int) {
         if (amountText.isEmpty() && number == 0) {
