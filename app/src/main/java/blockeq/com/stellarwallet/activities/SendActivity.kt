@@ -40,10 +40,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, OnSendPayment 
         numberKeyboard.setListener(this)
 
         val address = intent.getStringExtra(ADDRESS_DATA)
-
-        findViewById<TextView>(R.id.addressEditText).apply {
-            text = address
-        }
+        addressEditText.text = address
 
         send_button.setOnClickListener {
             Horizon.Companion.SendTask(this, address, WalletApplication.session!!.keyPair,
@@ -105,7 +102,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, OnSendPayment 
     override fun OnSendSuccess() {
         Toast.makeText(this, getString(R.string.send_success_message), Toast.LENGTH_LONG).show()
         launchWallet()
-        
+
     }
 
     override fun onSendError() {
