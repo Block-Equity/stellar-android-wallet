@@ -1,7 +1,7 @@
 package blockeq.com.stellarwallet.activities
 
 import android.os.Bundle
-import android.widget.TextView
+import android.view.View
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
@@ -43,6 +43,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, OnSendPayment 
         addressEditText.text = address
 
         send_button.setOnClickListener {
+            progressBar.visibility = View.VISIBLE
             Horizon.Companion.SendTask(this, address, WalletApplication.session!!.keyPair,
                     memoTextView.text.toString(), amountTextView.text.toString()).execute()
         }
@@ -100,12 +101,13 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, OnSendPayment 
 
     //region Horizon callbacks
     override fun OnSendSuccess() {
+        progressBar.visibility = View.GONE
         Toast.makeText(this, getString(R.string.send_success_message), Toast.LENGTH_LONG).show()
         launchWallet()
-
     }
 
     override fun onSendError() {
+        progressBar.visibility = View.GONE
         Toast.makeText(this, getString(R.string.send_error_message), Toast.LENGTH_LONG).show()
     }
     //endregion
