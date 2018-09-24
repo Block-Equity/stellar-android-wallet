@@ -93,7 +93,7 @@ class Horizon {
                     transaction.sign(sourceKeyPair)
 
                     val response = server.submitTransaction(transaction)
-                    
+
                 } catch (error : ErrorResponse) {
                     Log.d(TAG, error.body.toString())
                     return error
