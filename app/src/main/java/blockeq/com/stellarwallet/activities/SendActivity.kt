@@ -14,7 +14,6 @@ import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalanc
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
-import kotlinx.android.synthetic.main.activity_base_popup.*
 import kotlinx.android.synthetic.main.contents_send.*
 
 
@@ -29,17 +28,13 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, OnSendPayment 
     private var amount: Double = 0.0
     private var address: String = ""
 
-    override fun setTitle(): Int {
-        return R.string.title_activity_my_wallet
-    }
-
     override fun setContent(): Int {
         return R.layout.contents_send
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        titleText.text = getBalance() + " XLM"
+        titleText.text = "Available: " + getBalance() + " XLM"
 
         amountTextView.text = "0"
         numberKeyboard.setListener(this)

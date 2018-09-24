@@ -11,7 +11,6 @@ abstract class BasePopupActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_base_popup)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        titleText.setText(setTitle())
         View.inflate(this, setContent(), container)
         cancelButton.setOnClickListener {
             finish()
@@ -19,7 +18,6 @@ abstract class BasePopupActivity : BaseActivity() {
         }
     }
 
-    abstract fun setTitle() : Int
     abstract fun setContent() : Int
 
 }

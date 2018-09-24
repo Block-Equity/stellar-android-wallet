@@ -4,24 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.animation.AnimationUtils
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.WalletApplication
-import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
 import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
-import blockeq.com.stellarwallet.utils.StringFormat
 import com.google.zxing.integration.android.IntentIntegrator
-import kotlinx.android.synthetic.main.activity_base_popup.*
 import kotlinx.android.synthetic.main.content_send_to_address.*
-import kotlinx.android.synthetic.main.view_custom_selector.*
 
 
 class SendToAddressActivity : BasePopupActivity() {
 
     val ADDRESS_DATA = "ADDRESS"
-
-    override fun setTitle(): Int {
-        return R.string.title_activity_my_wallet
-    }
 
     override fun setContent(): Int {
         return R.layout.content_send_to_address
@@ -30,7 +21,7 @@ class SendToAddressActivity : BasePopupActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        titleText.text = getBalance() + " XLM"
+        titleText.text = "Available: " + getBalance() + " XLM"
 
         camera_image_button.setOnClickListener { initiateScan() }
 
