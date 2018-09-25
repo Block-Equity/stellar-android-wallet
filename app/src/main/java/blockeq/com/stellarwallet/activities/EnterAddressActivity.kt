@@ -67,7 +67,7 @@ class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
                 } else {
                     // Shake animation on the text
                     val shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
-                    addressLayout.startAnimation(shakeAnimation)
+                    addressEditText.startAnimation(shakeAnimation)
                 }
             }
             R.id.cameraImageButton -> {

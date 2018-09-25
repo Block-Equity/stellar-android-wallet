@@ -24,7 +24,9 @@ class StringFormat {
         fun getNumDecimals(num: String): Int {
             return if (!hasDecimalPoint(num)) {
                 0
-            } else num.substring(num.indexOf('.') + 1, num.length).length
+            } else {
+                num.substring(num.indexOf('.') + 1, num.length).length
+            }
         }
 
         /**
