@@ -99,7 +99,6 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
             TransactionViewType.TRADE_EFFECT.value -> {
                 val vh = holder as TradeEffectViewHolder
                 configureTradeEffectViewHolder(vh, position)
-
             }
         }
     }
