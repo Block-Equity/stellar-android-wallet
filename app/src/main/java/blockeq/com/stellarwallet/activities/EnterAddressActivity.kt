@@ -2,6 +2,7 @@ package blockeq.com.stellarwallet.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
@@ -11,7 +12,7 @@ import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.content_enter_address.*
 
 
-class EnterAddressActivity : BasePopupActivity() {
+class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
 
     val ADDRESS_DATA = "ADDRESS"
 
@@ -22,25 +23,7 @@ class EnterAddressActivity : BasePopupActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        titleText.text = "Available: " + getBalance() + " XLM"
-
-        camera_image_button.setOnClickListener { initiateScan() }
-
-        next_button.setOnClickListener {
-            val address = addressEditText.text.toString()
-            if (address.length == STELLAR_ADDRESS_LENGTH) {
-                val intent = Intent(this, SendActivity::class.java).apply {
-                    putExtra(ADDRESS_DATA, address)
-                }
-                startActivity(intent)
-
-                this.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
-            } else {
-                // Shake animation on the text
-                val shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
-                addressLayout.startAnimation(shakeAnimation)
-            }
-        }
+        setupUI()
     }
 
     private fun initiateScan() {
@@ -54,10 +37,44 @@ class EnterAddressActivity : BasePopupActivity() {
                 Toast.makeText(this, "Scan cancelled", Toast.LENGTH_LONG).show()
             } else {
                 addressEditText.setText(result.contents)
-                next_button.isEnabled = true
+                nextButton.isEnabled = true
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
+
+    //region User Interface
+    override fun setupUI() {
+
+        titleText.text = "Available: " + getBalance() + " XLM"
+
+        cameraImageButton.setOnClickListener(this)
+        nextButton.setOnClickListener(this)
+    }
+
+    override fun onClick(v: View?) {
+        when(v!!.id) {
+            R.id.nextButton -> {
+                val address = addressEditText.text.toString()
+                if (address.length == STELLAR_ADDRESS_LENGTH) {
+                    val intent = Intent(this, SendActivity::class.java).apply {
+                        putExtra(ADDRESS_DATA, address)
+                    }
+                    startActivity(intent)
+
+                    this.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+                } else {
+                    // Shake animation on the text
+                    val shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
+                    addressLayout.startAnimation(shakeAnimation)
+                }
+            }
+            R.id.cameraImageButton -> {
+                initiateScan()
+            }
+        }
+    }
+
+    //endregion
 }
