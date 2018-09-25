@@ -19,11 +19,8 @@ open class BaseActivity : AppCompatActivity() {
         if (WalletApplication.appReturnedFromBackground) {
             WalletApplication.appReturnedFromBackground =  false
 
-            val data = WalletApplication.localStore!!.encryptedPhrase
 
-            if (data != null && !data.isEmpty()) {
-                launchPINView(PinType.LOGIN, "", data, true)
-            }
+            launchPINView(PinType.LOGIN, "", "", true)
         }
     }
 

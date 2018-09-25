@@ -44,11 +44,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, OnSendPayment 
         addressEditText.text = address
 
         send_button.setOnClickListener {
-            val data = WalletApplication.localStore!!.encryptedPhrase
-
-            if (data != null && !data.isEmpty()) {
-                launchPINView(PinType.CHECK, "", data, false)
-            }
+            launchPINView(PinType.CHECK, "", "", false)
         }
     }
 

@@ -82,7 +82,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                 }
             }
             else -> {
-                val encryptedPhrase = pinViewState!!.phrase
+                val encryptedPhrase = getEncryptedPhrase(pinViewState!!.type)
                 val masterKey = getPinMasterKey(pin)
 
                 if (masterKey != null) {
@@ -173,6 +173,14 @@ class PinActivity : BaseActivity(), PinLockListener {
 
 
     //region Encryption and Decryption
+    private fun getEncryptedPhrase(pinType: PinType) : String {
+        return if (pinType == PinType.CHECK || pinType == PinType.LOGIN) {
+            WalletApplication.localStore!!.encryptedPhrase!!
+        } else {
+            pinViewState!!.phrase
+        }
+    }
+
     private fun getPinMasterKey(pin: String) : java.security.KeyPair? {
         val keyStoreWrapper = KeyStoreWrapper(applicationContext)
 
