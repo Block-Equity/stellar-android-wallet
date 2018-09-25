@@ -131,13 +131,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                 pinLockView.resetPinLockView()
                 numAttempts++
                 if (numAttempts == MAX_ATTEMPTS) {
-
-                    if (pinViewState!!.type == PinType.LOGIN) {
-                        setResult(RESULT_FAIL)
-                        finishActivity()
-                    } else {
-                        wipeAndRestart()
-                    }
+                    wipeAndRestart()
                 }
             }
         })

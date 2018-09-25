@@ -63,7 +63,6 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, OnSendPayment 
                         NetworkUtils(this).displayNoNetwork()
                     }
                 }
-                PinActivity.RESULT_FAIL ->  WalletApplication.localStore!!.clearUserData()
                 Activity.RESULT_CANCELED -> {}
                 else -> finish()
             }

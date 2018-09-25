@@ -121,6 +121,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     //region API Polling
 
+    //TODO polling for only non-created accounts on Stellar.
     private fun startPollingAccount() {
         runnableCode = object : Runnable {
             override fun run() {
