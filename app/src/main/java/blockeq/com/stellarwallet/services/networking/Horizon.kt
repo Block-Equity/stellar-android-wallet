@@ -73,14 +73,8 @@ class Horizon {
                 Network.usePublicNetwork()
 
                 try {
-                    // Check if destination account exists
                     server.accounts().account(destKeyPair)
-                } catch (error : ErrorResponse) {
-                    Log.d(TAG, error.body.toString())
-                    return error
-                }
 
-                try {
                     val sourceAccount = server.accounts().account(sourceKeyPair)
 
                     val transaction = Transaction.Builder(sourceAccount)
