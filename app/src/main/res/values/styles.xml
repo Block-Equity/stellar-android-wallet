@@ -26,10 +26,11 @@
     </style>
 
     <style name="TitleText" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/black</item>
         <item name="android:textSize">@dimen/title_text_size</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">@font/lato_bold</item>
+        <item name="android:background">@color/white</item>
     </style>
 
     <style name="NavTitleText" parent="TextAppearance.AppCompat">

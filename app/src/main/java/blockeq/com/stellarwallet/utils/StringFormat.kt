@@ -17,5 +17,28 @@ class StringFormat {
             if (string == null) return ""
             return String.format("%.4f", string.toDouble())
         }
+
+        /**
+         * Calculate the number of decimals of a string.
+         */
+        fun getNumDecimals(num: String): Int {
+            return if (!hasDecimalPoint(num)) {
+                0
+            } else {
+                num.substring(num.indexOf('.') + 1, num.length).length
+            }
+        }
+
+        /**
+         * Checks whether a string has a comma.
+         */
+        fun hasDecimalPoint(text: String): Boolean {
+            for (i in 0 until text.length) {
+                if (text[i] == '.') {
+                    return true
+                }
+            }
+            return false
+        }
     }
 }

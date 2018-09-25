@@ -19,10 +19,7 @@ class LoginActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PinActivity.PIN_REQUEST_CODE) {
-            when (resultCode) {
-                PinActivity.RESULT_FAIL ->  WalletApplication.localStore!!.clearUserData()
-                else -> finish()
-            }
+            finish()
         }
     }
 

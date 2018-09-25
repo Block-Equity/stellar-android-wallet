@@ -5,7 +5,16 @@
     android:layout_marginTop="?attr/actionBarSize"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TitleText"
+        android:paddingStart="@dimen/activity_vertical_margin"
+        android:layout_gravity="left"  />
+
     <LinearLayout
+        android:layout_below="@id/titleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -19,24 +28,29 @@
             android:textColor="@color/sendToTextColor"/>
 
         <LinearLayout
+            android:id="@+id/addressLayout"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="25dp"
+            android:layout_below="@+id/address_title"
             android:orientation="horizontal"
             android:background="@drawable/rounded_corner">
 
-            <TextView
-                android:id="@+id/address_text"
+            <EditText
+                android:id="@+id/addressEditText"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.85"
+                android:layout_weight="0.8"
                 android:padding="12dp"
-                android:ellipsize="end"
                 android:background="@color/addressBackGroundColor"
-                android:maxLines="1"
-                android:textSize="24sp" />
+                android:textSize="12sp"
+                android:scrollHorizontally="true"
+                android:digits="@string/stellar_address_alphabet"
+                android:inputType="textCapCharacters"
+                android:hint="@string/send_address_hint" />
+
             <ImageButton
-                android:id="@+id/camera_image_button"
+                android:id="@+id/cameraImageButton"
                 android:layout_width="0dp"
                 android:layout_weight="0.15"
                 android:layout_height="match_parent"
@@ -44,9 +58,11 @@
                 android:src="@drawable/ic_camera"/>
 
         </LinearLayout>
+
     </LinearLayout>
+
     <Button
-        android:id="@+id/next_button"
+        android:id="@+id/nextButton"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_alignParentBottom="true"

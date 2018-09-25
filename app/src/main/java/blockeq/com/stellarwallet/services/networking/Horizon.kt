@@ -2,16 +2,20 @@ package blockeq.com.stellarwallet.services.networking
 
 import android.os.AsyncTask
 import android.util.Log
+import blockeq.com.stellarwallet.WalletApplication
+import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
-import org.stellar.sdk.KeyPair
-import org.stellar.sdk.Server
+import blockeq.com.stellarwallet.interfaces.OnSendPayment
+import blockeq.com.stellarwallet.utils.StringFormat
+import org.stellar.sdk.*
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.requests.RequestBuilder
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.Page
 import org.stellar.sdk.responses.effects.EffectResponse
-import java.util.ArrayList
+import java.util.*
+
 
 class Horizon {
     companion object {
@@ -56,6 +60,59 @@ class Horizon {
                 listener.onLoadEffects(result)
             }
 
+        }
+
+        class SendTask(private val listener: OnSendPayment, private val destAddress: String,
+                       private val sourceKeyPair: KeyPair,
+                       private val memo: String, private val amount : String) : AsyncTask<Void, Void, ErrorResponse>() {
+
+            override fun doInBackground(vararg params: Void?): ErrorResponse? {
+                val server = Server(PROD_SERVER)
+                val destKeyPair = KeyPair.fromAccountId(destAddress)
+
+                Network.usePublicNetwork()
+
+                try {
+                    server.accounts().account(destKeyPair)
+
+                    val sourceAccount = server.accounts().account(sourceKeyPair)
+
+                    val transaction = Transaction.Builder(sourceAccount)
+                            .addOperation(PaymentOperation.Builder(destKeyPair, AssetTypeNative(), amount).build())
+                            // A memo allows you to add your own metadata to a transaction. It's
+                            // optional and does not affect how Stellar treats the transaction.
+                            .addMemo(Memo.text(memo))
+                            .build()
+
+                    transaction.sign(sourceKeyPair)
+
+                    val response = server.submitTransaction(transaction)
+
+                } catch (error : ErrorResponse) {
+                    Log.d(TAG, error.body.toString())
+                    return error
+                }
+
+                return null
+            }
+
+            override fun onPostExecute(result: ErrorResponse?) {
+                if (result != null) {
+                    listener.onSendError()
+                } else {
+                    listener.OnSendSuccess()
+                }
+            }
+        }
+
+        fun getBalance() : String {
+            WalletApplication.localStore!!.balances?.forEach {
+                if (it.assetType == Constants.LUMENS_ASSET_TYPE) {
+                    //TODO: When switching assets, get the right balance for asset
+                    return StringFormat.truncateDecimalPlaces(it.balance)
+                }
+            }
+            return Constants.DEFAULT_ACCOUNT_BALANCE
         }
     }
 }

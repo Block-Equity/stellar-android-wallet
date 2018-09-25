@@ -13,9 +13,6 @@ import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.android.synthetic.main.content_receive.*
 
 class ReceiveActivity : BasePopupActivity() {
-    override fun setTitle(): Int {
-        return R.string.receive_title
-    }
 
     override fun setContent(): Int {
         return R.layout.content_receive
@@ -23,10 +20,11 @@ class ReceiveActivity : BasePopupActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        titleText.text = getString(R.string.receive_title)
 
         val pubAddress = WalletApplication.localStore!!.publicKey
 
-        address_text.text = pubAddress
+        addressEditText.text = pubAddress
         generateQRCode(pubAddress!!, address_qrcode, 500)
         copy_image_button.setOnClickListener { copyAddressToClipBoard(pubAddress)  }
     }

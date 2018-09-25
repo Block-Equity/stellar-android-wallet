@@ -82,17 +82,21 @@ class PinActivity : BaseActivity(), PinLockListener {
                 }
             }
             else -> {
-                val encryptedPhrase = pinViewState!!.phrase
-                val masterKey = isCorrectPinMasterKey(pin)
+                val encryptedPhrase = getEncryptedPhrase(pinViewState!!.type)
+                val masterKey = getPinMasterKey(pin)
 
                 if (masterKey != null) {
                     val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
                     val decryptedData = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
 
                     when {
-                        pinViewState!!.type == PinType.CHECK -> {
+                        pinViewState!!.type == PinType.LOGIN -> {
                             StellarAddress.Companion.Generate().execute(decryptedData)
                             launchWallet()
+                        }
+                        pinViewState!!.type == PinType.CHECK -> {
+                            setResult(Activity.RESULT_OK)
+                            finishActivity()
                         }
                         pinViewState!!.type == PinType.CLEAR_WALLET -> wipeAndRestart()
 
@@ -127,13 +131,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                 pinLockView.resetPinLockView()
                 numAttempts++
                 if (numAttempts == MAX_ATTEMPTS) {
-
-                    if (pinViewState!!.type == PinType.CHECK) {
-                        setResult(RESULT_FAIL)
-                        finishActivity()
-                    } else {
-                        wipeAndRestart()
-                    }
+                    wipeAndRestart()
                 }
             }
         })
@@ -163,17 +161,21 @@ class PinActivity : BaseActivity(), PinLockListener {
         return bundle.getParcelable(PinFlowController.OBJECT)
     }
 
-    private fun launchWallet() {
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        startActivity(intent)
-    }
+
 
     //endregion
 
 
     //region Encryption and Decryption
-    private fun isCorrectPinMasterKey(pin: String) : java.security.KeyPair? {
+    private fun getEncryptedPhrase(pinType: PinType) : String {
+        return if (pinType == PinType.CHECK || pinType == PinType.LOGIN) {
+            WalletApplication.localStore!!.encryptedPhrase!!
+        } else {
+            pinViewState!!.phrase
+        }
+    }
+
+    private fun getPinMasterKey(pin: String) : java.security.KeyPair? {
         val keyStoreWrapper = KeyStoreWrapper(applicationContext)
 
         return keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)

@@ -7,14 +7,12 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
-import blockeq.com.stellarwallet.activities.MyWalletActivity
 import blockeq.com.stellarwallet.activities.ReceiveActivity
+import blockeq.com.stellarwallet.activities.EnterAddressActivity
 import blockeq.com.stellarwallet.activities.WalletsActivity
 import blockeq.com.stellarwallet.adapters.WalletRecyclerViewAdapter
-import blockeq.com.stellarwallet.helpers.Constants.Companion.DEFAULT_ACCOUNT_BALANCE
 import blockeq.com.stellarwallet.helpers.Constants.Companion.LUMENS_ASSET_TYPE
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
@@ -22,6 +20,7 @@ import blockeq.com.stellarwallet.models.AvailableBalance
 import blockeq.com.stellarwallet.models.TotalBalance
 import blockeq.com.stellarwallet.models.WalletHeterogenousArray
 import blockeq.com.stellarwallet.services.networking.Horizon
+import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
 import blockeq.com.stellarwallet.utils.NetworkUtils
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.stellar.sdk.responses.AccountResponse
@@ -55,7 +54,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         }
 
         sendButton.setOnClickListener {
-            startActivity(Intent(activity, MyWalletActivity::class.java))
+            startActivity(Intent(activity, EnterAddressActivity::class.java))
             activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
         }
     }
@@ -69,12 +68,11 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     private fun setupUI() {
         bindAdapter()
-        loadBalance()
     }
 
     private fun bindAdapter() {
-        recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(loadBalance()),
-                AvailableBalance(loadBalance()), Pair("Activity", "Amount"), effectsList)
+        recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(getBalance()),
+                AvailableBalance(getBalance()), Pair("Activity", "Amount"), effectsList)
 
         adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList!!.array)
         adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
@@ -92,26 +90,6 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         })
         walletRecyclerView.adapter = adapter
         walletRecyclerView.layoutManager = LinearLayoutManager(activity)
-    }
-
-    private fun loadBalance() : String {
-        val balances = WalletApplication.localStore!!.balances
-
-        if (balances != null) {
-            balances.forEach {
-                if (it.assetType == LUMENS_ASSET_TYPE) {
-                    return it.balance
-                }
-            }
-            return DEFAULT_ACCOUNT_BALANCE
-        } else {
-            return DEFAULT_ACCOUNT_BALANCE
-        }
-    }
-
-    private fun displayNoNetwork() {
-        Toast.makeText(activity, getString(R.string.no_network), Toast.LENGTH_SHORT).show()
-
     }
 
     //endregion
@@ -143,6 +121,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     //region API Polling
 
+    //TODO polling for only non-created accounts on Stellar.
     private fun startPollingAccount() {
         runnableCode = object : Runnable {
             override fun run() {
@@ -155,7 +134,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
                     Horizon.Companion.LoadEffectsTask(this@WalletFragment)
                             .execute(WalletApplication.session!!.keyPair)
                 } else {
-                    displayNoNetwork()
+                    NetworkUtils(activity!!).displayNoNetwork()
                 }
 
                 handler.postDelayed(this, 5000)

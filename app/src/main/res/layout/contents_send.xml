@@ -7,6 +7,13 @@
     android:layout_marginTop="?attr/actionBarSize"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TitleText"
+        android:paddingStart="@dimen/activity_vertical_margin"
+        android:layout_gravity="left"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,6 +21,7 @@
         android:padding="16dp"
         android:background="@color/white"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -21,12 +29,13 @@
             android:text="@string/to"/>
 
         <TextView
-            android:id="@+id/address_text"
+            android:id="@+id/addressEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:layout_marginStart="@dimen/activity_vertical_margin"/>
 
     </LinearLayout>
 
@@ -37,6 +46,7 @@
         android:layout_marginTop="2dp"
         android:background="@color/white"
         android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -44,7 +54,7 @@
             android:text="@string/memo"/>
 
         <EditText
-            android:id="@+id/memo_text"
+            android:id="@+id/memoTextView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ellipsize="end"
@@ -52,7 +62,9 @@
             android:textSize="16sp"
             android:background="@android:color/transparent"
             android:hint="@string/optional"
-            android:inputType="text" />
+            android:inputType="text"
+            android:layout_marginStart="@dimen/activity_vertical_margin"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -63,20 +75,24 @@
         android:background="@color/white"
         android:orientation="vertical"
         android:gravity="center">
+
         <TextView
-            android:id="@+id/amount_text"
+            android:id="@+id/amountTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:textSize="24sp"
             android:background="@android:color/transparent"
             android:textAlignment="center"
+            android:text="0"
             android:textColor="@color/toryBlue"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:textColor="@color/currencyTextColor"
             android:text="@string/currency"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -85,6 +101,13 @@
         android:layout_weight="0.85"
         android:orientation="vertical"
         android:gravity="center">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
         <com.davidmiguel.numberkeyboard.NumberKeyboard
             android:id="@+id/numberKeyboard"
             android:layout_width="match_parent"
@@ -104,6 +127,7 @@
         android:layout_weight="0.15"
         android:gravity="center|bottom"
         android:orientation="vertical" >
+
         <Button
             android:id="@+id/send_button"
             android:layout_width="match_parent"
@@ -111,6 +135,7 @@
             android:background="@color/sendButtonColor"
             android:textColor="@color/white"
             android:text="@string/send_button_text"/>
+
     </LinearLayout>
 
 </LinearLayout>
