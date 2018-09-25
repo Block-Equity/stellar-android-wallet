@@ -83,7 +83,7 @@ class PinActivity : BaseActivity(), PinLockListener {
             }
             else -> {
                 val encryptedPhrase = pinViewState!!.phrase
-                val masterKey = isCorrectPinMasterKey(pin)
+                val masterKey = getPinMasterKey(pin)
 
                 if (masterKey != null) {
                     val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
@@ -173,7 +173,7 @@ class PinActivity : BaseActivity(), PinLockListener {
 
 
     //region Encryption and Decryption
-    private fun isCorrectPinMasterKey(pin: String) : java.security.KeyPair? {
+    private fun getPinMasterKey(pin: String) : java.security.KeyPair? {
         val keyStoreWrapper = KeyStoreWrapper(applicationContext)
 
         return keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)

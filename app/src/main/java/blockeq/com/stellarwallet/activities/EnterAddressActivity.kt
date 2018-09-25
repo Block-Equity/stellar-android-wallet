@@ -8,15 +8,15 @@ import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
 import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
 import com.google.zxing.integration.android.IntentIntegrator
-import kotlinx.android.synthetic.main.content_send_to_address.*
+import kotlinx.android.synthetic.main.content_enter_address.*
 
 
-class SendToAddressActivity : BasePopupActivity() {
+class EnterAddressActivity : BasePopupActivity() {
 
     val ADDRESS_DATA = "ADDRESS"
 
     override fun setContent(): Int {
-        return R.layout.content_send_to_address
+        return R.layout.content_enter_address
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

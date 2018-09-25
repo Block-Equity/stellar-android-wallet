@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.ReceiveActivity
-import blockeq.com.stellarwallet.activities.SendToAddressActivity
+import blockeq.com.stellarwallet.activities.EnterAddressActivity
 import blockeq.com.stellarwallet.activities.WalletsActivity
 import blockeq.com.stellarwallet.adapters.WalletRecyclerViewAdapter
 import blockeq.com.stellarwallet.helpers.Constants.Companion.LUMENS_ASSET_TYPE
@@ -54,7 +54,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         }
 
         sendButton.setOnClickListener {
-            startActivity(Intent(activity, SendToAddressActivity::class.java))
+            startActivity(Intent(activity, EnterAddressActivity::class.java))
             activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
         }
     }
