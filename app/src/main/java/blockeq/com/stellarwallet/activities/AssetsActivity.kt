@@ -3,6 +3,7 @@ package blockeq.com.stellarwallet.activities
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.adapters.AssetsRecyclerViewAdapter
 import kotlinx.android.synthetic.main.content_assets_activity.*
 
@@ -39,6 +40,7 @@ class AssetsActivity : BasePopupActivity() {
     //endregion
 
     private fun loadAssets() {
+        assetsList!!.addAll(WalletApplication.localStore!!.balances!!)
         assetsList!!.add("BlockEQ Assets")
     }
 

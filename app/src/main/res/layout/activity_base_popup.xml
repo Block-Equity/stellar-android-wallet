@@ -33,6 +33,10 @@
                     android:layout_alignParentEnd="true"
                     android:src="@drawable/ic_close_black_24dp"
                     android:tint="@color/colorAccent" />
+
+                <View style="@style/Divider"
+                    android:layout_alignParentBottom="true" />
+
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
 

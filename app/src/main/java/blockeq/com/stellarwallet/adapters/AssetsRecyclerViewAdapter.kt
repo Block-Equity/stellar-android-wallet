@@ -9,8 +9,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.models.Asset
-import java.util.ArrayList
+import blockeq.com.stellarwallet.helpers.Constants
+import blockeq.com.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
+import org.stellar.sdk.responses.AccountResponse
+import java.util.*
 
 class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -36,7 +38,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
 
     override fun getItemViewType(position: Int): Int {
         return when {
-            items[position] is Asset -> TYPE_ASSET
+            items[position] is AccountResponse.Balance -> TYPE_ASSET
             else -> TYPE_HEADER
         }
     }
@@ -87,10 +89,15 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     //region Bind View Holders
 
     private fun configureAssetViewHolder(viewHolder : AssetViewHolder, position : Int) {
-        val asset = items[position] as Asset
+        val asset = items[position] as AccountResponse.Balance
 
-        viewHolder.assetName!!.text = asset.assetName
-        viewHolder.assetAmount!!.text = asset.assetAmount
+        if (asset.assetType == Constants.LUMENS_ASSET_TYPE) {
+            viewHolder.assetName!!.text = "Stellar Lumens"
+        } else {
+            viewHolder.assetName!!.text = asset.assetCode
+        }
+
+        viewHolder.assetAmount!!.text = truncateDecimalPlaces(asset.balance)
 
     }
 
