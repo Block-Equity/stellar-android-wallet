@@ -91,14 +91,21 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     private fun configureAssetViewHolder(viewHolder : AssetViewHolder, position : Int) {
         val asset = items[position] as AccountResponse.Balance
 
+        var assetCode = ""
+
         if (asset.assetType == Constants.LUMENS_ASSET_TYPE) {
-            viewHolder.assetName!!.text = "Stellar Lumens"
+            viewHolder.assetName!!.text = Constants.LUMENS_ASSET_NAME
+            assetCode = "XLM"
         } else {
-            viewHolder.assetName!!.text = asset.assetCode
+            when(asset.assetCode) {
+                Constants.PTS_ASSET_TYPE -> {
+                    viewHolder.assetName!!.text = Constants.PTS_ASSET_NAME
+                }
+            }
+            assetCode = asset.assetCode
         }
 
-        viewHolder.assetAmount!!.text = truncateDecimalPlaces(asset.balance)
-
+        viewHolder.assetAmount!!.text = truncateDecimalPlaces(asset.balance) + " " + assetCode
     }
 
     private fun configureAssetHeaderViewHolder(viewHolder : AssetHeaderViewHolder, position : Int) {
