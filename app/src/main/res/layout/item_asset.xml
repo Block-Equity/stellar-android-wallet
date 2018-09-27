@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white"
     android:layout_width="match_parent" android:layout_height="wrap_content" >
 
@@ -7,6 +8,7 @@
         android:id="@+id/assetImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:padding="@dimen/activity_vertical_margin" />
 
     <LinearLayout
@@ -14,11 +16,12 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:padding="@dimen/activity_vertical_margin" >
 
         <TextView
             android:id="@+id/assetNameTextView"
-            android:text="Stellar Lumens"
+            tools:text="Stellar Lumens"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/BoldText"
@@ -26,12 +29,12 @@
 
         <TextView
             android:id="@+id/assetAmountTextView"
-            android:text="16.0000 XLM"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/RegularText"
             android:layout_marginTop="@dimen/margin_padding_size_small"
-            android:textColor="@color/regularTextColor" />
+            android:textColor="@color/regularTextColor"
+            tools:text="16.0000 XLM" />
 
     </LinearLayout>
 

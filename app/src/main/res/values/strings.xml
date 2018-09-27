@@ -101,7 +101,7 @@
     <string name="memo">Memo:</string>
     <string name="send_address_hint">Enter address here</string>
     <string name="send_success_message">Transaction sent successfully</string>
-    <string name="send_error_message">There was an error sending your transaction. Please try again later</string>
+    <string name="send_error_message">There was an error sending your transaction. Please try again later.</string>
 
     <!--Assets Activity-->
     <string name="asset_title_text">Assets</string>

@@ -141,7 +141,11 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     private fun configureSupportedAssetViewHolder(viewHolder: SupportedAssetViewHolder, position: Int) {
         val asset = items[position] as SupportedAsset
 
-        viewHolder.assetName!!.text = asset.name + " (" + asset.code + ")"
+        viewHolder.assetName!!.text = asset.name + " (" + asset.code.toUpperCase() + ")"
+
+        viewHolder.assetAmount!!.visibility = View.GONE
+
+
 
 //        Toast.makeText(context, "There was an error loading assets", Toast.LENGTH_SHORT).show()
 
