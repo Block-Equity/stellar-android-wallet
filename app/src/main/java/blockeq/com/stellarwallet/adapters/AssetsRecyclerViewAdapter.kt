@@ -27,9 +27,13 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         val inflater = LayoutInflater.from(parent.context)
 
         return when(viewType) {
-            TYPE_ASSET, TYPE_SUPPORTED_ASSET -> {
+            TYPE_ASSET -> {
                 val v = inflater.inflate(R.layout.item_asset, parent, false)
                 AssetViewHolder(v)
+            }
+            TYPE_SUPPORTED_ASSET -> {
+                val v = inflater.inflate(R.layout.item_asset, parent, false)
+                SupportedAssetViewHolder(v)
             }
             else -> {
                 val v = inflater.inflate(R.layout.item_asset_header, parent, false)
