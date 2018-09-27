@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.helpers.Constants
+import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
 import org.stellar.sdk.responses.AccountResponse
 import java.util.*
@@ -19,13 +20,14 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     companion object {
         const val TYPE_ASSET = 0
         const val TYPE_HEADER = 1
+        const val TYPE_SUPPORTED_ASSET = 2
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
         return when(viewType) {
-            TYPE_ASSET -> {
+            TYPE_ASSET, TYPE_SUPPORTED_ASSET -> {
                 val v = inflater.inflate(R.layout.item_asset, parent, false)
                 AssetViewHolder(v)
             }
@@ -39,6 +41,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     override fun getItemViewType(position: Int): Int {
         return when {
             items[position] is AccountResponse.Balance -> TYPE_ASSET
+            items[position] is SupportedAsset -> TYPE_SUPPORTED_ASSET
             else -> TYPE_HEADER
         }
     }
@@ -52,6 +55,10 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
             TYPE_ASSET -> {
                 val vh = holder as AssetViewHolder
                 configureAssetViewHolder(vh, position)
+            }
+            TYPE_SUPPORTED_ASSET -> {
+                val vh = holder as SupportedAssetViewHolder
+                configureSupportedAssetViewHolder(vh, position)
             }
             else -> {
                 val vh = holder as AssetHeaderViewHolder
@@ -84,6 +91,20 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         }
     }
 
+    class SupportedAssetViewHolder(v : View) : RecyclerView.ViewHolder(v) {
+        var assetImage : ImageView? = null
+        var assetName : TextView? = null
+        var assetAmount : TextView? = null
+        var assetButton : Button? = null
+
+        init {
+            assetImage = v.findViewById(R.id.assetImageView)
+            assetName = v.findViewById(R.id.assetNameTextView)
+            assetAmount = v.findViewById(R.id.assetAmountTextView)
+            assetButton = v.findViewById(R.id.assetButton)
+        }
+    }
+
     //endregion
 
     //region Bind View Holders
@@ -91,7 +112,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     private fun configureAssetViewHolder(viewHolder : AssetViewHolder, position : Int) {
         val asset = items[position] as AccountResponse.Balance
 
-        var assetCode = ""
+        val assetCode: String
 
         if (asset.assetType == Constants.LUMENS_ASSET_TYPE) {
             viewHolder.assetName!!.text = Constants.LUMENS_ASSET_NAME
@@ -111,6 +132,15 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     private fun configureAssetHeaderViewHolder(viewHolder : AssetHeaderViewHolder, position : Int) {
         val titleText = items[position] as String
         viewHolder.title!!.text = titleText
+    }
+
+    private fun configureSupportedAssetViewHolder(viewHolder: SupportedAssetViewHolder, position: Int) {
+        val asset = items[position] as SupportedAsset
+
+        viewHolder.assetName!!.text = asset.name + " (" + asset.code + ")"
+
+//        Toast.makeText(context, "There was an error loading assets", Toast.LENGTH_SHORT).show()
+
     }
 
     //endregion
