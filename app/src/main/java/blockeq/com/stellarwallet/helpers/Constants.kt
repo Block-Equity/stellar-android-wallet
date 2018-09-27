@@ -12,5 +12,9 @@ class Constants {
 
         const val LUMENS_ASSET_NAME = "Stellar Lumens"
         const val PTS_ASSET_NAME = "Block Points"
+
+        //region Network
+        const val SUPPORTED_ASSETS_BASE_URL = "https://api-staging.blockeq.com/"
+        //endregion
     }
 }
