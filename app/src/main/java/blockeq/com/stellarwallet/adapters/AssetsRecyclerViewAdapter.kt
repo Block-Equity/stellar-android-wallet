@@ -12,6 +12,7 @@ import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
+import com.squareup.picasso.Picasso
 import org.stellar.sdk.responses.AccountResponse
 import java.util.*
 
@@ -145,10 +146,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
 
         viewHolder.assetAmount!!.visibility = View.GONE
 
-
-
-//        Toast.makeText(context, "There was an error loading assets", Toast.LENGTH_SHORT).show()
-
+        Picasso.get().load(asset.image).into(viewHolder.assetImage)
     }
 
     //endregion
