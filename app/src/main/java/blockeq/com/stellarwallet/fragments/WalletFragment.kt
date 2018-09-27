@@ -45,7 +45,6 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startPollingAccount()
         setupUI()
 
         receiveButton.setOnClickListener {
@@ -57,6 +56,11 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
             startActivity(Intent(activity, EnterAddressActivity::class.java))
             activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startPollingAccount()
     }
 
     override fun onPause() {
