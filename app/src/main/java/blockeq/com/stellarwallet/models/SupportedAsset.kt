@@ -1,8 +1,8 @@
 package blockeq.com.stellarwallet.models
 
 /**
- * Class which provides a model for BlockEQAsset
- * @constructor Sets all properties of the BlockEQAsset
+ * Class which provides a model for SupportedAsset
+ * @constructor Sets all properties of the SupportedAsset
  * @property id the unique identifier of this asset
  * @property code the asset code
  * @property image the link to icon of asset
@@ -11,6 +11,6 @@ package blockeq.com.stellarwallet.models
  * @property updatedAt the iso instant time stamp of when the asset was updated
  */
 
-data class BlockEQAsset (var id: Int, var code: String, var image: String, var issuer: String,
-                         var limit: String, var name: String, var createdAt: String,
-                         var updatedAt: String)
+data class SupportedAsset (var id: Int, var code: String, var image: String, var issuer: String,
+                           var limit: String, var name: String, var createdAt: String,
+                           var updatedAt: String)
