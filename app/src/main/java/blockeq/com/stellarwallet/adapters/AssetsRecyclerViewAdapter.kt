@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.models.SupportedAssetType
 import blockeq.com.stellarwallet.utils.StringFormat
@@ -121,6 +122,13 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
 
         Picasso.get().load(asset.image).into(viewHolder.assetImage)
 
+        if (asset.code ==Constants.LUMENS_ASSET_CODE) {
+            viewHolder.assetButton!!.text = context.getString(R.string.set_inflation_message)
+            viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.mantis))
+        } else {
+            viewHolder.assetButton!!.text = context.getString(R.string.remove_asset_message)
+            viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.apricot))
+        }
     }
 
     private fun configureAssetHeaderViewHolder(viewHolder : AssetHeaderViewHolder, position : Int) {

@@ -107,5 +107,7 @@
     <string name="asset_title_text">Assets</string>
     <string name="error_supported_assets_message">There was an error fetching supported assets.</string>
     <string name="supported_assets_header">BlockEQ Assets</string>
+    <string name="set_inflation_message">Set inflation</string>
+    <string name="remove_asset_message">Remove asset</string>
 
 </resources>
