@@ -6,7 +6,7 @@ import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
-import blockeq.com.stellarwallet.interfaces.OnSendPayment
+import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.utils.StringFormat
 import org.stellar.sdk.*
 import org.stellar.sdk.requests.ErrorResponse
@@ -62,7 +62,7 @@ class Horizon {
 
         }
 
-        class SendTask(private val listener: OnSendPayment, private val destAddress: String,
+        class SendTask(private val listener: SuccessErrorCallback, private val destAddress: String,
                        private val sourceKeyPair: KeyPair,
                        private val memo: String, private val amount : String) : AsyncTask<Void, Void, ErrorResponse>() {
 
@@ -86,7 +86,7 @@ class Horizon {
 
                     transaction.sign(sourceKeyPair)
 
-                    val response = server.submitTransaction(transaction)
+                    server.submitTransaction(transaction)
 
                 } catch (error : ErrorResponse) {
                     Log.d(TAG, error.body.toString())
@@ -98,11 +98,50 @@ class Horizon {
 
             override fun onPostExecute(result: ErrorResponse?) {
                 if (result != null) {
-                    listener.onSendError()
+                    listener.onError()
                 } else {
-                    listener.OnSendSuccess()
+                    listener.OnSuccess()
                 }
             }
+        }
+
+        class JoinInflationDestination(private val listener: SuccessErrorCallback,
+                                       private val inflationDest : String = Constants.INFLATION_DESTINATION)
+            : AsyncTask<KeyPair, Void, ErrorResponse>() {
+
+            override fun doInBackground(vararg params: KeyPair?): ErrorResponse? {
+                Network.usePublicNetwork()
+
+                val server = Server(PROD_SERVER)
+                val sourceKeyPair = params[0]
+                val sourceAccount = server.accounts().account(sourceKeyPair)
+                val destKeyPair = KeyPair.fromAccountId(inflationDest)
+
+                try {
+                    val transaction = Transaction.Builder(sourceAccount)
+                            .addOperation(SetOptionsOperation.Builder()
+                                    .setInflationDestination(destKeyPair)
+                                    .build())
+                            .build()
+
+                    transaction.sign(sourceKeyPair)
+                    server.submitTransaction(transaction)
+
+                } catch (error : ErrorResponse) {
+                    Log.d(TAG, error.body.toString())
+                    return error
+                }
+                return null
+            }
+
+            override fun onPostExecute(result: ErrorResponse?) {
+                if (result != null) {
+                    listener.onError()
+                } else {
+                    listener.OnSuccess()
+                }
+            }
+
         }
 
         fun getBalance() : String {
