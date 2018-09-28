@@ -100,7 +100,7 @@ class Horizon {
                 if (result != null) {
                     listener.onError()
                 } else {
-                    listener.OnSuccess()
+                    listener.onSuccess()
                 }
             }
         }
@@ -138,7 +138,7 @@ class Horizon {
                 if (result != null) {
                     listener.onError()
                 } else {
-                    listener.OnSuccess()
+                    listener.onSuccess()
                 }
             }
 

@@ -8,10 +8,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants
+import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.models.SupportedAssetType
+import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.StringFormat
 import com.squareup.picasso.Picasso
 import java.util.*
@@ -125,6 +129,18 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         if (asset.code ==Constants.LUMENS_ASSET_CODE) {
             viewHolder.assetButton!!.text = context.getString(R.string.set_inflation_message)
             viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.mantis))
+            viewHolder.assetButton!!.setOnClickListener {
+                Horizon.Companion.JoinInflationDestination(object : SuccessErrorCallback {
+                    override fun onSuccess() {
+                        Toast.makeText(context, "Inflation destination set!", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onError() {
+                        Toast.makeText(context, "There was an error setting inflation destination.", Toast.LENGTH_SHORT).show()
+                    }
+
+                }).execute(WalletApplication.session!!.keyPair)
+            }
         } else {
             viewHolder.assetButton!!.text = context.getString(R.string.remove_asset_message)
             viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.apricot))

@@ -1,6 +1,6 @@
 package blockeq.com.stellarwallet.interfaces
 
 interface SuccessErrorCallback {
-    fun OnSuccess()
+    fun onSuccess()
     fun onError()
 }

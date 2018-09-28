@@ -118,7 +118,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     //endregion
 
     //region Horizon callbacks
-    override fun OnSuccess() {
+    override fun onSuccess() {
         progressBar.visibility = View.GONE
         Toast.makeText(this, getString(R.string.send_success_message), Toast.LENGTH_LONG).show()
         launchWallet()
