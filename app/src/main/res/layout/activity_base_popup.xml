@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.WalletsActivity">
+    tools:context=".activities.AssetsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -33,6 +33,7 @@
                     android:layout_alignParentEnd="true"
                     android:src="@drawable/ic_close_black_24dp"
                     android:tint="@color/colorAccent" />
+
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
 

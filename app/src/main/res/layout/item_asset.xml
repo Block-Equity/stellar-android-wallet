@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:layout_width="match_parent" android:layout_height="wrap_content" >
+
+    <ImageView
+        android:id="@+id/assetImageView"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/activity_vertical_margin" />
+
+    <LinearLayout
+        android:layout_toEndOf="@+id/assetImageView"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:padding="@dimen/activity_vertical_margin" >
+
+        <TextView
+            android:id="@+id/assetNameTextView"
+            tools:text="Stellar Lumens"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/BoldText"
+            android:textSize="@dimen/text_size_medium" />
+
+        <TextView
+            android:id="@+id/assetAmountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/RegularText"
+            android:layout_marginTop="@dimen/margin_padding_size_small"
+            android:textColor="@color/regularTextColor"
+            tools:text="16.0000 XLM" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/assetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/PrimaryButtonStyle"
+        android:background="@color/blue2"
+        android:layout_alignParentEnd="true"
+        android:textSize="@dimen/text_size_micro"
+        android:padding="8dp"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:text="Add asset"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/activity_vertical_margin"/>
+
+    <View style="@style/Divider"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>

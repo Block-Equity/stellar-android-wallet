@@ -37,11 +37,19 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
     implementation "com.android.support.constraint:constraint-layout:$constrainLayoutVersion"
     implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.android.volley:volley:1.1.1'
 
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     kapt "android.arch.lifecycle:compiler:$lifecycle_version"
 
     implementation "com.google.android:flexbox:$flexboxVersion"
+
+    implementation ('com.squareup.picasso:picasso:2.71828') {
+        exclude group:'com.android.support', module:'exifinterface'
+        exclude group:'com.squareup.okio', module:'okio'
+        exclude group:'com.squareup.okhttp3', module:'okhttp'
+    }
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.0'
 
     implementation "io.github.novacrypto:BIP39:$novaCryptoVersion"
     implementation "com.andrognito.pinlockview:pinlockview:$pinlockviewVersion"
@@ -49,7 +57,6 @@ dependencies {
     implementation "com.journeyapps:zxing-android-embedded:$zxingAndroidVersion"
     implementation "com.github.davidmigloz:number-keyboard:$numberKeyBoardVersion"
     implementation "com.brandongogetap:stickyheaders:$stickyheadersVersion"
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.0'
 
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"

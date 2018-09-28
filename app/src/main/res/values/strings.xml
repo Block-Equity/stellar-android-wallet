@@ -20,7 +20,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="refreshed">List Refreshed!</string>
-    <string name="no_network">There was a problem connecting to the network. Attempting to reconnect</string>
+    <string name="no_network">There was a problem connecting to the network. Attempting to reconnect.</string>
 
     <!--Wallet Fragment-->
     <string name="button_receive">Receive</string>
@@ -101,6 +101,13 @@
     <string name="memo">Memo:</string>
     <string name="send_address_hint">Enter address here</string>
     <string name="send_success_message">Transaction sent successfully</string>
-    <string name="send_error_message">There was an error sending your transaction. Please try again later</string>
+    <string name="send_error_message">There was an error sending your transaction. Please try again later.</string>
+
+    <!--Assets Activity-->
+    <string name="asset_title_text">Assets</string>
+    <string name="error_supported_assets_message">There was an error fetching supported assets.</string>
+    <string name="supported_assets_header">BlockEQ Assets</string>
+    <string name="set_inflation_message">Set inflation</string>
+    <string name="remove_asset_message">Remove asset</string>
 
 </resources>

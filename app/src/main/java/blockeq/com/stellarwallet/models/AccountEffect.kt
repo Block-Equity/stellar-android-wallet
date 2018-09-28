@@ -24,6 +24,14 @@ enum class EffectType(val value : String) {
     SEQUENCE_BUMPED("sequence_bumped")
 }
 
+/**
+ * Class which provides a model for Session
+ * @constructor Sets all properties of the Session
+ * @property type the type of account effect as shown in EffectType
+ * @property createdAt the time at which the effect was created
+ * @property assetCode the asset symbol
+ * @property amount the amount of asset transacted if there was a transaction
+ */
 data class AccountEffect (var type: String, var createdAt: String,
                           var assetCode: String?, var amount: String?)
 

@@ -11,7 +11,7 @@ import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.ReceiveActivity
 import blockeq.com.stellarwallet.activities.EnterAddressActivity
-import blockeq.com.stellarwallet.activities.WalletsActivity
+import blockeq.com.stellarwallet.activities.AssetsActivity
 import blockeq.com.stellarwallet.adapters.WalletRecyclerViewAdapter
 import blockeq.com.stellarwallet.helpers.Constants.Companion.LUMENS_ASSET_TYPE
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
@@ -45,7 +45,6 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startPollingAccount()
         setupUI()
 
         receiveButton.setOnClickListener {
@@ -57,6 +56,11 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
             startActivity(Intent(activity, EnterAddressActivity::class.java))
             activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startPollingAccount()
     }
 
     override fun onPause() {
@@ -77,7 +81,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList!!.array)
         adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
             override fun onAssetDropdownClicked(view: View, position: Int) {
-                startActivity(Intent(activity, WalletsActivity::class.java))
+                startActivity(Intent(activity, AssetsActivity::class.java))
                 activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
             }
 
