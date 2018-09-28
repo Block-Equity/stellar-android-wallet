@@ -9,11 +9,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.models.SupportedAsset
-import blockeq.com.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
+import blockeq.com.stellarwallet.models.SupportedAssetType
+import blockeq.com.stellarwallet.utils.StringFormat
 import com.squareup.picasso.Picasso
-import org.stellar.sdk.responses.AccountResponse
 import java.util.*
 
 class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -45,7 +44,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
 
     override fun getItemViewType(position: Int): Int {
         return when {
-            items[position] is AccountResponse.Balance -> TYPE_ASSET
+            items[position] is SupportedAsset && (items[position] as SupportedAsset).type == SupportedAssetType.ADDED -> TYPE_ASSET
             items[position] is SupportedAsset -> TYPE_SUPPORTED_ASSET
             else -> TYPE_HEADER
         }
@@ -115,23 +114,13 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     //region Bind View Holders
 
     private fun configureAssetViewHolder(viewHolder : AssetViewHolder, position : Int) {
-        val asset = items[position] as AccountResponse.Balance
+        val asset = items[position] as SupportedAsset
 
-        val assetCode: String
+        viewHolder.assetName!!.text = asset.name
+        viewHolder.assetAmount!!.text = StringFormat.truncateDecimalPlaces(asset.amount) + " " + asset.code.toUpperCase()
 
-        if (asset.assetType == Constants.LUMENS_ASSET_TYPE) {
-            viewHolder.assetName!!.text = Constants.LUMENS_ASSET_NAME
-            assetCode = "XLM"
-        } else {
-            when(asset.assetCode) {
-                Constants.PTS_ASSET_TYPE -> {
-                    viewHolder.assetName!!.text = Constants.PTS_ASSET_NAME
-                }
-            }
-            assetCode = asset.assetCode
-        }
+        Picasso.get().load(asset.image).into(viewHolder.assetImage)
 
-        viewHolder.assetAmount!!.text = truncateDecimalPlaces(asset.balance) + " " + assetCode
     }
 
     private fun configureAssetHeaderViewHolder(viewHolder : AssetHeaderViewHolder, position : Int) {
@@ -145,7 +134,6 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         viewHolder.assetName!!.text = asset.name + " (" + asset.code.toUpperCase() + ")"
 
         viewHolder.assetAmount!!.visibility = View.GONE
-
         Picasso.get().load(asset.image).into(viewHolder.assetImage)
     }
 

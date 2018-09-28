@@ -20,7 +20,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="refreshed">List Refreshed!</string>
-    <string name="no_network">There was a problem connecting to the network. Attempting to reconnect</string>
+    <string name="no_network">There was a problem connecting to the network. Attempting to reconnect.</string>
 
     <!--Wallet Fragment-->
     <string name="button_receive">Receive</string>
@@ -105,5 +105,7 @@
 
     <!--Assets Activity-->
     <string name="asset_title_text">Assets</string>
+    <string name="error_supported_assets_message">There was an error fetching supported assets.</string>
+    <string name="supported_assets_header">BlockEQ Assets</string>
 
 </resources>
