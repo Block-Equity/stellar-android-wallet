@@ -137,8 +137,8 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
                         AccountUtils.getBalance(Constants.LUMENS_ASSET_TYPE).toDouble() > 0) {
                     context.startActivity(Intent(context, InflationActivity::class.java))
                 } else {
-                    //Minimum balance error
-                    Toast.makeText(context, "Minium balance error", Toast.LENGTH_SHORT).show()
+                    // TODO: Can show a dialog for minimum balance error
+                    Toast.makeText(context, "Minimum balance error", Toast.LENGTH_SHORT).show()
                 }
             }
         } else {
