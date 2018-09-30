@@ -109,6 +109,10 @@
     <string name="supported_assets_header">BlockEQ Assets</string>
     <string name="set_inflation_message">Set inflation</string>
     <string name="remove_asset_message">Remove asset</string>
+
+    <!--Inflation Activity-->
     <string name="inflation_info_message">We recommend setting your inflation destination to the lumenaut community pool (entered above), which pays out 100% of inflation proceeds every Tuesday without taking any fees. You can change it to any other pool should you prefer to.</string>
+    <string name="save_button">Save</string>
+    <string name="inflation_destination_title">Inflation Destination</string>
 
 </resources>

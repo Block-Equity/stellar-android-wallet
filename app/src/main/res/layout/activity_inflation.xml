@@ -13,7 +13,7 @@
         style="@style/NavTitleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Inflation Destination"
+        android:text="@string/inflation_destination_title"
         android:textColor="@color/sendToTextColor"/>
 
     <LinearLayout
@@ -65,7 +65,7 @@
         android:background="@color/sendButtonColor"
         android:textColor="@color/white"
         style="@style/ButtonStyle"
-        android:text="Save"
+        android:text="@string/save_button"
         android:layout_alignParentBottom="true" />
 
 </RelativeLayout>
