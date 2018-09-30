@@ -144,10 +144,10 @@ class Horizon {
 
         }
 
+        // TODO: Refactor When switching assets, get the right balance for asset, using AccountUtils
         fun getBalance() : String {
             WalletApplication.localStore!!.balances?.forEach {
                 if (it.assetType == Constants.LUMENS_ASSET_TYPE) {
-                    //TODO: When switching assets, get the right balance for asset
                     return StringFormat.truncateDecimalPlaces(it.balance)
                 }
             }
