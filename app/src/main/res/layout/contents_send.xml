@@ -130,6 +130,7 @@
 
         <Button
             android:id="@+id/send_button"
+            style="@style/ButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/sendButtonColor"

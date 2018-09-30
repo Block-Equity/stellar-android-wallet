@@ -6,6 +6,7 @@ import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.services.networking.Horizon
+import kotlinx.android.synthetic.main.activity_inflation.*
 
 class InflationActivity : BaseActivity() {
 
@@ -17,17 +18,18 @@ class InflationActivity : BaseActivity() {
     }
 
     override fun setupUI() {
+        
+        saveButton.setOnClickListener {
+            Horizon.Companion.JoinInflationDestination(object : SuccessErrorCallback {
+                override fun onSuccess() {
+                    Toast.makeText(this@InflationActivity, "Inflation destination set!", Toast.LENGTH_SHORT).show()
+                }
 
-        // In on button click listener
-        Horizon.Companion.JoinInflationDestination(object : SuccessErrorCallback {
-            override fun onSuccess() {
-                Toast.makeText(this@InflationActivity, "Inflation destination set!", Toast.LENGTH_SHORT).show()
-            }
+                override fun onError() {
+                    Toast.makeText(this@InflationActivity, "There was an error setting inflation destination.", Toast.LENGTH_SHORT).show()
+                }
 
-            override fun onError() {
-                Toast.makeText(this@InflationActivity, "There was an error setting inflation destination.", Toast.LENGTH_SHORT).show()
-            }
-
-        }).execute(WalletApplication.session!!.keyPair)
+            }).execute(WalletApplication.session!!.keyPair)
+        }
     }
 }
