@@ -2,6 +2,7 @@ package blockeq.com.stellarwallet.adapters
 
 import android.content.Context
 import android.content.Intent
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -134,11 +135,10 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
             viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.mantis))
             viewHolder.assetButton!!.setOnClickListener {
                 if (WalletApplication.localStore!!.balances!!.isNotEmpty() &&
-                        AccountUtils.getBalance(Constants.LUMENS_ASSET_TYPE).toDouble() > 0) {
+                        AccountUtils.getBalance(Constants.LUMENS_ASSET_TYPE).toDouble() > 1.0) {
                     context.startActivity(Intent(context, InflationActivity::class.java))
                 } else {
-                    // TODO: Can show a dialog for minimum balance error
-                    Toast.makeText(context, "Minimum balance error", Toast.LENGTH_SHORT).show()
+                    showBalanceErrorDialog()
                 }
             }
         } else {
@@ -161,5 +161,15 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         Picasso.get().load(asset.image).into(viewHolder.assetImage)
     }
 
+    //endregion
+
+    //region User Interface
+    private fun showBalanceErrorDialog() {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(context.getString(R.string.no_balance_dialog_title))
+                .setMessage(context.getString(R.string.no_balance_text_message))
+        val dialog = builder.create()
+        dialog.show()
+    }
     //endregion
 }
