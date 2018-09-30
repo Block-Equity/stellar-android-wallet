@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
+import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.services.networking.Horizon
 import kotlinx.android.synthetic.main.activity_inflation.*
@@ -18,7 +19,9 @@ class InflationActivity : BaseActivity() {
     }
 
     override fun setupUI() {
-        
+
+        addressEditText.setText(Constants.INFLATION_DESTINATION)
+
         saveButton.setOnClickListener {
             Horizon.Companion.JoinInflationDestination(object : SuccessErrorCallback {
                 override fun onSuccess() {
@@ -29,7 +32,7 @@ class InflationActivity : BaseActivity() {
                     Toast.makeText(this@InflationActivity, "There was an error setting inflation destination.", Toast.LENGTH_SHORT).show()
                 }
 
-            }).execute(WalletApplication.session!!.keyPair)
+            }, addressEditText.text.toString()).execute(WalletApplication.session!!.keyPair)
         }
     }
 }

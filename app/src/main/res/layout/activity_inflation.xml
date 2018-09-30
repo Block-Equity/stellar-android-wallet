@@ -48,6 +48,16 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/inflationInfoTextView"
+        android:layout_below="@+id/addressLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/RegularText"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:gravity="center"
+        android:text="@string/inflation_info_message"/>
+
     <Button
         android:id="@+id/saveButton"
         android:layout_width="match_parent"

@@ -106,7 +106,7 @@ class Horizon {
         }
 
         class JoinInflationDestination(private val listener: SuccessErrorCallback,
-                                       private val inflationDest : String = Constants.INFLATION_DESTINATION)
+                                       private val inflationDest : String)
             : AsyncTask<KeyPair, Void, ErrorResponse>() {
 
             override fun doInBackground(vararg params: KeyPair?): ErrorResponse? {

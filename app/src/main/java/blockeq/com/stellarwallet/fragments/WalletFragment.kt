@@ -13,6 +13,7 @@ import blockeq.com.stellarwallet.activities.ReceiveActivity
 import blockeq.com.stellarwallet.activities.EnterAddressActivity
 import blockeq.com.stellarwallet.activities.AssetsActivity
 import blockeq.com.stellarwallet.adapters.WalletRecyclerViewAdapter
+import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.helpers.Constants.Companion.LUMENS_ASSET_TYPE
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
@@ -21,6 +22,7 @@ import blockeq.com.stellarwallet.models.TotalBalance
 import blockeq.com.stellarwallet.models.WalletHeterogenousArray
 import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
+import blockeq.com.stellarwallet.utils.AccountUtils
 import blockeq.com.stellarwallet.utils.NetworkUtils
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.stellar.sdk.responses.AccountResponse
@@ -102,15 +104,11 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     override fun onLoadAccount(result: AccountResponse?) {
         if (result != null) {
-
-            result.balances?.forEach {
-                if (it.assetType == LUMENS_ASSET_TYPE) {
-                    recyclerViewArrayList!!.updateTotalBalance(TotalBalance(it.balance))
-                }
-            }
-
             WalletApplication.localStore!!.balances = result.balances
+        } else {
+            WalletApplication.localStore!!.balances = arrayOf()
         }
+        recyclerViewArrayList!!.updateTotalBalance(TotalBalance(AccountUtils.getBalance(Constants.LUMENS_ASSET_TYPE)))
     }
 
     override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {

@@ -18,6 +18,7 @@ import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.models.SupportedAssetType
 import blockeq.com.stellarwallet.services.networking.Horizon
+import blockeq.com.stellarwallet.utils.AccountUtils
 import blockeq.com.stellarwallet.utils.StringFormat
 import com.squareup.picasso.Picasso
 import java.util.*
@@ -132,7 +133,13 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
             viewHolder.assetButton!!.text = context.getString(R.string.set_inflation_message)
             viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.mantis))
             viewHolder.assetButton!!.setOnClickListener {
-                context.startActivity(Intent(context, InflationActivity::class.java))
+                if (WalletApplication.localStore!!.balances!!.isNotEmpty() &&
+                        AccountUtils.getBalance(Constants.LUMENS_ASSET_TYPE).toDouble() > 0) {
+                    context.startActivity(Intent(context, InflationActivity::class.java))
+                } else {
+                    //Minimum balance error
+                    Toast.makeText(context, "Minium balance error", Toast.LENGTH_SHORT).show()
+                }
             }
         } else {
             viewHolder.assetButton!!.text = context.getString(R.string.remove_asset_message)
