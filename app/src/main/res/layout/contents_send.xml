@@ -87,11 +87,11 @@
             android:textColor="@color/toryBlue"/>
 
         <TextView
+            android:id="@+id/assetCodeTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:textColor="@color/currencyTextColor"
-            android:text="@string/currency"/>
+            android:textColor="@color/currencyTextColor" />
 
     </LinearLayout>
 

@@ -95,7 +95,6 @@
     <string name="send_to_text">Send To</string>
     <string name="next_button_text">Next</string>
     <string name="send_button_text">Send</string>
-    <string name="currency">XLM</string>
     <string name="to">To:</string>
     <string name="optional">(Optional)</string>
     <string name="memo">Memo:</string>

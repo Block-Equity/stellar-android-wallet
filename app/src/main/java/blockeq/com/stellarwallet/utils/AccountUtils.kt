@@ -10,9 +10,9 @@ class AccountUtils {
         fun getBalance(type : String) : String {
             WalletApplication.localStore!!.balances!!.forEach {
                 if (it.assetType == type) {
-                    return it.balance
+                    return StringFormat.truncateDecimalPlaces(it.balance)
                 } else if (it.assetCode == type) {
-                    return it.balance
+                    return StringFormat.truncateDecimalPlaces(it.balance)
                 }
             }
             return Constants.DEFAULT_ACCOUNT_BALANCE

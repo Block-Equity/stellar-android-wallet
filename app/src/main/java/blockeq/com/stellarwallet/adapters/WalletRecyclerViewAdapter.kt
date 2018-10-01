@@ -12,6 +12,7 @@ import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.models.*
+import blockeq.com.stellarwallet.utils.StringFormat
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.getFormattedDate
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
 import org.threeten.bp.Instant
@@ -183,14 +184,9 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     private fun configureTotalBalanceViewHolder(viewHolder : TotalBalanceViewHolder,
                                                 position : Int) {
         val totalBalance = items[position] as TotalBalance
-        val assetCode = if (WalletApplication.currAssetCode == Constants.LUMENS_ASSET_TYPE) {
-            Constants.LUMENS_ASSET_CODE
-        } else {
-            WalletApplication.currAssetCode
-        }
 
         viewHolder.balance!!.text = truncateDecimalPlaces(totalBalance.balance)
-        viewHolder.assetName!!.text = WalletApplication.currAssetName + " (" + assetCode + ")"
+        viewHolder.assetName!!.text = WalletApplication.currAssetName + " (" + StringFormat.getAssetCode() + ")"
     }
 
     private fun configureAvailableBalanceViewHolder(viewHolder : AvailableBalanceViewHolder,

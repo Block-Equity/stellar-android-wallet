@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.services.networking.Horizon
@@ -35,6 +36,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         titleText.text = StringFormat.getAvailableBalance()
+        assetCodeTextView.text = StringFormat.getAssetCode()
 
         amountTextView.text = "0"
         numberKeyboard.setListener(this)
