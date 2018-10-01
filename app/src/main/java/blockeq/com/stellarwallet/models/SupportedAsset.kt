@@ -1,5 +1,7 @@
 package blockeq.com.stellarwallet.models
 
+import org.stellar.sdk.Asset
+
 /**
  * Class which provides a model for SupportedAsset
  * @constructor Sets all properties of the SupportedAsset
@@ -19,4 +21,6 @@ enum class SupportedAssetType {
 
 data class SupportedAsset (var id: Int, var code: String, var image: String, var issuer: String,
                            var limit: String, var name: String, var createdAt: String,
-                           var updatedAt: String, var amount: String?, var type: SupportedAssetType? = SupportedAssetType.NOT_ADDED)
+                           var updatedAt: String, var amount: String?,
+                           var type: SupportedAssetType? = SupportedAssetType.NOT_ADDED,
+                           var asset: Asset?)
