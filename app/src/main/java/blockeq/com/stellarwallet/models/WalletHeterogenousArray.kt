@@ -1,6 +1,7 @@
 package blockeq.com.stellarwallet.models
 
 import blockeq.com.stellarwallet.WalletApplication
+import blockeq.com.stellarwallet.helpers.Constants
 import org.stellar.sdk.AssetTypeCreditAlphaNum
 import org.stellar.sdk.AssetTypeCreditAlphaNum12
 import org.stellar.sdk.AssetTypeCreditAlphaNum4
@@ -51,7 +52,7 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
     //endregion
 
     private fun addFilteredEffects(list: ArrayList<EffectResponse>?) {
-        val filteredEffects = getFilteredEffects(list, WalletApplication.currAsset)
+        val filteredEffects = getFilteredEffects(list, WalletApplication.currAssetCode)
         if (filteredEffects != null) {
             array.addAll(convertEffectsToAccountEffects(filteredEffects))
         }
@@ -61,9 +62,17 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
         if (list == null) return null
 
         return (list.filter {
-            (it.type == EffectType.RECEIVED.value && getAssetCode(it) == assetType) ||
-            (it.type == EffectType.SENT.value && getAssetCode(it) == assetType) ||
-            (it.type != EffectType.RECEIVED.value && it.type != EffectType.SENT.value)
+                (it.type == EffectType.RECEIVED.value && getAssetCode(it) == assetType) ||
+                (it.type == EffectType.SENT.value && getAssetCode(it) == assetType) ||
+                (it.type == EffectType.TRUSTLINE_CREATED.value && getAssetCode(it) == assetType) ||
+                (it.type == EffectType.TRUSTLINE_REMOVED.value && getAssetCode(it) == assetType) ||
+                (it.type == EffectType.TRUSTLINE_UPDATED.value && getAssetCode(it) == assetType) ||
+                (it.type == EffectType.ACCOUNT_INFLATION_DESTINATION_UPDATED.value && assetType == Constants.LUMENS_ASSET_TYPE) ||
+                (it.type == EffectType.CREATED.value && assetType == Constants.LUMENS_ASSET_TYPE) ||
+                (it.type == EffectType.SIGNER_UPDATED.value && assetType == Constants.LUMENS_ASSET_TYPE) ||
+                (it.type == EffectType.SIGNER_REMOVED.value && assetType == Constants.LUMENS_ASSET_TYPE) ||
+                (it.type == EffectType.SIGNER_CREATED.value && assetType == Constants.LUMENS_ASSET_TYPE)
+
         } as ArrayList)
     }
 
@@ -82,29 +91,21 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
        if (effect is AccountCreditedEffectResponse) {
            if (effect.asset is AssetTypeCreditAlphaNum) {
                return (effect.asset as AssetTypeCreditAlphaNum).code
-
-           } else if (effect.asset is AssetTypeCreditAlphaNum4) {
-               return (effect.asset as AssetTypeCreditAlphaNum4).code
-
-           } else if (effect.asset is AssetTypeCreditAlphaNum12) {
-               return (effect.asset as AssetTypeCreditAlphaNum12).code
-
            } else {
                return (effect.asset as AssetTypeNative).type
            }
        } else if (effect is AccountDebitedEffectResponse) {
            if (effect.asset is AssetTypeCreditAlphaNum) {
                return (effect.asset as AssetTypeCreditAlphaNum).code
-
-           } else if (effect.asset is AssetTypeCreditAlphaNum4) {
-               return (effect.asset as AssetTypeCreditAlphaNum4).code
-
-           } else if (effect.asset is AssetTypeCreditAlphaNum12) {
-               return (effect.asset as AssetTypeCreditAlphaNum12).code
-
            } else {
                return (effect.asset as AssetTypeNative).type
            }
+       } else if (effect is TrustlineCreatedEffectResponse) {
+           return (effect.asset as AssetTypeCreditAlphaNum).code
+       } else if (effect is TrustlineRemovedEffectResponse) {
+           return (effect.asset as AssetTypeCreditAlphaNum).code
+       } else if (effect is TrustlineUpdatedEffectResponse) {
+           return (effect.asset as AssetTypeCreditAlphaNum).code
        } else {
            return null
        }
@@ -125,13 +126,6 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
     private fun getBoughtAsset(trade: TradeEffectResponse) : String {
         if (trade.boughtAsset is AssetTypeCreditAlphaNum) {
             return (trade.boughtAsset as AssetTypeCreditAlphaNum).code
-
-        } else if (trade.boughtAsset is AssetTypeCreditAlphaNum4) {
-            return (trade.boughtAsset as AssetTypeCreditAlphaNum4).code
-
-        } else if (trade.boughtAsset is AssetTypeCreditAlphaNum12) {
-            return (trade.boughtAsset as AssetTypeCreditAlphaNum12).code
-
         } else {
             return (trade.boughtAsset as AssetTypeNative).type
         }
@@ -140,13 +134,6 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
     private fun getSoldAsset(trade: TradeEffectResponse) : String {
         if (trade.soldAsset is AssetTypeCreditAlphaNum) {
             return (trade.soldAsset as AssetTypeCreditAlphaNum).code
-
-        } else if (trade.soldAsset is AssetTypeCreditAlphaNum4) {
-            return (trade.soldAsset as AssetTypeCreditAlphaNum4).code
-
-        } else if (trade.soldAsset is AssetTypeCreditAlphaNum12) {
-            return (trade.soldAsset as AssetTypeCreditAlphaNum12).code
-
         } else {
             return (trade.soldAsset as AssetTypeNative).type
         }

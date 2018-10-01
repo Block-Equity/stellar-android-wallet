@@ -44,8 +44,6 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupUI()
-
         receiveButton.setOnClickListener {
             startActivity(Intent(activity, ReceiveActivity::class.java))
             activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
@@ -59,6 +57,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     override fun onResume() {
         super.onResume()
+        bindAdapter()
         startPollingAccount()
     }
 
@@ -69,12 +68,9 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     //region User Interface
 
-    private fun setupUI() {
-        bindAdapter()
-    }
 
     private fun bindAdapter() {
-        val currAsset = WalletApplication.currAsset
+        val currAsset = WalletApplication.currAssetCode
         recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(AccountUtils.getBalance(currAsset)),
                 AvailableBalance(AccountUtils.getBalance(currAsset)), Pair("Activity", "Amount"), effectsList)
 
@@ -107,7 +103,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
             WalletApplication.localStore!!.balances = arrayOf()
         }
         recyclerViewArrayList!!.updateTotalBalance(
-                TotalBalance(AccountUtils.getBalance(WalletApplication.currAsset)))
+                TotalBalance(AccountUtils.getBalance(WalletApplication.currAssetCode)))
     }
 
     override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
@@ -138,7 +134,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
                     NetworkUtils(activity!!).displayNoNetwork()
                 }
 
-                handler.postDelayed(this, 5000)
+                handler.postDelayed(this, 2500)
             }
         }
 

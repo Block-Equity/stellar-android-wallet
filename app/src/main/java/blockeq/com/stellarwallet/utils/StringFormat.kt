@@ -43,7 +43,7 @@ class StringFormat {
         }
 
         fun getAvailableBalance(): String {
-            return "Available: " + AccountUtils.getBalance(WalletApplication.currAsset) + " XLM"
+            return "Available: " + AccountUtils.getBalance(WalletApplication.currAssetCode) + " XLM"
         }
     }
 }

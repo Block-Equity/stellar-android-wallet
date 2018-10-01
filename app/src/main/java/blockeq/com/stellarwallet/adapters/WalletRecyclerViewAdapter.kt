@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
+import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.models.*
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.getFormattedDate
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
@@ -115,11 +117,13 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     //region View Holders
     inner class TotalBalanceViewHolder(v : View) : RecyclerView.ViewHolder(v) {
         var balance : TextView? = null
+        var assetName : TextView? = null
         var assetsButton : ImageView? = null
 
         init {
             balance = v.findViewById(R.id.balanceTextView)
             assetsButton = v.findViewById(R.id.assetsButton)
+            assetName = v.findViewById(R.id.assetNameTextView)
 
             assetsButton!!.setOnClickListener {
                 if (onAssetsDropdownListener != null) {
@@ -179,7 +183,14 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     private fun configureTotalBalanceViewHolder(viewHolder : TotalBalanceViewHolder,
                                                 position : Int) {
         val totalBalance = items[position] as TotalBalance
+        val assetCode = if (WalletApplication.currAssetCode == Constants.LUMENS_ASSET_TYPE) {
+            Constants.LUMENS_ASSET_CODE
+        } else {
+            WalletApplication.currAssetCode
+        }
+
         viewHolder.balance!!.text = truncateDecimalPlaces(totalBalance.balance)
+        viewHolder.assetName!!.text = WalletApplication.currAssetName + " (" + assetCode + ")"
     }
 
     private fun configureAvailableBalanceViewHolder(viewHolder : AvailableBalanceViewHolder,

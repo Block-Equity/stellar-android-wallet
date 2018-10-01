@@ -2,6 +2,7 @@ package blockeq.com.stellarwallet
 
 import android.arch.lifecycle.ProcessLifecycleOwner
 import android.support.multidex.MultiDexApplication
+import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.helpers.LocalStore
 import blockeq.com.stellarwallet.helpers.WalletLifecycleListener
 import blockeq.com.stellarwallet.models.Session
@@ -32,7 +33,8 @@ class WalletApplication : MultiDexApplication() {
 
         var session : Session? = null
 
-        var currAsset: String = "native"
+        var currAssetCode: String = Constants.LUMENS_ASSET_TYPE
+        var currAssetName: String = Constants.LUMENS_ASSET_NAME
 
         var appReturnedFromBackground = false
 

@@ -7,7 +7,6 @@ import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
-import blockeq.com.stellarwallet.utils.StringFormat
 import org.stellar.sdk.*
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.requests.RequestBuilder
@@ -49,6 +48,7 @@ class Horizon {
                 var effectResults : Page<EffectResponse>? = null
                 try {
                     effectResults = server.effects().order(RequestBuilder.Order.DESC)
+                            .limit(Constants.NUM_TRANSACTIONS_SHOWN)
                             .forAccount(WalletApplication.session!!.keyPair).execute()
                 } catch (error : ErrorResponse) {
                     Log.d(TAG, error.body.toString())
