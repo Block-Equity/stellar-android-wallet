@@ -164,9 +164,11 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerView
             if (asset.code == Constants.LUMENS_ASSET_CODE) {
                 WalletApplication.currAssetCode = Constants.LUMENS_ASSET_TYPE
                 WalletApplication.currAssetName = Constants.LUMENS_ASSET_NAME
+                WalletApplication.currAssetIssuer = ""
             } else {
                 WalletApplication.currAssetCode = asset.code.toUpperCase()
                 WalletApplication.currAssetName = asset.name
+                WalletApplication.currAssetIssuer = asset.issuer
             }
             (context as Activity).finish()
         }

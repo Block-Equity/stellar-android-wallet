@@ -35,6 +35,7 @@ class WalletApplication : MultiDexApplication() {
 
         var currAssetCode: String = Constants.LUMENS_ASSET_TYPE
         var currAssetName: String = Constants.LUMENS_ASSET_NAME
+        var currAssetIssuer: String = ""
 
         var appReturnedFromBackground = false
 

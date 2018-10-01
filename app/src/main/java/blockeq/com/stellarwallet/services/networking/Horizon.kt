@@ -79,7 +79,7 @@ class Horizon {
                     val sourceAccount = server.accounts().account(sourceKeyPair)
 
                     val transaction = Transaction.Builder(sourceAccount)
-                            .addOperation(PaymentOperation.Builder(destKeyPair, AssetTypeNative(), amount).build())
+                            .addOperation(PaymentOperation.Builder(destKeyPair, getCurrentAsset(), amount).build())
                             // A memo allows you to add your own metadata to a transaction. It's
                             // optional and does not affect how Stellar treats the transaction.
                             .addMemo(Memo.text(memo))
@@ -187,6 +187,17 @@ class Horizon {
                 } else {
                     listener.onSuccess()
                 }
+            }
+        }
+
+        private fun getCurrentAsset(): Asset {
+            val assetCode = WalletApplication.currAssetCode
+            val assetIssuer = WalletApplication.currAssetIssuer
+
+            return if (assetCode == Constants.LUMENS_ASSET_TYPE) {
+                AssetTypeNative()
+            } else {
+                Asset.createNonNativeAsset(assetCode, KeyPair.fromAccountId(assetIssuer))
             }
         }
     }
