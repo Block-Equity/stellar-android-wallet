@@ -9,19 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
-import blockeq.com.stellarwallet.activities.ReceiveActivity
-import blockeq.com.stellarwallet.activities.EnterAddressActivity
 import blockeq.com.stellarwallet.activities.AssetsActivity
+import blockeq.com.stellarwallet.activities.EnterAddressActivity
+import blockeq.com.stellarwallet.activities.ReceiveActivity
 import blockeq.com.stellarwallet.adapters.WalletRecyclerViewAdapter
-import blockeq.com.stellarwallet.helpers.Constants
-import blockeq.com.stellarwallet.helpers.Constants.Companion.LUMENS_ASSET_TYPE
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.models.AvailableBalance
 import blockeq.com.stellarwallet.models.TotalBalance
 import blockeq.com.stellarwallet.models.WalletHeterogenousArray
 import blockeq.com.stellarwallet.services.networking.Horizon
-import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
 import blockeq.com.stellarwallet.utils.AccountUtils
 import blockeq.com.stellarwallet.utils.NetworkUtils
 import kotlinx.android.synthetic.main.fragment_wallet.*
@@ -77,8 +74,9 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
     }
 
     private fun bindAdapter() {
-        recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(getBalance()),
-                AvailableBalance(getBalance()), Pair("Activity", "Amount"), effectsList)
+        val currAsset = WalletApplication.currAsset
+        recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(AccountUtils.getBalance(currAsset)),
+                AvailableBalance(AccountUtils.getBalance(currAsset)), Pair("Activity", "Amount"), effectsList)
 
         adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList!!.array)
         adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
@@ -108,7 +106,8 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         } else {
             WalletApplication.localStore!!.balances = arrayOf()
         }
-        recyclerViewArrayList!!.updateTotalBalance(TotalBalance(AccountUtils.getBalance(Constants.LUMENS_ASSET_TYPE)))
+        recyclerViewArrayList!!.updateTotalBalance(
+                TotalBalance(AccountUtils.getBalance(WalletApplication.currAsset)))
     }
 
     override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {

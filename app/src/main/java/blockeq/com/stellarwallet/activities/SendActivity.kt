@@ -6,12 +6,11 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.services.networking.Horizon
-import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
 import blockeq.com.stellarwallet.utils.NetworkUtils
+import blockeq.com.stellarwallet.utils.StringFormat
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
@@ -35,7 +34,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        titleText.text = "Available: " + getBalance() + " XLM"
+        titleText.text = StringFormat.getAvailableBalance()
 
         amountTextView.text = "0"
         numberKeyboard.setListener(this)

@@ -32,6 +32,8 @@ class WalletApplication : MultiDexApplication() {
 
         var session : Session? = null
 
+        var currAsset: String = "native"
+
         var appReturnedFromBackground = false
 
         fun applicationContext(): WalletApplication {

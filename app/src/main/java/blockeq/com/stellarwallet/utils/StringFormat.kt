@@ -1,5 +1,6 @@
 package blockeq.com.stellarwallet.utils
 
+import blockeq.com.stellarwallet.WalletApplication
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
@@ -39,6 +40,10 @@ class StringFormat {
                 }
             }
             return false
+        }
+
+        fun getAvailableBalance(): String {
+            return "Available: " + AccountUtils.getBalance(WalletApplication.currAsset) + " XLM"
         }
     }
 }

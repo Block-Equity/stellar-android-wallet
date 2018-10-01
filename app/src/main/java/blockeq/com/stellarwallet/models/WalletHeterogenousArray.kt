@@ -1,5 +1,6 @@
 package blockeq.com.stellarwallet.models
 
+import blockeq.com.stellarwallet.WalletApplication
 import org.stellar.sdk.AssetTypeCreditAlphaNum
 import org.stellar.sdk.AssetTypeCreditAlphaNum12
 import org.stellar.sdk.AssetTypeCreditAlphaNum4
@@ -50,7 +51,7 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
     //endregion
 
     private fun addFilteredEffects(list: ArrayList<EffectResponse>?) {
-        val filteredEffects = getFilteredEffects(list, "native")
+        val filteredEffects = getFilteredEffects(list, WalletApplication.currAsset)
         if (filteredEffects != null) {
             array.addAll(convertEffectsToAccountEffects(filteredEffects))
         }
@@ -64,7 +65,6 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
             (it.type == EffectType.SENT.value && getAssetCode(it) == assetType) ||
             (it.type != EffectType.RECEIVED.value && it.type != EffectType.SENT.value)
         } as ArrayList)
-        //TODO: Map -> cast to concrete subclasses
     }
 
     private fun convertEffectsToAccountEffects(list: ArrayList<EffectResponse>) : ArrayList<Any> {
