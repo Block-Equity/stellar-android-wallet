@@ -154,11 +154,7 @@ class Horizon {
 
                 val server = Server(PROD_SERVER)
                 val sourceKeyPair = WalletApplication.session!!.keyPair
-                val limit = if (removeTrust) {
-                    "0.0000000"
-                } else {
-                    Constants.MAX_ASSET_STRING_VALUE
-                }
+                val limit = if (removeTrust) "0.0000000" else Constants.MAX_ASSET_STRING_VALUE
 
                 try {
                     val sourceAccount = server.accounts().account(sourceKeyPair)
