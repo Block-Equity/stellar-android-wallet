@@ -142,7 +142,6 @@ class AssetsActivity : BasePopupActivity(), RecyclerViewListener {
 
     override fun reloadDataForAdapter() {
         if (NetworkUtils(this).isNetworkAvailable()) {
-
             Horizon.Companion.LoadAccountTask(object: OnLoadAccount {
                 override fun onLoadAccount(result: AccountResponse?) {
                     if (result != null) {
@@ -152,10 +151,8 @@ class AssetsActivity : BasePopupActivity(), RecyclerViewListener {
                     }
                     updateAdapter()
                 }
-
             }).execute()
         }
-
     }
     //endregion
 
