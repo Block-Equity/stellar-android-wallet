@@ -32,7 +32,7 @@ class InflationActivity : BaseActivity() {
                     Toast.makeText(this@InflationActivity, "There was an error setting inflation destination.", Toast.LENGTH_SHORT).show()
                 }
 
-            }, addressEditText.text.toString()).execute(WalletApplication.session!!.keyPair)
+            }, addressEditText.text.toString()).execute()
         }
     }
 }

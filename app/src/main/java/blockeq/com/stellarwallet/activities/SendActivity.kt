@@ -57,7 +57,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
                 Activity.RESULT_OK -> {
                     if (NetworkUtils(this).isNetworkAvailable()) {
                         progressBar.visibility = View.VISIBLE
-                        Horizon.Companion.SendTask(this, address, WalletApplication.session!!.keyPair,
+                        Horizon.Companion.SendTask(this, address,
                                 memoTextView.text.toString(), amountTextView.text.toString()).execute()
                     } else {
                         NetworkUtils(this).displayNoNetwork()

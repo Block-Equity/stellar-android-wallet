@@ -24,12 +24,12 @@ class Horizon {
 
         private val TAG = Horizon::class.java.simpleName
 
-        class LoadAccountTask(private val listener: OnLoadAccount) : AsyncTask<KeyPair, Void, AccountResponse>() {
-            override fun doInBackground(vararg pair: KeyPair) : AccountResponse? {
+        class LoadAccountTask(private val listener: OnLoadAccount) : AsyncTask<Void, Void, AccountResponse>() {
+            override fun doInBackground(vararg params: Void?) : AccountResponse? {
                 val server = Server(PROD_SERVER)
                 var account : AccountResponse? = null
                 try {
-                    account = server.accounts().account(pair[0])
+                    account = server.accounts().account(WalletApplication.session!!.keyPair)
 
                 } catch (error : ErrorResponse) {
                     Log.d(TAG, error.body.toString())
@@ -43,12 +43,13 @@ class Horizon {
             }
         }
 
-        class LoadEffectsTask(private val listener: OnLoadEffects) : AsyncTask<KeyPair, Void, ArrayList<EffectResponse>?>() {
-            override fun doInBackground(vararg pair: KeyPair?): ArrayList<EffectResponse>? {
+        class LoadEffectsTask(private val listener: OnLoadEffects) : AsyncTask<Void, Void, ArrayList<EffectResponse>?>() {
+            override fun doInBackground(vararg params: Void?): ArrayList<EffectResponse>? {
                 val server = Server(PROD_SERVER)
                 var effectResults : Page<EffectResponse>? = null
                 try {
-                    effectResults = server.effects().order(RequestBuilder.Order.DESC).forAccount(pair[0]).execute()
+                    effectResults = server.effects().order(RequestBuilder.Order.DESC)
+                            .forAccount(WalletApplication.session!!.keyPair).execute()
                 } catch (error : ErrorResponse) {
                     Log.d(TAG, error.body.toString())
                 }
@@ -63,10 +64,10 @@ class Horizon {
         }
 
         class SendTask(private val listener: SuccessErrorCallback, private val destAddress: String,
-                       private val sourceKeyPair: KeyPair,
                        private val memo: String, private val amount : String) : AsyncTask<Void, Void, ErrorResponse>() {
 
             override fun doInBackground(vararg params: Void?): ErrorResponse? {
+                val sourceKeyPair = WalletApplication.session!!.keyPair
                 val server = Server(PROD_SERVER)
                 val destKeyPair = KeyPair.fromAccountId(destAddress)
 
@@ -107,13 +108,13 @@ class Horizon {
 
         class JoinInflationDestination(private val listener: SuccessErrorCallback,
                                        private val inflationDest : String)
-            : AsyncTask<KeyPair, Void, ErrorResponse>() {
+            : AsyncTask<Void, Void, ErrorResponse>() {
 
-            override fun doInBackground(vararg params: KeyPair?): ErrorResponse? {
+            override fun doInBackground(vararg params: Void?): ErrorResponse? {
                 Network.usePublicNetwork()
 
                 val server = Server(PROD_SERVER)
-                val sourceKeyPair = params[0]
+                val sourceKeyPair = WalletApplication.session!!.keyPair
                 val sourceAccount = server.accounts().account(sourceKeyPair)
                 val destKeyPair = KeyPair.fromAccountId(inflationDest)
 
@@ -141,7 +142,6 @@ class Horizon {
                     listener.onSuccess()
                 }
             }
-
         }
 
         // TODO: Refactor When switching assets, get the right balance for asset, using AccountUtils

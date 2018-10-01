@@ -131,10 +131,10 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
                 if (WalletApplication.session != null && NetworkUtils(activity!!).isNetworkAvailable()) {
 
                     Horizon.Companion.LoadAccountTask(this@WalletFragment)
-                            .execute(WalletApplication.session!!.keyPair)
+                            .execute()
 
                     Horizon.Companion.LoadEffectsTask(this@WalletFragment)
-                            .execute(WalletApplication.session!!.keyPair)
+                            .execute()
                 } else {
                     NetworkUtils(activity!!).displayNoNetwork()
                 }
