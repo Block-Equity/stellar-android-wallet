@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
-import blockeq.com.stellarwallet.interfaces.OnSendPayment
+import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
@@ -18,7 +18,7 @@ import com.davidmiguel.numberkeyboard.NumberKeyboardListener
 import kotlinx.android.synthetic.main.contents_send.*
 
 
-class SendActivity : BasePopupActivity(), NumberKeyboardListener, OnSendPayment {
+class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCallback {
 
     companion object {
         const val MAX_ALLOWED_DECIMALS = 4
@@ -57,7 +57,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, OnSendPayment 
                 Activity.RESULT_OK -> {
                     if (NetworkUtils(this).isNetworkAvailable()) {
                         progressBar.visibility = View.VISIBLE
-                        Horizon.Companion.SendTask(this, address, WalletApplication.session!!.keyPair,
+                        Horizon.Companion.SendTask(this, address,
                                 memoTextView.text.toString(), amountTextView.text.toString()).execute()
                     } else {
                         NetworkUtils(this).displayNoNetwork()
@@ -118,13 +118,13 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, OnSendPayment 
     //endregion
 
     //region Horizon callbacks
-    override fun OnSendSuccess() {
+    override fun onSuccess() {
         progressBar.visibility = View.GONE
         Toast.makeText(this, getString(R.string.send_success_message), Toast.LENGTH_LONG).show()
         launchWallet()
     }
 
-    override fun onSendError() {
+    override fun onError() {
         progressBar.visibility = View.GONE
         Toast.makeText(this, getString(R.string.send_error_message), Toast.LENGTH_LONG).show()
     }

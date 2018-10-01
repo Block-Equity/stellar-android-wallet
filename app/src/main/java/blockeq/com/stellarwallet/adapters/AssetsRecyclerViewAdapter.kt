@@ -1,6 +1,8 @@
 package blockeq.com.stellarwallet.adapters
 
 import android.content.Context
+import android.content.Intent
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +10,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
+import blockeq.com.stellarwallet.activities.InflationActivity
 import blockeq.com.stellarwallet.helpers.Constants
+import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.models.SupportedAssetType
+import blockeq.com.stellarwallet.services.networking.Horizon
+import blockeq.com.stellarwallet.utils.AccountUtils
 import blockeq.com.stellarwallet.utils.StringFormat
 import com.squareup.picasso.Picasso
 import java.util.*
@@ -125,6 +133,14 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         if (asset.code ==Constants.LUMENS_ASSET_CODE) {
             viewHolder.assetButton!!.text = context.getString(R.string.set_inflation_message)
             viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.mantis))
+            viewHolder.assetButton!!.setOnClickListener {
+                if (WalletApplication.localStore!!.balances!!.isNotEmpty() &&
+                        AccountUtils.getBalance(Constants.LUMENS_ASSET_TYPE).toDouble() > 1.0) {
+                    context.startActivity(Intent(context, InflationActivity::class.java))
+                } else {
+                    showBalanceErrorDialog()
+                }
+            }
         } else {
             viewHolder.assetButton!!.text = context.getString(R.string.remove_asset_message)
             viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.apricot))
@@ -145,5 +161,15 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         Picasso.get().load(asset.image).into(viewHolder.assetImage)
     }
 
+    //endregion
+
+    //region User Interface
+    private fun showBalanceErrorDialog() {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(context.getString(R.string.no_balance_dialog_title))
+                .setMessage(context.getString(R.string.no_balance_text_message))
+        val dialog = builder.create()
+        dialog.show()
+    }
     //endregion
 }
