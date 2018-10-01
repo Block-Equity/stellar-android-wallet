@@ -244,6 +244,8 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
             viewHolder.dot!!.setColorFilter(context.resources.getColor(R.color.apricot), PorterDuff.Mode.SRC_IN)
             val bracketedText = "(" + viewHolder.amount!!.text + ")"
             viewHolder.amount!!.text = bracketedText
+        } else {
+            viewHolder.dot!!.setColorFilter(context.resources.getColor(R.color.paleSky), PorterDuff.Mode.SRC_IN)
         }
     }
 
