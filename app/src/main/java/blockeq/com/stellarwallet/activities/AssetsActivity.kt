@@ -63,7 +63,7 @@ class AssetsActivity : BasePopupActivity() {
 
         val lumenSupportedAsset = SupportedAsset(0, Constants.LUMENS_ASSET_CODE, Constants.LUMENS_IMAGE_URL,
                 "", "", Constants.LUMENS_ASSET_NAME, "", "",
-                "0", SupportedAssetType.ADDED)
+                "0", SupportedAssetType.ADDED, null)
 
         val list = ArrayList<SupportedAsset>()
         list.add(lumenSupportedAsset)
@@ -78,6 +78,7 @@ class AssetsActivity : BasePopupActivity() {
                    asset.amount = it.balance
                    asset.type = SupportedAssetType.ADDED
                    asset.code = asset.code
+                   asset.asset = it.asset
                    return@map asset
                } else {
                    return@map null

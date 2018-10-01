@@ -20,8 +20,11 @@ import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.models.SupportedAssetType
 import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.AccountUtils
+import blockeq.com.stellarwallet.utils.NetworkUtils
 import blockeq.com.stellarwallet.utils.StringFormat
 import com.squareup.picasso.Picasso
+import org.stellar.sdk.Asset
+import org.stellar.sdk.KeyPair
 import java.util.*
 
 class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -142,8 +145,15 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
                 }
             }
         } else {
-            viewHolder.assetButton!!.text = context.getString(R.string.remove_asset_message)
-            viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.apricot))
+            if (asset.amount!!.toDouble() == 0.0) {
+                viewHolder.assetButton!!.text = context.getString(R.string.remove_asset_message)
+                viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.apricot))
+                viewHolder.assetButton!!.setOnClickListener {
+                    changeTrustLine(asset.asset!!, true)
+                }
+            } else {
+                viewHolder.assetButton!!.visibility = View.GONE
+            }
         }
     }
 
@@ -154,11 +164,18 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
 
     private fun configureSupportedAssetViewHolder(viewHolder: SupportedAssetViewHolder, position: Int) {
         val asset = items[position] as SupportedAsset
+        val trustLineAsset = Asset.createNonNativeAsset(asset.code.toUpperCase(), KeyPair.fromAccountId(asset.issuer))
 
         viewHolder.assetName!!.text = asset.name + " (" + asset.code.toUpperCase() + ")"
 
         viewHolder.assetAmount!!.visibility = View.GONE
         Picasso.get().load(asset.image).into(viewHolder.assetImage)
+
+        viewHolder.assetButton!!.text = context.getString(R.string.add_asset)
+        viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.mantis))
+        viewHolder.assetButton!!.setOnClickListener {
+            changeTrustLine(trustLineAsset, false)
+        }
     }
 
     //endregion
@@ -172,4 +189,21 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         dialog.show()
     }
     //endregion
+
+    private fun changeTrustLine(asset: Asset, removeTrust: Boolean) {
+        if (NetworkUtils(context).isNetworkAvailable()) {
+            Horizon.Companion.ChangeTrust(object : SuccessErrorCallback {
+                override fun onSuccess() {
+                    Toast.makeText(context, context.getString(R.string.success_trustline_changed), Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onError() {
+                    Toast.makeText(context, context.getString(R.string.error_trustline_changed), Toast.LENGTH_SHORT).show()
+                }
+
+            }, asset, removeTrust).execute()
+        } else {
+            NetworkUtils(context).displayNoNetwork()
+        }
+    }
 }

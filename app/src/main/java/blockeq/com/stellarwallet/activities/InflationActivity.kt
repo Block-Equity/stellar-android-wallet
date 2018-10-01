@@ -3,7 +3,6 @@ package blockeq.com.stellarwallet.activities
 import android.os.Bundle
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.services.networking.Horizon

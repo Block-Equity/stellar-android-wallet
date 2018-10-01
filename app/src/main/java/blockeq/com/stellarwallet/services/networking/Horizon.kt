@@ -115,10 +115,11 @@ class Horizon {
 
                 val server = Server(PROD_SERVER)
                 val sourceKeyPair = WalletApplication.session!!.keyPair
-                val sourceAccount = server.accounts().account(sourceKeyPair)
                 val destKeyPair = KeyPair.fromAccountId(inflationDest)
 
                 try {
+                    val sourceAccount = server.accounts().account(sourceKeyPair)
+
                     val transaction = Transaction.Builder(sourceAccount)
                             .addOperation(SetOptionsOperation.Builder()
                                     .setInflationDestination(destKeyPair)
@@ -127,6 +128,51 @@ class Horizon {
 
                     transaction.sign(sourceKeyPair)
                     server.submitTransaction(transaction)
+
+                } catch (error : ErrorResponse) {
+                    Log.d(TAG, error.body.toString())
+                    return error
+                }
+                return null
+            }
+
+            override fun onPostExecute(result: ErrorResponse?) {
+                if (result != null) {
+                    listener.onError()
+                } else {
+                    listener.onSuccess()
+                }
+            }
+        }
+
+        class ChangeTrust(private val listener: SuccessErrorCallback, private val asset: Asset,
+                          private val removeTrust: Boolean)
+            : AsyncTask<Void, Void, ErrorResponse>() {
+
+            override fun doInBackground(vararg params: Void?): ErrorResponse? {
+                Network.usePublicNetwork()
+
+                val server = Server(PROD_SERVER)
+                val sourceKeyPair = WalletApplication.session!!.keyPair
+                val limit = if (removeTrust) {
+                    "0.0000000"
+                } else {
+                    Constants.MAX_ASSET_STRING_VALUE
+                }
+
+                try {
+                    val sourceAccount = server.accounts().account(sourceKeyPair)
+
+                    val transaction = Transaction.Builder(sourceAccount)
+                            .addOperation(ChangeTrustOperation.Builder(asset, limit).build())
+                            .build()
+
+                    transaction.sign(sourceKeyPair)
+                    val response = server.submitTransaction(transaction)
+
+                    if (!response.isSuccess) {
+                        return ErrorResponse(0, "Response Error")
+                    }
 
                 } catch (error : ErrorResponse) {
                     Log.d(TAG, error.body.toString())
