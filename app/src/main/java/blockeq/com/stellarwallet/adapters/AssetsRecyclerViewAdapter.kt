@@ -7,14 +7,12 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.InflationActivity
 import blockeq.com.stellarwallet.helpers.Constants
+import blockeq.com.stellarwallet.interfaces.RecyclerViewListener
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.models.SupportedAssetType
@@ -27,7 +25,8 @@ import org.stellar.sdk.Asset
 import org.stellar.sdk.KeyPair
 import java.util.*
 
-class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerViewListener,
+                                var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         const val TYPE_ASSET = 0
@@ -128,6 +127,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     private fun configureAssetViewHolder(viewHolder : AssetViewHolder, position : Int) {
         val asset = items[position] as SupportedAsset
 
+        viewHolder.assetButton!!.visibility = View.VISIBLE
         viewHolder.assetName!!.text = asset.name
         viewHolder.assetAmount!!.text = StringFormat.truncateDecimalPlaces(asset.amount) + " " + asset.code.toUpperCase()
 
@@ -144,16 +144,15 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
                     showBalanceErrorDialog()
                 }
             }
-        } else {
-            if (asset.amount!!.toDouble() == 0.0) {
-                viewHolder.assetButton!!.text = context.getString(R.string.remove_asset_message)
-                viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.apricot))
-                viewHolder.assetButton!!.setOnClickListener {
-                    changeTrustLine(asset.asset!!, true)
-                }
-            } else {
-                viewHolder.assetButton!!.visibility = View.GONE
+        } else if (asset.amount!!.toDouble() == 0.0) {
+            viewHolder.assetButton!!.text = context.getString(R.string.remove_asset_message)
+            viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.apricot))
+            viewHolder.assetButton!!.setOnClickListener {
+                listener.showProgressBar()
+                changeTrustLine(asset.asset!!, true)
             }
+        } else {
+            viewHolder.assetButton!!.visibility = View.GONE
         }
     }
 
@@ -174,8 +173,10 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         viewHolder.assetButton!!.text = context.getString(R.string.add_asset)
         viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.mantis))
         viewHolder.assetButton!!.setOnClickListener {
+            listener.showProgressBar()
             changeTrustLine(trustLineAsset, false)
         }
+        viewHolder.assetButton!!.visibility = View.VISIBLE
     }
 
     //endregion
@@ -195,15 +196,19 @@ class AssetsRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
             Horizon.Companion.ChangeTrust(object : SuccessErrorCallback {
                 override fun onSuccess() {
                     Toast.makeText(context, context.getString(R.string.success_trustline_changed), Toast.LENGTH_SHORT).show()
+                    listener.hideProgressBar()
+                    listener.reloadDataForAdapter()
                 }
 
                 override fun onError() {
                     Toast.makeText(context, context.getString(R.string.error_trustline_changed), Toast.LENGTH_SHORT).show()
+                    listener.hideProgressBar()
                 }
 
             }, asset, removeTrust).execute()
         } else {
             NetworkUtils(context).displayNoNetwork()
+            listener.hideProgressBar()
         }
     }
 }

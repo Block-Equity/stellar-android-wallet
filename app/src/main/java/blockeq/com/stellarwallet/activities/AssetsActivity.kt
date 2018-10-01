@@ -2,13 +2,18 @@ package blockeq.com.stellarwallet.activities
 
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.adapters.AssetsRecyclerViewAdapter
 import blockeq.com.stellarwallet.helpers.Constants
+import blockeq.com.stellarwallet.interfaces.OnLoadAccount
+import blockeq.com.stellarwallet.interfaces.RecyclerViewListener
 import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.models.SupportedAssetType
+import blockeq.com.stellarwallet.services.networking.Horizon
+import blockeq.com.stellarwallet.utils.NetworkUtils
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
@@ -19,10 +24,11 @@ import kotlinx.android.synthetic.main.content_assets_activity.*
 import org.stellar.sdk.responses.AccountResponse
 
 
-class AssetsActivity : BasePopupActivity() {
+class AssetsActivity : BasePopupActivity(), RecyclerViewListener {
 
     private var adapter :AssetsRecyclerViewAdapter? = null
     private var assetsList: ArrayList<Any>? = ArrayList()
+    private var map: Map<String, SupportedAsset>? = null
 
     override fun setContent(): Int {
         return R.layout.content_assets_activity
@@ -36,6 +42,7 @@ class AssetsActivity : BasePopupActivity() {
     }
 
     override fun setupUI() {
+        progressBar.visibility = View.VISIBLE
         bindAdapter()
         titleText.text = getString(R.string.asset_title_text)
     }
@@ -44,16 +51,22 @@ class AssetsActivity : BasePopupActivity() {
     //region User Interface
 
     private fun bindAdapter() {
-        adapter = AssetsRecyclerViewAdapter(this, assetsList!!)
+        adapter = AssetsRecyclerViewAdapter(this, this, assetsList!!)
         assetsRecyclerView.adapter = adapter
         assetsRecyclerView.layoutManager = LinearLayoutManager(this)
     }
 
-    private fun updateAdapter(map: Map<String, SupportedAsset>) {
-        assetsList!!.addAll(convertBalanceToSupportedAsset(WalletApplication.localStore!!.balances!!, map))
-        assetsList!!.add(getString(R.string.supported_assets_header))
-        assetsList!!.addAll(getFilteredSupportedAssets(map))
+    private fun updateAdapter() {
+        assetsList!!.clear()
+        assetsList!!.addAll(convertBalanceToSupportedAsset(WalletApplication.localStore!!.balances!!, map!!))
+        val filteredList = getFilteredSupportedAssets(map!!)
+        if (!filteredList.isEmpty()) {
+            assetsList!!.add(getString(R.string.supported_assets_header))
+            assetsList!!.addAll(filteredList)
+        }
+
         adapter!!.notifyDataSetChanged()
+        progressBar.visibility = View.GONE
     }
 
     //endregion
@@ -108,8 +121,8 @@ class AssetsActivity : BasePopupActivity() {
                     val gson = GsonBuilder().create()
                     val token = object : TypeToken<Map<String, SupportedAsset>>(){}.type
 
-                    val supportedAssetsList = gson.fromJson<Map<String, SupportedAsset>>(response.toString(), token)
-                    updateAdapter(supportedAssetsList)
+                    map = gson.fromJson<Map<String, SupportedAsset>>(response.toString(), token)
+                    updateAdapter()
                 },
                 Response.ErrorListener {
                     Toast.makeText(this, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
@@ -117,5 +130,33 @@ class AssetsActivity : BasePopupActivity() {
 
         queue.add(request)
     }
+
+    //region Call backs
+    override fun showProgressBar() {
+        progressBar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgressBar() {
+        progressBar.visibility = View.GONE
+    }
+
+    override fun reloadDataForAdapter() {
+        if (NetworkUtils(this).isNetworkAvailable()) {
+
+            Horizon.Companion.LoadAccountTask(object: OnLoadAccount {
+                override fun onLoadAccount(result: AccountResponse?) {
+                    if (result != null) {
+                        WalletApplication.localStore!!.balances = result.balances
+                    } else {
+                        WalletApplication.localStore!!.balances = arrayOf()
+                    }
+                    updateAdapter()
+                }
+
+            }).execute()
+        }
+
+    }
+    //endregion
 
 }
