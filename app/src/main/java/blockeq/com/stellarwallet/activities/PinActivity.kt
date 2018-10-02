@@ -91,7 +91,6 @@ class PinActivity : BaseActivity(), PinLockListener {
 
                     when {
                         pinViewState!!.type == PinType.LOGIN -> {
-                            StellarAddress.Companion.Generate().execute(decryptedData)
                             launchWallet()
                         }
                         pinViewState!!.type == PinType.CHECK -> {
