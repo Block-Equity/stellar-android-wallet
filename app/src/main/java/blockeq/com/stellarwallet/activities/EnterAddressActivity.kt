@@ -6,8 +6,8 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
-import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.content_enter_address.*
 
@@ -47,7 +47,7 @@ class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
     //region User Interface
     override fun setupUI() {
 
-        titleText.text = "Available: " + getBalance() + " XLM"
+        titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance()
 
         cameraImageButton.setOnClickListener(this)
         nextButton.setOnClickListener(this)

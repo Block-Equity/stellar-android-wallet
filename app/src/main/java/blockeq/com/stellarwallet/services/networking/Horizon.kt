@@ -7,7 +7,6 @@ import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
-import blockeq.com.stellarwallet.utils.StringFormat
 import org.stellar.sdk.*
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.requests.RequestBuilder
@@ -49,6 +48,7 @@ class Horizon {
                 var effectResults : Page<EffectResponse>? = null
                 try {
                     effectResults = server.effects().order(RequestBuilder.Order.DESC)
+                            .limit(Constants.NUM_TRANSACTIONS_SHOWN)
                             .forAccount(WalletApplication.session!!.keyPair).execute()
                 } catch (error : ErrorResponse) {
                     Log.d(TAG, error.body.toString())
@@ -79,7 +79,7 @@ class Horizon {
                     val sourceAccount = server.accounts().account(sourceKeyPair)
 
                     val transaction = Transaction.Builder(sourceAccount)
-                            .addOperation(PaymentOperation.Builder(destKeyPair, AssetTypeNative(), amount).build())
+                            .addOperation(PaymentOperation.Builder(destKeyPair, getCurrentAsset(), amount).build())
                             // A memo allows you to add your own metadata to a transaction. It's
                             // optional and does not affect how Stellar treats the transaction.
                             .addMemo(Memo.text(memo))
@@ -186,14 +186,15 @@ class Horizon {
             }
         }
 
-        // TODO: Refactor When switching assets, get the right balance for asset, using AccountUtils
-        fun getBalance() : String {
-            WalletApplication.localStore!!.balances?.forEach {
-                if (it.assetType == Constants.LUMENS_ASSET_TYPE) {
-                    return StringFormat.truncateDecimalPlaces(it.balance)
-                }
+        private fun getCurrentAsset(): Asset {
+            val assetCode = WalletApplication.userSession.currAssetCode
+            val assetIssuer = WalletApplication.userSession.currAssetIssuer
+
+            return if (assetCode == Constants.LUMENS_ASSET_TYPE) {
+                AssetTypeNative()
+            } else {
+                Asset.createNonNativeAsset(assetCode, KeyPair.fromAccountId(assetIssuer))
             }
-            return Constants.DEFAULT_ACCOUNT_BALANCE
         }
     }
 }

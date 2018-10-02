@@ -9,12 +9,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.models.*
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.getFormattedDate
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneId
-import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 
 
@@ -115,11 +113,13 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     //region View Holders
     inner class TotalBalanceViewHolder(v : View) : RecyclerView.ViewHolder(v) {
         var balance : TextView? = null
+        var assetName : TextView? = null
         var assetsButton : ImageView? = null
 
         init {
             balance = v.findViewById(R.id.balanceTextView)
             assetsButton = v.findViewById(R.id.assetsButton)
+            assetName = v.findViewById(R.id.assetNameTextView)
 
             assetsButton!!.setOnClickListener {
                 if (onAssetsDropdownListener != null) {
@@ -179,7 +179,10 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     private fun configureTotalBalanceViewHolder(viewHolder : TotalBalanceViewHolder,
                                                 position : Int) {
         val totalBalance = items[position] as TotalBalance
+
         viewHolder.balance!!.text = truncateDecimalPlaces(totalBalance.balance)
+        viewHolder.assetName!!.text = WalletApplication.userSession.currAssetName + " (" +
+                WalletApplication.userSession.getFormattedCurrentAssetCode() + ")"
     }
 
     private fun configureAvailableBalanceViewHolder(viewHolder : AvailableBalanceViewHolder,
@@ -233,6 +236,8 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
             viewHolder.dot!!.setColorFilter(context.resources.getColor(R.color.apricot), PorterDuff.Mode.SRC_IN)
             val bracketedText = "(" + viewHolder.amount!!.text + ")"
             viewHolder.amount!!.text = bracketedText
+        } else {
+            viewHolder.dot!!.setColorFilter(context.resources.getColor(R.color.paleSky), PorterDuff.Mode.SRC_IN)
         }
     }
 

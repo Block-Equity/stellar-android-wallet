@@ -1,5 +1,6 @@
 package blockeq.com.stellarwallet.adapters
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AlertDialog
@@ -7,7 +8,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.InflationActivity
@@ -24,6 +28,7 @@ import com.squareup.picasso.Picasso
 import org.stellar.sdk.Asset
 import org.stellar.sdk.KeyPair
 import java.util.*
+
 
 class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerViewListener,
                                 var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -133,7 +138,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerView
 
         Picasso.get().load(asset.image).into(viewHolder.assetImage)
 
-        if (asset.code ==Constants.LUMENS_ASSET_CODE) {
+        if (asset.code == Constants.LUMENS_ASSET_CODE) {
             viewHolder.assetButton!!.text = context.getString(R.string.set_inflation_message)
             viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.mantis))
             viewHolder.assetButton!!.setOnClickListener {
@@ -153,6 +158,19 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerView
             }
         } else {
             viewHolder.assetButton!!.visibility = View.GONE
+        }
+
+        viewHolder.itemView.setOnClickListener {
+            if (asset.code == Constants.LUMENS_ASSET_CODE) {
+                WalletApplication.userSession.currAssetCode = Constants.LUMENS_ASSET_TYPE
+                WalletApplication.userSession.currAssetName = Constants.LUMENS_ASSET_NAME
+                WalletApplication.userSession.currAssetIssuer = ""
+            } else {
+                WalletApplication.userSession.currAssetCode = asset.code.toUpperCase()
+                WalletApplication.userSession.currAssetName = asset.name
+                WalletApplication.userSession.currAssetIssuer = asset.issuer
+            }
+            (context as Activity).finish()
         }
     }
 

@@ -10,7 +10,6 @@ import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.services.networking.Horizon
-import blockeq.com.stellarwallet.services.networking.Horizon.Companion.getBalance
 import blockeq.com.stellarwallet.utils.NetworkUtils
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
@@ -35,7 +34,8 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        titleText.text = "Available: " + getBalance() + " XLM"
+        titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance()
+        assetCodeTextView.text = WalletApplication.userSession.getFormattedCurrentAssetCode()
 
         amountTextView.text = "0"
         numberKeyboard.setListener(this)
