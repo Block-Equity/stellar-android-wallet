@@ -132,7 +132,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
                     NetworkUtils(activity!!).displayNoNetwork()
                 }
 
-                handler.postDelayed(this, 2500)
+                handler.postDelayed(this, 5000)
             }
         }
 
