@@ -70,20 +70,37 @@ class Horizon {
                 val sourceKeyPair = WalletApplication.session!!.keyPair
                 val server = Server(PROD_SERVER)
                 val destKeyPair = KeyPair.fromAccountId(destAddress)
+                var isCreateAccount = false
 
                 Network.usePublicNetwork()
 
                 try {
-                    server.accounts().account(destKeyPair)
+                    try {
+                        server.accounts().account(destKeyPair)
+                    } catch (error : ErrorResponse) {
+                        Log.d(TAG, error.body.toString())
+                        if (error.message == "Error response from the server.") {
+                            isCreateAccount = true
+                        } else {
+                            return error
+                        }
+                    }
 
                     val sourceAccount = server.accounts().account(sourceKeyPair)
 
-                    val transaction = Transaction.Builder(sourceAccount)
-                            .addOperation(PaymentOperation.Builder(destKeyPair, getCurrentAsset(), amount).build())
-                            // A memo allows you to add your own metadata to a transaction. It's
-                            // optional and does not affect how Stellar treats the transaction.
-                            .addMemo(Memo.text(memo))
-                            .build()
+                    val transaction = if (isCreateAccount) {
+                        Transaction.Builder(sourceAccount)
+                                .addOperation(CreateAccountOperation.Builder(destKeyPair, amount).build())
+                                // A memo allows you to add your own metadata to a transaction. It's
+                                // optional and does not affect how Stellar treats the transaction.
+                                .addMemo(Memo.text(memo))
+                                .build()
+                    } else {
+                        Transaction.Builder(sourceAccount)
+                                .addOperation(PaymentOperation.Builder(destKeyPair, getCurrentAsset(), amount).build())
+                                .addMemo(Memo.text(memo))
+                                .build()
+                    }
 
                     transaction.sign(sourceKeyPair)
 
