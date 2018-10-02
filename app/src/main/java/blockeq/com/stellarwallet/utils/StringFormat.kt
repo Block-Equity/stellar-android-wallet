@@ -1,7 +1,5 @@
 package blockeq.com.stellarwallet.utils
 
-import blockeq.com.stellarwallet.WalletApplication
-import blockeq.com.stellarwallet.helpers.Constants
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
@@ -41,19 +39,6 @@ class StringFormat {
                 }
             }
             return false
-        }
-
-        fun getAssetCode() : String {
-            return if (WalletApplication.currAssetCode == Constants.LUMENS_ASSET_TYPE) {
-                Constants.LUMENS_ASSET_CODE
-            } else {
-                WalletApplication.currAssetCode
-            }
-        }
-
-        fun getAvailableBalance(): String {
-            return "Available: " + AccountUtils.getBalance(WalletApplication.currAssetCode) + " " +
-                    getAssetCode()
         }
     }
 }

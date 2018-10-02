@@ -6,6 +6,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
 import blockeq.com.stellarwallet.utils.StringFormat
 import com.google.zxing.integration.android.IntentIntegrator
@@ -47,7 +48,7 @@ class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
     //region User Interface
     override fun setupUI() {
 
-        titleText.text = StringFormat.getAvailableBalance()
+        titleText.text = WalletApplication.getAvailableBalance()
 
         cameraImageButton.setOnClickListener(this)
         nextButton.setOnClickListener(this)

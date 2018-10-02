@@ -6,6 +6,7 @@ import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.helpers.LocalStore
 import blockeq.com.stellarwallet.helpers.WalletLifecycleListener
 import blockeq.com.stellarwallet.models.Session
+import blockeq.com.stellarwallet.utils.AccountUtils
 import com.google.gson.Gson
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import java.security.Provider
@@ -41,6 +42,19 @@ class WalletApplication : MultiDexApplication() {
 
         fun applicationContext(): WalletApplication {
             return instance!!
+        }
+
+        fun getAssetCode() : String {
+            return if (WalletApplication.currAssetCode == Constants.LUMENS_ASSET_TYPE) {
+                Constants.LUMENS_ASSET_CODE
+            } else {
+                WalletApplication.currAssetCode
+            }
+        }
+
+        fun getAvailableBalance(): String {
+            return "Available: " + AccountUtils.getBalance(WalletApplication.currAssetCode) + " " +
+                    getAssetCode()
         }
     }
 

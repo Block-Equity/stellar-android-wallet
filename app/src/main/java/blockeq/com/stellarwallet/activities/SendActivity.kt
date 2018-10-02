@@ -35,8 +35,8 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        titleText.text = StringFormat.getAvailableBalance()
-        assetCodeTextView.text = StringFormat.getAssetCode()
+        titleText.text = WalletApplication.getAvailableBalance()
+        assetCodeTextView.text = WalletApplication.getAssetCode()
 
         amountTextView.text = "0"
         numberKeyboard.setListener(this)
