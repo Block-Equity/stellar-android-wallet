@@ -70,7 +70,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
 
     private fun bindAdapter() {
-        val currAsset = WalletApplication.currAssetCode
+        val currAsset = WalletApplication.userSession.currAssetCode
         recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(AccountUtils.getBalance(currAsset)),
                 AvailableBalance(AccountUtils.getBalance(currAsset)), Pair("Activity", "Amount"), effectsList)
 
@@ -103,7 +103,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
             WalletApplication.localStore!!.balances = arrayOf()
         }
         recyclerViewArrayList!!.updateTotalBalance(
-                TotalBalance(AccountUtils.getBalance(WalletApplication.currAssetCode)))
+                TotalBalance(AccountUtils.getBalance(WalletApplication.userSession.currAssetCode)))
     }
 
     override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {

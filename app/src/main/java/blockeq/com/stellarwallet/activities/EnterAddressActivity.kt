@@ -47,7 +47,7 @@ class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
     //region User Interface
     override fun setupUI() {
 
-        titleText.text = WalletApplication.getAvailableBalance()
+        titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance()
 
         cameraImageButton.setOnClickListener(this)
         nextButton.setOnClickListener(this)

@@ -52,7 +52,7 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
     //endregion
 
     private fun addFilteredEffects(list: ArrayList<EffectResponse>?) {
-        val filteredEffects = getFilteredEffects(list, WalletApplication.currAssetCode)
+        val filteredEffects = getFilteredEffects(list, WalletApplication.userSession.currAssetCode)
         if (filteredEffects != null) {
             array.addAll(convertEffectsToAccountEffects(filteredEffects))
         }

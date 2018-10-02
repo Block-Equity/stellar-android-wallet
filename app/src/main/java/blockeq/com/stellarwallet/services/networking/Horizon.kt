@@ -191,8 +191,8 @@ class Horizon {
         }
 
         private fun getCurrentAsset(): Asset {
-            val assetCode = WalletApplication.currAssetCode
-            val assetIssuer = WalletApplication.currAssetIssuer
+            val assetCode = WalletApplication.userSession.currAssetCode
+            val assetIssuer = WalletApplication.userSession.currAssetIssuer
 
             return if (assetCode == Constants.LUMENS_ASSET_TYPE) {
                 AssetTypeNative()

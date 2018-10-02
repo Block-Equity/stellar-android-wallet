@@ -181,7 +181,8 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         val totalBalance = items[position] as TotalBalance
 
         viewHolder.balance!!.text = truncateDecimalPlaces(totalBalance.balance)
-        viewHolder.assetName!!.text = WalletApplication.currAssetName + " (" + WalletApplication.getAssetCode() + ")"
+        viewHolder.assetName!!.text = WalletApplication.userSession.currAssetName + " (" +
+                WalletApplication.userSession.getFormattedCurrentAssetCode() + ")"
     }
 
     private fun configureAvailableBalanceViewHolder(viewHolder : AvailableBalanceViewHolder,
