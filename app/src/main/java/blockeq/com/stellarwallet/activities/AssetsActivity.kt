@@ -146,10 +146,8 @@ class AssetsActivity : BasePopupActivity(), RecyclerViewListener {
                 override fun onLoadAccount(result: AccountResponse?) {
                     if (result != null) {
                         WalletApplication.localStore!!.balances = result.balances
-                    } else {
-                        WalletApplication.localStore!!.balances = arrayOf()
+                        updateAdapter()
                     }
-                    updateAdapter()
                 }
             }).execute()
         }

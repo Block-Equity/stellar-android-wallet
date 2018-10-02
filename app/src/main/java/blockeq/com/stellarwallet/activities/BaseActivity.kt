@@ -20,7 +20,9 @@ open class BaseActivity : AppCompatActivity() {
             WalletApplication.appReturnedFromBackground =  false
 
 
-            launchPINView(PinType.LOGIN, "", "", true)
+            if (!WalletApplication.localStore!!.encryptedPhrase.isNullOrEmpty()) {
+                launchPINView(PinType.LOGIN, "", "", true)
+            }
         }
     }
 
