@@ -11,7 +11,6 @@ import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.NetworkUtils
-import blockeq.com.stellarwallet.utils.StringFormat
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener

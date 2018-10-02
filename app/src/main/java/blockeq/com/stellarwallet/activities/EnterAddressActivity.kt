@@ -8,7 +8,6 @@ import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
-import blockeq.com.stellarwallet.utils.StringFormat
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.content_enter_address.*
 

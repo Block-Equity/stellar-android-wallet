@@ -10,14 +10,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
-import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.models.*
-import blockeq.com.stellarwallet.utils.StringFormat
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.getFormattedDate
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneId
-import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 
 
