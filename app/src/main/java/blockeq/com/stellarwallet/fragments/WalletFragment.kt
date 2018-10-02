@@ -121,7 +121,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         runnableCode = object : Runnable {
             override fun run() {
 
-                if (WalletApplication.session != null && NetworkUtils(activity!!).isNetworkAvailable()) {
+                if (NetworkUtils(activity!!).isNetworkAvailable()) {
 
                     Horizon.Companion.LoadAccountTask(this@WalletFragment)
                             .execute()

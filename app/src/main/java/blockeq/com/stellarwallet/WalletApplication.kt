@@ -2,12 +2,9 @@ package blockeq.com.stellarwallet
 
 import android.arch.lifecycle.ProcessLifecycleOwner
 import android.support.multidex.MultiDexApplication
-import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.helpers.LocalStore
 import blockeq.com.stellarwallet.helpers.WalletLifecycleListener
-import blockeq.com.stellarwallet.models.Session
 import blockeq.com.stellarwallet.models.UserSession
-import blockeq.com.stellarwallet.utils.AccountUtils
 import com.google.gson.Gson
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import java.security.Provider
@@ -32,8 +29,6 @@ class WalletApplication : MultiDexApplication() {
 
         // Use LocalStore for SharedPreferences
         var localStore: LocalStore? = null
-
-        var session : Session? = null
 
         var userSession = UserSession()
 
