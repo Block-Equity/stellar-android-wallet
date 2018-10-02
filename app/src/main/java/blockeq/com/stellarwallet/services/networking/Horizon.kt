@@ -20,6 +20,7 @@ class Horizon {
     companion object {
         const val PROD_SERVER = "https://horizon.stellar.org"
         const val TEST_SERVER = "https://horizon-testnet.stellar.org"
+        const val SERVER_ERROR_MESSAGE = "Error response from the server."
 
         private val TAG = Horizon::class.java.simpleName
 
@@ -79,7 +80,7 @@ class Horizon {
                         server.accounts().account(destKeyPair)
                     } catch (error : ErrorResponse) {
                         Log.d(TAG, error.body.toString())
-                        if (error.message == "Error response from the server.") {
+                        if (error.message == SERVER_ERROR_MESSAGE) {
                             isCreateAccount = true
                         } else {
                             return error
