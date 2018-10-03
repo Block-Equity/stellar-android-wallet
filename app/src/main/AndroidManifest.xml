@@ -70,7 +70,7 @@
             android:name=".activities.InflationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activities.BalanceActivity"
+        <activity android:name=".activities.BalanceSummaryActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
     </application>
