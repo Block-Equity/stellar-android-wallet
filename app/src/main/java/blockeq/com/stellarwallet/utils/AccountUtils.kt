@@ -7,7 +7,7 @@ class AccountUtils {
 
     companion object {
 
-        fun getBalance(type : String) : String {
+        fun getTotalBalance(type : String) : String {
             WalletApplication.localStore!!.balances!!.forEach {
                 if (it.assetType == type) {
                     return StringFormat.truncateDecimalPlaces(it.balance)

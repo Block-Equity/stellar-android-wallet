@@ -71,8 +71,8 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     private fun bindAdapter() {
         val currAsset = WalletApplication.userSession.currAssetCode
-        recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(AccountUtils.getBalance(currAsset)),
-                AvailableBalance(AccountUtils.getBalance(currAsset)), Pair("Activity", "Amount"), effectsList)
+        recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(AccountUtils.getTotalBalance(currAsset)),
+                AvailableBalance(AccountUtils.getTotalBalance(currAsset)), Pair("Activity", "Amount"), effectsList)
 
         adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList!!.array)
         adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
@@ -101,7 +101,9 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
             WalletApplication.localStore!!.balances = result.balances
         }
         recyclerViewArrayList!!.updateTotalBalance(
-                TotalBalance(AccountUtils.getBalance(WalletApplication.userSession.currAssetCode)))
+                TotalBalance(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode)))
+        recyclerViewArrayList!!.updateAvailableBalance(
+                AvailableBalance(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode)))
     }
 
     override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {

@@ -13,7 +13,7 @@ class UserSession(var currAssetCode: String = Constants.LUMENS_ASSET_TYPE,
     }
 
     fun getFormattedCurrentAvailableBalance(): String {
-        return "Available: " + AccountUtils.getBalance(currAssetCode) + " " +
+        return "Available: " + AccountUtils.getTotalBalance(currAssetCode) + " " +
                 getFormattedCurrentAssetCode()
     }
 }
