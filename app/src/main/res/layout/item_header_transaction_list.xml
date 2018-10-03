@@ -22,7 +22,7 @@
         android:textColor="@color/silverChalice"
         android:layout_alignParentEnd="true"/>
 
-    <View style="@style/Divider"
+    <View style="@style/HorizontalDivider"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_below="@+id/activityHeaderTextView"
         android:layout_centerInParent="true"/>

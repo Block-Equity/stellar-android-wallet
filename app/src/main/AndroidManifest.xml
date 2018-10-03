@@ -62,10 +62,15 @@
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
             tools:replace="screenOrientation" />
-        <activity android:name=".activities.ReceiveActivity"
+        <activity
+            android:name=".activities.ReceiveActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activities.InflationActivity"
+        <activity
+            android:name=".activities.InflationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activities.BalanceActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
     </application>
