@@ -1,5 +1,6 @@
 package blockeq.com.stellarwallet.utils
 
+import blockeq.com.stellarwallet.helpers.Constants
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
@@ -39,6 +40,17 @@ class StringFormat {
                 }
             }
             return false
+        }
+
+        /**
+         * Converts native to xlm, otherwise returns the same asset code
+         */
+        fun formatAssetCode(assetCode: String): String {
+            return if (assetCode == Constants.LUMENS_ASSET_TYPE) {
+                Constants.LUMENS_ASSET_CODE
+            } else {
+                assetCode
+            }
         }
     }
 }

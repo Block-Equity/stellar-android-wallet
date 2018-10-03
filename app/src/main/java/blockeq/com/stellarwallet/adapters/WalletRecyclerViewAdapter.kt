@@ -11,6 +11,7 @@ import android.widget.TextView
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.models.*
+import blockeq.com.stellarwallet.utils.StringFormat
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.getFormattedDate
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
 import java.util.*
@@ -168,11 +169,13 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         var amount : TextView? = null
         var date : TextView? = null
         var transactionType : TextView? = null
+        var dot : ImageView? = null
 
         init {
             amount = v.findViewById(R.id.amountTextView)
             date = v.findViewById(R.id.dateTextView)
             transactionType = v.findViewById(R.id.transactionTypeTextView)
+            dot = v.findViewById(R.id.iconImageView)
         }
     }
 
@@ -244,11 +247,19 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     private fun configureTradeEffectViewHolder(viewHolder : TradeEffectViewHolder, position : Int) {
         val trade = items[position] as TradeEffect
 
-        //TODO: Equals which ever asset is the selected one? Adding braces depending on that
-        viewHolder.amount!!.text = truncateDecimalPlaces(trade.boughtAmount)
+        viewHolder.transactionType!!.text = "Trade " + StringFormat.formatAssetCode(trade.soldAsset) +
+                " for " + StringFormat.formatAssetCode(trade.boughtAsset)
+
+        if (WalletApplication.userSession.currAssetCode == trade.boughtAsset) {
+            viewHolder.amount!!.text = truncateDecimalPlaces(trade.boughtAmount)
+            viewHolder.dot!!.setColorFilter(context.resources.getColor(R.color.mantis), PorterDuff.Mode.SRC_IN)
+        } else {
+            viewHolder.amount!!.text = "(" + truncateDecimalPlaces(trade.soldAmount) + ")"
+            viewHolder.dot!!.setColorFilter(context.resources.getColor(R.color.apricot), PorterDuff.Mode.SRC_IN)
+        }
+
         viewHolder.date!!.text = getFormattedDate(trade.createdAt)
 
-        viewHolder.transactionType!!.text = "Trade " + trade.soldAsset + " for " + trade.boughtAsset
     }
 
     //endregion
