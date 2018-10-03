@@ -27,9 +27,10 @@ class Horizon {
         class LoadAccountTask(private val listener: OnLoadAccount) : AsyncTask<Void, Void, AccountResponse>() {
             override fun doInBackground(vararg params: Void?) : AccountResponse? {
                 val server = Server(PROD_SERVER)
+                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
                 var account : AccountResponse? = null
                 try {
-                    account = server.accounts().account(WalletApplication.session!!.keyPair)
+                    account = server.accounts().account(sourceKeyPair)
 
                 } catch (error : ErrorResponse) {
                     Log.d(TAG, error.body.toString())
@@ -46,11 +47,12 @@ class Horizon {
         class LoadEffectsTask(private val listener: OnLoadEffects) : AsyncTask<Void, Void, ArrayList<EffectResponse>?>() {
             override fun doInBackground(vararg params: Void?): ArrayList<EffectResponse>? {
                 val server = Server(PROD_SERVER)
+                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
                 var effectResults : Page<EffectResponse>? = null
                 try {
                     effectResults = server.effects().order(RequestBuilder.Order.DESC)
                             .limit(Constants.NUM_TRANSACTIONS_SHOWN)
-                            .forAccount(WalletApplication.session!!.keyPair).execute()
+                            .forAccount(sourceKeyPair).execute()
                 } catch (error : ErrorResponse) {
                     Log.d(TAG, error.body.toString())
                 }
@@ -68,7 +70,7 @@ class Horizon {
                        private val memo: String, private val amount : String) : AsyncTask<Void, Void, ErrorResponse>() {
 
             override fun doInBackground(vararg params: Void?): ErrorResponse? {
-                val sourceKeyPair = WalletApplication.session!!.keyPair
+                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
                 val server = Server(PROD_SERVER)
                 val destKeyPair = KeyPair.fromAccountId(destAddress)
                 var isCreateAccount = false
@@ -132,7 +134,7 @@ class Horizon {
                 Network.usePublicNetwork()
 
                 val server = Server(PROD_SERVER)
-                val sourceKeyPair = WalletApplication.session!!.keyPair
+                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
                 val destKeyPair = KeyPair.fromAccountId(inflationDest)
 
                 try {
@@ -171,7 +173,7 @@ class Horizon {
                 Network.usePublicNetwork()
 
                 val server = Server(PROD_SERVER)
-                val sourceKeyPair = WalletApplication.session!!.keyPair
+                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
                 val limit = if (removeTrust) "0.0000000" else Constants.MAX_ASSET_STRING_VALUE
 
                 try {
