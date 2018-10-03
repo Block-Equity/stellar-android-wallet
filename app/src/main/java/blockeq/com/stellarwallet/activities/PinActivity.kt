@@ -11,10 +11,11 @@ import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
-import blockeq.com.stellarwallet.helpers.StellarAddress
+import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
 import com.andrognito.pinlockview.PinLockListener
+import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_pin.*
 
 class PinActivity : BaseActivity(), PinLockListener {
@@ -75,7 +76,9 @@ class PinActivity : BaseActivity(), PinLockListener {
                         val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
 
                         WalletApplication.localStore!!.encryptedPhrase = encryptedData
-                        StellarAddress.Companion.Generate().execute(pinViewState!!.phrase)
+
+                        val keyPair = Wallet.createKeyPair(pinViewState!!.phrase.toCharArray(), null, Constants.USER_INDEX)
+                        WalletApplication.localStore!!.publicKey = keyPair.accountId
 
                         launchWallet()
                     }

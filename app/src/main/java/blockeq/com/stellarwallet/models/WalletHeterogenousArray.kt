@@ -3,8 +3,6 @@ package blockeq.com.stellarwallet.models
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants
 import org.stellar.sdk.AssetTypeCreditAlphaNum
-import org.stellar.sdk.AssetTypeCreditAlphaNum12
-import org.stellar.sdk.AssetTypeCreditAlphaNum4
 import org.stellar.sdk.AssetTypeNative
 import org.stellar.sdk.responses.effects.*
 
@@ -71,7 +69,9 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
                 (it.type == EffectType.CREATED.value && assetType == Constants.LUMENS_ASSET_TYPE) ||
                 (it.type == EffectType.SIGNER_UPDATED.value && assetType == Constants.LUMENS_ASSET_TYPE) ||
                 (it.type == EffectType.SIGNER_REMOVED.value && assetType == Constants.LUMENS_ASSET_TYPE) ||
-                (it.type == EffectType.SIGNER_CREATED.value && assetType == Constants.LUMENS_ASSET_TYPE)
+                (it.type == EffectType.SIGNER_CREATED.value && assetType == Constants.LUMENS_ASSET_TYPE) ||
+                (it.type == EffectType.TRADE.value && (getBoughtAsset(it as TradeEffectResponse) == assetType ||
+                        getSoldAsset(it) == assetType))
 
         } as ArrayList)
     }
