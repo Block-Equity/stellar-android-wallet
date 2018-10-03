@@ -99,11 +99,12 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
     override fun onLoadAccount(result: AccountResponse?) {
         if (result != null) {
             WalletApplication.localStore!!.balances = result.balances
+            WalletApplication.localStore!!.availableBalance = AccountUtils.getAvailableBalance(result)
         }
         recyclerViewArrayList!!.updateTotalBalance(
                 TotalBalance(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode)))
         recyclerViewArrayList!!.updateAvailableBalance(
-                AvailableBalance(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode)))
+                AvailableBalance(WalletApplication.localStore!!.availableBalance!!))
     }
 
     override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
