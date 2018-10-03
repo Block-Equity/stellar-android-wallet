@@ -16,7 +16,9 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
         const val EFFECTS_LIST_INDEX = 3
     }
 
+
     var array: ArrayList<Any> = ArrayList()
+    var availableBalanceOffsett = 0
 
     init {
         array.add(totalBalance)
@@ -33,21 +35,28 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
     }
 
     fun updateAvailableBalance(balance: AvailableBalance) {
-        array.removeAt(AVAILABLE_INDEX)
-        array.add(AVAILABLE_INDEX, balance)
+        if (WalletApplication.userSession.currAssetCode == Constants.LUMENS_ASSET_TYPE) {
+            array.removeAt(AVAILABLE_INDEX)
+            array.add(AVAILABLE_INDEX, balance)
+        }
     }
 
     fun updatePair(p: Pair<*, *>) {
-        array.removeAt(PAIR_INDEX)
-        array.add(PAIR_INDEX, p)
+        array.removeAt(PAIR_INDEX - availableBalanceOffsett)
+        array.add(PAIR_INDEX - availableBalanceOffsett, p)
     }
 
     fun updateEffectsList(list: ArrayList<EffectResponse>) {
-        array.subList(EFFECTS_LIST_INDEX, array.size).clear()
+        array.subList(EFFECTS_LIST_INDEX - availableBalanceOffsett, array.size).clear()
         addFilteredEffects(list)
     }
 
     //endregion
+
+    fun hideAvailableBalance() {
+        array.removeAt(AVAILABLE_INDEX)
+        availableBalanceOffsett = 1
+    }
 
     private fun addFilteredEffects(list: ArrayList<EffectResponse>?) {
         val filteredEffects = getFilteredEffects(list, WalletApplication.userSession.currAssetCode)
