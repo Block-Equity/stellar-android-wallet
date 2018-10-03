@@ -4,7 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_marginTop="?attr/actionBarSize"
     tools:context=".activities.BalanceSummaryActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TitleText"
+        android:text="@string/balance_summary"
+        android:padding="@dimen/activity_vertical_margin"
+        android:layout_gravity="start"/>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -33,9 +42,6 @@
                 style="@style/RegularWhiteText" />
 
         </LinearLayout>
-
-        <View style="@style/VerticalDivider"
-            android:layout_weight="2" />
 
         <LinearLayout
             android:layout_margin="@dimen/activity_vertical_margin"
@@ -105,13 +111,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="@dimen/activity_vertical_margin" />
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
             <TextView
                 android:id="@+id/baseReserveXLMTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="@dimen/activity_vertical_margin" />
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
         </TableRow>
 
         <TableRow>
@@ -126,13 +134,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="@dimen/activity_vertical_margin" />
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
             <TextView
                 android:id="@+id/trustlinesXLMTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="@dimen/activity_vertical_margin" />
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
         </TableRow>
 
         <TableRow>
@@ -147,13 +157,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="@dimen/activity_vertical_margin" />
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
             <TextView
                 android:id="@+id/offersXLMTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="@dimen/activity_vertical_margin" />
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
         </TableRow>
 
         <TableRow>
@@ -168,13 +180,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="@dimen/activity_vertical_margin" />
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
             <TextView
                 android:id="@+id/signersXLMTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="@dimen/activity_vertical_margin" />
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
         </TableRow>
 
         <TableRow>
@@ -182,7 +196,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/minimum_balance"
-                android:textSize="@dimen/text_size_medium"
+                android:textSize="@dimen/text_size_small"
                 style="@style/NavTitleText"
                 android:padding="@dimen/activity_vertical_margin" />
             <TextView

@@ -9,6 +9,7 @@ class Constants {
         const val NUM_TRANSACTIONS_SHOWN = 100
         const val USER_INDEX = 0
         const val MINIMUM_BALANCE_INCREMENT = 0.5
+        const val BASE_RESERVE = 0.5
 
         const val LUMENS_ASSET_TYPE = "native"
         const val LUMENS_ASSET_CODE = "XLM"

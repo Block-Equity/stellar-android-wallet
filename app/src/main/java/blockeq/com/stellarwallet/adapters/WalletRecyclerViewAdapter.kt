@@ -133,13 +133,22 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         }
     }
 
-    class AvailableBalanceViewHolder(v : View) : RecyclerView.ViewHolder(v) {
+    inner class AvailableBalanceViewHolder(v : View) : RecyclerView.ViewHolder(v) {
         var balance : TextView? = null
         var learnMoreButton : TextView? = null
 
         init {
             balance = v.findViewById(R.id.availableBalanceTextView)
             learnMoreButton = v.findViewById(R.id.learnMoreButton)
+
+            learnMoreButton!!.setOnClickListener {
+                if (onLearnMoreListener != null) {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        onLearnMoreListener!!.onLearnMoreButtonClicked(v, position)
+                    }
+                }
+            }
         }
     }
 
@@ -194,9 +203,6 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
                                                 position : Int) {
         val availableBalance = items[position] as AvailableBalance
         viewHolder.balance!!.text = truncateDecimalPlaces(availableBalance.balance)
-        viewHolder.learnMoreButton!!.setOnClickListener {
-
-        }
     }
 
     private fun configureTransactionHeaderViewHolder(viewHolder : TransactionHeaderViewHolder,

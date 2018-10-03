@@ -9,6 +9,8 @@ class UserSession(var currAssetCode: String = Constants.LUMENS_ASSET_TYPE,
                   var currAssetName: String = Constants.LUMENS_ASSET_NAME,
                   var currAssetIssuer: String = "") {
 
+    var minimumBalance: MinimumBalance? = null
+
     fun getFormattedCurrentAssetCode() : String {
         return StringFormat.formatAssetCode(currAssetCode)
     }
