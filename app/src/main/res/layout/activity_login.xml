@@ -13,7 +13,7 @@
         android:layout_centerHorizontal="true"
         android:layout_width="85dp"
         android:layout_height="85dp"
-        android:src="@drawable/ic_main_logo_white"/>
+        android:src="@drawable/ic_main_logo"/>
 
     <Button
         android:id="@+id/createWalletButton"
