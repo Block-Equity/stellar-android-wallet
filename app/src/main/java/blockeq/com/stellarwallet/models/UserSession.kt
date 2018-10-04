@@ -1,5 +1,7 @@
 package blockeq.com.stellarwallet.models
 
+import android.content.res.Resources
+import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.utils.AccountUtils
@@ -16,11 +18,11 @@ class UserSession(var currAssetCode: String = Constants.LUMENS_ASSET_TYPE,
     fun getFormattedCurrentAvailableBalance(): String {
         val currAssetCode = getFormattedCurrentAssetCode()
         return if (currAssetCode == Constants.LUMENS_ASSET_CODE) {
-            "Available: " + WalletApplication.localStore!!.availableBalance + " " +
-                    currAssetCode
+            String.format(Resources.getSystem().getString(R.string.available_balance_template),
+                    WalletApplication.localStore!!.availableBalance, currAssetCode)
         } else {
-            "Available: " + AccountUtils.getTotalBalance(currAssetCode) + " " +
-                    getFormattedCurrentAssetCode()
+            String.format(Resources.getSystem().getString(R.string.available_balance_template),
+                    AccountUtils.getTotalBalance(currAssetCode), getFormattedCurrentAssetCode())
         }
     }
 }
