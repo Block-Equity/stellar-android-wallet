@@ -57,7 +57,7 @@
     <string name="tab_my_offers">My Offers</string>
     <string name="selling_hint">I have</string>
     <string name="buying_hint">I want</string>
-    <string name="holdings_amount">%1f %2s</string>
+    <string name="holdings_amount">%1$f %2$s</string>
     <string name="tenth">10%</string>
     <string name="quarter">25%</string>
     <string name="half">50%</string>
@@ -69,11 +69,11 @@
         Any amount larger than this will be posed as an offer.</string>
 
     <!--My Offers Fragment-->
-    <string name="rowDescription">Sell %1f %2s for %3f %4s at the price of %5f</string>
+    <string name="rowDescription">Sell %1$f %2$s for %3$f %4$s at the price of %5$f</string>
     <string name="offer">offer</string>
 
     <!--Order Books-->
-    <string name="orderBooksTitle">%1s - %2s </string>
+    <string name="orderBooksTitle">%1$s - %2$s </string>
     <string name="buyOffers">Buy Offers</string>
     <string name="sellOffers">Sell Offers</string>
     <string name="offerPrice">%1s Price</string>
