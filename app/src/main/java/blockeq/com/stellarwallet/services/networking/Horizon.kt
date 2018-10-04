@@ -168,14 +168,14 @@ class Horizon {
         }
 
         class ChangeTrust(private val listener: SuccessErrorCallback, private val asset: Asset,
-                          private val removeTrust: Boolean)
+                          private val removeTrust: Boolean, private val secretSeed: CharArray)
             : AsyncTask<Void, Void, Exception>() {
 
             override fun doInBackground(vararg params: Void?): Exception? {
                 Network.usePublicNetwork()
 
                 val server = Server(PROD_SERVER)
-                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
+                val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
                 val limit = if (removeTrust) "0.0000000" else Constants.MAX_ASSET_STRING_VALUE
 
                 try {
