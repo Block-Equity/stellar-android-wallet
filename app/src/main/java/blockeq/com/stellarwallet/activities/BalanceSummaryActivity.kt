@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.activity_balance_summary.*
 class BalanceSummaryActivity : BasePopupActivity() {
 
     val DEFAULT_BALANCE = "0"
+    val BASE_RESERVE_AMOUNT = "1"
 
     override fun setContent(): Int {
         return R.layout.activity_balance_summary
@@ -29,7 +30,7 @@ class BalanceSummaryActivity : BasePopupActivity() {
             totalBalanceTextView.text = AccountUtils.getTotalBalance(Constants.LUMENS_ASSET_TYPE)
             availableBalanceTextView.text = WalletApplication.localStore!!.availableBalance
 
-            baseReserveAmountTextView.text = "1"
+            baseReserveAmountTextView.text = BASE_RESERVE_AMOUNT
             baseReserveXLMTextView.text = Constants.BASE_RESERVE.toString()
 
             trustlinesAmountTextView.text = minimumBalance.trustlines.count.toString()
