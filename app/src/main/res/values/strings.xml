@@ -44,6 +44,7 @@
     <!--Settings Fragment-->
     <string name="recovery">Recovery</string>
     <string name="view_phrase">View Phrase</string>
+    <string name="view_seed">View Secret Seed</string>
     <string name="wallet">Wallet</string>
     <string name="clear_wallet">Clear Wallet</string>
 
