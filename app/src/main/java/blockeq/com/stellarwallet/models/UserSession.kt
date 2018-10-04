@@ -20,10 +20,10 @@ class UserSession(var currAssetCode: String = Constants.LUMENS_ASSET_TYPE,
     fun getFormattedCurrentAvailableBalance(): String {
         val currAssetCode = getFormattedCurrentAssetCode()
         return if (currAssetCode == Constants.LUMENS_ASSET_CODE) {
-            String.format(Resources.getSystem().getString(R.string.available_balance_template),
+            String.format(WalletApplication.applicationContext().getString(R.string.available_balance_template),
                     WalletApplication.localStore!!.availableBalance, currAssetCode)
         } else {
-            String.format(Resources.getSystem().getString(R.string.available_balance_template),
+            String.format(WalletApplication.applicationContext().getString(R.string.available_balance_template),
                     AccountUtils.getTotalBalance(currAssetCode), getFormattedCurrentAssetCode())
         }
     }

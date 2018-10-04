@@ -21,7 +21,7 @@
     <string name="no">No</string>
     <string name="refreshed">List Refreshed!</string>
     <string name="no_network">There was a problem connecting to the network. Attempting to reconnect.</string>
-    <string name="available_balance_template">Available: %1$s %1$s</string>
+    <string name="available_balance_template">Available: %1$s %2$s</string>
 
     <!--Wallet Fragment-->
     <string name="button_receive">Receive</string>
@@ -57,7 +57,7 @@
     <string name="tab_my_offers">My Offers</string>
     <string name="selling_hint">I have</string>
     <string name="buying_hint">I want</string>
-    <string name="holdings_amount">%1f %2s</string>
+    <string name="holdings_amount">%1$f %2$s</string>
     <string name="tenth">10%</string>
     <string name="quarter">25%</string>
     <string name="half">50%</string>
@@ -69,15 +69,15 @@
         Any amount larger than this will be posed as an offer.</string>
 
     <!--My Offers Fragment-->
-    <string name="rowDescription">Sell %1f %2s for %3f %4s at the price of %5f</string>
+    <string name="rowDescription">Sell %1$f %2$s for %3$f %4$s at the price of %5$f</string>
     <string name="offer">offer</string>
 
     <!--Order Books-->
-    <string name="orderBooksTitle">%1s - %2s </string>
+    <string name="orderBooksTitle">%1$s - %2$s </string>
     <string name="buyOffers">Buy Offers</string>
     <string name="sellOffers">Sell Offers</string>
     <string name="offerPrice">%1s Price</string>
-    <string name="offerAmount">%1s Amount</string>
+    <string name="offerAmount">%1$s Amount</string>
     <string name="offerValue">%1s Value</string>
 
     <!--PIN Screen-->
@@ -115,7 +115,7 @@
     <string name="add_asset">Add asset</string>
     <string name="success_trustline_changed">Trust line changed!</string>
     <string name="error_trustline_changed">There was an error changing trust lines.</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
 
     <!--Inflation Activity-->
     <string name="inflation_info_message">We recommend setting your inflation destination to the lumenaut community pool (entered above), which pays out 100% of inflation proceeds every Tuesday without taking any fees. You can change it to any other pool should you prefer to.</string>
