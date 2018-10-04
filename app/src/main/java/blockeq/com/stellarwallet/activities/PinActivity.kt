@@ -115,7 +115,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                             val keyPair = Wallet.createKeyPair(decryptedData.toCharArray(), null, Constants.USER_INDEX)
                             val secretSeed = keyPair.secretSeed.joinToString("")
                             val intent = Intent(this, ViewSecretSeedActivity::class.java)
-                            
+
                             intent.putExtra(ViewSecretSeedActivity.SECRET_SEED, secretSeed)
                             startActivity(intent)
                             finish()
