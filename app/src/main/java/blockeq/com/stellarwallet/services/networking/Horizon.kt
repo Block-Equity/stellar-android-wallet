@@ -32,8 +32,8 @@ class Horizon {
                 try {
                     account = server.accounts().account(sourceKeyPair)
 
-                } catch (error : ErrorResponse) {
-                    Log.d(TAG, error.body.toString())
+                } catch (error : Exception) {
+                    Log.d(TAG, error.message.toString())
                 }
 
                 return account
@@ -53,8 +53,8 @@ class Horizon {
                     effectResults = server.effects().order(RequestBuilder.Order.DESC)
                             .limit(Constants.NUM_TRANSACTIONS_SHOWN)
                             .forAccount(sourceKeyPair).execute()
-                } catch (error : ErrorResponse) {
-                    Log.d(TAG, error.body.toString())
+                } catch (error : Exception) {
+                    Log.d(TAG, error.message.toString())
                 }
 
                 return effectResults?.records
@@ -67,9 +67,9 @@ class Horizon {
         }
 
         class SendTask(private val listener: SuccessErrorCallback, private val destAddress: String,
-                       private val memo: String, private val amount : String) : AsyncTask<Void, Void, ErrorResponse>() {
+                       private val memo: String, private val amount : String) : AsyncTask<Void, Void, Exception>() {
 
-            override fun doInBackground(vararg params: Void?): ErrorResponse? {
+            override fun doInBackground(vararg params: Void?): Exception? {
                 val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
                 val server = Server(PROD_SERVER)
                 val destKeyPair = KeyPair.fromAccountId(destAddress)
@@ -80,8 +80,8 @@ class Horizon {
                 try {
                     try {
                         server.accounts().account(destKeyPair)
-                    } catch (error : ErrorResponse) {
-                        Log.d(TAG, error.body.toString())
+                    } catch (error : Exception) {
+                        Log.d(TAG, error.message.toString())
                         if (error.message == SERVER_ERROR_MESSAGE) {
                             isCreateAccount = true
                         } else {
@@ -117,7 +117,7 @@ class Horizon {
                 return null
             }
 
-            override fun onPostExecute(result: ErrorResponse?) {
+            override fun onPostExecute(result: Exception?) {
                 if (result != null) {
                     listener.onError()
                 } else {
@@ -128,9 +128,9 @@ class Horizon {
 
         class JoinInflationDestination(private val listener: SuccessErrorCallback,
                                        private val inflationDest : String)
-            : AsyncTask<Void, Void, ErrorResponse>() {
+            : AsyncTask<Void, Void, Exception>() {
 
-            override fun doInBackground(vararg params: Void?): ErrorResponse? {
+            override fun doInBackground(vararg params: Void?): Exception? {
                 Network.usePublicNetwork()
 
                 val server = Server(PROD_SERVER)
@@ -149,14 +149,14 @@ class Horizon {
                     transaction.sign(sourceKeyPair)
                     server.submitTransaction(transaction)
 
-                } catch (error : ErrorResponse) {
-                    Log.d(TAG, error.body.toString())
+                } catch (error : Exception) {
+                    Log.d(TAG, error.message.toString())
                     return error
                 }
                 return null
             }
 
-            override fun onPostExecute(result: ErrorResponse?) {
+            override fun onPostExecute(result: Exception?) {
                 if (result != null) {
                     listener.onError()
                 } else {
@@ -167,9 +167,9 @@ class Horizon {
 
         class ChangeTrust(private val listener: SuccessErrorCallback, private val asset: Asset,
                           private val removeTrust: Boolean)
-            : AsyncTask<Void, Void, ErrorResponse>() {
+            : AsyncTask<Void, Void, Exception>() {
 
-            override fun doInBackground(vararg params: Void?): ErrorResponse? {
+            override fun doInBackground(vararg params: Void?): Exception? {
                 Network.usePublicNetwork()
 
                 val server = Server(PROD_SERVER)
@@ -187,7 +187,7 @@ class Horizon {
                     val response = server.submitTransaction(transaction)
 
                     if (!response.isSuccess) {
-                        return ErrorResponse(0, "Response Error")
+                        return Exception()
                     }
 
                 } catch (error : ErrorResponse) {
@@ -197,7 +197,7 @@ class Horizon {
                 return null
             }
 
-            override fun onPostExecute(result: ErrorResponse?) {
+            override fun onPostExecute(result: Exception?) {
                 if (result != null) {
                     listener.onError()
                 } else {
