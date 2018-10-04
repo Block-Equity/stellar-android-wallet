@@ -57,7 +57,10 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
                 Activity.RESULT_OK -> {
                     if (NetworkUtils(this).isNetworkAvailable()) {
                         progressBar.visibility = View.VISIBLE
-                        Horizon.Companion.SendTask(this, address,
+
+                        val secretSeed = data!!.getCharArrayExtra(PinActivity.KEY_SECRET_SEED)
+
+                        Horizon.Companion.SendTask(this, address, secretSeed,
                                 memoTextView.text.toString(), amountTextView.text.toString()).execute()
                     } else {
                         NetworkUtils(this).displayNoNetwork()

@@ -17,7 +17,6 @@ import blockeq.com.stellarwallet.models.PinViewState
 import com.andrognito.pinlockview.PinLockListener
 import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_pin.*
-import org.stellar.sdk.KeyPair
 
 class PinActivity : BaseActivity(), PinLockListener {
 
@@ -26,6 +25,7 @@ class PinActivity : BaseActivity(), PinLockListener {
         const val RESULT_FAIL = 2
 
         const val MAX_ATTEMPTS = 3
+        const val KEY_SECRET_SEED = "kDecryptedPhrase"
     }
 
     private var needConfirm = true
@@ -98,7 +98,10 @@ class PinActivity : BaseActivity(), PinLockListener {
                             launchWallet()
                         }
                         pinViewState!!.type == PinType.CHECK -> {
-                            setResult(Activity.RESULT_OK)
+                            val keyPair = Wallet.createKeyPair(decryptedData.toCharArray(), null, Constants.USER_INDEX)
+                            val intent = Intent()
+                            intent.putExtra(KEY_SECRET_SEED, keyPair.secretSeed)
+                            setResult(Activity.RESULT_OK, intent)
                             finishActivity()
                         }
                         pinViewState!!.type == PinType.CLEAR_WALLET -> wipeAndRestart()
