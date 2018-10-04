@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginTop="?attr/actionBarSize"
+    tools:context=".activities.BalanceSummaryActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TitleText"
+        android:text="@string/balance_summary"
+        android:padding="@dimen/activity_vertical_margin"
+        android:layout_gravity="start"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:background="@color/blue2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/total_balance"
+                style="@style/RegularWhiteText" />
+
+            <TextView
+                android:id="@+id/totalBalanceTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/RegularWhiteText" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/available_balance"
+                style="@style/RegularWhiteText" />
+
+            <TextView
+                android:id="@+id/availableBalanceTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/RegularWhiteText" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="0,1,2"
+        android:layout_margin="@dimen/activity_vertical_margin" >
+
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/NavTitleText"
+                android:textSize="@dimen/text_size_medium"
+                android:text="@string/type" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/amount_lowercase"
+                android:textSize="@dimen/text_size_medium"
+                style="@style/NavTitleText"
+                android:padding="@dimen/activity_vertical_margin"
+                android:gravity="center" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/xlm"
+                style="@style/NavTitleText"
+                android:textSize="@dimen/text_size_medium"
+                android:padding="@dimen/activity_vertical_margin"
+                android:gravity="center" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/base_reserve"
+                style="@style/RegularText"
+                android:padding="@dimen/activity_vertical_margin" />
+            <TextView
+                android:id="@+id/baseReserveAmountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
+            <TextView
+                android:id="@+id/baseReserveXLMTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/trustlines"
+                style="@style/RegularText"
+                android:padding="@dimen/activity_vertical_margin" />
+            <TextView
+                android:id="@+id/trustlinesAmountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
+            <TextView
+                android:id="@+id/trustlinesXLMTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/offers"
+                style="@style/RegularText"
+                android:padding="@dimen/activity_vertical_margin" />
+            <TextView
+                android:id="@+id/offersAmountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
+            <TextView
+                android:id="@+id/offersXLMTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/signers"
+                style="@style/RegularText"
+                android:padding="@dimen/activity_vertical_margin" />
+            <TextView
+                android:id="@+id/signersAmountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
+            <TextView
+                android:id="@+id/signersXLMTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/minimum_balance"
+                android:textSize="@dimen/text_size_small"
+                style="@style/NavTitleText"
+                android:padding="@dimen/activity_vertical_margin" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_vertical_margin"
+                android:gravity="center" />
+            <TextView
+                android:id="@+id/minimumBalanceTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                style="@style/NavTitleText"
+                android:textSize="@dimen/text_size_small"
+                android:padding="@dimen/activity_vertical_margin" />
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>

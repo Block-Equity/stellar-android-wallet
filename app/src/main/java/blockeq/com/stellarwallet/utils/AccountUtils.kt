@@ -20,8 +20,8 @@ class AccountUtils {
             return Constants.DEFAULT_ACCOUNT_BALANCE
         }
 
-        fun getAvailableBalance(account: AccountResponse): String {
-            val minimumBalance = MinimumBalance(account)
+        fun getAvailableBalance(): String {
+            val minimumBalance = WalletApplication.userSession.minimumBalance!!
             return StringFormat.truncateDecimalPlaces(
                     (getTotalBalance(Constants.LUMENS_ASSET_TYPE).toDouble() - minimumBalance.totalAmount).toString())
         }

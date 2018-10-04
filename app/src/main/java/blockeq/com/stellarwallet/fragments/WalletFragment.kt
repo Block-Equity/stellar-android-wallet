@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.AssetsActivity
+import blockeq.com.stellarwallet.activities.BalanceSummaryActivity
 import blockeq.com.stellarwallet.activities.EnterAddressActivity
 import blockeq.com.stellarwallet.activities.ReceiveActivity
 import blockeq.com.stellarwallet.adapters.WalletRecyclerViewAdapter
@@ -17,6 +18,7 @@ import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.models.AvailableBalance
+import blockeq.com.stellarwallet.models.MinimumBalance
 import blockeq.com.stellarwallet.models.TotalBalance
 import blockeq.com.stellarwallet.models.WalletHeterogenousArray
 import blockeq.com.stellarwallet.services.networking.Horizon
@@ -85,13 +87,12 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
                 startActivity(Intent(activity, AssetsActivity::class.java))
                 activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
             }
-
         })
         adapter!!.setOnLearnMoreButtonListener(object : WalletRecyclerViewAdapter.OnLearnMoreButtonListener {
             override fun onLearnMoreButtonClicked(view: View, position: Int) {
-
+                startActivity(Intent(activity, BalanceSummaryActivity::class.java))
+                activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
             }
-
         })
         walletRecyclerView.adapter = adapter
         walletRecyclerView.layoutManager = LinearLayoutManager(activity)
@@ -104,7 +105,8 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
     override fun onLoadAccount(result: AccountResponse?) {
         if (result != null) {
             WalletApplication.localStore!!.balances = result.balances
-            WalletApplication.localStore!!.availableBalance = AccountUtils.getAvailableBalance(result)
+            WalletApplication.userSession.minimumBalance = MinimumBalance(result)
+            WalletApplication.localStore!!.availableBalance = AccountUtils.getAvailableBalance()
         }
         recyclerViewArrayList!!.updateTotalBalance(
                 TotalBalance(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode)))

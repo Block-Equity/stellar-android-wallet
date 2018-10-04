@@ -12,8 +12,7 @@
         android:layout_width="@dimen/logo_width"
         android:layout_height="@dimen/logo_height"
         android:layout_marginTop="@dimen/text_size_xxxxlarge"
-        android:background="@drawable/ic_main_logo_white"
-        android:backgroundTint="@color/logoTint" />
+        android:src="@drawable/ic_main_logo" />
 
     <TextView
         android:id="@+id/tv_custom_message"
