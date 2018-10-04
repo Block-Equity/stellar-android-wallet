@@ -128,6 +128,7 @@ class Horizon {
         }
 
         class JoinInflationDestination(private val listener: SuccessErrorCallback,
+                                       private val secretSeed: CharArray,
                                        private val inflationDest : String)
             : AsyncTask<Void, Void, Exception>() {
 
@@ -135,7 +136,7 @@ class Horizon {
                 Network.usePublicNetwork()
 
                 val server = Server(PROD_SERVER)
-                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
+                val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
                 val destKeyPair = KeyPair.fromAccountId(inflationDest)
 
                 try {
