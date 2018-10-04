@@ -2,6 +2,7 @@ package blockeq.com.stellarwallet.adapters
 
 import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
@@ -204,6 +205,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerView
         val builder = AlertDialog.Builder(context)
         builder.setTitle(context.getString(R.string.no_balance_dialog_title))
                 .setMessage(context.getString(R.string.no_balance_text_message))
+                .setPositiveButton(context.getString(R.string.ok)) { _, _ -> }
         val dialog = builder.create()
         dialog.show()
     }

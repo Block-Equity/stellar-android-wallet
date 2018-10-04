@@ -113,6 +113,7 @@
     <string name="add_asset">Add asset</string>
     <string name="success_trustline_changed">Trust line changed!</string>
     <string name="error_trustline_changed">There was an error changing trust lines.</string>
+    <string name="ok">Ok</string>
 
     <!--Inflation Activity-->
     <string name="inflation_info_message">We recommend setting your inflation destination to the lumenaut community pool (entered above), which pays out 100% of inflation proceeds every Tuesday without taking any fees. You can change it to any other pool should you prefer to.</string>

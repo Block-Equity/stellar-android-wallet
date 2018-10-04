@@ -9,6 +9,8 @@ import kotlinx.android.synthetic.main.activity_balance_summary.*
 
 class BalanceSummaryActivity : BasePopupActivity() {
 
+    val DEFAULT_BALANCE = "0"
+
     override fun setContent(): Int {
         return R.layout.activity_balance_summary
     }
@@ -40,6 +42,24 @@ class BalanceSummaryActivity : BasePopupActivity() {
             signersXLMTextView.text = minimumBalance.signers.amount.toString()
 
             minimumBalanceTextView.text = minimumBalance.totalAmount.toString()
+        } else {
+
+            totalBalanceTextView.text = Constants.DEFAULT_ACCOUNT_BALANCE
+            availableBalanceTextView.text = Constants.DEFAULT_ACCOUNT_BALANCE
+
+            baseReserveAmountTextView.text = DEFAULT_BALANCE
+            baseReserveXLMTextView.text = DEFAULT_BALANCE
+
+            trustlinesAmountTextView.text = DEFAULT_BALANCE
+            trustlinesXLMTextView.text = DEFAULT_BALANCE
+
+            offersAmountTextView.text = DEFAULT_BALANCE
+            offersXLMTextView.text = DEFAULT_BALANCE
+
+            signersAmountTextView.text = DEFAULT_BALANCE
+            signersXLMTextView.text = DEFAULT_BALANCE
+
+            minimumBalanceTextView.text = Constants.DEFAULT_ACCOUNT_BALANCE
         }
     }
 }
