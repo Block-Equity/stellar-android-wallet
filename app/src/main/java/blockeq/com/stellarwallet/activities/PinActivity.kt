@@ -17,6 +17,7 @@ import blockeq.com.stellarwallet.models.PinViewState
 import com.andrognito.pinlockview.PinLockListener
 import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_pin.*
+import org.stellar.sdk.KeyPair
 
 class PinActivity : BaseActivity(), PinLockListener {
 
@@ -106,6 +107,16 @@ class PinActivity : BaseActivity(), PinLockListener {
                             val intent = Intent(this, ShowMnemonicActivity::class.java)
                             intent.putExtra(ShowMnemonicActivity.INTENT_DISPLAY_PHRASE, true)
                             intent.putExtra(ShowMnemonicActivity.DECRYPTED_PHRASE, decryptedData)
+                            startActivity(intent)
+                            finish()
+                        }
+
+                        pinViewState!!.type == PinType.VIEW_SEED -> {
+                            val keyPair = Wallet.createKeyPair(decryptedData.toCharArray(), null, Constants.USER_INDEX)
+                            val secretSeed = keyPair.secretSeed.joinToString("")
+
+                            val intent = Intent(this, ViewSecretSeedActivity::class.java)
+                            intent.putExtra(ViewSecretSeedActivity.SECRET_SEED, secretSeed)
                             startActivity(intent)
                             finish()
                         }

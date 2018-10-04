@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 enum class PinType {
-    CREATE, LOGIN, VIEW_PHRASE, CLEAR_WALLET, CHECK
+    CREATE, LOGIN, VIEW_PHRASE, VIEW_SEED, CLEAR_WALLET, CHECK
 }
 
 @Parcelize

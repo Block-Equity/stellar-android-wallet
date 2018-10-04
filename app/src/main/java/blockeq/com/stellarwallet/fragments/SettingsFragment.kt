@@ -38,21 +38,12 @@ class SettingsFragment : BaseFragment() {
 
         viewSeedButton.setOnClickListener {
             val phrase = WalletApplication.localStore!!.encryptedPhrase!!
-            launchPINView(PinType.CHECK, "", phrase, false)
+            launchPINView(PinType.VIEW_SEED, "", phrase, false)
         }
 
         clearWalletButton.setOnClickListener {
             val phrase = WalletApplication.localStore!!.encryptedPhrase!!
             launchPINView(PinType.CLEAR_WALLET, "", phrase, false)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PinActivity.PIN_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-
-            }
         }
     }
 
