@@ -46,7 +46,6 @@ class InflationActivity : BaseActivity() {
                             override fun onError() {
                                 Toast.makeText(this@InflationActivity, getString(R.string.inflation_set_error), Toast.LENGTH_SHORT).show()
                             }
-
                         }, secretSeed, addressEditText.text.toString()).execute()
                     } else {
                         NetworkUtils(this).displayNoNetwork()

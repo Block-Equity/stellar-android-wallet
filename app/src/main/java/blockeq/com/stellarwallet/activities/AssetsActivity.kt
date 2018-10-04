@@ -159,7 +159,6 @@ class AssetsActivity : BasePopupActivity(), CheckPinListener {
                     Toast.makeText(this@AssetsActivity, getString(R.string.error_trustline_changed), Toast.LENGTH_SHORT).show()
                     progressBar.visibility = View.GONE
                 }
-
             }, assetToChange!!, isRemove!!, secretSeed).execute()
         } else {
             NetworkUtils(this).displayNoNetwork()
