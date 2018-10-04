@@ -74,7 +74,8 @@
                 android:layout_weight="0.2"
                 android:layout_height="match_parent"
                 android:background="@null"
-                android:src="@drawable/ic_copy"/>
+                android:src="@drawable/ic_copy"
+                android:contentDescription="@string/copy_address" />
 
         </LinearLayout>
 
