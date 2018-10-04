@@ -21,7 +21,7 @@
     <string name="no">No</string>
     <string name="refreshed">List Refreshed!</string>
     <string name="no_network">There was a problem connecting to the network. Attempting to reconnect.</string>
-    <string name="available_balance_template">Available: %1$s %1$s</string>
+    <string name="available_balance_template">Available: %1$s %2$s</string>
 
     <!--Wallet Fragment-->
     <string name="button_receive">Receive</string>
@@ -77,7 +77,7 @@
     <string name="buyOffers">Buy Offers</string>
     <string name="sellOffers">Sell Offers</string>
     <string name="offerPrice">%1s Price</string>
-    <string name="offerAmount">%1s Amount</string>
+    <string name="offerAmount">%1$s Amount</string>
     <string name="offerValue">%1s Value</string>
 
     <!--PIN Screen-->
@@ -115,7 +115,7 @@
     <string name="add_asset">Add asset</string>
     <string name="success_trustline_changed">Trust line changed!</string>
     <string name="error_trustline_changed">There was an error changing trust lines.</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
 
     <!--Inflation Activity-->
     <string name="inflation_info_message">We recommend setting your inflation destination to the lumenaut community pool (entered above), which pays out 100% of inflation proceeds every Tuesday without taking any fees. You can change it to any other pool should you prefer to.</string>
