@@ -143,7 +143,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerView
             viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.mantis))
             viewHolder.assetButton!!.setOnClickListener {
                 if (WalletApplication.localStore!!.balances!!.isNotEmpty() &&
-                        AccountUtils.getBalance(Constants.LUMENS_ASSET_TYPE).toDouble() > 1.0) {
+                        AccountUtils.getTotalBalance(Constants.LUMENS_ASSET_TYPE).toDouble() > 1.0) {
                     context.startActivity(Intent(context, InflationActivity::class.java))
                 } else {
                     showBalanceErrorDialog()

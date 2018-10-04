@@ -13,6 +13,7 @@ import blockeq.com.stellarwallet.activities.AssetsActivity
 import blockeq.com.stellarwallet.activities.EnterAddressActivity
 import blockeq.com.stellarwallet.activities.ReceiveActivity
 import blockeq.com.stellarwallet.adapters.WalletRecyclerViewAdapter
+import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.models.AvailableBalance
@@ -71,8 +72,12 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     private fun bindAdapter() {
         val currAsset = WalletApplication.userSession.currAssetCode
-        recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(AccountUtils.getBalance(currAsset)),
-                AvailableBalance(AccountUtils.getBalance(currAsset)), Pair("Activity", "Amount"), effectsList)
+        recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(AccountUtils.getTotalBalance(currAsset)),
+                AvailableBalance(WalletApplication.localStore!!.availableBalance!!), Pair("Activity", "Amount"), effectsList)
+
+        if (currAsset != Constants.LUMENS_ASSET_TYPE) {
+            recyclerViewArrayList!!.hideAvailableBalance()
+        }
 
         adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList!!.array)
         adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
@@ -99,9 +104,12 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
     override fun onLoadAccount(result: AccountResponse?) {
         if (result != null) {
             WalletApplication.localStore!!.balances = result.balances
+            WalletApplication.localStore!!.availableBalance = AccountUtils.getAvailableBalance(result)
         }
         recyclerViewArrayList!!.updateTotalBalance(
-                TotalBalance(AccountUtils.getBalance(WalletApplication.userSession.currAssetCode)))
+                TotalBalance(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode)))
+        recyclerViewArrayList!!.updateAvailableBalance(
+                AvailableBalance(WalletApplication.localStore!!.availableBalance!!))
     }
 
     override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {

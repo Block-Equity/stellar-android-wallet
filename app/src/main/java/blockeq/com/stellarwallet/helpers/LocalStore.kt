@@ -26,8 +26,13 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         get() = get(KEY_STELLAR_BALANCES_KEY, Array<AccountResponse.Balance>::class.java)
         set(balances) = set(KEY_STELLAR_BALANCES_KEY, balances)
 
+    var availableBalance: String?
+        get() = get(KEY_STELLAR_AVAILABLE_BALANCE_KEY)
+        set(availableBalance) = set(KEY_STELLAR_AVAILABLE_BALANCE_KEY, availableBalance)
+
     init {
         balances = arrayOf()
+        availableBalance = Constants.DEFAULT_ACCOUNT_BALANCE
     }
 
     private companion object {
@@ -35,6 +40,7 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         const val KEY_PIN_DATA = "kPinData"
         const val KEY_STELLAR_ACCOUNT_PUBLIC_KEY = "kStellarAccountPublicKey"
         const val KEY_STELLAR_BALANCES_KEY = "kStellarBalancesKey"
+        const val KEY_STELLAR_AVAILABLE_BALANCE_KEY = "kAvailableBalanceKey"
     }
 
     private operator fun set(key: String, value: String?) {
@@ -66,6 +72,7 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         editor.remove(KEY_PIN_DATA)
         editor.remove(KEY_STELLAR_ACCOUNT_PUBLIC_KEY)
         editor.remove(KEY_STELLAR_BALANCES_KEY)
+        editor.remove(KEY_STELLAR_AVAILABLE_BALANCE_KEY)
         editor.apply()
     }
 
