@@ -121,6 +121,8 @@
     <string name="inflation_info_message">We recommend setting your inflation destination to the lumenaut community pool (entered above), which pays out 100% of inflation proceeds every Tuesday without taking any fees. You can change it to any other pool should you prefer to.</string>
     <string name="save_button">Save</string>
     <string name="inflation_destination_title">Inflation Destination</string>
+    <string name="inflation_set_success">Inflation destination set!</string>
+    <string name="inflation_set_error">There was an error setting inflation destination.</string>
 
     <!--Balance Summary Activity-->
     <string name="total_balance">Total Balance</string>

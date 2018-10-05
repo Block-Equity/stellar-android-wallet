@@ -67,10 +67,11 @@ class Horizon {
         }
 
         class SendTask(private val listener: SuccessErrorCallback, private val destAddress: String,
-                       private val memo: String, private val amount : String) : AsyncTask<Void, Void, Exception>() {
+                       private val secretSeed: CharArray, private val memo: String,
+                       private val amount : String) : AsyncTask<Void, Void, Exception>() {
 
             override fun doInBackground(vararg params: Void?): Exception? {
-                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
+                val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
                 val server = Server(PROD_SERVER)
                 val destKeyPair = KeyPair.fromAccountId(destAddress)
                 var isCreateAccount = false
@@ -127,6 +128,7 @@ class Horizon {
         }
 
         class JoinInflationDestination(private val listener: SuccessErrorCallback,
+                                       private val secretSeed: CharArray,
                                        private val inflationDest : String)
             : AsyncTask<Void, Void, Exception>() {
 
@@ -134,7 +136,7 @@ class Horizon {
                 Network.usePublicNetwork()
 
                 val server = Server(PROD_SERVER)
-                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
+                val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
                 val destKeyPair = KeyPair.fromAccountId(inflationDest)
 
                 try {
@@ -166,14 +168,14 @@ class Horizon {
         }
 
         class ChangeTrust(private val listener: SuccessErrorCallback, private val asset: Asset,
-                          private val removeTrust: Boolean)
+                          private val removeTrust: Boolean, private val secretSeed: CharArray)
             : AsyncTask<Void, Void, Exception>() {
 
             override fun doInBackground(vararg params: Void?): Exception? {
                 Network.usePublicNetwork()
 
                 val server = Server(PROD_SERVER)
-                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
+                val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
                 val limit = if (removeTrust) "0.0000000" else Constants.MAX_ASSET_STRING_VALUE
 
                 try {

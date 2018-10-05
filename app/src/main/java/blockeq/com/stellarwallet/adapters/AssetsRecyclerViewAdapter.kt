@@ -2,7 +2,6 @@ package blockeq.com.stellarwallet.adapters
 
 import android.app.Activity
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
@@ -12,18 +11,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.InflationActivity
 import blockeq.com.stellarwallet.helpers.Constants
-import blockeq.com.stellarwallet.interfaces.RecyclerViewListener
-import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
+import blockeq.com.stellarwallet.interfaces.CheckPinListener
 import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.models.SupportedAssetType
-import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.AccountUtils
-import blockeq.com.stellarwallet.utils.NetworkUtils
 import blockeq.com.stellarwallet.utils.StringFormat
 import com.squareup.picasso.Picasso
 import org.stellar.sdk.Asset
@@ -31,7 +26,7 @@ import org.stellar.sdk.KeyPair
 import java.util.*
 
 
-class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerViewListener,
+class AssetsRecyclerViewAdapter(var context: Context, var listener: CheckPinListener,
                                 var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -154,8 +149,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerView
             viewHolder.assetButton!!.text = context.getString(R.string.remove_asset_message)
             viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.apricot))
             viewHolder.assetButton!!.setOnClickListener {
-                listener.showProgressBar()
-                changeTrustLine(asset.asset!!, true)
+                listener.checkPin(asset.asset!!, true)
             }
         } else {
             viewHolder.assetButton!!.visibility = View.GONE
@@ -192,8 +186,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerView
         viewHolder.assetButton!!.text = context.getString(R.string.add_asset)
         viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.mantis))
         viewHolder.assetButton!!.setOnClickListener {
-            listener.showProgressBar()
-            changeTrustLine(trustLineAsset, false)
+            listener.checkPin(trustLineAsset, false)
         }
         viewHolder.assetButton!!.visibility = View.VISIBLE
     }
@@ -211,24 +204,4 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerView
     }
     //endregion
 
-    private fun changeTrustLine(asset: Asset, removeTrust: Boolean) {
-        if (NetworkUtils(context).isNetworkAvailable()) {
-            Horizon.Companion.ChangeTrust(object : SuccessErrorCallback {
-                override fun onSuccess() {
-                    Toast.makeText(context, context.getString(R.string.success_trustline_changed), Toast.LENGTH_SHORT).show()
-                    listener.hideProgressBar()
-                    listener.reloadDataForAdapter()
-                }
-
-                override fun onError() {
-                    Toast.makeText(context, context.getString(R.string.error_trustline_changed), Toast.LENGTH_SHORT).show()
-                    listener.hideProgressBar()
-                }
-
-            }, asset, removeTrust).execute()
-        } else {
-            NetworkUtils(context).displayNoNetwork()
-            listener.hideProgressBar()
-        }
-    }
 }
