@@ -74,6 +74,9 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         editor.remove(KEY_STELLAR_BALANCES_KEY)
         editor.remove(KEY_STELLAR_AVAILABLE_BALANCE_KEY)
         editor.apply()
+
+        balances = arrayOf()
+        availableBalance = Constants.DEFAULT_ACCOUNT_BALANCE
     }
 
     fun clearPINData() {
