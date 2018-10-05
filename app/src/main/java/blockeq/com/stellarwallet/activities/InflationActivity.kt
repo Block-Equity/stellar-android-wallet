@@ -41,6 +41,7 @@ class InflationActivity : BaseActivity() {
                         Horizon.Companion.JoinInflationDestination(object : SuccessErrorCallback {
                             override fun onSuccess() {
                                 Toast.makeText(this@InflationActivity, getString(R.string.inflation_set_success), Toast.LENGTH_SHORT).show()
+                                finish()
                             }
 
                             override fun onError() {
