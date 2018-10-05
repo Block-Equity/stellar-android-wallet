@@ -43,7 +43,7 @@ class WalletApplication : MultiDexApplication() {
         super.onCreate()
 
         Security.removeProvider("BC")
-        Security.insertProviderAt(BouncyCastleProvider() as Provider?, 1)
+        Security.addProvider(BouncyCastleProvider() as Provider?)
 
         setupLifecycleListener()
 
