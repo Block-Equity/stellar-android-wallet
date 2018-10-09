@@ -3,6 +3,7 @@ package blockeq.com.stellarwallet.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -54,81 +55,85 @@ class PinActivity : BaseActivity(), PinLockListener {
     }
 
     override fun onComplete(pin: String) {
-        when (pinViewState!!.type) {
-            PinType.CREATE -> {
-                when {
-                    needConfirm -> {
-                        PIN = pin
-                        pinLockView.resetPinLockView()
-
-                        tv_custom_message.text = getString(R.string.please_reenter_your_pin)
-                        needConfirm = false
-                    }
-                    pin != PIN -> onIncorrectPin()
-                    else -> {
-                        setResult(Activity.RESULT_OK)
-
-                        val keyStoreWrapper = KeyStoreWrapper(applicationContext)
-                        keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin)
-
-                        val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
-                        val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
-
-                        val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
-
-                        WalletApplication.localStore!!.encryptedPhrase = encryptedData
-
-                        val keyPair = Wallet.createKeyPair(pinViewState!!.phrase.toCharArray(), null, Constants.USER_INDEX)
-                        WalletApplication.localStore!!.publicKey = keyPair.accountId
-
-                        launchWallet()
-                    }
-                }
-            }
-            else -> {
-                val encryptedPhrase = getEncryptedPhrase(pinViewState!!.type)
-                val masterKey = getPinMasterKey(pin)
-
-                if (masterKey != null) {
-                    val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
-                    val decryptedData = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
-
+        val handler = Handler()
+        val runnableCode = Runnable {
+            when (pinViewState!!.type) {
+                PinType.CREATE -> {
                     when {
-                        pinViewState!!.type == PinType.LOGIN -> {
+                        needConfirm -> {
+                            PIN = pin
+                            pinLockView.resetPinLockView()
+
+                            tv_custom_message.text = getString(R.string.please_reenter_your_pin)
+                            needConfirm = false
+                        }
+                        pin != PIN -> onIncorrectPin()
+                        else -> {
+                            setResult(Activity.RESULT_OK)
+
+                            val keyStoreWrapper = KeyStoreWrapper(applicationContext)
+                            keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin)
+
+                            val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
+                            val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
+
+                            val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
+
+                            WalletApplication.localStore!!.encryptedPhrase = encryptedData
+
+                            val keyPair = Wallet.createKeyPair(pinViewState!!.phrase.toCharArray(), null, Constants.USER_INDEX)
+                            WalletApplication.localStore!!.publicKey = keyPair.accountId
+
                             launchWallet()
                         }
-                        pinViewState!!.type == PinType.CHECK -> {
-                            val keyPair = Wallet.createKeyPair(decryptedData.toCharArray(), null, Constants.USER_INDEX)
-                            val intent = Intent()
-                            intent.putExtra(KEY_SECRET_SEED, keyPair.secretSeed)
-                            setResult(Activity.RESULT_OK, intent)
-                            finishActivity()
-                        }
-                        pinViewState!!.type == PinType.CLEAR_WALLET -> wipeAndRestart()
-
-                        pinViewState!!.type == PinType.VIEW_PHRASE -> {
-                            val intent = Intent(this, ShowMnemonicActivity::class.java)
-                            intent.putExtra(ShowMnemonicActivity.INTENT_DISPLAY_PHRASE, true)
-                            intent.putExtra(ShowMnemonicActivity.DECRYPTED_PHRASE, decryptedData)
-                            startActivity(intent)
-                            finish()
-                        }
-
-                        pinViewState!!.type == PinType.VIEW_SEED -> {
-                            val keyPair = Wallet.createKeyPair(decryptedData.toCharArray(), null, Constants.USER_INDEX)
-                            val secretSeed = keyPair.secretSeed.joinToString("")
-                            val intent = Intent(this, ViewSecretSeedActivity::class.java)
-
-                            intent.putExtra(ViewSecretSeedActivity.SECRET_SEED, secretSeed)
-                            startActivity(intent)
-                            finish()
-                        }
                     }
-                } else {
-                    onIncorrectPin()
+                }
+                else -> {
+                    val encryptedPhrase = getEncryptedPhrase(pinViewState!!.type)
+                    val masterKey = getPinMasterKey(pin)
+
+                    if (masterKey != null) {
+                        val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
+                        val decryptedData = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
+
+                        when {
+                            pinViewState!!.type == PinType.LOGIN -> {
+                                launchWallet()
+                            }
+                            pinViewState!!.type == PinType.CHECK -> {
+                                val keyPair = Wallet.createKeyPair(decryptedData.toCharArray(), null, Constants.USER_INDEX)
+                                val intent = Intent()
+                                intent.putExtra(KEY_SECRET_SEED, keyPair.secretSeed)
+                                setResult(Activity.RESULT_OK, intent)
+                                finishActivity()
+                            }
+                            pinViewState!!.type == PinType.CLEAR_WALLET -> wipeAndRestart()
+
+                            pinViewState!!.type == PinType.VIEW_PHRASE -> {
+                                val intent = Intent(this, ShowMnemonicActivity::class.java)
+                                intent.putExtra(ShowMnemonicActivity.INTENT_DISPLAY_PHRASE, true)
+                                intent.putExtra(ShowMnemonicActivity.DECRYPTED_PHRASE, decryptedData)
+                                startActivity(intent)
+                                finish()
+                            }
+
+                            pinViewState!!.type == PinType.VIEW_SEED -> {
+                                val keyPair = Wallet.createKeyPair(decryptedData.toCharArray(), null, Constants.USER_INDEX)
+                                val secretSeed = keyPair.secretSeed.joinToString("")
+                                val intent = Intent(this, ViewSecretSeedActivity::class.java)
+
+                                intent.putExtra(ViewSecretSeedActivity.SECRET_SEED, secretSeed)
+                                startActivity(intent)
+                                finish()
+                            }
+                        }
+                    } else {
+                        onIncorrectPin()
+                    }
                 }
             }
         }
+        handler.postDelayed(runnableCode, 200)
     }
 
     //region User Interface
