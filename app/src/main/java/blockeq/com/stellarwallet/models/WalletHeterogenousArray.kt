@@ -18,7 +18,7 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
 
 
     var array: ArrayList<Any> = ArrayList()
-    var availableBalanceOffsett = 0
+    var availableBalanceOffset = 0
 
     init {
         array.add(totalBalance)
@@ -42,12 +42,12 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
     }
 
     fun updatePair(p: Pair<*, *>) {
-        array.removeAt(PAIR_INDEX - availableBalanceOffsett)
-        array.add(PAIR_INDEX - availableBalanceOffsett, p)
+        array.removeAt(PAIR_INDEX - availableBalanceOffset)
+        array.add(PAIR_INDEX - availableBalanceOffset, p)
     }
 
     fun updateEffectsList(list: ArrayList<EffectResponse>) {
-        array.subList(EFFECTS_LIST_INDEX - availableBalanceOffsett, array.size).clear()
+        array.subList(EFFECTS_LIST_INDEX - availableBalanceOffset, array.size).clear()
         addFilteredEffects(list)
     }
 
@@ -55,7 +55,12 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
 
     fun hideAvailableBalance() {
         array.removeAt(AVAILABLE_INDEX)
-        availableBalanceOffsett = 1
+        availableBalanceOffset = 1
+    }
+
+    fun showAvailableBalance(balance: AvailableBalance) {
+        availableBalanceOffset = 0
+        array.add(AVAILABLE_INDEX, balance)
     }
 
     private fun addFilteredEffects(list: ArrayList<EffectResponse>?) {
