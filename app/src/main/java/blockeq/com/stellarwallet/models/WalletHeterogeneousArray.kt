@@ -6,8 +6,8 @@ import org.stellar.sdk.AssetTypeCreditAlphaNum
 import org.stellar.sdk.AssetTypeNative
 import org.stellar.sdk.responses.effects.*
 
-class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: AvailableBalance,
-                              pair: Pair<*, *>, effectsList: ArrayList<EffectResponse>?) : ArrayList<Any>() {
+class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: AvailableBalance,
+                               pair: Pair<*, *>, effectsList: ArrayList<EffectResponse>?) : ArrayList<Any>() {
 
     companion object {
         const val TOTAL_INDEX = 0

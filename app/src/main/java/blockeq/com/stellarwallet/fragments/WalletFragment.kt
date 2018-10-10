@@ -20,7 +20,7 @@ import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.models.AvailableBalance
 import blockeq.com.stellarwallet.models.MinimumBalance
 import blockeq.com.stellarwallet.models.TotalBalance
-import blockeq.com.stellarwallet.models.WalletHeterogenousArray
+import blockeq.com.stellarwallet.models.WalletHeterogeneousArray
 import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.AccountUtils
 import blockeq.com.stellarwallet.utils.NetworkUtils
@@ -35,7 +35,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
     private var runnableCode : Runnable? = null
     private var adapter : WalletRecyclerViewAdapter? = null
     private var effectsList : java.util.ArrayList<EffectResponse>? = null
-    private var recyclerViewArrayList: WalletHeterogenousArray? = null
+    private var recyclerViewArrayList: WalletHeterogeneousArray? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_wallet, container, false)
@@ -76,7 +76,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         val currAsset = WalletApplication.userSession.currAssetCode
 
         if (recyclerViewArrayList == null) {
-            recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(AccountUtils.getTotalBalance(currAsset)),
+            recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(AccountUtils.getTotalBalance(currAsset)),
                     AvailableBalance(WalletApplication.localStore!!.availableBalance!!), Pair("Activity", "Amount"), effectsList)
 
             adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList!!.array)
