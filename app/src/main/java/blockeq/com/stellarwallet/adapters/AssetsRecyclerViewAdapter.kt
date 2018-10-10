@@ -3,6 +3,7 @@ package blockeq.com.stellarwallet.adapters
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -147,7 +148,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: CheckPinList
             }
         } else if (asset.amount!!.toDouble() == 0.0) {
             viewHolder.assetButton!!.text = context.getString(R.string.remove_asset_message)
-            viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.apricot))
+            viewHolder.assetButton!!.setBackgroundColor(ContextCompat.getColor(context, R.color.apricot))
             viewHolder.assetButton!!.setOnClickListener {
                 listener.checkPin(asset.asset!!, true)
             }
@@ -184,7 +185,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: CheckPinList
         Picasso.get().load(asset.image).into(viewHolder.assetImage)
 
         viewHolder.assetButton!!.text = context.getString(R.string.add_asset)
-        viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.mantis))
+        viewHolder.assetButton!!.setBackgroundColor(ContextCompat.getColor(context, R.color.mantis))
         viewHolder.assetButton!!.setOnClickListener {
             listener.checkPin(trustLineAsset, false)
         }

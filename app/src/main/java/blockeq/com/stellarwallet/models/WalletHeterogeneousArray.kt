@@ -93,10 +93,10 @@ class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: Ava
     private fun convertEffectsToAccountEffects(list: ArrayList<EffectResponse>) : ArrayList<Any> {
         return list.map {
             if (it is TradeEffectResponse) {
-                TradeEffect(it.type, it.createdAt, getBoughtAsset(it), getSoldAsset(it),
+                return@map TradeEffect(it.type, it.createdAt, getBoughtAsset(it), getSoldAsset(it),
                         it.boughtAmount, it.soldAmount)
             } else {
-                AccountEffect(it.type, it.createdAt, getAssetCode(it), getAmount(it))
+                return@map AccountEffect(it.type, it.createdAt, getAssetCode(it), getAmount(it))
             }
         } as ArrayList
     }
