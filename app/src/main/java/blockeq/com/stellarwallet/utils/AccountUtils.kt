@@ -2,8 +2,6 @@ package blockeq.com.stellarwallet.utils
 
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants
-import blockeq.com.stellarwallet.models.MinimumBalance
-import org.stellar.sdk.responses.AccountResponse
 
 class AccountUtils {
 
@@ -20,7 +18,7 @@ class AccountUtils {
             return Constants.DEFAULT_ACCOUNT_BALANCE
         }
 
-        fun getAvailableBalance(): String {
+        fun calculateAvailableBalance(): String {
             val minimumBalance = WalletApplication.userSession.minimumBalance!!
             return StringFormat.truncateDecimalPlaces(
                     (getTotalBalance(Constants.LUMENS_ASSET_TYPE).toDouble() - minimumBalance.totalAmount).toString())

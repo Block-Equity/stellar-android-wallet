@@ -3,7 +3,9 @@ package blockeq.com.stellarwallet.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
@@ -44,7 +46,12 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
         addressEditText.text = address
 
         send_button.setOnClickListener {
-            launchPINView(PinType.CHECK, "", "", false)
+            if (isAmountValid()) {
+                launchPINView(PinType.CHECK, "", "", false)
+            } else {
+                val shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
+                amountTextView.startAnimation(shakeAnimation)
+            }
         }
     }
 
@@ -61,7 +68,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
                         val secretSeed = data!!.getCharArrayExtra(PinActivity.KEY_SECRET_SEED)
 
                         Horizon.Companion.SendTask(this, address, secretSeed,
-                                memoTextView.text.toString(), amountTextView.text.toString()).execute()
+                                memoTextView.text.toString(), amountText).execute()
                     } else {
                         NetworkUtils(this).displayNoNetwork()
                     }
@@ -116,6 +123,15 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
 
     private fun showAmount(amount: String) {
         amountTextView.text = if (amount.isEmpty()) "0" else amount
+        if (isAmountValid()) {
+            amountTextView.setTextColor(ContextCompat.getColor(this, R.color.toryBlue))
+        } else {
+            amountTextView.setTextColor(ContextCompat.getColor(this, R.color.apricot))
+        }
+    }
+
+    private fun isAmountValid() : Boolean {
+        return (amount <= WalletApplication.userSession.getAvailableBalance().toDouble())
     }
 
     //endregion
