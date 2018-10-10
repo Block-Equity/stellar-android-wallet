@@ -60,6 +60,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     override fun onResume() {
         super.onResume()
+        walletProgressBar.visibility = View.VISIBLE
         bindAdapter()
         startPollingAccount()
     }
@@ -129,6 +130,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
             effectsList = result
             recyclerViewArrayList!!.updateEffectsList(effectsList!!)
             adapter!!.notifyDataSetChanged()
+            walletProgressBar.visibility = View.GONE
         }
     }
 
