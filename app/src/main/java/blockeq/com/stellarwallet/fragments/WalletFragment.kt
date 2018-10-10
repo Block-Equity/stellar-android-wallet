@@ -102,6 +102,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
             }
 
             recyclerViewArrayList!!.updateTotalBalance(TotalBalance(AccountUtils.getTotalBalance(currAsset)))
+            recyclerViewArrayList!!.updateEffectsList(effectsList!!)
 
             adapter!!.notifyDataSetChanged()
         }
@@ -125,7 +126,8 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
         if (result != null) {
-            recyclerViewArrayList!!.updateEffectsList(result)
+            effectsList = result
+            recyclerViewArrayList!!.updateEffectsList(effectsList!!)
             adapter!!.notifyDataSetChanged()
         }
     }
