@@ -59,8 +59,10 @@ class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: Ava
     }
 
     fun showAvailableBalance(balance: AvailableBalance) {
-        availableBalanceOffset = 0
-        array.add(AVAILABLE_INDEX, balance)
+        if (availableBalanceOffset != 0) {
+            availableBalanceOffset = 0
+            array.add(AVAILABLE_INDEX, balance)
+        }
     }
 
     private fun addFilteredEffects(list: ArrayList<EffectResponse>?) {
