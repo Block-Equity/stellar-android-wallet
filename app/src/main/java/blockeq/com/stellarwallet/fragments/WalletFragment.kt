@@ -20,7 +20,7 @@ import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.models.AvailableBalance
 import blockeq.com.stellarwallet.models.MinimumBalance
 import blockeq.com.stellarwallet.models.TotalBalance
-import blockeq.com.stellarwallet.models.WalletHeterogenousArray
+import blockeq.com.stellarwallet.models.WalletHeterogeneousArray
 import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.AccountUtils
 import blockeq.com.stellarwallet.utils.NetworkUtils
@@ -35,7 +35,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
     private var runnableCode : Runnable? = null
     private var adapter : WalletRecyclerViewAdapter? = null
     private var effectsList : java.util.ArrayList<EffectResponse>? = null
-    private var recyclerViewArrayList: WalletHeterogenousArray? = null
+    private var recyclerViewArrayList: WalletHeterogeneousArray? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_wallet, container, false)
@@ -74,28 +74,38 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     private fun bindAdapter() {
         val currAsset = WalletApplication.userSession.currAssetCode
-        recyclerViewArrayList = WalletHeterogenousArray(TotalBalance(AccountUtils.getTotalBalance(currAsset)),
-                AvailableBalance(WalletApplication.localStore!!.availableBalance!!), Pair("Activity", "Amount"), effectsList)
 
-        if (currAsset != Constants.LUMENS_ASSET_TYPE) {
-            recyclerViewArrayList!!.hideAvailableBalance()
+        if (recyclerViewArrayList == null) {
+            recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(AccountUtils.getTotalBalance(currAsset)),
+                    AvailableBalance(WalletApplication.localStore!!.availableBalance!!), Pair("Activity", "Amount"), effectsList)
+
+            adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList!!.array)
+            adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
+                override fun onAssetDropdownClicked(view: View, position: Int) {
+                    startActivity(Intent(activity, AssetsActivity::class.java))
+                    activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+                }
+            })
+            adapter!!.setOnLearnMoreButtonListener(object : WalletRecyclerViewAdapter.OnLearnMoreButtonListener {
+                override fun onLearnMoreButtonClicked(view: View, position: Int) {
+                    startActivity(Intent(activity, BalanceSummaryActivity::class.java))
+                    activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+                }
+            })
+            walletRecyclerView.adapter = adapter
+            walletRecyclerView.layoutManager = LinearLayoutManager(activity)
+        } else {
+            if (currAsset != Constants.LUMENS_ASSET_TYPE) {
+                recyclerViewArrayList!!.hideAvailableBalance()
+            } else {
+                recyclerViewArrayList!!.showAvailableBalance(AvailableBalance(WalletApplication.localStore!!.availableBalance!!))
+            }
+
+            recyclerViewArrayList!!.updateTotalBalance(TotalBalance(AccountUtils.getTotalBalance(currAsset)))
+            recyclerViewArrayList!!.updateEffectsList(effectsList!!)
+
+            adapter!!.notifyDataSetChanged()
         }
-
-        adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList!!.array)
-        adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
-            override fun onAssetDropdownClicked(view: View, position: Int) {
-                startActivity(Intent(activity, AssetsActivity::class.java))
-                activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
-            }
-        })
-        adapter!!.setOnLearnMoreButtonListener(object : WalletRecyclerViewAdapter.OnLearnMoreButtonListener {
-            override fun onLearnMoreButtonClicked(view: View, position: Int) {
-                startActivity(Intent(activity, BalanceSummaryActivity::class.java))
-                activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
-            }
-        })
-        walletRecyclerView.adapter = adapter
-        walletRecyclerView.layoutManager = LinearLayoutManager(activity)
     }
 
     //endregion
@@ -116,7 +126,8 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
         if (result != null) {
-            recyclerViewArrayList!!.updateEffectsList(result)
+            effectsList = result
+            recyclerViewArrayList!!.updateEffectsList(effectsList!!)
             adapter!!.notifyDataSetChanged()
         }
     }

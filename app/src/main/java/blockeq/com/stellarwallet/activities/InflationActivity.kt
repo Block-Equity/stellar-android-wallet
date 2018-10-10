@@ -12,13 +12,16 @@ import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.NetworkUtils
 import kotlinx.android.synthetic.main.activity_inflation.*
 
-class InflationActivity : BaseActivity() {
+class InflationActivity : BasePopupActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_inflation)
 
         setupUI()
+    }
+
+    override fun setContent(): Int {
+        return R.layout.activity_inflation
     }
 
     override fun setupUI() {

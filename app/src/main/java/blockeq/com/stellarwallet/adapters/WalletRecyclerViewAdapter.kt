@@ -2,6 +2,7 @@ package blockeq.com.stellarwallet.adapters
 
 import android.content.Context
 import android.graphics.PorterDuff
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -245,13 +246,13 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         }
 
         if (transaction.type == EffectType.RECEIVED.value) {
-            viewHolder.dot!!.setColorFilter(context.resources.getColor(R.color.mantis), PorterDuff.Mode.SRC_IN)
+            viewHolder.dot!!.setColorFilter(ContextCompat.getColor(context, R.color.mantis), PorterDuff.Mode.SRC_IN)
         } else if (transaction.type == EffectType.SENT.value) {
-            viewHolder.dot!!.setColorFilter(context.resources.getColor(R.color.apricot), PorterDuff.Mode.SRC_IN)
+            viewHolder.dot!!.setColorFilter(ContextCompat.getColor(context, R.color.apricot), PorterDuff.Mode.SRC_IN)
             val bracketedText = "(" + viewHolder.amount!!.text + ")"
             viewHolder.amount!!.text = bracketedText
         } else {
-            viewHolder.dot!!.setColorFilter(context.resources.getColor(R.color.paleSky), PorterDuff.Mode.SRC_IN)
+            viewHolder.dot!!.setColorFilter(ContextCompat.getColor(context, R.color.paleSky), PorterDuff.Mode.SRC_IN)
         }
     }
 
@@ -263,10 +264,10 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
 
         if (WalletApplication.userSession.currAssetCode == trade.boughtAsset) {
             viewHolder.amount!!.text = truncateDecimalPlaces(trade.boughtAmount)
-            viewHolder.dot!!.setColorFilter(context.resources.getColor(R.color.mantis), PorterDuff.Mode.SRC_IN)
+            viewHolder.dot!!.setColorFilter(ContextCompat.getColor(context, R.color.mantis), PorterDuff.Mode.SRC_IN)
         } else {
             viewHolder.amount!!.text = "(" + truncateDecimalPlaces(trade.soldAmount) + ")"
-            viewHolder.dot!!.setColorFilter(context.resources.getColor(R.color.apricot), PorterDuff.Mode.SRC_IN)
+            viewHolder.dot!!.setColorFilter(ContextCompat.getColor(context, R.color.apricot), PorterDuff.Mode.SRC_IN)
         }
 
         viewHolder.date!!.text = getFormattedDate(trade.createdAt)

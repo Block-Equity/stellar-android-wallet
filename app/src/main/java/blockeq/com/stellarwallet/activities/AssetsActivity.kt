@@ -150,9 +150,15 @@ class AssetsActivity : BasePopupActivity(), CheckPinListener {
         if (NetworkUtils(this).isNetworkAvailable()) {
             Horizon.Companion.ChangeTrust(object : SuccessErrorCallback {
                 override fun onSuccess() {
+                    reloadDataForAdapter()
                     Toast.makeText(this@AssetsActivity, getString(R.string.success_trustline_changed), Toast.LENGTH_SHORT).show()
                     progressBar.visibility = View.GONE
-                    reloadDataForAdapter()
+                    if (isRemove!!) {
+                        WalletApplication.userSession.currAssetCode = Constants.LUMENS_ASSET_TYPE
+                        WalletApplication.userSession.currAssetName = Constants.LUMENS_ASSET_NAME
+                        WalletApplication.userSession.currAssetIssuer = ""
+                        finish()
+                    }
                 }
 
                 override fun onError() {
