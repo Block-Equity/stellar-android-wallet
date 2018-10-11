@@ -103,7 +103,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
             }
 
             recyclerViewArrayList!!.updateTotalBalance(TotalBalance(AccountUtils.getTotalBalance(currAsset)))
-            recyclerViewArrayList!!.updateEffectsList(effectsList!!)
+            recyclerViewArrayList!!.updateEffectsList(effectsList)
 
             adapter!!.notifyDataSetChanged()
         }

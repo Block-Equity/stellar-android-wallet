@@ -46,7 +46,7 @@ class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: Ava
         array.add(PAIR_INDEX - availableBalanceOffset, p)
     }
 
-    fun updateEffectsList(list: ArrayList<EffectResponse>) {
+    fun updateEffectsList(list: ArrayList<EffectResponse>?) {
         array.subList(EFFECTS_LIST_INDEX - availableBalanceOffset, array.size).clear()
         addFilteredEffects(list)
     }
