@@ -53,7 +53,7 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
     }
 
     private operator fun get(key: String): String? {
-            return sharedPreferences.getString(key, "")
+        return sharedPreferences.getString(key, "")
     }
 
     private operator fun <T> get(key: String, klass: Class<T>): T? {

@@ -60,6 +60,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     override fun onResume() {
         super.onResume()
+        walletProgressBar.visibility = View.VISIBLE
         bindAdapter()
         startPollingAccount()
     }
@@ -116,7 +117,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         if (result != null) {
             WalletApplication.localStore!!.balances = result.balances
             WalletApplication.userSession.minimumBalance = MinimumBalance(result)
-            WalletApplication.localStore!!.availableBalance = AccountUtils.getAvailableBalance()
+            WalletApplication.localStore!!.availableBalance = AccountUtils.calculateAvailableBalance()
         }
         recyclerViewArrayList!!.updateTotalBalance(
                 TotalBalance(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode)))
@@ -129,6 +130,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
             effectsList = result
             recyclerViewArrayList!!.updateEffectsList(effectsList!!)
             adapter!!.notifyDataSetChanged()
+            walletProgressBar.visibility = View.GONE
         }
     }
 
