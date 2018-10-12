@@ -28,9 +28,6 @@ import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
-import android.os.Looper.getMainLooper
-
-
 
 
 class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
