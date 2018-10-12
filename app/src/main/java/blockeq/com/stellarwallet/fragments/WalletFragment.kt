@@ -116,8 +116,6 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     override fun onLoadAccount(result: AccountResponse?) {
         if (result != null && walletProgressBar != null) {
-            noTransactionsTextView.visibility = View.GONE
-
             WalletApplication.localStore!!.balances = result.balances
             WalletApplication.userSession.minimumBalance = MinimumBalance(result)
             WalletApplication.localStore!!.availableBalance = AccountUtils.calculateAvailableBalance()
@@ -142,6 +140,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
     override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
         if (result != null && walletProgressBar != null) {
             noTransactionsTextView.visibility = View.GONE
+            walletProgressBar.visibility = View.VISIBLE
 
             effectsList = result
             recyclerViewArrayList!!.updateEffectsList(effectsList!!)
