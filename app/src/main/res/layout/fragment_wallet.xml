@@ -77,6 +77,15 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/noTransactionsTextView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="ListTitleText"
+        android:gravity="center"
+        android:text="@string/no_transactions"
+        android:visibility="gone" />
+
     <ProgressBar
         android:id="@+id/walletProgressBar"
         android:layout_gravity="center"

@@ -33,6 +33,7 @@
     <string name="learn_more">Learn more</string>
     <string name="activity">ACTIVITY</string>
     <string name="amount">AMOUNT</string>
+    <string name="no_transactions">Start trading!\n You currently have no transactions</string>
 
     <!-- Login Strings -->
     <string name="create_new_wallet">Create new wallet</string>
