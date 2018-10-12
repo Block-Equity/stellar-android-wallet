@@ -127,7 +127,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
     }
 
     override fun onError(error: ErrorResponse) {
-        if (error.code == 404 && walletProgressBar != null) {
+        if (error.code == Constants.SERVER_ERROR_NOT_FOUND && walletProgressBar != null) {
             val mainHandler = Handler(context!!.mainLooper)
 
             mainHandler.post {
