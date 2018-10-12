@@ -34,6 +34,7 @@ class Horizon {
 
                 } catch (error : Exception) {
                     Log.d(TAG, error.message.toString())
+                    listener.onError((error as ErrorResponse))
                 }
 
                 return account

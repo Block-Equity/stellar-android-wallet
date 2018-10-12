@@ -41,11 +41,11 @@ class RecoverWalletActivity : BaseActivity() {
         setupToolbar()
 
         nextButton.setOnClickListener {
-            val wordCount = getWordCount(phraseEditText.text.toString())
+            val wordCount = getWordCount(getMnemonicString())
             if (wordCount == 12 || wordCount == 24) {
                 launchPINView(PinType.CREATE,
                         getString(R.string.please_create_a_pin),
-                        phraseEditText.text.toString(),
+                        getMnemonicString(),
                         false)
             } else {
                 showErrorMessage()
@@ -67,6 +67,10 @@ class RecoverWalletActivity : BaseActivity() {
     //region Helper functions
     private fun getWordCount(word : String) : Int {
         return word.split(" ".toRegex()).size
+    }
+
+    private fun getMnemonicString() : String {
+        return phraseEditText.text.toString().trim()
     }
     //endregions
 }

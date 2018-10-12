@@ -13,7 +13,7 @@
         android:elevation="4dp"
         app:title="@string/nav_settings"
         app:titleTextColor="@color/colorPrimaryDark"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:theme="@style/ToolbarTheme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <TextView

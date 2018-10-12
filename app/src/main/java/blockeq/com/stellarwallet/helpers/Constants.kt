@@ -11,6 +11,8 @@ class Constants {
         const val MINIMUM_BALANCE_INCREMENT = 0.5
         const val BASE_RESERVE = 0.5
 
+        const val SERVER_ERROR_NOT_FOUND = 404
+
         const val LUMENS_ASSET_TYPE = "native"
         const val LUMENS_ASSET_CODE = "XLM"
         const val LUMENS_ASSET_NAME = "Stellar Lumens"

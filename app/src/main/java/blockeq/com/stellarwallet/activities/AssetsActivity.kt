@@ -26,6 +26,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.content_assets_activity.*
 import org.stellar.sdk.Asset
+import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 
 
@@ -175,11 +176,16 @@ class AssetsActivity : BasePopupActivity(), CheckPinListener {
     fun reloadDataForAdapter() {
         if (NetworkUtils(this).isNetworkAvailable()) {
             Horizon.Companion.LoadAccountTask(object: OnLoadAccount {
+
                 override fun onLoadAccount(result: AccountResponse?) {
                     if (result != null) {
                         WalletApplication.localStore!!.balances = result.balances
                         updateAdapter()
                     }
+                }
+
+                override fun onError(error: ErrorResponse) {
+                    Toast.makeText(this@AssetsActivity, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
                 }
             }).execute()
         }

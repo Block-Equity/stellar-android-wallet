@@ -25,6 +25,7 @@ import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.AccountUtils
 import blockeq.com.stellarwallet.utils.NetworkUtils
 import kotlinx.android.synthetic.main.fragment_wallet.*
+import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
 
@@ -125,8 +126,22 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
                 AvailableBalance(WalletApplication.localStore!!.availableBalance!!))
     }
 
+    override fun onError(error: ErrorResponse) {
+        if (error.code == Constants.SERVER_ERROR_NOT_FOUND && walletProgressBar != null) {
+            val mainHandler = Handler(context!!.mainLooper)
+
+            mainHandler.post {
+                noTransactionsTextView.visibility = View.VISIBLE
+                walletProgressBar.visibility = View.GONE
+            }
+        }
+    }
+
     override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
         if (result != null && walletProgressBar != null) {
+            noTransactionsTextView.visibility = View.GONE
+            walletProgressBar.visibility = View.VISIBLE
+
             effectsList = result
             recyclerViewArrayList!!.updateEffectsList(effectsList!!)
             adapter!!.notifyDataSetChanged()
