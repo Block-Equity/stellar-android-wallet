@@ -57,6 +57,8 @@
     <string name="view_seed">View Secret Key (Not recommended)</string>
     <string name="wallet">Wallet</string>
     <string name="clear_wallet">Clear Wallet</string>
+    <string name="security">Security</string>
+    <string name="pin_send_payments">Request PIN when sending payments</string>
 
     <!--Trading Fragment-->
     <string name="tab_trade">Trade</string>
