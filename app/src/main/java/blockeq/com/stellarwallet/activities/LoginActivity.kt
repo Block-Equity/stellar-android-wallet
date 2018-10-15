@@ -36,7 +36,7 @@ class LoginActivity : BaseActivity() {
 
     private fun showCreateDialog() {
         val builder = AlertDialog.Builder(this@LoginActivity)
-        val walletLengthList = listOf("Use a 12 word recovery phrase", "Use a 24 word recovery phrase").toTypedArray()
+        val walletLengthList = listOf(getString(R.string.create_word_option_1), getString(R.string.create_word_option_2)).toTypedArray()
         builder.setTitle("Create Wallet")
                 .setItems(walletLengthList) { _, which ->
                     // The 'which' argument contains the index position
@@ -58,7 +58,7 @@ class LoginActivity : BaseActivity() {
 
     private fun showRecoverDialog() {
         val builder = AlertDialog.Builder(this@LoginActivity)
-        val walletLengthList = listOf("Recover from phrase", "Recover from secret key").toTypedArray()
+        val walletLengthList = listOf(getString(R.string.recover_from_phrase), getString(R.string.recover_from_seed)).toTypedArray()
         builder.setTitle("Recover Wallet")
                 .setItems(walletLengthList) { _, which ->
                     // The 'which' argument contains the index position
