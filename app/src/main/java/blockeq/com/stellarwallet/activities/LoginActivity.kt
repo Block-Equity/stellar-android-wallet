@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.WalletApplication
 import kotlinx.android.synthetic.main.activity_login.*
 
 
@@ -27,15 +26,15 @@ class LoginActivity : BaseActivity() {
     override fun setupUI() {
 
         createWalletButton.setOnClickListener {
-            showDialog()
+            showCreateDialog()
         }
 
         recoverWalletButton.setOnClickListener {
-            startActivity(Intent(this, RecoverWalletActivity::class.java))
+            showRecoverDialog()
         }
     }
 
-    private fun showDialog() {
+    private fun showCreateDialog() {
         val builder = AlertDialog.Builder(this@LoginActivity)
         val walletLengthList = listOf("Use a 12 word recovery phrase", "Use a 24 word recovery phrase").toTypedArray()
         builder.setTitle("Create Wallet")
@@ -57,6 +56,23 @@ class LoginActivity : BaseActivity() {
         dialog.show()
     }
 
+    private fun showRecoverDialog() {
+        val builder = AlertDialog.Builder(this@LoginActivity)
+        val walletLengthList = listOf("Recover from phrase", "Recover from secret key").toTypedArray()
+        builder.setTitle("Recover Wallet")
+                .setItems(walletLengthList) { _, which ->
+                    // The 'which' argument contains the index position
+                    // of the selected item
+
+                    val isPhraseRecovery = (which == 0)
+
+                    val intent = Intent(this, RecoverWalletActivity::class.java)
+                    intent.putExtra("isPhraseRecovery", isPhraseRecovery)
+                    startActivity(intent)
+                }
+        val dialog = builder.create()
+        dialog.show()
+    }
 
     //endregion
 }
