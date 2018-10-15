@@ -37,12 +37,20 @@
 
     <!-- Login Strings -->
     <string name="create_new_wallet">Create new wallet</string>
+    <string name="create_wallet">Create Wallet</string>
     <string name="recover_wallet">Recover wallet</string>
     <string name="phrase_warning">Please write down and safely store this phrase. It\'s the ONLY WAY to retrieve your wallet.</string>
+    <string name="no_mnemonic_set">Your wallet was recovered using a secret key and does not use a mnemonic.</string>
     <string name="confirm_written">I have written it down</string>
     <string name="enter_phrase">Enter Phrase</string>
+    <string name="enter_secret_key">Enter Secret Key</string>
     <string name="secret_phrase">Secret Phrase</string>
-    <string name="invalid_word_count">Invalid number of words (must be 12 or 24).</string>
+    <string name="invalid_input_for_phrase">Invalid number of words (must be 12 or 24).</string>
+    <string name="invalid_input_for_secret">Invalid secret key.</string>
+    <string name="create_word_option_1">Use a 12 word recovery phrase</string>
+    <string name="create_word_option_2">Use a 24 word recovery phrase</string>
+    <string name="recover_from_phrase">Recover from phrase</string>
+    <string name="recover_from_seed">Recover from secret key</string>
 
     <!--Settings Fragment-->
     <string name="recovery">Recovery</string>

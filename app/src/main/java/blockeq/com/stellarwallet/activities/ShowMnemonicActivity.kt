@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.widget.Toolbar
 import android.view.View
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
 import blockeq.com.stellarwallet.models.PinType
 import com.soneso.stellarmnemonics.Wallet
@@ -48,6 +49,10 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
     override fun setupUI() {
         if (isDisplayPhraseOnly) {
             confirmButton.visibility = View.GONE
+            if (!WalletApplication.localStore!!.isRecoveryPhrase) {
+                warningPhraseTextView.text = getString(R.string.no_mnemonic_set)
+                mnemonicView.visibility = View.GONE
+            }
         }
         setupActionBar()
         setupMnemonicView()
@@ -76,8 +81,7 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
     //region Helper functions
     private fun getMnemonic(): ArrayList<String> {
         if (isDisplayPhraseOnly) {
-            val words = mnemonicString!!.split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
-            return words
+            return ArrayList(mnemonicString!!.split(" ".toRegex()).dropLastWhile { it.isEmpty() })
         } else {
             val mnemonic = if (intent.getIntExtra("walletLength", 12) == 12) {
                 Wallet.generate12WordMnemonic()

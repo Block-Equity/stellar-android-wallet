@@ -18,6 +18,7 @@ import blockeq.com.stellarwallet.models.PinViewState
 import com.andrognito.pinlockview.PinLockListener
 import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_pin.*
+import org.stellar.sdk.KeyPair
 
 class PinActivity : BaseActivity(), PinLockListener {
 
@@ -81,7 +82,8 @@ class PinActivity : BaseActivity(), PinLockListener {
 
                             WalletApplication.localStore!!.encryptedPhrase = encryptedData
 
-                            val keyPair = Wallet.createKeyPair(pinViewState!!.phrase.toCharArray(), null, Constants.USER_INDEX)
+                            val keyPair = getKeyPair(pinViewState!!.phrase)
+
                             WalletApplication.localStore!!.publicKey = keyPair.accountId
 
                             launchWallet()
@@ -101,7 +103,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                                 launchWallet()
                             }
                             pinViewState!!.type == PinType.CHECK -> {
-                                val keyPair = Wallet.createKeyPair(decryptedData.toCharArray(), null, Constants.USER_INDEX)
+                                val keyPair = getKeyPair(decryptedData)
                                 val intent = Intent()
                                 intent.putExtra(KEY_SECRET_SEED, keyPair.secretSeed)
                                 setResult(Activity.RESULT_OK, intent)
@@ -118,7 +120,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                             }
 
                             pinViewState!!.type == PinType.VIEW_SEED -> {
-                                val keyPair = Wallet.createKeyPair(decryptedData.toCharArray(), null, Constants.USER_INDEX)
+                                val keyPair = getKeyPair(decryptedData)
                                 val secretSeed = keyPair.secretSeed.joinToString("")
                                 val intent = Intent(this, ViewSecretSeedActivity::class.java)
 
@@ -138,8 +140,7 @@ class PinActivity : BaseActivity(), PinLockListener {
 
     //region User Interface
 
-    override fun onPinChange(pinLength: Int, intermediatePin: String?) {
-    }
+    override fun onPinChange(pinLength: Int, intermediatePin: String?) {}
 
     private fun onIncorrectPin() {
         showWrongPinDots(true)
@@ -182,12 +183,18 @@ class PinActivity : BaseActivity(), PinLockListener {
         return bundle.getParcelable(PinFlowController.OBJECT)
     }
 
-
-
     //endregion
 
 
     //region Encryption and Decryption
+    private fun getKeyPair(string : String) : KeyPair {
+        return if (WalletApplication.localStore!!.isRecoveryPhrase) {
+            Wallet.createKeyPair(string.toCharArray(), null, Constants.USER_INDEX)
+        } else {
+            KeyPair.fromSecretSeed(string)
+        }
+    }
+
     private fun getEncryptedPhrase(pinType: PinType) : String {
         return if (pinType == PinType.CHECK || pinType == PinType.LOGIN) {
             WalletApplication.localStore!!.encryptedPhrase!!
