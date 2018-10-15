@@ -74,7 +74,7 @@ class RecoverWalletActivity : BaseActivity() {
         setSupportActionBar(findViewById(R.id.recoverToolbar))
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        recoverToolbar.title = if (isRecoveryPhrase) {
+        supportActionBar!!.title = if (isRecoveryPhrase) {
             getString(R.string.enter_phrase)
         } else {
             getString(R.string.enter_secret_key)
