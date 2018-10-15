@@ -53,7 +53,7 @@ class RecoverWalletActivity : BaseActivity() {
             val wordCount = getWordCount(recoveryString)
             if (isRecoveryPhrase) {
                 if (wordCount == 12 || wordCount == 24) {
-                    launchPINView(PinType.CREATE,
+                    launchPINView(PinType.CREATE_WITH_PHRASE,
                             getString(R.string.please_create_a_pin),
                             recoveryString,
                             false)
@@ -62,7 +62,10 @@ class RecoverWalletActivity : BaseActivity() {
                 }
             } else {
                 if (wordCount == 1 && recoveryString[0] == 'S') {
-
+                    launchPINView(PinType.CREATE_WITH_SECRET,
+                            getString(R.string.please_create_a_pin),
+                            recoveryString,
+                            false)
                 } else {
                     showErrorMessage()
                 }

@@ -58,7 +58,7 @@ class PinActivity : BaseActivity(), PinLockListener {
         val handler = Handler()
         val runnableCode = Runnable {
             when (pinViewState!!.type) {
-                PinType.CREATE -> {
+                PinType.CREATE_WITH_PHRASE -> {
                     when {
                         needConfirm -> {
                             PIN = pin
