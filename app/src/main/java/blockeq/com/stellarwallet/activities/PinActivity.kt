@@ -12,13 +12,11 @@ import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
-import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
+import blockeq.com.stellarwallet.utils.AccountUtils
 import com.andrognito.pinlockview.PinLockListener
-import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_pin.*
-import org.stellar.sdk.KeyPair
 
 class PinActivity : BaseActivity(), PinLockListener {
 
@@ -82,7 +80,7 @@ class PinActivity : BaseActivity(), PinLockListener {
 
                             WalletApplication.localStore!!.encryptedPhrase = encryptedData
 
-                            val keyPair = getKeyPair(pinViewState!!.phrase)
+                            val keyPair = AccountUtils.getKeyPair(pinViewState!!.phrase)
 
                             WalletApplication.localStore!!.publicKey = keyPair.accountId
 
@@ -92,7 +90,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                 }
                 else -> {
                     val encryptedPhrase = getEncryptedPhrase(pinViewState!!.type)
-                    val masterKey = getPinMasterKey(pin)
+                    val masterKey = AccountUtils.getPinMasterKey(pin)
 
                     if (masterKey != null) {
                         val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
@@ -104,7 +102,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                                 launchWallet()
                             }
                             pinViewState!!.type == PinType.CHECK -> {
-                                val keyPair = getKeyPair(decryptedData)
+                                val keyPair = AccountUtils.getKeyPair(decryptedData)
                                 val intent = Intent()
                                 intent.putExtra(KEY_SECRET_SEED, keyPair.secretSeed)
                                 setResult(Activity.RESULT_OK, intent)
@@ -121,7 +119,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                             }
 
                             pinViewState!!.type == PinType.VIEW_SEED -> {
-                                val keyPair = getKeyPair(decryptedData)
+                                val keyPair = AccountUtils.getKeyPair(decryptedData)
                                 val secretSeed = keyPair.secretSeed.joinToString("")
                                 val intent = Intent(this, ViewSecretSeedActivity::class.java)
 
@@ -188,13 +186,6 @@ class PinActivity : BaseActivity(), PinLockListener {
 
 
     //region Encryption and Decryption
-    private fun getKeyPair(string : String) : KeyPair {
-        return if (WalletApplication.localStore!!.isRecoveryPhrase) {
-            Wallet.createKeyPair(string.toCharArray(), null, Constants.USER_INDEX)
-        } else {
-            KeyPair.fromSecretSeed(string)
-        }
-    }
 
     private fun getEncryptedPhrase(pinType: PinType) : String {
         return if (pinType == PinType.CHECK || pinType == PinType.LOGIN) {
@@ -202,12 +193,6 @@ class PinActivity : BaseActivity(), PinLockListener {
         } else {
             pinViewState!!.phrase
         }
-    }
-
-    private fun getPinMasterKey(pin: String) : java.security.KeyPair? {
-        val keyStoreWrapper = KeyStoreWrapper(applicationContext)
-
-        return keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
     }
 
     private fun wipeAndRestart() {
