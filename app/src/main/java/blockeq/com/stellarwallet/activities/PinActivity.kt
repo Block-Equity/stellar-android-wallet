@@ -188,7 +188,7 @@ class PinActivity : BaseActivity(), PinLockListener {
 
     //region Encryption and Decryption
     private fun getKeyPair(string : String) : KeyPair {
-        return if (pinViewState!!.type == PinType.CREATE) {
+        return if (WalletApplication.localStore!!.isRecoveryPhrase) {
             Wallet.createKeyPair(string.toCharArray(), null, Constants.USER_INDEX)
         } else {
             KeyPair.fromSecretSeed(string)

@@ -39,6 +39,7 @@
     <string name="create_new_wallet">Create new wallet</string>
     <string name="recover_wallet">Recover wallet</string>
     <string name="phrase_warning">Please write down and safely store this phrase. It\'s the ONLY WAY to retrieve your wallet.</string>
+    <string name="no_mnemonic_set">Your wallet was recovered using a secret key and does not use a mnemonic.</string>
     <string name="confirm_written">I have written it down</string>
     <string name="enter_phrase">Enter Phrase</string>
     <string name="enter_secret_key">Enter Secret Key</string>
