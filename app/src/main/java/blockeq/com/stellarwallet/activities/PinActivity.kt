@@ -100,6 +100,7 @@ class PinActivity : BaseActivity(), PinLockListener {
 
                         when {
                             pinViewState!!.type == PinType.LOGIN -> {
+                                WalletApplication.userSession.pin = pin
                                 launchWallet()
                             }
                             pinViewState!!.type == PinType.CHECK -> {
