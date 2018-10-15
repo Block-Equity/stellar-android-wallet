@@ -2,11 +2,12 @@ package blockeq.com.stellarwallet.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.method.DigitsKeyListener
 import android.view.MenuItem
 import android.view.View
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
+import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.models.PinType
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
 
@@ -44,16 +45,25 @@ class RecoverWalletActivity : BaseActivity() {
     override fun setupUI() {
         setupToolbar()
 
-        if (!isRecoveryPhrase) {
-            phraseEditText.keyListener = DigitsKeyListener.getInstance(getString(R.string.stellar_address_alphabet))
+        if (isRecoveryPhrase) {
+            secretKeyEditText.visibility = View.GONE
+            phraseEditText.visibility = View.VISIBLE
+            invalidPhraseTextView.text = getString(R.string.invalid_input_for_phrase)
+        } else {
+            secretKeyEditText.visibility = View.VISIBLE
+            phraseEditText.visibility = View.GONE
+            invalidPhraseTextView.text = getString(R.string.invalid_input_for_secret)
         }
 
         nextButton.setOnClickListener {
             val recoveryString = getMnemonicString()
             val wordCount = getWordCount(recoveryString)
+
+            WalletApplication.localStore!!.isRecoveryPhrase = isRecoveryPhrase
+
             if (isRecoveryPhrase) {
                 if (wordCount == 12 || wordCount == 24) {
-                    launchPINView(PinType.CREATE_WITH_PHRASE,
+                    launchPINView(PinType.CREATE,
                             getString(R.string.please_create_a_pin),
                             recoveryString,
                             false)
@@ -61,8 +71,8 @@ class RecoverWalletActivity : BaseActivity() {
                     showErrorMessage()
                 }
             } else {
-                if (wordCount == 1 && recoveryString[0] == 'S') {
-                    launchPINView(PinType.CREATE_WITH_SECRET,
+                if (recoveryString.length == Constants.STELLAR_ADDRESS_LENGTH && recoveryString[0] == 'S') {
+                    launchPINView(PinType.CREATE,
                             getString(R.string.please_create_a_pin),
                             recoveryString,
                             false)
@@ -96,7 +106,11 @@ class RecoverWalletActivity : BaseActivity() {
     }
 
     private fun getMnemonicString() : String {
-        return phraseEditText.text.toString().trim()
+        return if (isRecoveryPhrase) {
+            phraseEditText.text.toString().trim()
+        } else {
+            secretKeyEditText.text.toString().trim()
+        }
     }
     //endregions
 }

@@ -43,7 +43,8 @@
     <string name="enter_phrase">Enter Phrase</string>
     <string name="enter_secret_key">Enter Secret Key</string>
     <string name="secret_phrase">Secret Phrase</string>
-    <string name="invalid_word_count">Invalid number of words (must be 12 or 24).</string>
+    <string name="invalid_input_for_phrase">Invalid number of words (must be 12 or 24).</string>
+    <string name="invalid_input_for_secret">Invalid secret key.</string>
 
     <!--Settings Fragment-->
     <string name="recovery">Recovery</string>
