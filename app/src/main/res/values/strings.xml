@@ -99,6 +99,10 @@
     <string name="pin_correct">PIN Correct!</string>
     <string name="pin_incorrect">PIN Incorrect!</string>
     <string name="pin_canceled">PIN Verification Canceled</string>
+    <plurals name="attempts_template">
+        <item quantity="one">You have %d attempt left.</item>
+        <item quantity="other">You have %d attempts left.</item>
+    </plurals>
 
     <!--Receive Fragment-->
     <string name="receive_title">Receive</string>
