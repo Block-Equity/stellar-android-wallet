@@ -54,8 +54,10 @@ class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: Ava
     //endregion
 
     fun hideAvailableBalance() {
-        array.removeAt(AVAILABLE_INDEX)
-        availableBalanceOffset = 1
+        if (availableBalanceOffset == 0) {
+            array.removeAt(AVAILABLE_INDEX)
+            availableBalanceOffset = 1
+        }
     }
 
     fun showAvailableBalance(balance: AvailableBalance) {

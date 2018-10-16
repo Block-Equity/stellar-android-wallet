@@ -61,7 +61,6 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     override fun onResume() {
         super.onResume()
-        walletProgressBar.visibility = View.VISIBLE
         bindAdapter()
         startPollingAccount()
     }
@@ -78,6 +77,8 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         val currAsset = WalletApplication.userSession.currAssetCode
 
         if (recyclerViewArrayList == null) {
+            walletProgressBar.visibility = View.VISIBLE
+
             recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(AccountUtils.getTotalBalance(currAsset)),
                     AvailableBalance(WalletApplication.localStore!!.availableBalance!!), Pair("Activity", "Amount"), effectsList)
 

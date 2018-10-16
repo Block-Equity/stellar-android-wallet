@@ -1,7 +1,5 @@
 package blockeq.com.stellarwallet.activities
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
@@ -10,13 +8,13 @@ import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.adapters.AssetsRecyclerViewAdapter
 import blockeq.com.stellarwallet.helpers.Constants
-import blockeq.com.stellarwallet.interfaces.CheckPinListener
+import blockeq.com.stellarwallet.interfaces.ChangeTrustlineListener
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
-import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.models.SupportedAssetType
 import blockeq.com.stellarwallet.services.networking.Horizon
+import blockeq.com.stellarwallet.utils.AccountUtils
 import blockeq.com.stellarwallet.utils.NetworkUtils
 import com.android.volley.Request
 import com.android.volley.Response
@@ -30,13 +28,11 @@ import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 
 
-class AssetsActivity : BasePopupActivity(), CheckPinListener {
+class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
     private var adapter :AssetsRecyclerViewAdapter? = null
     private var assetsList: ArrayList<Any>? = ArrayList()
     private var map: Map<String, SupportedAsset>? = null
-    private var assetToChange: Asset? = null
-    private var isRemove: Boolean? = null
 
     override fun setContent(): Int {
         return R.layout.content_assets_activity
@@ -141,20 +137,20 @@ class AssetsActivity : BasePopupActivity(), CheckPinListener {
 
     //region Call backs
 
-    override fun checkPin(asset: Asset, isRemoveAsset: Boolean) {
-        assetToChange = asset
-        isRemove = isRemoveAsset
-        launchPINView(PinType.CHECK, "", "", false)
+    override fun changeTrustline(asset: Asset, isRemoveAsset: Boolean) {
+        progressBar.visibility = View.VISIBLE
+        val secretSeed = AccountUtils.getSecretSeed()
+        changeTrustLine(secretSeed, asset, isRemoveAsset)
     }
 
-    private fun changeTrustLine(secretSeed: CharArray) {
+    private fun changeTrustLine(secretSeed: CharArray, assetToChange: Asset, isRemove: Boolean) {
         if (NetworkUtils(this).isNetworkAvailable()) {
             Horizon.Companion.ChangeTrust(object : SuccessErrorCallback {
                 override fun onSuccess() {
                     reloadDataForAdapter()
                     Toast.makeText(this@AssetsActivity, getString(R.string.success_trustline_changed), Toast.LENGTH_SHORT).show()
                     progressBar.visibility = View.GONE
-                    if (isRemove!!) {
+                    if (isRemove) {
                         WalletApplication.userSession.currAssetCode = Constants.LUMENS_ASSET_TYPE
                         WalletApplication.userSession.currAssetName = Constants.LUMENS_ASSET_NAME
                         WalletApplication.userSession.currAssetIssuer = ""
@@ -166,7 +162,7 @@ class AssetsActivity : BasePopupActivity(), CheckPinListener {
                     Toast.makeText(this@AssetsActivity, getString(R.string.error_trustline_changed), Toast.LENGTH_SHORT).show()
                     progressBar.visibility = View.GONE
                 }
-            }, assetToChange!!, isRemove!!, secretSeed).execute()
+            }, assetToChange, isRemove, secretSeed).execute()
         } else {
             NetworkUtils(this).displayNoNetwork()
             progressBar.visibility = View.GONE
@@ -191,19 +187,4 @@ class AssetsActivity : BasePopupActivity(), CheckPinListener {
         }
     }
     //endregion
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PinActivity.PIN_REQUEST_CODE) {
-            when (resultCode) {
-                Activity.RESULT_OK -> {
-                    progressBar.visibility = View.VISIBLE
-                    val secretSeed = data!!.getCharArrayExtra(PinActivity.KEY_SECRET_SEED)
-                    changeTrustLine(secretSeed)
-                }
-                Activity.RESULT_CANCELED -> {}
-                else -> finish()
-            }
-        }
-    }
 }

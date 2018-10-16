@@ -16,7 +16,7 @@ import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.InflationActivity
 import blockeq.com.stellarwallet.helpers.Constants
-import blockeq.com.stellarwallet.interfaces.CheckPinListener
+import blockeq.com.stellarwallet.interfaces.ChangeTrustlineListener
 import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.models.SupportedAssetType
 import blockeq.com.stellarwallet.utils.AccountUtils
@@ -27,7 +27,7 @@ import org.stellar.sdk.KeyPair
 import java.util.*
 
 
-class AssetsRecyclerViewAdapter(var context: Context, var listener: CheckPinListener,
+class AssetsRecyclerViewAdapter(var context: Context, var listener: ChangeTrustlineListener,
                                 var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -150,7 +150,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: CheckPinList
             viewHolder.assetButton!!.text = context.getString(R.string.remove_asset_message)
             viewHolder.assetButton!!.setBackgroundColor(ContextCompat.getColor(context, R.color.apricot))
             viewHolder.assetButton!!.setOnClickListener {
-                listener.checkPin(asset.asset!!, true)
+                listener.changeTrustline(asset.asset!!, true)
             }
         } else {
             viewHolder.assetButton!!.visibility = View.GONE
@@ -187,7 +187,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: CheckPinList
         viewHolder.assetButton!!.text = context.getString(R.string.add_asset)
         viewHolder.assetButton!!.setBackgroundColor(ContextCompat.getColor(context, R.color.mantis))
         viewHolder.assetButton!!.setOnClickListener {
-            listener.checkPin(trustLineAsset, false)
+            listener.changeTrustline(trustLineAsset, false)
         }
         viewHolder.assetButton!!.visibility = View.VISIBLE
     }

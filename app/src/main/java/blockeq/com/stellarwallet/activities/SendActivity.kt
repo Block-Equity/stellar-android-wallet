@@ -12,6 +12,7 @@ import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.services.networking.Horizon
+import blockeq.com.stellarwallet.utils.AccountUtils
 import blockeq.com.stellarwallet.utils.NetworkUtils
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
@@ -47,7 +48,11 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
 
         send_button.setOnClickListener {
             if (isAmountValid()) {
-                launchPINView(PinType.CHECK, "", "", false)
+                if (WalletApplication.localStore!!.showPinOnSend) {
+                    launchPINView(PinType.CHECK, "", "", false)
+                } else {
+                    sendPayment()
+                }
             } else {
                 val shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
                 amountTextView.startAnimation(shakeAnimation)
@@ -62,16 +67,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
         if (requestCode == PinActivity.PIN_REQUEST_CODE) {
             when (resultCode) {
                 Activity.RESULT_OK -> {
-                    if (NetworkUtils(this).isNetworkAvailable()) {
-                        progressBar.visibility = View.VISIBLE
-
-                        val secretSeed = data!!.getCharArrayExtra(PinActivity.KEY_SECRET_SEED)
-
-                        Horizon.Companion.SendTask(this, address, secretSeed,
-                                memoTextView.text.toString(), amountText).execute()
-                    } else {
-                        NetworkUtils(this).displayNoNetwork()
-                    }
+                    sendPayment()
                 }
                 Activity.RESULT_CANCELED -> {}
                 else -> finish()
@@ -135,6 +131,19 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     }
 
     //endregion
+
+    private fun sendPayment() {
+        if (NetworkUtils(this).isNetworkAvailable()) {
+            progressBar.visibility = View.VISIBLE
+
+            val secretSeed = AccountUtils.getSecretSeed()
+
+            Horizon.Companion.SendTask(this, address, secretSeed,
+                    memoTextView.text.toString(), amountText).execute()
+        } else {
+            NetworkUtils(this).displayNoNetwork()
+        }
+    }
 
     //region Horizon callbacks
     override fun onSuccess() {
