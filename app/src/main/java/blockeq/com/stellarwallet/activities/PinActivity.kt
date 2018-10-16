@@ -83,6 +83,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                             val keyPair = AccountUtils.getKeyPair(pinViewState!!.phrase)
 
                             WalletApplication.localStore!!.publicKey = keyPair.accountId
+                            WalletApplication.userSession.pin = pin
 
                             launchWallet()
                         }
