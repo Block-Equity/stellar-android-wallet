@@ -49,6 +49,7 @@
         android:layout_height="match_parent"
         android:digits="@string/stellar_address_alphabet"
         style="@style/RegularText"
+        android:inputType="textCapCharacters"
         android:padding="@dimen/activity_vertical_margin"
         android:background="@android:color/transparent"
         android:textSize="@dimen/text_size_medium"
