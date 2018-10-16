@@ -152,6 +152,8 @@ class PinActivity : BaseActivity(), PinLockListener {
                 showWrongPinDots(false)
                 pinLockView.resetPinLockView()
                 numAttempts++
+                tv_custom_message.text = resources.getQuantityString(R.plurals.attempts_template,
+                        MAX_ATTEMPTS - numAttempts, MAX_ATTEMPTS - numAttempts)
                 if (numAttempts == MAX_ATTEMPTS) {
                     wipeAndRestart()
                 }
