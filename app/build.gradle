@@ -12,7 +12,7 @@ android {
         applicationId "blockeq.com.stellarwallet"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 10
+        versionCode 11
         versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
