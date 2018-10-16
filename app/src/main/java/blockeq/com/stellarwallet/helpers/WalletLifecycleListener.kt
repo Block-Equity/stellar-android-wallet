@@ -15,5 +15,6 @@ class WalletLifecycleListener : LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onMoveToBackground() {
         WalletApplication.appReturnedFromBackground = false
+        WalletApplication.userSession.pin = null
     }
 }

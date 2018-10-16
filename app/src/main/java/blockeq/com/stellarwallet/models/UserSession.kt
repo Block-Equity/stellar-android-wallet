@@ -11,6 +11,7 @@ class UserSession(var currAssetCode: String = Constants.LUMENS_ASSET_TYPE,
                   var currAssetIssuer: String = "") {
 
     var minimumBalance: MinimumBalance? = null
+    var pin: String? = null
 
     fun getFormattedCurrentAssetCode() : String {
         return StringFormat.formatAssetCode(currAssetCode)
