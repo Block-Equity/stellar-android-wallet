@@ -3,6 +3,7 @@ package blockeq.com.stellarwallet.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -149,7 +150,11 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     override fun onSuccess() {
         progressBar.visibility = View.GONE
         Toast.makeText(this, getString(R.string.send_success_message), Toast.LENGTH_LONG).show()
-        launchWallet()
+        val handler = Handler()
+        val runnableCode = Runnable {
+            launchWallet()
+        }
+        handler.postDelayed(runnableCode, 1000)
     }
 
     override fun onError() {
