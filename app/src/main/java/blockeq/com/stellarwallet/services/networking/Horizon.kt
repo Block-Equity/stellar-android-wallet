@@ -37,7 +37,7 @@ class Horizon {
                     if (error is ErrorResponse) {
                         listener.onError(error)
                     } else {
-                        listener.onError(ErrorResponse(0, ""))
+                        listener.onError(ErrorResponse(Constants.UNKNOWN_ERROR, error.message))
                     }
                 }
 
