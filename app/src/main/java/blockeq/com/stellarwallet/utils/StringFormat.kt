@@ -15,8 +15,8 @@ class StringFormat {
         }
 
         fun truncateDecimalPlaces(string: String?): String {
-            if (string == null) return ""
-            return String.format("%.4f", string.toDouble())
+            if (string == null) return Constants.DEFAULT_ACCOUNT_BALANCE
+            return String.format(Locale.ENGLISH, "%.4f", string.toDouble())
         }
 
         /**
