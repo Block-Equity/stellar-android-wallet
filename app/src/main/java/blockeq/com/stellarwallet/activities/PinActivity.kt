@@ -76,11 +76,17 @@ class PinActivity : BaseActivity(), PinLockListener {
                             val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
                             val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
 
-                            val encryptedData = cipherWrapper.encrypt(pinViewState!!.mnemonic, masterKey?.public)
+                            val encryptedData = if (pinViewState!!.passphrase.isNullOrEmpty()) {
+                                WalletApplication.localStore!!.isPassphraseUsed = false
+                                cipherWrapper.encrypt(pinViewState!!.mnemonic, masterKey?.public)
+                            } else {
+                                WalletApplication.localStore!!.isPassphraseUsed = true
+                                cipherWrapper.encrypt(pinViewState!!.mnemonic + " " + pinViewState!!.passphrase, masterKey?.public)
+                            }
 
                             WalletApplication.localStore!!.encryptedPhrase = encryptedData
 
-                            val keyPair = AccountUtils.getKeyPair(pinViewState!!.mnemonic)
+                            val keyPair = AccountUtils.getKeyPair(pinViewState!!.mnemonic, pinViewState!!.passphrase)
 
                             WalletApplication.localStore!!.publicKey = keyPair.accountId
                             WalletApplication.userSession.pin = pin
@@ -94,8 +100,9 @@ class PinActivity : BaseActivity(), PinLockListener {
                     val masterKey = AccountUtils.getPinMasterKey(pin)
 
                     if (masterKey != null) {
-                        val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
-                        val decryptedData = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
+                        val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey)
+                        val decryptedData = decryptedPair.first
+                        val passphrase = decryptedPair.second
 
                         when {
                             pinViewState!!.type == PinType.LOGIN -> {
@@ -103,7 +110,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                                 launchWallet()
                             }
                             pinViewState!!.type == PinType.CHECK -> {
-                                val keyPair = AccountUtils.getKeyPair(decryptedData)
+                                val keyPair = AccountUtils.getKeyPair(decryptedData, passphrase)
                                 val intent = Intent()
                                 intent.putExtra(KEY_SECRET_SEED, keyPair.secretSeed)
                                 setResult(Activity.RESULT_OK, intent)
@@ -120,7 +127,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                             }
 
                             pinViewState!!.type == PinType.VIEW_SEED -> {
-                                val keyPair = AccountUtils.getKeyPair(decryptedData)
+                                val keyPair = AccountUtils.getKeyPair(decryptedData, passphrase)
                                 val secretSeed = keyPair.secretSeed.joinToString("")
                                 val intent = Intent(this, ViewSecretSeedActivity::class.java)
 
