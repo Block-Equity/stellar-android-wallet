@@ -36,7 +36,7 @@
         android:id="@+id/passphraseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Advanced Security"
+        android:text="@string/advanced_security"
         android:layout_above="@+id/confirmButton"
         android:layout_centerHorizontal="true" />
 

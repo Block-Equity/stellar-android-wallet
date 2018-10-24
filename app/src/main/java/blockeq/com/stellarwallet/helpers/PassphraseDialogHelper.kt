@@ -20,7 +20,7 @@ class PassphraseDialogHelper(activity: Activity, listener: PassphraseDialogListe
         val input = viewInflated.findViewById(R.id.passphraseEditText) as EditText
         setView(viewInflated)
 
-        setPositiveButton("OK") { _, _ -> listener.onOK(input.text.toString()) }
-        setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+        setPositiveButton(context.getString(R.string.ok)) { _, _ -> listener.onOK(input.text.toString()) }
+        setNegativeButton(context.getString(R.string.cancel)) { dialog, _ -> dialog.cancel() }
     }
 }
