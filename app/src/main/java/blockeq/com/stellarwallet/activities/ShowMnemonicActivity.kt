@@ -10,6 +10,14 @@ import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CO
 import blockeq.com.stellarwallet.models.PinType
 import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_show_mnemonic.*
+import android.R.string.cancel
+import android.content.DialogInterface
+import android.support.v7.app.AlertDialog
+import android.text.InputType
+import android.widget.EditText
+import android.view.ViewGroup
+import android.view.LayoutInflater
+import blockeq.com.stellarwallet.helpers.PassphraseDialogHelper
 
 
 class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
@@ -20,6 +28,7 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
     }
 
     private var mnemonicString : String? = null
+    private var passphrase : String? = null
     private var isDisplayPhraseOnly = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,12 +52,21 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
         val itemId = v!!.id
         when (itemId) {
             R.id.confirmButton -> launchPINView(PinType.CREATE, getString(R.string.please_create_a_pin), mnemonicString!!, false)
+            R.id.passphraseButton -> {
+                val builder = PassphraseDialogHelper(this, object: PassphraseDialogHelper.PassphraseDialogListener {
+                    override fun onOK(phrase: String) {
+                        passphrase = phrase
+                    }
+                })
+                builder.show()
+            }
         }
     }
 
     override fun setupUI() {
         if (isDisplayPhraseOnly) {
             confirmButton.visibility = View.GONE
+            passphraseButton.visibility = View.GONE
             if (!WalletApplication.localStore!!.isRecoveryPhrase) {
                 warningPhraseTextView.text = getString(R.string.no_mnemonic_set)
                 mnemonicView.visibility = View.GONE
@@ -75,6 +93,7 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
     //region Set onClick interfaces
     private fun setOnClickListeners() {
         confirmButton.setOnClickListener(this)
+        passphraseButton.setOnClickListener(this)
     }
     //endregion
 

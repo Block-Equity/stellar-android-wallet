@@ -32,6 +32,14 @@
         android:layout_height="match_parent"
         android:layout_below="@id/warningPhraseTextView" />
 
+    <TextView
+        android:id="@+id/passphraseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Advanced Security"
+        android:layout_above="@+id/confirmButton"
+        android:layout_centerHorizontal="true" />
+
     <Button
         android:id="@+id/confirmButton"
         android:layout_alignParentBottom="true"
