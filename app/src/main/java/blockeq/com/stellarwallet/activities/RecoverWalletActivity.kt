@@ -68,6 +68,7 @@ class RecoverWalletActivity : BaseActivity() {
                     launchPINView(PinType.CREATE,
                             getString(R.string.please_create_a_pin),
                             recoveryString,
+                            passphrase,
                             false)
                 } else {
                     showErrorMessage()
@@ -77,6 +78,7 @@ class RecoverWalletActivity : BaseActivity() {
                     launchPINView(PinType.CREATE,
                             getString(R.string.please_create_a_pin),
                             recoveryString,
+                            passphrase,
                             false)
                 } else {
                     showErrorMessage()

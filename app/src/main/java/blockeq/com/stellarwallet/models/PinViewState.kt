@@ -8,4 +8,4 @@ enum class PinType {
 }
 
 @Parcelize
-class PinViewState (var type: PinType, var message: String, var pin: String, var phrase: String): Parcelable
+class PinViewState (var type: PinType, var message: String, var pin: String, var mnemonic: String, var passphrase: String?): Parcelable

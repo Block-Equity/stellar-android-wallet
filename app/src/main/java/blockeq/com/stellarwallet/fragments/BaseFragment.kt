@@ -10,7 +10,7 @@ open class BaseFragment : Fragment() {
     //region Helper Functions
 
     open fun launchPINView(pinType: PinType, message: String, mnemonic: String, isLogin: Boolean) {
-        val pinViewState = PinViewState(pinType, message, "", mnemonic)
+        val pinViewState = PinViewState(pinType, message, "", mnemonic, null)
         PinFlowController.launchPinActivity(context!!, pinViewState, isLogin)
     }
 

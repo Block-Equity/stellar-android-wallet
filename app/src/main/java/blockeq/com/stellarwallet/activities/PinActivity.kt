@@ -41,7 +41,7 @@ class PinActivity : BaseActivity(), PinLockListener {
         pinLockView.attachIndicatorDots(indicatorDots)
 
         pinViewState = getPinState()
-        phrase = pinViewState!!.phrase
+        phrase = pinViewState!!.mnemonic
         val message = pinViewState!!.message
         PIN = pinViewState!!.pin
 
@@ -76,11 +76,11 @@ class PinActivity : BaseActivity(), PinLockListener {
                             val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
                             val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
 
-                            val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
+                            val encryptedData = cipherWrapper.encrypt(pinViewState!!.mnemonic, masterKey?.public)
 
                             WalletApplication.localStore!!.encryptedPhrase = encryptedData
 
-                            val keyPair = AccountUtils.getKeyPair(pinViewState!!.phrase)
+                            val keyPair = AccountUtils.getKeyPair(pinViewState!!.mnemonic)
 
                             WalletApplication.localStore!!.publicKey = keyPair.accountId
                             WalletApplication.userSession.pin = pin
@@ -194,7 +194,7 @@ class PinActivity : BaseActivity(), PinLockListener {
         return if (pinType == PinType.CHECK || pinType == PinType.LOGIN) {
             WalletApplication.localStore!!.encryptedPhrase!!
         } else {
-            pinViewState!!.phrase
+            pinViewState!!.mnemonic
         }
     }
 
