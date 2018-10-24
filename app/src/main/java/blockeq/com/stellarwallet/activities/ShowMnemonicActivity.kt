@@ -7,17 +7,10 @@ import android.view.View
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
+import blockeq.com.stellarwallet.helpers.PassphraseDialogHelper
 import blockeq.com.stellarwallet.models.PinType
 import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_show_mnemonic.*
-import android.R.string.cancel
-import android.content.DialogInterface
-import android.support.v7.app.AlertDialog
-import android.text.InputType
-import android.widget.EditText
-import android.view.ViewGroup
-import android.view.LayoutInflater
-import blockeq.com.stellarwallet.helpers.PassphraseDialogHelper
 
 
 class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
