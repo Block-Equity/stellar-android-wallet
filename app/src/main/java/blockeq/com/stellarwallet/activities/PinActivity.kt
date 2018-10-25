@@ -46,7 +46,7 @@ class PinActivity : BaseActivity(), PinLockListener {
         PIN = pinViewState!!.pin
 
         if (!message.isEmpty()) {
-            tv_custom_message.text = message
+            customMessageTextView.text = message
         }
     }
 
@@ -63,7 +63,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                             PIN = pin
                             pinLockView.resetPinLockView()
 
-                            tv_custom_message.text = getString(R.string.please_reenter_your_pin)
+                            customMessageTextView.text = getString(R.string.please_reenter_your_pin)
                             needConfirm = false
                         }
                         pin != PIN -> onIncorrectPin()
@@ -159,7 +159,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                 showWrongPinDots(false)
                 pinLockView.resetPinLockView()
                 numAttempts++
-                tv_custom_message.text = resources.getQuantityString(R.plurals.attempts_template,
+                customMessageTextView.text = resources.getQuantityString(R.plurals.attempts_template,
                         MAX_ATTEMPTS - numAttempts, MAX_ATTEMPTS - numAttempts)
                 if (numAttempts == MAX_ATTEMPTS) {
                     wipeAndRestart()
