@@ -3,11 +3,11 @@ package blockeq.com.stellarwallet.helpers
 import android.app.Activity
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
-import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.EditText
 import blockeq.com.stellarwallet.R
 
-class PassphraseDialogHelper(activity: Activity, private val listener: PassphraseDialogListener) : AlertDialog.Builder(activity) {
+class PassphraseDialogHelper(private val activity: Activity, private val listener: PassphraseDialogListener) : AlertDialog.Builder(activity) {
 
     private var isConfirm = false
     private var inputEditText : EditText? = null
@@ -44,6 +44,8 @@ class PassphraseDialogHelper(activity: Activity, private val listener: Passphras
                     dialog.cancel()
                 } else {
                     dialog.setMessage(context.getString(R.string.passphrase_dialog_error))
+                    val shakeAnimation = AnimationUtils.loadAnimation(activity, R.anim.shake)
+                    inputEditText!!.startAnimation(shakeAnimation)
                     inputEditText!!.setText("")
                 }
             } else {
