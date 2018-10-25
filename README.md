@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://play.google.com/store/apps/details?id=blockeq.com.stellarwallet">
-    <img alt="Download on the Play Store" title="App Store" src="https://i.imgur.com/0n2zqHD.png" width="140">
+    <img alt="Download on the Play Store" title="App Store" src="https://user-images.githubusercontent.com/2541326/47521746-d57d8300-d861-11e8-8652-0f1cabcaed04.png" width="140">
   </a>
 </p>
 
