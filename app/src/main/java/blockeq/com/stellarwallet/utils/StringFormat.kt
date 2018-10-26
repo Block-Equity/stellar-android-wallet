@@ -8,7 +8,7 @@ import java.util.*
 
 class StringFormat {
     companion object {
-        fun getFormattedDate(str: String):String {
+        fun getFormattedDate(str: String): String {
             val formatter = DateTimeFormatter.ofPattern("MMM dd, uuuu", Locale.ENGLISH)
                     .withZone(ZoneId.of("UTC"))
             return formatter.format(Instant.parse(str))
