@@ -20,8 +20,9 @@ import javax.security.auth.x500.X500Principal
  * This class wraps [KeyStore] class apis with some additional possibilities.
  */
 class KeyStoreWrapper(private val context: Context) {
-
-    private val DEFAULT_KEYSTORE_NAME = "pin_keystore"
+    companion object {
+        private const val DEFAULT_KEYSTORE_NAME = "pin_keystore"
+    }
 
     private val keyStore: KeyStore = createAndroidKeyStore()
 
@@ -134,7 +135,7 @@ class KeyStoreWrapper(private val context: Context) {
         val builder = KeyPairGeneratorSpec.Builder(context)
                 .setAlias(alias)
                 .setSerialNumber(BigInteger.ONE)
-                .setSubject(X500Principal("CN=${alias} CA Certificate"))
+                .setSubject(X500Principal("CN=$alias CA Certificate"))
                 .setStartDate(startDate.time)
                 .setEndDate(endDate.time)
 

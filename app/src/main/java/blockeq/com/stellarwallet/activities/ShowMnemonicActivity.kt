@@ -12,7 +12,7 @@ import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_show_mnemonic.*
 
 
-class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
+class ShowMnemonicActivity : BaseActivity() {
 
     companion object {
         const val INTENT_DISPLAY_PHRASE = "INTENT_DISPLAY_PHRASE"
@@ -28,7 +28,6 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
 
         loadIntent()
         setupUI()
-        setOnClickListeners()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -38,24 +37,19 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
-    //region User Interface
-    override fun onClick(v: View?) {
-        val itemId = v!!.id
-        when (itemId) {
-            R.id.confirmButton -> launchPINView(PinType.CREATE, getString(R.string.please_create_a_pin), mnemonicString!!, false)
-        }
-    }
-
-    override fun setupUI() {
+    private fun setupUI() {
         if (isDisplayPhraseOnly) {
             confirmButton.visibility = View.GONE
-            if (!WalletApplication.localStore!!.isRecoveryPhrase) {
+            if (!WalletApplication.localStore.isRecoveryPhrase) {
                 warningPhraseTextView.text = getString(R.string.no_mnemonic_set)
                 mnemonicView.visibility = View.GONE
             }
         }
         setupActionBar()
         setupMnemonicView()
+        confirmButton.setOnClickListener {
+            launchPINView(PinType.CREATE, getString(R.string.please_create_a_pin), mnemonicString!!, false)
+        }
     }
 
     private fun setupActionBar() {
@@ -72,12 +66,6 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
 
     //endregion
 
-    //region Set onClick interfaces
-    private fun setOnClickListeners() {
-        confirmButton.setOnClickListener(this)
-    }
-    //endregion
-
     //region Helper functions
     private fun getMnemonic(): ArrayList<String> {
         if (isDisplayPhraseOnly) {
@@ -90,8 +78,7 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
             }
 
             mnemonicString = String(mnemonic)
-            val words = String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
-            return words
+            return String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
         }
     }
 

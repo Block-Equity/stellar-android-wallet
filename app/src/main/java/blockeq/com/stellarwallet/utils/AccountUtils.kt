@@ -1,5 +1,6 @@
 package blockeq.com.stellarwallet.utils
 
+import android.content.Context
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
@@ -11,16 +12,16 @@ class AccountUtils {
 
     companion object {
 
-        fun getSecretSeed() : CharArray {
-            val encryptedPhrase = WalletApplication.localStore!!.encryptedPhrase!!
-            val masterKey = getPinMasterKey(WalletApplication.userSession.pin!!)
+        fun getSecretSeed(context : Context) : CharArray {
+            val encryptedPhrase = WalletApplication.localStore.encryptedPhrase!!
+            val masterKey = getPinMasterKey(context, WalletApplication.userSession.pin!!)
 
             val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
             return getKeyPair(cipherWrapper.decrypt(encryptedPhrase, masterKey!!.private)).secretSeed
         }
 
         fun getTotalBalance(type : String) : String {
-            WalletApplication.localStore!!.balances!!.forEach {
+            WalletApplication.localStore.balances!!.forEach {
                 if (it.assetType == type) {
                     return StringFormat.truncateDecimalPlaces(it.balance)
                 } else if (it.assetCode == type) {
@@ -30,14 +31,14 @@ class AccountUtils {
             return Constants.DEFAULT_ACCOUNT_BALANCE
         }
 
-        fun getPinMasterKey(pin: String) : java.security.KeyPair? {
-            val keyStoreWrapper = KeyStoreWrapper(WalletApplication.applicationContext())
+        fun getPinMasterKey(context : Context, pin: String) : java.security.KeyPair? {
+            val keyStoreWrapper = KeyStoreWrapper(context)
 
             return keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
         }
 
         fun getKeyPair(string : String) : KeyPair {
-            return if (WalletApplication.localStore!!.isRecoveryPhrase) {
+            return if (WalletApplication.localStore.isRecoveryPhrase) {
                 Wallet.createKeyPair(string.toCharArray(), null, Constants.USER_INDEX)
             } else {
                 KeyPair.fromSecretSeed(string)

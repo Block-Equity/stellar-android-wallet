@@ -23,7 +23,7 @@ class LoginActivity : BaseActivity() {
     }
 
     //region User Interface
-    override fun setupUI() {
+    private fun setupUI() {
 
         createWalletButton.setOnClickListener {
             showCreateDialog()

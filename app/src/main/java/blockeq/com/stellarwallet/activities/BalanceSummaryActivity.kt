@@ -22,7 +22,7 @@ class BalanceSummaryActivity : BasePopupActivity() {
         setupUI()
     }
 
-    override fun setupUI() {
+    private fun setupUI() {
         val minimumBalance = WalletApplication.userSession.minimumBalance
 
         if (minimumBalance != null) {

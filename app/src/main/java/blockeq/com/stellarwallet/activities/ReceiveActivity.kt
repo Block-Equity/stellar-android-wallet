@@ -22,7 +22,7 @@ class ReceiveActivity : BasePopupActivity() {
         super.onCreate(savedInstanceState)
         titleText.text = getString(R.string.receive_title)
 
-        val pubAddress = WalletApplication.localStore!!.publicKey
+        val pubAddress = WalletApplication.localStore.publicKey
 
         addressEditText.text = pubAddress
         generateQRCode(pubAddress!!, address_qrcode, 500)

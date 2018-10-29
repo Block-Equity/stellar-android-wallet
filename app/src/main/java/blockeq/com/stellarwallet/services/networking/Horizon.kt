@@ -7,13 +7,22 @@ import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
-import org.stellar.sdk.*
+import org.stellar.sdk.ChangeTrustOperation
+import org.stellar.sdk.KeyPair
+import org.stellar.sdk.Memo
+import org.stellar.sdk.Network
+import org.stellar.sdk.AssetTypeNative
+import org.stellar.sdk.PaymentOperation
+import org.stellar.sdk.Server
+import org.stellar.sdk.SetOptionsOperation
+import org.stellar.sdk.Asset
+import org.stellar.sdk.CreateAccountOperation
+import org.stellar.sdk.Transaction
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.requests.RequestBuilder
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.Page
 import org.stellar.sdk.responses.effects.EffectResponse
-import java.util.*
 
 
 class Horizon {
@@ -27,7 +36,7 @@ class Horizon {
         class LoadAccountTask(private val listener: OnLoadAccount) : AsyncTask<Void, Void, AccountResponse>() {
             override fun doInBackground(vararg params: Void?) : AccountResponse? {
                 val server = Server(PROD_SERVER)
-                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
+                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.publicKey)
                 var account : AccountResponse? = null
                 try {
                     account = server.accounts().account(sourceKeyPair)
@@ -52,7 +61,7 @@ class Horizon {
         class LoadEffectsTask(private val listener: OnLoadEffects) : AsyncTask<Void, Void, ArrayList<EffectResponse>?>() {
             override fun doInBackground(vararg params: Void?): ArrayList<EffectResponse>? {
                 val server = Server(PROD_SERVER)
-                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
+                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.publicKey)
                 var effectResults : Page<EffectResponse>? = null
                 try {
                     effectResults = server.effects().order(RequestBuilder.Order.DESC)

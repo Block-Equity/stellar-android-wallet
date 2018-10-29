@@ -17,26 +17,16 @@ class WalletApplication : MultiDexApplication() {
         WalletLifecycleListener()
     }
 
-
-    init {
-        instance = this
-    }
-
     companion object {
-        private val PRIVATE_MODE = 0
-        private val PREF_NAME = "blockeq.com.stellarwallet.PREFERENCE_FILE_KEY"
-        private var instance: WalletApplication? = null
+        private const val PRIVATE_MODE = 0
+        private const val PREF_NAME = "blockeq.com.stellarwallet.PREFERENCE_FILE_KEY"
 
         // Use LocalStore for SharedPreferences
-        var localStore: LocalStore? = null
+        lateinit var localStore: LocalStore
 
         var userSession = UserSession()
 
         var appReturnedFromBackground = false
-
-        fun applicationContext(): WalletApplication {
-            return instance!!
-        }
     }
 
     override fun onCreate() {
@@ -48,7 +38,7 @@ class WalletApplication : MultiDexApplication() {
         setupLifecycleListener()
 
         val sharedPreferences = getSharedPreferences(PREF_NAME, PRIVATE_MODE)
-        localStore = LocalStore(sharedPreferences!!, Gson())
+        localStore = LocalStore(sharedPreferences, Gson())
     }
 
     private fun setupLifecycleListener() {

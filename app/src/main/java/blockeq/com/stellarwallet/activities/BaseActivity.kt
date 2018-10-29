@@ -7,12 +7,7 @@ import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
 
-open class BaseActivity : AppCompatActivity() {
-
-    open fun setupUI() {
-        throw IllegalStateException("Please override this function.")
-    }
-
+abstract class BaseActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
@@ -29,7 +24,7 @@ open class BaseActivity : AppCompatActivity() {
 
     //region Helper Functions
 
-    open fun launchPINView(pinType: PinType, message: String, mnemonic: String, isLogin: Boolean) {
+    protected fun launchPINView(pinType: PinType, message: String, mnemonic: String, isLogin: Boolean) {
         val pinViewState = PinViewState(pinType, message, "", mnemonic)
         PinFlowController.launchPinActivity(this, pinViewState, isLogin)
     }

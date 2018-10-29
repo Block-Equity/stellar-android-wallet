@@ -1,6 +1,7 @@
 package blockeq.com.stellarwallet.activities
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -33,6 +34,7 @@ class PinActivity : BaseActivity(), PinLockListener {
     private var phrase : String? = null
     private var pinViewState: PinViewState? = null
     private var numAttempts = 0
+    private lateinit var context : Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +50,7 @@ class PinActivity : BaseActivity(), PinLockListener {
         if (!message.isEmpty()) {
             tv_custom_message.text = message
         }
+        context = applicationContext
     }
 
     override fun onEmpty() {
@@ -78,11 +81,11 @@ class PinActivity : BaseActivity(), PinLockListener {
 
                             val encryptedData = cipherWrapper.encrypt(pinViewState!!.phrase, masterKey?.public)
 
-                            WalletApplication.localStore!!.encryptedPhrase = encryptedData
+                            WalletApplication.localStore.encryptedPhrase = encryptedData
 
                             val keyPair = AccountUtils.getKeyPair(pinViewState!!.phrase)
 
-                            WalletApplication.localStore!!.publicKey = keyPair.accountId
+                            WalletApplication.localStore.publicKey = keyPair.accountId
                             WalletApplication.userSession.pin = pin
 
                             launchWallet()
@@ -91,7 +94,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                 }
                 else -> {
                     val encryptedPhrase = getEncryptedPhrase(pinViewState!!.type)
-                    val masterKey = AccountUtils.getPinMasterKey(pin)
+                    val masterKey = AccountUtils.getPinMasterKey(context, pin)
 
                     if (masterKey != null) {
                         val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
@@ -192,14 +195,14 @@ class PinActivity : BaseActivity(), PinLockListener {
 
     private fun getEncryptedPhrase(pinType: PinType) : String {
         return if (pinType == PinType.CHECK || pinType == PinType.LOGIN) {
-            WalletApplication.localStore!!.encryptedPhrase!!
+            WalletApplication.localStore.encryptedPhrase!!
         } else {
             pinViewState!!.phrase
         }
     }
 
     private fun wipeAndRestart() {
-        WalletApplication.localStore!!.clearUserData()
+        WalletApplication.localStore.clearUserData()
         val intent = Intent(this, LoginActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)

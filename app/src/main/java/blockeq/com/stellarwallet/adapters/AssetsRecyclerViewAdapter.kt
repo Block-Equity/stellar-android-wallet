@@ -137,9 +137,9 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: ChangeTrustl
 
         if (asset.code == Constants.LUMENS_ASSET_CODE) {
             viewHolder.assetButton!!.text = context.getString(R.string.set_inflation_message)
-            viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.mantis))
+            viewHolder.assetButton!!.setBackgroundColor(ContextCompat.getColor(context, R.color.mantis))
             viewHolder.assetButton!!.setOnClickListener {
-                if (WalletApplication.localStore!!.balances!!.isNotEmpty() &&
+                if (WalletApplication.localStore.balances!!.isNotEmpty() &&
                         AccountUtils.getTotalBalance(Constants.LUMENS_ASSET_TYPE).toDouble() > 1.0) {
                     context.startActivity(Intent(context, InflationActivity::class.java))
                 } else {

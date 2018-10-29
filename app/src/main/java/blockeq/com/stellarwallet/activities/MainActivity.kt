@@ -48,7 +48,7 @@ class MainActivity : BaseActivity() {
 
     //endregion
 
-    override fun setupUI() {
+    private fun setupUI() {
         setupNav()
     }
 
