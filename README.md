@@ -1,18 +1,10 @@
-
-<p align="center">
-  <a style="" href="https://blockeq.com/">
-    <img alt="BlockEQ" title="BlockEQ" src="docs/logo.png" width="500">
-  </a>
-</p>
+# BlockEQ Android Wallet
 
 <p align="center">
   <a href="https://play.google.com/store/apps/details?id=blockeq.com.stellarwallet">
     <img alt="Download on the Play Store" title="App Store" src="https://user-images.githubusercontent.com/2541326/47521746-d57d8300-d861-11e8-8652-0f1cabcaed04.png" width="140">
   </a>
 </p>
-
-
-# BlockEQ Android Wallet
 
 ## Project Status
 [![Build Status](https://app.bitrise.io/app/aabf4854264f7412/status.svg?token=CLkPGE9X6FwMOTTBh1KqBA)](https://app.bitrise.io/app/aabf4854264f7412)
