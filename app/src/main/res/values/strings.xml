@@ -61,6 +61,7 @@
     <string name="passphrase_dialog_info">Passphrase along with mnemonic phrase will be used to derive your address.</string>
     <string name="passphrase_dialog_error">Please retry, passphrases don\'t match</string>
     <string name="passphrase_dialog_confirm">Please confirm your passphrase</string>
+    <string name="passphrase_applied">Passphrase applied</string>
 
     <!--Settings Fragment-->
     <string name="recovery">Recovery</string>

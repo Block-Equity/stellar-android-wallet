@@ -61,9 +61,9 @@
         android:layout_height="wrap_content"
         android:text="@string/advanced_security"
         android:layout_above="@+id/nextButton"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingStart="@dimen/activity_vertical_margin"
-        android:paddingEnd="@dimen/activity_vertical_margin"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/activity_vertical_margin"
         android:layout_centerHorizontal="true" />
 
     <Button

@@ -55,6 +55,7 @@ class RecoverWalletActivity : BaseActivity() {
             secretKeyEditText.visibility = View.VISIBLE
             phraseEditText.visibility = View.GONE
             invalidPhraseTextView.text = getString(R.string.invalid_input_for_secret)
+            passphraseButton.visibility = View.GONE
         }
 
         nextButton.setOnClickListener {
@@ -90,6 +91,7 @@ class RecoverWalletActivity : BaseActivity() {
             val builder = PassphraseDialogHelper(this, object: PassphraseDialogHelper.PassphraseDialogListener {
                 override fun onOK(phrase: String) {
                     passphrase = phrase
+                    passphraseButton.text = getString(R.string.passphrase_applied)
                 }
             })
             builder.show()
