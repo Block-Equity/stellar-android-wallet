@@ -49,6 +49,7 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
                 val builder = PassphraseDialogHelper(this, object: PassphraseDialogHelper.PassphraseDialogListener {
                     override fun onOK(phrase: String) {
                         passphrase = phrase
+                        passphraseButton.text = getString(R.string.passphrase_applied)
                     }
                 })
                 builder.show()
