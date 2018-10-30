@@ -24,8 +24,6 @@ import blockeq.com.stellarwallet.utils.StringFormat
 import com.squareup.picasso.Picasso
 import org.stellar.sdk.Asset
 import org.stellar.sdk.KeyPair
-import java.util.*
-
 
 class AssetsRecyclerViewAdapter(var context: Context, var listener: ChangeTrustlineListener,
                                 var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -131,7 +129,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: ChangeTrustl
 
         viewHolder.assetButton!!.visibility = View.VISIBLE
         viewHolder.assetName!!.text = asset.name
-        viewHolder.assetAmount!!.text = String.format(WalletApplication.applicationContext().getString(R.string.balance_template),
+        viewHolder.assetAmount!!.text = String.format(context.getString(R.string.balance_template),
                 StringFormat.truncateDecimalPlaces(asset.amount), asset.code.toUpperCase())
 
         Picasso.get().load(asset.image).into(viewHolder.assetImage)
@@ -180,7 +178,7 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: ChangeTrustl
         val asset = items[position] as SupportedAsset
         val trustLineAsset = Asset.createNonNativeAsset(asset.code.toUpperCase(), KeyPair.fromAccountId(asset.issuer))
 
-        viewHolder.assetName!!.text = String.format(WalletApplication.applicationContext().getString(R.string.asset_template),
+        viewHolder.assetName!!.text = String.format(context.getString(R.string.asset_template),
                 asset.name, asset.code.toUpperCase())
 
         viewHolder.assetAmount!!.visibility = View.GONE

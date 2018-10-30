@@ -3,6 +3,7 @@ package blockeq.com.stellarwallet.flowcontrollers
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.FragmentActivity
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.activities.PinActivity
 import blockeq.com.stellarwallet.models.PinViewState
@@ -11,7 +12,7 @@ object PinFlowController {
 
     const val OBJECT = "object"
 
-    fun launchPinActivity(activity: Activity, pinViewState: PinViewState, isLoginLaunch : Boolean) {
+    fun launchPinActivity(activity: FragmentActivity, pinViewState: PinViewState, isLoginLaunch : Boolean) {
         val intent = Intent(activity, PinActivity::class.java)
         val bundle = Bundle()
         bundle.putParcelable(OBJECT, pinViewState)
