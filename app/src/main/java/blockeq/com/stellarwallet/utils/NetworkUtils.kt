@@ -7,7 +7,6 @@ import blockeq.com.stellarwallet.R
 
 class NetworkUtils(private val context: Context) {
 
-    // TODO: Use RxAndroid and improve the overall architecture of network calls
     // Moving this to Horizon.kt
     fun isNetworkAvailable(): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

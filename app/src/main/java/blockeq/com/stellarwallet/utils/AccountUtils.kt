@@ -53,11 +53,11 @@ class AccountUtils {
             return keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
         }
 
-        fun getKeyPair(string: String, passphrase: String?) : KeyPair {
+        fun getKeyPair(recoveryString: String, passphrase: String?) : KeyPair {
             return if (WalletApplication.localStore!!.isRecoveryPhrase) {
-                Wallet.createKeyPair(string.toCharArray(), passphrase?.toCharArray(), Constants.USER_INDEX)
+                Wallet.createKeyPair(recoveryString.toCharArray(), passphrase?.toCharArray(), Constants.USER_INDEX)
             } else {
-                KeyPair.fromSecretSeed(string)
+                KeyPair.fromSecretSeed(recoveryString)
             }
         }
 
