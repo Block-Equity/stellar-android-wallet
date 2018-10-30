@@ -8,13 +8,15 @@ import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
 import blockeq.com.stellarwallet.helpers.Constants
+import blockeq.com.stellarwallet.helpers.PassphraseDialogHelper
 import blockeq.com.stellarwallet.models.PinType
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
 
 
 class RecoverWalletActivity : BaseActivity() {
 
-    var isRecoveryPhrase = true
+    private var isRecoveryPhrase = true
+    private var passphrase : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +55,7 @@ class RecoverWalletActivity : BaseActivity() {
             secretKeyEditText.visibility = View.VISIBLE
             phraseEditText.visibility = View.GONE
             invalidPhraseTextView.text = getString(R.string.invalid_input_for_secret)
+            passphraseButton.visibility = View.GONE
         }
 
         nextButton.setOnClickListener {
@@ -66,6 +69,7 @@ class RecoverWalletActivity : BaseActivity() {
                     launchPINView(PinType.CREATE,
                             getString(R.string.please_create_a_pin),
                             recoveryString,
+                            passphrase,
                             false)
                 } else {
                     showErrorMessage()
@@ -75,11 +79,22 @@ class RecoverWalletActivity : BaseActivity() {
                     launchPINView(PinType.CREATE,
                             getString(R.string.please_create_a_pin),
                             recoveryString,
+                            passphrase,
                             false)
                 } else {
                     showErrorMessage()
                 }
             }
+        }
+
+        passphraseButton.setOnClickListener {
+            val builder = PassphraseDialogHelper(this, object: PassphraseDialogHelper.PassphraseDialogListener {
+                override fun onOK(phrase: String) {
+                    passphrase = phrase
+                    passphraseButton.text = getString(R.string.passphrase_applied)
+                }
+            })
+            builder.show()
         }
     }
 

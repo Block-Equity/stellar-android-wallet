@@ -14,9 +14,8 @@ abstract class BaseActivity : AppCompatActivity() {
         if (WalletApplication.appReturnedFromBackground) {
             WalletApplication.appReturnedFromBackground =  false
 
-
             if (!WalletApplication.localStore.encryptedPhrase.isNullOrEmpty()) {
-                launchPINView(PinType.LOGIN, "", "", true)
+                launchPINView(PinType.LOGIN, "", "", null, true)
             }
         }
     }
@@ -24,8 +23,8 @@ abstract class BaseActivity : AppCompatActivity() {
 
     //region Helper Functions
 
-    protected fun launchPINView(pinType: PinType, message: String, mnemonic: String, isLogin: Boolean) {
-        val pinViewState = PinViewState(pinType, message, "", mnemonic)
+    open fun launchPINView(pinType: PinType, message: String, mnemonic: String, passphrase: String?, isLogin: Boolean) {
+        val pinViewState = PinViewState(pinType, message, "", mnemonic, passphrase)
         PinFlowController.launchPinActivity(this, pinViewState, isLogin)
     }
 

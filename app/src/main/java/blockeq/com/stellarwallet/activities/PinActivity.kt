@@ -23,8 +23,6 @@ class PinActivity : BaseActivity(), PinLockListener {
 
     companion object {
         const val PIN_REQUEST_CODE = 0
-        const val RESULT_FAIL = 2
-
         const val MAX_ATTEMPTS = 3
         const val KEY_SECRET_SEED = "kDecryptedPhrase"
     }
@@ -35,6 +33,7 @@ class PinActivity : BaseActivity(), PinLockListener {
     private lateinit var pinViewState: PinViewState
     private var numAttempts = 0
     private lateinit var context : Context
+    //TODO: DRY AccountUtils and here the transformation is duplicated
     private var cipherWrapper : CipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,13 +43,14 @@ class PinActivity : BaseActivity(), PinLockListener {
         pinLockView.attachIndicatorDots(indicatorDots)
 
         pinViewState = getPinState()
-        phrase = pinViewState.phrase
+        phrase = pinViewState.mnemonic
         val message = pinViewState.message
         PIN = pinViewState.pin
 
         if (!message.isEmpty()) {
-            tv_custom_message.text = message
+            customMessageTextView.text = message
         }
+
         context = applicationContext
     }
 
@@ -67,7 +67,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                             PIN = pin
                             pinLockView.resetPinLockView()
 
-                            tv_custom_message.text = getString(R.string.please_reenter_your_pin)
+                            customMessageTextView.text = getString(R.string.please_reenter_your_pin)
                             needConfirm = false
                         }
                         pin != PIN -> onIncorrectPin()
@@ -78,11 +78,18 @@ class PinActivity : BaseActivity(), PinLockListener {
                             keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin)
 
                             val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
-                            val encryptedData = cipherWrapper.encrypt(pinViewState.phrase, masterKey?.public)
+
+                            val encryptedData = if (pinViewState.passphrase.isNullOrEmpty()) {
+                                WalletApplication.localStore.isPassphraseUsed = false
+                                cipherWrapper.encrypt(pinViewState.mnemonic, masterKey?.public)
+                            } else {
+                                WalletApplication.localStore.isPassphraseUsed = true
+                                cipherWrapper.encrypt(pinViewState.mnemonic + " " + pinViewState.passphrase, masterKey?.public)
+                            }
 
                             WalletApplication.localStore.encryptedPhrase = encryptedData
 
-                            val keyPair = AccountUtils.getKeyPair(pinViewState.phrase)
+                            val keyPair = AccountUtils.getKeyPair(pinViewState.mnemonic, pinViewState.passphrase)
 
                             WalletApplication.localStore.publicKey = keyPair.accountId
                             WalletApplication.userSession.pin = pin
@@ -96,7 +103,9 @@ class PinActivity : BaseActivity(), PinLockListener {
                     val masterKey = AccountUtils.getPinMasterKey(context, pin)
 
                     if (masterKey != null) {
-                        val decryptedData = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
+                        val decryptedPair = getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey)
+                        val decryptedData = decryptedPair.first
+                        val passphrase = decryptedPair.second
 
                         when {
                             pinViewState.type == PinType.LOGIN -> {
@@ -104,7 +113,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                                 launchWallet()
                             }
                             pinViewState.type == PinType.CHECK -> {
-                                val keyPair = AccountUtils.getKeyPair(decryptedData)
+                                val keyPair = AccountUtils.getKeyPair(decryptedData, passphrase)
                                 val intent = Intent()
                                 intent.putExtra(KEY_SECRET_SEED, keyPair.secretSeed)
                                 setResult(Activity.RESULT_OK, intent)
@@ -121,7 +130,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                             }
 
                             pinViewState.type == PinType.VIEW_SEED -> {
-                                val keyPair = AccountUtils.getKeyPair(decryptedData)
+                                val keyPair = AccountUtils.getKeyPair(decryptedData, passphrase)
                                 val secretSeed = keyPair.secretSeed.joinToString("")
                                 val intent = Intent(this, ViewSecretSeedActivity::class.java)
 
@@ -136,8 +145,6 @@ class PinActivity : BaseActivity(), PinLockListener {
                 }
             }
         }
-        //TODO: this delay is to prevent the freeze in the last digit animation.
-        //TODO: the work should be done not in the ui thread.
         handler.postDelayed(runnableCode, 200)
     }
 
@@ -155,7 +162,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                 showWrongPinDots(false)
                 pinLockView.resetPinLockView()
                 numAttempts++
-                tv_custom_message.text = resources.getQuantityString(R.plurals.attempts_template,
+                customMessageTextView.text = resources.getQuantityString(R.plurals.attempts_template,
                         MAX_ATTEMPTS - numAttempts, MAX_ATTEMPTS - numAttempts)
                 if (numAttempts == MAX_ATTEMPTS) {
                     wipeAndRestart()
@@ -184,7 +191,7 @@ class PinActivity : BaseActivity(), PinLockListener {
     private fun getPinState(): PinViewState {
         val intent = intent
         val bundle = intent.extras
-        //TODO: throw an exception here if parcelable is null
+
         return bundle.getParcelable(PinFlowController.OBJECT)
     }
 
@@ -197,7 +204,7 @@ class PinActivity : BaseActivity(), PinLockListener {
         return if (pinType == PinType.CHECK || pinType == PinType.LOGIN) {
             WalletApplication.localStore.encryptedPhrase!!
         } else {
-            pinViewState.phrase
+            pinViewState.mnemonic
         }
     }
 
@@ -207,5 +214,19 @@ class PinActivity : BaseActivity(), PinLockListener {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
     }
+
+    fun getDecryptedMnemonicPhrasePair(encryptedPhrase: String, masterKey: java.security.KeyPair) : Pair<String, String?> {
+        var passphrase : String? = null
+        val decryptedData = if (WalletApplication.localStore.isPassphraseUsed) {
+            val decryptedString = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
+            passphrase = decryptedString.substring(decryptedString.lastIndexOf(" ") + 1)
+            decryptedString.substring(0, decryptedString.lastIndexOf(" "))
+        } else {
+            cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
+        }
+
+        return Pair(decryptedData, passphrase)
+    }
+
     //endregion
 }

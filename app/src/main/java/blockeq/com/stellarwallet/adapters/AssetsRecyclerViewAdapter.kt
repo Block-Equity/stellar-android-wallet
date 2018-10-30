@@ -131,7 +131,8 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: ChangeTrustl
 
         viewHolder.assetButton!!.visibility = View.VISIBLE
         viewHolder.assetName!!.text = asset.name
-        viewHolder.assetAmount!!.text = StringFormat.truncateDecimalPlaces(asset.amount) + " " + asset.code.toUpperCase()
+        viewHolder.assetAmount!!.text = String.format(WalletApplication.applicationContext().getString(R.string.balance_template),
+                StringFormat.truncateDecimalPlaces(asset.amount), asset.code.toUpperCase())
 
         Picasso.get().load(asset.image).into(viewHolder.assetImage)
 
@@ -179,7 +180,8 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: ChangeTrustl
         val asset = items[position] as SupportedAsset
         val trustLineAsset = Asset.createNonNativeAsset(asset.code.toUpperCase(), KeyPair.fromAccountId(asset.issuer))
 
-        viewHolder.assetName!!.text = asset.name + " (" + asset.code.toUpperCase() + ")"
+        viewHolder.assetName!!.text = String.format(WalletApplication.applicationContext().getString(R.string.asset_template),
+                asset.name, asset.code.toUpperCase())
 
         viewHolder.assetAmount!!.visibility = View.GONE
         Picasso.get().load(asset.image).into(viewHolder.assetImage)

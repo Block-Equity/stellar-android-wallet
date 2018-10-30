@@ -44,7 +44,7 @@
     <EditText
         android:id="@+id/secretKeyEditText"
         android:layout_below="@id/invalidPhraseTextView"
-        android:layout_above="@id/nextButton"
+        android:layout_above="@id/passphraseButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:digits="@string/stellar_address_alphabet"
@@ -54,6 +54,17 @@
         android:background="@android:color/transparent"
         android:textSize="@dimen/text_size_medium"
         android:gravity="top"/>
+
+    <TextView
+        android:id="@+id/passphraseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/advanced_security"
+        android:layout_above="@+id/nextButton"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/activity_vertical_margin"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/nextButton"

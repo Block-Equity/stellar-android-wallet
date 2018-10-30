@@ -49,8 +49,8 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
 
         send_button.setOnClickListener {
             if (isAmountValid()) {
-                if (WalletApplication.localStore.showPinOnSend) {
-                    launchPINView(PinType.CHECK, "", "", false)
+                if (WalletApplication.localStore!!.showPinOnSend) {
+                    launchPINView(PinType.CHECK, "", "", null, false)
                 } else {
                     sendPayment()
                 }
