@@ -29,19 +29,17 @@ class SettingsFragment : BaseFragment() {
 
     private fun setupUI() {
         setSavedSettings()
-
+        val phrase = WalletApplication.localStore.encryptedPhrase!!
+        
         viewPhraseButton.setOnClickListener {
-            val phrase = WalletApplication.localStore.encryptedPhrase!!
             launchPINView(PinType.VIEW_PHRASE, "", phrase, false)
         }
 
         viewSeedButton.setOnClickListener {
-            val phrase = WalletApplication.localStore.encryptedPhrase!!
             launchPINView(PinType.VIEW_SEED, "", phrase, false)
         }
 
         clearWalletButton.setOnClickListener {
-            val phrase = WalletApplication.localStore.encryptedPhrase!!
             launchPINView(PinType.CLEAR_WALLET, "", phrase, false)
         }
 

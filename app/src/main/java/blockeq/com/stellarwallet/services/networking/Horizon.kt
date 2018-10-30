@@ -2,7 +2,6 @@ package blockeq.com.stellarwallet.services.networking
 
 import android.os.AsyncTask
 import android.util.Log
-import blockeq.com.stellarwallet.BuildConfig
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount

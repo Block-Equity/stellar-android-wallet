@@ -1,5 +1,6 @@
 package blockeq.com.stellarwallet.encryption
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
@@ -114,7 +115,6 @@ class KeyStoreWrapper(private val context: Context) {
      * Creates asymmetric RSA key with default [KeyProperties.BLOCK_MODE_ECB] and
      * [KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1] and saves it to Android Key Store.
      */
-    @TargetApi(Build.VERSION_CODES.M)
     fun createAndroidKeyStoreAsymmetricKey(alias: String): KeyPair {
         val generator = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore")
 
