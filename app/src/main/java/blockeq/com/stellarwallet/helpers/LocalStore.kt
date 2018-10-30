@@ -38,6 +38,11 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         get() = getBoolean(KEY_PIN_SETTINGS_SEND)
         set(showPinOnSend) = set(KEY_PIN_SETTINGS_SEND, showPinOnSend)
 
+    var isPassphraseUsed : Boolean
+        get() = getBoolean(KEY_IS_PASSPHRASE_USED)
+        set(isPassphraseUsed) = set(KEY_IS_PASSPHRASE_USED, isPassphraseUsed)
+
+
     init {
         balances = arrayOf()
         availableBalance = Constants.DEFAULT_ACCOUNT_BALANCE
@@ -51,6 +56,7 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         const val KEY_STELLAR_AVAILABLE_BALANCE_KEY = "kAvailableBalanceKey"
         const val KEY_IS_RECOVERY_PHRASE = "kIsRecoveryPhrase"
         const val KEY_PIN_SETTINGS_SEND = "kPinSettingsSend"
+        const val KEY_IS_PASSPHRASE_USED = "kIsPassphraseUsed"
     }
 
     private operator fun set(key: String, value: String?) {
@@ -92,6 +98,7 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         editor.remove(KEY_STELLAR_BALANCES_KEY)
         editor.remove(KEY_STELLAR_AVAILABLE_BALANCE_KEY)
         editor.remove(KEY_IS_RECOVERY_PHRASE)
+        editor.remove(KEY_IS_PASSPHRASE_USED)
         editor.apply()
 
         balances = arrayOf()

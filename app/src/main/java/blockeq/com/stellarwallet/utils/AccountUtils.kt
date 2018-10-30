@@ -13,10 +13,27 @@ class AccountUtils {
 
         fun getSecretSeed() : CharArray {
             val encryptedPhrase = WalletApplication.localStore!!.encryptedPhrase!!
-            val masterKey = getPinMasterKey(WalletApplication.userSession.pin!!)
+            val masterKey = getPinMasterKey(WalletApplication.userSession.pin!!)!!
 
+            val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey)
+            val decryptedData = decryptedPair.first
+            val passphrase = decryptedPair.second
+
+            return getKeyPair(decryptedData, passphrase).secretSeed
+        }
+
+        fun getDecryptedMnemonicPhrasePair(encryptedPhrase: String, masterKey: java.security.KeyPair) : Pair<String, String?> {
             val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
-            return getKeyPair(cipherWrapper.decrypt(encryptedPhrase, masterKey!!.private)).secretSeed
+            var passphrase : String? = null
+            val decryptedData = if (WalletApplication.localStore!!.isPassphraseUsed) {
+                val decryptedString = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
+                passphrase = decryptedString.substring(decryptedString.lastIndexOf(" ") + 1)
+                decryptedString.substring(0, decryptedString.lastIndexOf(" "))
+            } else {
+                cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
+            }
+
+            return Pair(decryptedData, passphrase)
         }
 
         fun getTotalBalance(type : String) : String {
@@ -36,9 +53,9 @@ class AccountUtils {
             return keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
         }
 
-        fun getKeyPair(string : String) : KeyPair {
+        fun getKeyPair(string: String, passphrase: String?) : KeyPair {
             return if (WalletApplication.localStore!!.isRecoveryPhrase) {
-                Wallet.createKeyPair(string.toCharArray(), null, Constants.USER_INDEX)
+                Wallet.createKeyPair(string.toCharArray(), passphrase?.toCharArray(), Constants.USER_INDEX)
             } else {
                 KeyPair.fromSecretSeed(string)
             }

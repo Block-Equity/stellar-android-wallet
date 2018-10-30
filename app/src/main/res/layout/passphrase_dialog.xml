@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/activity_vertical_margin">
+
+    <EditText
+        android:id="@+id/passphraseEditText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inputType="textPassword"
+        android:textSize="@dimen/text_size_medium"
+        android:hint="@string/passphrase_hint" />
+
+</FrameLayout>

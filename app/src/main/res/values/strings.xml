@@ -42,6 +42,7 @@
     <string name="phrase_warning">Please write down and safely store this phrase. It\'s the ONLY WAY to retrieve your wallet.</string>
     <string name="no_mnemonic_set">Your wallet was recovered using a secret key and does not use a mnemonic.</string>
     <string name="confirm_written">I have written it down</string>
+    <string name="advanced_security">Advanced Security</string>
     <string name="enter_phrase">Enter Phrase</string>
     <string name="enter_secret_key">Enter Secret Key</string>
     <string name="secret_phrase">Secret Phrase</string>
@@ -51,6 +52,12 @@
     <string name="create_word_option_2">Use a 24 word recovery phrase</string>
     <string name="recover_from_phrase">Recover from phrase</string>
     <string name="recover_from_seed">Recover from secret key</string>
+    <string name="passphrase_hint">Enter passphrase</string>
+    <string name="passphrase_dialog_title">Enter a passphrase</string>
+    <string name="passphrase_dialog_info">Passphrase along with mnemonic phrase will be used to derive your address.</string>
+    <string name="passphrase_dialog_error">Please retry, passphrases don\'t match</string>
+    <string name="passphrase_dialog_confirm">Please confirm your passphrase</string>
+    <string name="passphrase_applied">Passphrase applied</string>
 
     <!--Settings Fragment-->
     <string name="recovery">Recovery</string>
@@ -132,6 +139,7 @@
     <string name="success_trustline_changed">Trust line changed!</string>
     <string name="error_trustline_changed">There was an error changing trust lines.</string>
     <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
     <!--Inflation Activity-->
     <string name="inflation_info_message">We recommend setting your inflation destination to the lumenaut community pool (entered above), which pays out 100% of inflation proceeds every Tuesday without taking any fees. You can change it to any other pool should you prefer to.</string>
