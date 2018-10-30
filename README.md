@@ -4,7 +4,7 @@
 
 The open source BlockEQ Stellar wallet for Android.
 
-[![Build Status](https://app.bitrise.io/app/8f971ee62a22d9ef/status.svg?token=PJ0TN1T3hvJlSiZUKUw_rg&branch=dev)](https://app.bitrise.io/app/8f971ee62a22d9ef)
+[![Build Status](https://app.bitrise.io/app/aabf4854264f7412/status.svg?token=CLkPGE9X6FwMOTTBh1KqBA)](https://app.bitrise.io/app/aabf4854264f7412)
 
 ## Installation
 
