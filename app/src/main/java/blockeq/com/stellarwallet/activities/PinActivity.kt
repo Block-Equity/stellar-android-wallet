@@ -103,7 +103,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                     val masterKey = AccountUtils.getPinMasterKey(context, pin)
 
                     if (masterKey != null) {
-                        val decryptedPair = getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey)
+                        val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey)
                         val decryptedData = decryptedPair.first
                         val passphrase = decryptedPair.second
 
@@ -214,19 +214,4 @@ class PinActivity : BaseActivity(), PinLockListener {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
     }
-
-    fun getDecryptedMnemonicPhrasePair(encryptedPhrase: String, masterKey: java.security.KeyPair) : Pair<String, String?> {
-        var passphrase : String? = null
-        val decryptedData = if (WalletApplication.localStore.isPassphraseUsed) {
-            val decryptedString = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
-            passphrase = decryptedString.substring(decryptedString.lastIndexOf(" ") + 1)
-            decryptedString.substring(0, decryptedString.lastIndexOf(" "))
-        } else {
-            cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
-        }
-
-        return Pair(decryptedData, passphrase)
-    }
-
-    //endregion
 }
