@@ -2,6 +2,7 @@ package blockeq.com.stellarwallet.services.networking
 
 import android.os.AsyncTask
 import android.util.Log
+import blockeq.com.stellarwallet.BuildConfig
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
@@ -35,7 +36,7 @@ class Horizon {
 
         class LoadAccountTask(private val listener: OnLoadAccount) : AsyncTask<Void, Void, AccountResponse>() {
             override fun doInBackground(vararg params: Void?) : AccountResponse? {
-                val server = Server(PROD_SERVER)
+                val server = getServer()
                 val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.publicKey)
                 var account : AccountResponse? = null
                 try {
@@ -60,7 +61,7 @@ class Horizon {
 
         class LoadEffectsTask(private val listener: OnLoadEffects) : AsyncTask<Void, Void, ArrayList<EffectResponse>?>() {
             override fun doInBackground(vararg params: Void?): ArrayList<EffectResponse>? {
-                val server = Server(PROD_SERVER)
+                val server = getServer()
                 val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.publicKey)
                 var effectResults : Page<EffectResponse>? = null
                 try {
@@ -85,8 +86,8 @@ class Horizon {
                        private val amount : String) : AsyncTask<Void, Void, Exception>() {
 
             override fun doInBackground(vararg params: Void?): Exception? {
+                val server = getServer()
                 val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
-                val server = Server(PROD_SERVER)
                 val destKeyPair = KeyPair.fromAccountId(destAddress)
                 var isCreateAccount = false
 
@@ -149,7 +150,7 @@ class Horizon {
             override fun doInBackground(vararg params: Void?): Exception? {
                 Network.usePublicNetwork()
 
-                val server = Server(PROD_SERVER)
+                val server = getServer()
                 val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
                 val destKeyPair = KeyPair.fromAccountId(inflationDest)
 
@@ -188,7 +189,7 @@ class Horizon {
             override fun doInBackground(vararg params: Void?): Exception? {
                 Network.usePublicNetwork()
 
-                val server = Server(PROD_SERVER)
+                val server = getServer()
                 val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
                 val limit = if (removeTrust) "0.0000000" else Constants.MAX_ASSET_STRING_VALUE
 
@@ -231,6 +232,10 @@ class Horizon {
             } else {
                 Asset.createNonNativeAsset(assetCode, KeyPair.fromAccountId(assetIssuer))
             }
+        }
+
+        private fun getServer() : Server {
+            return Server(PROD_SERVER)
         }
     }
 }

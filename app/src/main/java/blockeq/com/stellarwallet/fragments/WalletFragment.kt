@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.support.v7.view.ContextThemeWrapper
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -50,15 +51,15 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         super.onViewCreated(view, savedInstanceState)
 
         receiveButton.setOnClickListener {
-            val context = it.context
+            val context = activity
             startActivity(Intent(context, ReceiveActivity::class.java))
-            (context as Activity).overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+            activity!!.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
         }
 
         sendButton.setOnClickListener {
-            val context = it.context
+            val context = activity
             startActivity(Intent(context, EnterAddressActivity::class.java))
-            (context as Activity).overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+            activity!!.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
         }
     }
 
