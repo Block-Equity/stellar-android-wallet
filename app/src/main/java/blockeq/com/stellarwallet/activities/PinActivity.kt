@@ -29,7 +29,7 @@ class PinActivity : BaseActivity(), PinLockListener {
 
     private var needConfirm = true
     private lateinit var PIN : String
-    private lateinit var phrase : String
+    private lateinit var mnemonic : String
     private lateinit var pinViewState: PinViewState
     private var numAttempts = 0
     private lateinit var context : Context
@@ -43,7 +43,7 @@ class PinActivity : BaseActivity(), PinLockListener {
         pinLockView.attachIndicatorDots(indicatorDots)
 
         pinViewState = getPinState()
-        phrase = pinViewState.mnemonic
+        mnemonic = pinViewState.mnemonic
         val message = pinViewState.message
         PIN = pinViewState.pin
 
@@ -76,7 +76,6 @@ class PinActivity : BaseActivity(), PinLockListener {
 
                             val keyStoreWrapper = KeyStoreWrapper(applicationContext)
                             keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin)
-
                             val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
 
                             val encryptedData = if (pinViewState.passphrase.isNullOrEmpty()) {
