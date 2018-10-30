@@ -41,9 +41,7 @@
         android:layout_centerHorizontal="true"
         android:clickable="true"
         android:focusable="true"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingStart="@dimen/activity_vertical_margin"
-        android:paddingEnd="@dimen/activity_vertical_margin" />
+        android:padding="@dimen/activity_vertical_margin" />
 
     <Button
         android:id="@+id/confirmButton"
