@@ -33,8 +33,6 @@ class PinActivity : BaseActivity(), PinLockListener {
     private lateinit var pinViewState: PinViewState
     private var numAttempts = 0
     private lateinit var context : Context
-    //TODO: DRY AccountUtils and here the transformation is duplicated
-    private var cipherWrapper : CipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,19 +72,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                         else -> {
                             setResult(Activity.RESULT_OK)
 
-                            val keyStoreWrapper = KeyStoreWrapper(applicationContext)
-                            keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin)
-                            val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
-
-                            val encryptedData = if (pinViewState.passphrase.isNullOrEmpty()) {
-                                WalletApplication.localStore.isPassphraseUsed = false
-                                cipherWrapper.encrypt(pinViewState.mnemonic, masterKey?.public)
-                            } else {
-                                WalletApplication.localStore.isPassphraseUsed = true
-                                cipherWrapper.encrypt(pinViewState.mnemonic + " " + pinViewState.passphrase, masterKey?.public)
-                            }
-
-                            WalletApplication.localStore.encryptedPhrase = encryptedData
+                            WalletApplication.localStore.encryptedPhrase = AccountUtils.getEncryptedMnemonicPhrase(pinViewState.mnemonic, pinViewState.passphrase, pin, applicationContext)
 
                             val keyPair = AccountUtils.getKeyPair(pinViewState.mnemonic, pinViewState.passphrase)
 

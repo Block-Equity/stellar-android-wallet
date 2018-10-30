@@ -23,6 +23,22 @@ class AccountUtils {
             return getKeyPair(decryptedData, passphrase).secretSeed
         }
 
+        fun getEncryptedMnemonicPhrase(mnemonic: String, passphrase: String?, pin: String, context: Context) : String {
+            val keyStoreWrapper = KeyStoreWrapper(context)
+            keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin)
+
+            val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
+            val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
+
+            return if (passphrase.isNullOrEmpty()) {
+                WalletApplication.localStore.isPassphraseUsed = false
+                cipherWrapper.encrypt(mnemonic, masterKey?.public)
+            } else {
+                WalletApplication.localStore.isPassphraseUsed = true
+                cipherWrapper.encrypt(mnemonic + " " + passphrase, masterKey?.public)
+            }
+        }
+
         fun getDecryptedMnemonicPhrasePair(encryptedPhrase: String, masterKey: java.security.KeyPair) : Pair<String, String?> {
             //TODO: DRY PinActivity and here the transformation is duplicated
             val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
