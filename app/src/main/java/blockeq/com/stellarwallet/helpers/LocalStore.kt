@@ -2,17 +2,11 @@ package blockeq.com.stellarwallet.helpers
 
 import android.content.SharedPreferences
 import android.util.Log
-import blockeq.com.stellarwallet.models.PinViewState
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import org.stellar.sdk.responses.AccountResponse
 
-
 class LocalStore(private val sharedPreferences: SharedPreferences, private val gson: Gson) {
-
-    var pinViewState: PinViewState?
-        get() = get<PinViewState>(KEY_PIN_DATA, PinViewState::class.java)
-        set(viewState) = set<PinViewState>(KEY_PIN_DATA, viewState!!)
 
     var encryptedPhrase: String?
         get() = getString(KEY_ENCRYPTED_PHRASE)
@@ -45,7 +39,6 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
 
     private companion object {
         const val KEY_ENCRYPTED_PHRASE = "kEncryptedPhrase"
-        const val KEY_PIN_DATA = "kPinData"
         const val KEY_STELLAR_ACCOUNT_PUBLIC_KEY = "kStellarAccountPublicKey"
         const val KEY_STELLAR_BALANCES_KEY = "kStellarBalancesKey"
         const val KEY_STELLAR_AVAILABLE_BALANCE_KEY = "kAvailableBalanceKey"
@@ -67,10 +60,11 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
     }
 
     private fun getString(key: String): String? {
-        return sharedPreferences.getString(key, "")
+        return sharedPreferences.getString(key, null)
     }
 
     private fun getBoolean(key: String): Boolean {
+        //TODO: refactor this, the default value true is the expected behavior for isRecoveryPhrase and showPinOnSend.
         return sharedPreferences.getBoolean(key, true)
     }
 
@@ -87,7 +81,6 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
     fun clearUserData() {
         val editor = sharedPreferences.edit()
         editor.remove(KEY_ENCRYPTED_PHRASE)
-        editor.remove(KEY_PIN_DATA)
         editor.remove(KEY_STELLAR_ACCOUNT_PUBLIC_KEY)
         editor.remove(KEY_STELLAR_BALANCES_KEY)
         editor.remove(KEY_STELLAR_AVAILABLE_BALANCE_KEY)
@@ -96,11 +89,5 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
 
         balances = arrayOf()
         availableBalance = Constants.DEFAULT_ACCOUNT_BALANCE
-    }
-
-    fun clearPINData() {
-        val editor = sharedPreferences.edit()
-        editor.remove(KEY_PIN_DATA)
-        editor.apply()
     }
 }
