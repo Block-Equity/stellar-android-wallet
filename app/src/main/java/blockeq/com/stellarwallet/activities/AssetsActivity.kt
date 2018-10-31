@@ -65,7 +65,7 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
     private fun updateAdapter() {
         assetsList!!.clear()
-        assetsList!!.addAll(convertBalanceToSupportedAsset(WalletApplication.localStore!!.balances!!, map!!))
+        assetsList!!.addAll(convertBalanceToSupportedAsset(WalletApplication.localStore.balances!!, map!!))
         val filteredList = getFilteredSupportedAssets(map!!)
         if (!filteredList.isEmpty()) {
             assetsList!!.add(getString(R.string.supported_assets_header))
@@ -117,7 +117,7 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
     private fun getFilteredSupportedAssets(map: Map<String, SupportedAsset>): List<SupportedAsset> {
         return map.values.filter { it ->
-            it.code.toUpperCase() !in WalletApplication.localStore!!.balances!!.map { it.assetCode }
+            it.code.toUpperCase() !in WalletApplication.localStore.balances!!.map { it.assetCode }
         }
     }
 
@@ -181,7 +181,7 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
                 override fun onLoadAccount(result: AccountResponse?) {
                     if (result != null) {
-                        WalletApplication.localStore!!.balances = result.balances
+                        WalletApplication.localStore.balances = result.balances
                         updateAdapter()
                     }
                 }

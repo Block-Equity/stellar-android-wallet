@@ -62,5 +62,6 @@ dependencies {
     androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoVersion"
 
-    debugImplementation 'com.facebook.stetho:stetho:1.5.0'
+    //TODO this should be used only in debug builds
+    implementation 'com.facebook.stetho:stetho:1.5.0'
 }

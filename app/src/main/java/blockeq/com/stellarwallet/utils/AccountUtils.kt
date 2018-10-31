@@ -11,6 +11,7 @@ import org.stellar.sdk.KeyPair
 class AccountUtils {
 
     companion object {
+        private const val CIPHER_TRANSFORMATION : String = "RSA/ECB/PKCS1Padding"
 
         fun getSecretSeed(context : Context) : CharArray {
             val encryptedPhrase = WalletApplication.localStore.encryptedPhrase!!
@@ -28,20 +29,19 @@ class AccountUtils {
             keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin)
 
             val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
-            val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
+            val cipherWrapper = CipherWrapper(CIPHER_TRANSFORMATION)
 
             return if (passphrase.isNullOrEmpty()) {
                 WalletApplication.localStore.isPassphraseUsed = false
                 cipherWrapper.encrypt(mnemonic, masterKey?.public)
             } else {
                 WalletApplication.localStore.isPassphraseUsed = true
-                cipherWrapper.encrypt(mnemonic + " " + passphrase, masterKey?.public)
+                cipherWrapper.encrypt("$mnemonic $passphrase", masterKey?.public)
             }
         }
 
         fun getDecryptedMnemonicPhrasePair(encryptedPhrase: String, masterKey: java.security.KeyPair) : Pair<String, String?> {
-            //TODO: DRY PinActivity and here the transformation is duplicated
-            val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
+            val cipherWrapper = CipherWrapper(CIPHER_TRANSFORMATION)
             var passphrase : String? = null
             val decryptedData = if (WalletApplication.localStore.isPassphraseUsed) {
                 val decryptedString = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
