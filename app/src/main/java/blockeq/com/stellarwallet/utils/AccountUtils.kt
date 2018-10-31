@@ -17,11 +17,11 @@ class AccountUtils {
             val encryptedPhrase = WalletApplication.localStore.encryptedPhrase!!
             val masterKey = getPinMasterKey(context, WalletApplication.userSession.pin!!)!!
 
-            val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey)
+            val decryptedPair = getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey)
             val decryptedData = decryptedPair.first
             val passphrase = decryptedPair.second
 
-            return getKeyPair(decryptedData, passphrase).secretSeed
+            return getStellarKeyPair(decryptedData, passphrase).secretSeed
         }
 
         fun getEncryptedMnemonicPhrase(mnemonic: String, passphrase: String?, pin: String, context: Context) : String {
@@ -71,11 +71,11 @@ class AccountUtils {
             return keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
         }
 
-        fun getKeyPair(recoveryString: String, passphrase: String?) : KeyPair {
+        fun getStellarKeyPair(mnemonic: String, passphrase: String?) : KeyPair {
             return if (WalletApplication.localStore.isRecoveryPhrase) {
-                Wallet.createKeyPair(recoveryString.toCharArray(), passphrase?.toCharArray(), Constants.USER_INDEX)
+                Wallet.createKeyPair(mnemonic.toCharArray(), passphrase?.toCharArray(), Constants.USER_INDEX)
             } else {
-                KeyPair.fromSecretSeed(recoveryString)
+                KeyPair.fromSecretSeed(mnemonic)
             }
         }
 

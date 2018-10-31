@@ -10,8 +10,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
-import blockeq.com.stellarwallet.encryption.CipherWrapper
-import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
@@ -74,9 +72,9 @@ class PinActivity : BaseActivity(), PinLockListener {
 
                             WalletApplication.localStore.encryptedPhrase = AccountUtils.getEncryptedMnemonicPhrase(pinViewState.mnemonic, pinViewState.passphrase, pin, applicationContext)
 
-                            val keyPair = AccountUtils.getKeyPair(pinViewState.mnemonic, pinViewState.passphrase)
+                            val stellarKeyPair = AccountUtils.getStellarKeyPair(pinViewState.mnemonic, pinViewState.passphrase)
 
-                            WalletApplication.localStore.publicKey = keyPair.accountId
+                            WalletApplication.localStore.stellarAccountId = stellarKeyPair.accountId
                             WalletApplication.userSession.pin = pin
 
                             launchWallet()
@@ -89,7 +87,7 @@ class PinActivity : BaseActivity(), PinLockListener {
 
                     if (masterKey != null) {
                         val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey)
-                        val decryptedData = decryptedPair.first
+                        val mnemonic = decryptedPair.first
                         val passphrase = decryptedPair.second
 
                         when {
@@ -98,7 +96,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                                 launchWallet()
                             }
                             pinViewState.type == PinType.CHECK -> {
-                                val keyPair = AccountUtils.getKeyPair(decryptedData, passphrase)
+                                val keyPair = AccountUtils.getStellarKeyPair(mnemonic, passphrase)
                                 val intent = Intent()
                                 intent.putExtra(KEY_SECRET_SEED, keyPair.secretSeed)
                                 setResult(Activity.RESULT_OK, intent)
@@ -109,13 +107,13 @@ class PinActivity : BaseActivity(), PinLockListener {
                             pinViewState.type == PinType.VIEW_PHRASE -> {
                                 val intent = Intent(this, ShowMnemonicActivity::class.java)
                                 intent.putExtra(ShowMnemonicActivity.INTENT_DISPLAY_PHRASE, true)
-                                intent.putExtra(ShowMnemonicActivity.DECRYPTED_PHRASE, decryptedData)
+                                intent.putExtra(ShowMnemonicActivity.DECRYPTED_PHRASE, mnemonic)
                                 startActivity(intent)
                                 finish()
                             }
 
                             pinViewState.type == PinType.VIEW_SEED -> {
-                                val keyPair = AccountUtils.getKeyPair(decryptedData, passphrase)
+                                val keyPair = AccountUtils.getStellarKeyPair(mnemonic, passphrase)
                                 val secretSeed = keyPair.secretSeed.joinToString("")
                                 val intent = Intent(this, ViewSecretSeedActivity::class.java)
 
@@ -130,6 +128,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                 }
             }
         }
+        //TODO move the work to non ui Thread, this delay is to not freeze the animation of the last pin dot.
         handler.postDelayed(runnableCode, 200)
     }
 

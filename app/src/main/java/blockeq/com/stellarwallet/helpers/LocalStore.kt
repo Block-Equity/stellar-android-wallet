@@ -12,7 +12,7 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         get() = getString(KEY_ENCRYPTED_PHRASE)
         set(encryptedPhrase) = set(KEY_ENCRYPTED_PHRASE, encryptedPhrase)
 
-    var publicKey: String?
+    var stellarAccountId: String?
         get() = getString(KEY_STELLAR_ACCOUNT_PUBLIC_KEY)
         set(publicKey) = set(KEY_STELLAR_ACCOUNT_PUBLIC_KEY, publicKey)
 

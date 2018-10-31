@@ -103,8 +103,7 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
             }
 
             mnemonicString = String(mnemonic)
-            val words = String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
-            return words
+            return String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
         }
     }
 

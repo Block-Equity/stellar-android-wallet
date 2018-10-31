@@ -36,7 +36,7 @@ class Horizon {
         class LoadAccountTask(private val listener: OnLoadAccount) : AsyncTask<Void, Void, AccountResponse>() {
             override fun doInBackground(vararg params: Void?) : AccountResponse? {
                 val server = getServer()
-                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.publicKey)
+                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.stellarAccountId)
                 var account : AccountResponse? = null
                 try {
                     account = server.accounts().account(sourceKeyPair)
@@ -61,7 +61,7 @@ class Horizon {
         class LoadEffectsTask(private val listener: OnLoadEffects) : AsyncTask<Void, Void, ArrayList<EffectResponse>?>() {
             override fun doInBackground(vararg params: Void?): ArrayList<EffectResponse>? {
                 val server = getServer()
-                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.publicKey)
+                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.stellarAccountId)
                 var effectResults : Page<EffectResponse>? = null
                 try {
                     effectResults = server.effects().order(RequestBuilder.Order.DESC)

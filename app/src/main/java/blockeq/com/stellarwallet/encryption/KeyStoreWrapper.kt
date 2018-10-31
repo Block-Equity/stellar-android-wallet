@@ -76,7 +76,7 @@ class KeyStoreWrapper(private val context: Context) {
      * Generates symmetric [KeyProperties.KEY_ALGORITHM_AES] key with default [KeyProperties.BLOCK_MODE_CBC] and
      * [KeyProperties.ENCRYPTION_PADDING_PKCS7] using default provider.
      */
-    fun generateDefaultSymmetricKey(): SecretKey {
+    private fun generateDefaultSymmetricKey(): SecretKey {
         val keyGenerator = KeyGenerator.getInstance("AES")
         return keyGenerator.generateKey()
     }
