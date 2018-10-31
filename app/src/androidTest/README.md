@@ -9,8 +9,9 @@ Make sure you uninstall the app and any other previous test
 ./adb uninstall package_name_of_the_app.tests
 
 - Some animations, specially the infinity ones, could make the espresso test to wait for the animation to finish. Please disable animations in developer options or by adb or programmatically.
-
-- the devices has to be awake without the lock screen to be able to run the espresso test.
+- The devices has to be awake without the lock screen to be able to run the espresso test.
+Two solve the two issues above I would recommend to check the custom runner in the following gist
+https://gist.github.com/riggaroo/7f1e6cd4a52c61920b564c6465d1f1d9
 
 - espresso does not clean the storage of the previous test or app. if you need to do test that requires to be a fresh install take a look at 
 https://developer.android.com/training/testing/junit-runner#using-android-test-orchestrator
