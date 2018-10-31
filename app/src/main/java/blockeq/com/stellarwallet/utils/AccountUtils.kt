@@ -7,6 +7,7 @@ import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.helpers.Constants
 import com.soneso.stellarmnemonics.Wallet
 import org.stellar.sdk.KeyPair
+import java.security.PrivateKey
 
 class AccountUtils {
 
@@ -17,14 +18,14 @@ class AccountUtils {
             val encryptedPhrase = WalletApplication.localStore.encryptedPhrase!!
             val masterKey = getPinMasterKey(context, WalletApplication.userSession.pin!!)!!
 
-            val decryptedPair = getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey)
+            val decryptedPair = getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey.private)
             val decryptedData = decryptedPair.first
             val passphrase = decryptedPair.second
 
             return getStellarKeyPair(decryptedData, passphrase).secretSeed
         }
 
-        fun getEncryptedMnemonicPhrase(mnemonic: String, passphrase: String?, pin: String, context: Context) : String {
+        fun getEncryptedMnemonicPhrase(context: Context, mnemonic: String, passphrase: String?, pin: String) : String {
             val keyStoreWrapper = KeyStoreWrapper(context)
             keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin)
 
@@ -40,15 +41,15 @@ class AccountUtils {
             }
         }
 
-        fun getDecryptedMnemonicPhrasePair(encryptedPhrase: String, masterKey: java.security.KeyPair) : Pair<String, String?> {
+        fun getDecryptedMnemonicPhrasePair(encryptedPhrase: String, privateKey: PrivateKey) : Pair<String, String?> {
             val cipherWrapper = CipherWrapper(CIPHER_TRANSFORMATION)
             var passphrase : String? = null
             val decryptedData = if (WalletApplication.localStore.isPassphraseUsed) {
-                val decryptedString = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
+                val decryptedString = cipherWrapper.decrypt(encryptedPhrase, privateKey)
                 passphrase = decryptedString.substring(decryptedString.lastIndexOf(" ") + 1)
                 decryptedString.substring(0, decryptedString.lastIndexOf(" "))
             } else {
-                cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
+                cipherWrapper.decrypt(encryptedPhrase, privateKey)
             }
 
             return Pair(decryptedData, passphrase)

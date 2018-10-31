@@ -70,7 +70,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                         else -> {
                             setResult(Activity.RESULT_OK)
 
-                            WalletApplication.localStore.encryptedPhrase = AccountUtils.getEncryptedMnemonicPhrase(pinViewState.mnemonic, pinViewState.passphrase, pin, applicationContext)
+                            WalletApplication.localStore.encryptedPhrase = AccountUtils.getEncryptedMnemonicPhrase(applicationContext, pinViewState.mnemonic, pinViewState.passphrase, pin)
 
                             val stellarKeyPair = AccountUtils.getStellarKeyPair(pinViewState.mnemonic, pinViewState.passphrase)
 
@@ -86,7 +86,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                     val masterKey = AccountUtils.getPinMasterKey(context, pin)
 
                     if (masterKey != null) {
-                        val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey)
+                        val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey.private)
                         val mnemonic = decryptedPair.first
                         val passphrase = decryptedPair.second
 
