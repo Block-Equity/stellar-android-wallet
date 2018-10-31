@@ -41,6 +41,7 @@ class PinActivity : BaseActivity(), PinLockListener {
         pinViewState = getPinState()
         mnemonic = pinViewState.mnemonic
         val message = pinViewState.message
+        //TODO: review pin since it looks like is always EMPTY here
         PIN = pinViewState.pin
 
         if (!message.isEmpty()) {
