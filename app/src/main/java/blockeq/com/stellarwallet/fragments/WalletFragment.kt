@@ -1,8 +1,10 @@
 package blockeq.com.stellarwallet.fragments
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.support.v7.view.ContextThemeWrapper
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -49,13 +51,15 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         super.onViewCreated(view, savedInstanceState)
 
         receiveButton.setOnClickListener {
-            startActivity(Intent(activity, ReceiveActivity::class.java))
-            activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+            val context = activity
+            startActivity(Intent(context, ReceiveActivity::class.java))
+            activity!!.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
         }
 
         sendButton.setOnClickListener {
-            startActivity(Intent(activity, EnterAddressActivity::class.java))
-            activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+            val context = activity
+            startActivity(Intent(context, EnterAddressActivity::class.java))
+            activity!!.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
         }
     }
 
@@ -80,19 +84,21 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
             walletProgressBar.visibility = View.VISIBLE
 
             recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(AccountUtils.getTotalBalance(currAsset)),
-                    AvailableBalance(WalletApplication.localStore!!.availableBalance!!), Pair("Activity", "Amount"), effectsList)
+                    AvailableBalance(WalletApplication.localStore.availableBalance!!), Pair("Activity", "Amount"), effectsList)
 
             adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList!!.array)
             adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
                 override fun onAssetDropdownClicked(view: View, position: Int) {
-                    startActivity(Intent(activity, AssetsActivity::class.java))
-                    activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+                    val context = view.context
+                    startActivity(Intent(context, AssetsActivity::class.java))
+                    (context as Activity).overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
                 }
             })
             adapter!!.setOnLearnMoreButtonListener(object : WalletRecyclerViewAdapter.OnLearnMoreButtonListener {
                 override fun onLearnMoreButtonClicked(view: View, position: Int) {
-                    startActivity(Intent(activity, BalanceSummaryActivity::class.java))
-                    activity?.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+                    val context = view.context
+                    startActivity(Intent(context, BalanceSummaryActivity::class.java))
+                    (context as Activity).overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
                 }
             })
             walletRecyclerView.adapter = adapter
@@ -101,7 +107,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
             if (currAsset != Constants.LUMENS_ASSET_TYPE) {
                 recyclerViewArrayList!!.hideAvailableBalance()
             } else {
-                recyclerViewArrayList!!.showAvailableBalance(AvailableBalance(WalletApplication.localStore!!.availableBalance!!))
+                recyclerViewArrayList!!.showAvailableBalance(AvailableBalance(WalletApplication.localStore.availableBalance!!))
             }
 
             recyclerViewArrayList!!.updateTotalBalance(TotalBalance(AccountUtils.getTotalBalance(currAsset)))
@@ -117,14 +123,14 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     override fun onLoadAccount(result: AccountResponse?) {
         if (result != null && walletProgressBar != null) {
-            WalletApplication.localStore!!.balances = result.balances
+            WalletApplication.localStore.balances = result.balances
             WalletApplication.userSession.minimumBalance = MinimumBalance(result)
-            WalletApplication.localStore!!.availableBalance = AccountUtils.calculateAvailableBalance()
+            WalletApplication.localStore.availableBalance = AccountUtils.calculateAvailableBalance()
         }
         recyclerViewArrayList!!.updateTotalBalance(
                 TotalBalance(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode)))
         recyclerViewArrayList!!.updateAvailableBalance(
-                AvailableBalance(WalletApplication.localStore!!.availableBalance!!))
+                AvailableBalance(WalletApplication.localStore.availableBalance!!))
     }
 
     override fun onError(error: ErrorResponse) {

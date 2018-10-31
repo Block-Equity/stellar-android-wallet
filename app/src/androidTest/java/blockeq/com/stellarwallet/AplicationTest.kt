@@ -41,7 +41,7 @@ class ApplicationTest {
     fun testCreateWalletOption12Words() {
         onView(withId(R.id.createWalletButton)).perform(click())
 
-        createWalletFlow(MnemonicType.WORD_12)
+        createWalletFlow(MnemonicType.WORD_12, "1234")
 
         onView(withId(R.id.nav_settings)).perform(click())
 
@@ -56,7 +56,7 @@ class ApplicationTest {
     fun testCreateWalletOption24Words() {
         onView(withId(R.id.createWalletButton)).perform(click())
 
-        createWalletFlow(MnemonicType.WORD_24)
+        createWalletFlow(MnemonicType.WORD_24, "1234")
 
         onView(withId(R.id.nav_settings)).perform(click())
 

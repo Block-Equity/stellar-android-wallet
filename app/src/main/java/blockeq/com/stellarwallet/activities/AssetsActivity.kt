@@ -1,5 +1,6 @@
 package blockeq.com.stellarwallet.activities
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
@@ -33,6 +34,7 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
     private var adapter :AssetsRecyclerViewAdapter? = null
     private var assetsList: ArrayList<Any>? = ArrayList()
     private var map: Map<String, SupportedAsset>? = null
+    private lateinit var context : Context
 
     override fun setContent(): Int {
         return R.layout.content_assets_activity
@@ -43,9 +45,10 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
         setupUI()
         loadSupportedAssets()
+        context = applicationContext
     }
 
-    override fun setupUI() {
+    private fun setupUI() {
         progressBar.visibility = View.VISIBLE
         bindAdapter()
         titleText.text = getString(R.string.asset_title_text)
@@ -62,7 +65,7 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
     private fun updateAdapter() {
         assetsList!!.clear()
-        assetsList!!.addAll(convertBalanceToSupportedAsset(WalletApplication.localStore!!.balances!!, map!!))
+        assetsList!!.addAll(convertBalanceToSupportedAsset(WalletApplication.localStore.balances!!, map!!))
         val filteredList = getFilteredSupportedAssets(map!!)
         if (!filteredList.isEmpty()) {
             assetsList!!.add(getString(R.string.supported_assets_header))
@@ -87,22 +90,25 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
        if (balances.isNotEmpty()) {
            val nullableAssets = balances.map {
-               if (it.assetType == Constants.LUMENS_ASSET_TYPE) {
-                   list[0].amount = it.balance
-                   return@map null
-               } else if (supportedAssetsMap.containsKey(it.assetCode.toLowerCase())){
-                   val asset = supportedAssetsMap[it.assetCode.toLowerCase()]!!
-                   asset.amount = it.balance
-                   asset.type = SupportedAssetType.ADDED
-                   asset.code = asset.code
-                   asset.asset = it.asset
-                   return@map asset
-               } else {
-                   return@map null
+               when {
+                   it.assetType == Constants.LUMENS_ASSET_TYPE -> {
+                       list[0].amount = it.balance
+                       return@map null
+                   }
+                   supportedAssetsMap.containsKey(it.assetCode.toLowerCase()) -> {
+                       val asset = supportedAssetsMap[it.assetCode.toLowerCase()]!!
+                       asset.amount = it.balance
+                       asset.type = SupportedAssetType.ADDED
+                       asset.code = asset.code
+                       asset.asset = it.asset
+                       return@map asset
+                   }
+                   else -> return@map null
                }
            }
 
            // This cast is guaranteed to succeed
+           @Suppress("UNCHECKED_CAST")
            list.addAll((nullableAssets.filter { it != null }) as List<SupportedAsset>)
        }
 
@@ -110,8 +116,8 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
     }
 
     private fun getFilteredSupportedAssets(map: Map<String, SupportedAsset>): List<SupportedAsset> {
-        return map.values.filter {
-            it.code.toUpperCase() !in WalletApplication.localStore!!.balances!!.map { it.assetCode }
+        return map.values.filter { it ->
+            it.code.toUpperCase() !in WalletApplication.localStore.balances!!.map { it.assetCode }
         }
     }
 
@@ -139,7 +145,7 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
     override fun changeTrustline(asset: Asset, isRemoveAsset: Boolean) {
         progressBar.visibility = View.VISIBLE
-        val secretSeed = AccountUtils.getSecretSeed()
+        val secretSeed = AccountUtils.getSecretSeed(context)
         changeTrustLine(secretSeed, asset, isRemoveAsset)
     }
 
@@ -175,7 +181,7 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
                 override fun onLoadAccount(result: AccountResponse?) {
                     if (result != null) {
-                        WalletApplication.localStore!!.balances = result.balances
+                        WalletApplication.localStore.balances = result.balances
                         updateAdapter()
                     }
                 }
