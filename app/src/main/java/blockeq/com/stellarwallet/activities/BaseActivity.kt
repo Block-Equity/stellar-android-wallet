@@ -7,20 +7,14 @@ import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
 
-open class BaseActivity : AppCompatActivity() {
-
-    open fun setupUI() {
-        throw IllegalStateException("Please override this function.")
-    }
-
+abstract class BaseActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
         if (WalletApplication.appReturnedFromBackground) {
             WalletApplication.appReturnedFromBackground =  false
 
-
-            if (!WalletApplication.localStore!!.encryptedPhrase.isNullOrEmpty()) {
+            if (!WalletApplication.localStore.encryptedPhrase.isNullOrEmpty()) {
                 launchPINView(PinType.LOGIN, "", "", null, true)
             }
         }

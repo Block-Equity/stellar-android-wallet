@@ -20,8 +20,9 @@ import javax.security.auth.x500.X500Principal
  * This class wraps [KeyStore] class apis with some additional possibilities.
  */
 class KeyStoreWrapper(private val context: Context) {
-
-    private val DEFAULT_KEYSTORE_NAME = "pin_keystore"
+    companion object {
+        private const val DEFAULT_KEYSTORE_NAME = "pin_keystore"
+    }
 
     private val keyStore: KeyStore = createAndroidKeyStore()
 
@@ -75,7 +76,7 @@ class KeyStoreWrapper(private val context: Context) {
      * Generates symmetric [KeyProperties.KEY_ALGORITHM_AES] key with default [KeyProperties.BLOCK_MODE_CBC] and
      * [KeyProperties.ENCRYPTION_PADDING_PKCS7] using default provider.
      */
-    fun generateDefaultSymmetricKey(): SecretKey {
+    private fun generateDefaultSymmetricKey(): SecretKey {
         val keyGenerator = KeyGenerator.getInstance("AES")
         return keyGenerator.generateKey()
     }
@@ -113,7 +114,6 @@ class KeyStoreWrapper(private val context: Context) {
      * Creates asymmetric RSA key with default [KeyProperties.BLOCK_MODE_ECB] and
      * [KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1] and saves it to Android Key Store.
      */
-    @TargetApi(Build.VERSION_CODES.M)
     fun createAndroidKeyStoreAsymmetricKey(alias: String): KeyPair {
         val generator = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore")
 
@@ -134,7 +134,7 @@ class KeyStoreWrapper(private val context: Context) {
         val builder = KeyPairGeneratorSpec.Builder(context)
                 .setAlias(alias)
                 .setSerialNumber(BigInteger.ONE)
-                .setSubject(X500Principal("CN=${alias} CA Certificate"))
+                .setSubject(X500Principal("CN=$alias CA Certificate"))
                 .setStartDate(startDate.time)
                 .setEndDate(endDate.time)
 

@@ -7,13 +7,22 @@ import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
-import org.stellar.sdk.*
+import org.stellar.sdk.ChangeTrustOperation
+import org.stellar.sdk.KeyPair
+import org.stellar.sdk.Memo
+import org.stellar.sdk.Network
+import org.stellar.sdk.AssetTypeNative
+import org.stellar.sdk.PaymentOperation
+import org.stellar.sdk.Server
+import org.stellar.sdk.SetOptionsOperation
+import org.stellar.sdk.Asset
+import org.stellar.sdk.CreateAccountOperation
+import org.stellar.sdk.Transaction
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.requests.RequestBuilder
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.Page
 import org.stellar.sdk.responses.effects.EffectResponse
-import java.util.*
 
 
 class Horizon {
@@ -26,8 +35,8 @@ class Horizon {
 
         class LoadAccountTask(private val listener: OnLoadAccount) : AsyncTask<Void, Void, AccountResponse>() {
             override fun doInBackground(vararg params: Void?) : AccountResponse? {
-                val server = Server(PROD_SERVER)
-                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
+                val server = getServer()
+                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.stellarAccountId)
                 var account : AccountResponse? = null
                 try {
                     account = server.accounts().account(sourceKeyPair)
@@ -51,8 +60,8 @@ class Horizon {
 
         class LoadEffectsTask(private val listener: OnLoadEffects) : AsyncTask<Void, Void, ArrayList<EffectResponse>?>() {
             override fun doInBackground(vararg params: Void?): ArrayList<EffectResponse>? {
-                val server = Server(PROD_SERVER)
-                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
+                val server = getServer()
+                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.stellarAccountId)
                 var effectResults : Page<EffectResponse>? = null
                 try {
                     effectResults = server.effects().order(RequestBuilder.Order.DESC)
@@ -76,8 +85,8 @@ class Horizon {
                        private val amount : String) : AsyncTask<Void, Void, Exception>() {
 
             override fun doInBackground(vararg params: Void?): Exception? {
+                val server = getServer()
                 val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
-                val server = Server(PROD_SERVER)
                 val destKeyPair = KeyPair.fromAccountId(destAddress)
                 var isCreateAccount = false
 
@@ -140,7 +149,7 @@ class Horizon {
             override fun doInBackground(vararg params: Void?): Exception? {
                 Network.usePublicNetwork()
 
-                val server = Server(PROD_SERVER)
+                val server = getServer()
                 val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
                 val destKeyPair = KeyPair.fromAccountId(inflationDest)
 
@@ -179,7 +188,7 @@ class Horizon {
             override fun doInBackground(vararg params: Void?): Exception? {
                 Network.usePublicNetwork()
 
-                val server = Server(PROD_SERVER)
+                val server = getServer()
                 val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
                 val limit = if (removeTrust) "0.0000000" else Constants.MAX_ASSET_STRING_VALUE
 
@@ -222,6 +231,10 @@ class Horizon {
             } else {
                 Asset.createNonNativeAsset(assetCode, KeyPair.fromAccountId(assetIssuer))
             }
+        }
+
+        private fun getServer() : Server {
+            return Server(PROD_SERVER)
         }
     }
 }

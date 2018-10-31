@@ -23,14 +23,14 @@ class InflationActivity : BasePopupActivity() {
         return R.layout.activity_inflation
     }
 
-    override fun setupUI() {
+    private fun setupUI() {
 
         addressEditText.setText(Constants.INFLATION_DESTINATION)
 
         saveButton.setOnClickListener {
 
             progressBar.visibility = View.VISIBLE
-            val secretSeed = AccountUtils.getSecretSeed()
+            val secretSeed = AccountUtils.getSecretSeed(it.context.applicationContext)
 
             if (NetworkUtils(this).isNetworkAvailable()) {
                 Horizon.Companion.JoinInflationDestination(object : SuccessErrorCallback {
