@@ -110,7 +110,7 @@ class ApplicationEspressoTest {
     /**
      * Must be called from ActivityType.LAUNCH_ACTIVITY
      */
-    private fun createWallet(option : MnemonicType, PIN : String) {
+    private fun createWallet(option : MnemonicType, pin : String) {
         onActivity(LAUNCH_ACTIVITY)
         onView(ViewMatchers.withId(R.id.createWalletButton)).perform(ViewActions.click())
 
@@ -125,26 +125,26 @@ class ApplicationEspressoTest {
                 .perform(ViewActions.click())
 
         Espresso.onView(ViewMatchers.withId(R.id.confirmButton)).perform(ViewActions.click())
-
-        writePin(PIN)
+        // create pin
+        writePin(pin)
         // re-enter
-        writePin(PIN)
+        writePin(pin)
     }
 
     /**
      * Must be called from ActivityType.PIN_ACTIVITY
      */
-    private fun writePin(PIN : String) {
+    private fun writePin(pin : String) {
         onActivity(PIN_ACTIVITY)
 
-        if (PIN.length != 4) {
-            throw IllegalStateException("PIN has to have 4 characters, now it has " + PIN.length)
+        if (pin.length != 4) {
+            throw IllegalStateException("PIN has to have 4 characters, now it has " + pin.length)
         }
 
-        writeIndividualPinNumber(PIN[0])
-        writeIndividualPinNumber(PIN[1])
-        writeIndividualPinNumber(PIN[2])
-        writeIndividualPinNumber(PIN[3])
+        writeIndividualPinNumber(pin[0])
+        writeIndividualPinNumber(pin[1])
+        writeIndividualPinNumber(pin[2])
+        writeIndividualPinNumber(pin[3])
     }
 
     /**
