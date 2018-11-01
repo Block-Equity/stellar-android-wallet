@@ -8,11 +8,11 @@ import blockeq.com.stellarwallet.fragments.SettingsFragment
 import blockeq.com.stellarwallet.fragments.WalletFragment
 import blockeq.com.stellarwallet.helpers.disableShiftMode
 
-class MainActivity : BaseActivity() {
+class WalletActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_wallet)
 
         setupUI()
     }
