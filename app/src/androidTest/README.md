@@ -8,12 +8,12 @@ Make sure you uninstall the app and any other previous test
 ./adb uninstall package_name_of_the_app
 ./adb uninstall package_name_of_the_app.tests
 
-- Some animations, specially the infinity ones, could make the espresso test to wait for the animation to finish. Please disable animations in developer options or by adb or programmatically.
-- The devices has to be awake without the lock screen to be able to run the espresso test.
-Two solve the two issues above I would recommend to check the custom runner in the following gist
+- Some animations, could make the espresso test wait for the animation to finish. Please disable animations in developer options or by adb or programmatically.
+- The devices have to be awake unlocked to be able to run the espresso test.
+Two solve the two issues above I would recommend checking the custom runner in the following gist
 https://gist.github.com/riggaroo/7f1e6cd4a52c61920b564c6465d1f1d9
 
-- espresso does not clean the storage of the previous test or app. if you need to do test that requires to be a fresh install take a look at 
+- Espresso does not clean the storage of the previous test or app. If you need to perform a test that requires a fresh install take a look at: 
 https://developer.android.com/training/testing/junit-runner#using-android-test-orchestrator
 Attention the runner 1.0.2 has an issue where you can not debug
 https://issuetracker.google.com/u/1/issues/78658117 
@@ -37,11 +37,11 @@ Solutions:
 - Best solution is to stop using LOG and use Timber  
 - Provide a Log.java Implementation and place it in the package `app/src/test/java/android/util`
 (https://stackoverflow.com/a/46793567)
-- add in the android gradle
+- Add it in the android gradle
 ```
  testOptions {
         unitTests.returnDefaultValues = true
     }
     
 ```
-From Docs: Caution: Setting the returnDefaultValues property to true should be done with care. The null/zero return values can introduce regressions in your tests, which are hard to debug and might allow failing tests to pass. Only use it as a last resort
+From the docs: Caution: Setting the returnDefaultValues property to true should be done with care. The null/zero return values can introduce regressions in your tests, which are hard to debug and might allow failing tests to pass. Only use it as a last resort
