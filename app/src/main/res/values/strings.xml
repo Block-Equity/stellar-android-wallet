@@ -7,6 +7,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="stellar_address_alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</string>
+    <string name="mnemonic_alphabet">abcdefghijklmnopqrstuvwxyz\u0020</string>
 
     <!--Navigation Menu-->
     <string name="nav_wallet">Wallet</string>
@@ -22,6 +23,10 @@
     <string name="refreshed">List Refreshed!</string>
     <string name="no_network">There was a problem connecting to the network. Attempting to reconnect.</string>
     <string name="available_balance_template">Available: %1$s %2$s</string>
+    <string name="balance_template">%1$s %2$s</string>
+    <string name="asset_template">%1$s (%2$s)</string>
+    <string name="bracket_template">(%1$s)</string>
+    <string name="trade_item_template">Trade %1$s for %2$s</string>
 
     <!--Wallet Fragment-->
     <string name="button_receive">Receive</string>
@@ -32,15 +37,31 @@
     <string name="learn_more">Learn more</string>
     <string name="activity">ACTIVITY</string>
     <string name="amount">AMOUNT</string>
+    <string name="no_transactions">Start trading!\n You currently have no transactions</string>
 
     <!-- Login Strings -->
     <string name="create_new_wallet">Create new wallet</string>
+    <string name="create_wallet">Create Wallet</string>
     <string name="recover_wallet">Recover wallet</string>
     <string name="phrase_warning">Please write down and safely store this phrase. It\'s the ONLY WAY to retrieve your wallet.</string>
+    <string name="no_mnemonic_set">Your wallet was recovered using a secret key and does not use a mnemonic.</string>
     <string name="confirm_written">I have written it down</string>
+    <string name="advanced_security">Advanced Security</string>
     <string name="enter_phrase">Enter Phrase</string>
+    <string name="enter_secret_key">Enter Secret Key</string>
     <string name="secret_phrase">Secret Phrase</string>
-    <string name="invalid_word_count">Invalid number of words (must be 12 or 24).</string>
+    <string name="invalid_input_for_phrase">Invalid number of words (must be 12 or 24).</string>
+    <string name="invalid_input_for_secret">Invalid secret key.</string>
+    <string name="create_word_option_1">Use a 12 word recovery phrase</string>
+    <string name="create_word_option_2">Use a 24 word recovery phrase</string>
+    <string name="recover_from_phrase">Recover from phrase</string>
+    <string name="recover_from_seed">Recover from secret key</string>
+    <string name="passphrase_hint">Enter passphrase</string>
+    <string name="passphrase_dialog_title">Enter a passphrase</string>
+    <string name="passphrase_dialog_info">Passphrase along with mnemonic phrase will be used to derive your address.</string>
+    <string name="passphrase_dialog_error">Please retry, passphrases don\'t match</string>
+    <string name="passphrase_dialog_confirm">Please confirm your passphrase</string>
+    <string name="passphrase_applied">Passphrase applied</string>
 
     <!--Settings Fragment-->
     <string name="recovery">Recovery</string>
@@ -48,6 +69,8 @@
     <string name="view_seed">View Secret Key (Not recommended)</string>
     <string name="wallet">Wallet</string>
     <string name="clear_wallet">Clear Wallet</string>
+    <string name="security">Security</string>
+    <string name="pin_send_payments">Request PIN when sending payments</string>
 
     <!--Trading Fragment-->
     <string name="tab_trade">Trade</string>
@@ -87,6 +110,10 @@
     <string name="pin_correct">PIN Correct!</string>
     <string name="pin_incorrect">PIN Incorrect!</string>
     <string name="pin_canceled">PIN Verification Canceled</string>
+    <plurals name="attempts_template">
+        <item quantity="one">You have %d attempt left.</item>
+        <item quantity="other">You have %d attempts left.</item>
+    </plurals>
 
     <!--Receive Fragment-->
     <string name="receive_title">Receive</string>
@@ -116,11 +143,14 @@
     <string name="success_trustline_changed">Trust line changed!</string>
     <string name="error_trustline_changed">There was an error changing trust lines.</string>
     <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
     <!--Inflation Activity-->
     <string name="inflation_info_message">We recommend setting your inflation destination to the lumenaut community pool (entered above), which pays out 100% of inflation proceeds every Tuesday without taking any fees. You can change it to any other pool should you prefer to.</string>
     <string name="save_button">Save</string>
     <string name="inflation_destination_title">Inflation Destination</string>
+    <string name="inflation_set_success">Inflation destination set!</string>
+    <string name="inflation_set_error">There was an error setting inflation destination.</string>
 
     <!--Balance Summary Activity-->
     <string name="total_balance">Total Balance</string>

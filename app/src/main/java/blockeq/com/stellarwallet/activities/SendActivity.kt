@@ -3,13 +3,17 @@ package blockeq.com.stellarwallet.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.support.v4.content.ContextCompat
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.services.networking.Horizon
+import blockeq.com.stellarwallet.utils.AccountUtils
 import blockeq.com.stellarwallet.utils.NetworkUtils
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
@@ -34,7 +38,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance()
+        titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance(applicationContext)
         assetCodeTextView.text = WalletApplication.userSession.getFormattedCurrentAssetCode()
 
         amountTextView.text = "0"
@@ -44,7 +48,16 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
         addressEditText.text = address
 
         send_button.setOnClickListener {
-            launchPINView(PinType.CHECK, "", "", false)
+            if (isAmountValid()) {
+                if (WalletApplication.localStore.showPinOnSend) {
+                    launchPINView(PinType.CHECK, "", "", null, false)
+                } else {
+                    sendPayment()
+                }
+            } else {
+                val shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shake)
+                amountTextView.startAnimation(shakeAnimation)
+            }
         }
     }
 
@@ -55,13 +68,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
         if (requestCode == PinActivity.PIN_REQUEST_CODE) {
             when (resultCode) {
                 Activity.RESULT_OK -> {
-                    if (NetworkUtils(this).isNetworkAvailable()) {
-                        progressBar.visibility = View.VISIBLE
-                        Horizon.Companion.SendTask(this, address,
-                                memoTextView.text.toString(), amountTextView.text.toString()).execute()
-                    } else {
-                        NetworkUtils(this).displayNoNetwork()
-                    }
+                    sendPayment()
                 }
                 Activity.RESULT_CANCELED -> {}
                 else -> finish()
@@ -113,15 +120,41 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
 
     private fun showAmount(amount: String) {
         amountTextView.text = if (amount.isEmpty()) "0" else amount
+        if (isAmountValid()) {
+            amountTextView.setTextColor(ContextCompat.getColor(this, R.color.toryBlue))
+        } else {
+            amountTextView.setTextColor(ContextCompat.getColor(this, R.color.apricot))
+        }
+    }
+
+    private fun isAmountValid() : Boolean {
+        return (amount <= WalletApplication.userSession.getAvailableBalance().toDouble())
     }
 
     //endregion
+
+    private fun sendPayment() {
+        if (NetworkUtils(this).isNetworkAvailable()) {
+            progressBar.visibility = View.VISIBLE
+
+            val secretSeed = AccountUtils.getSecretSeed(applicationContext)
+
+            Horizon.Companion.SendTask(this, address, secretSeed,
+                    memoTextView.text.toString(), amountText).execute()
+        } else {
+            NetworkUtils(this).displayNoNetwork()
+        }
+    }
 
     //region Horizon callbacks
     override fun onSuccess() {
         progressBar.visibility = View.GONE
         Toast.makeText(this, getString(R.string.send_success_message), Toast.LENGTH_LONG).show()
-        launchWallet()
+        val handler = Handler()
+        val runnableCode = Runnable {
+            launchWallet()
+        }
+        handler.postDelayed(runnableCode, 1000)
     }
 
     override fun onError() {

@@ -1,14 +1,11 @@
 package blockeq.com.stellarwallet.fragments
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
-import blockeq.com.stellarwallet.activities.PinActivity
 import blockeq.com.stellarwallet.models.PinType
 import kotlinx.android.synthetic.main.fragment_settings.*
 
@@ -31,20 +28,28 @@ class SettingsFragment : BaseFragment() {
     //region User Interface
 
     private fun setupUI() {
+        setSavedSettings()
+        val phrase = WalletApplication.localStore.encryptedPhrase!!
+        
         viewPhraseButton.setOnClickListener {
-            val phrase = WalletApplication.localStore!!.encryptedPhrase!!
             launchPINView(PinType.VIEW_PHRASE, "", phrase, false)
         }
 
         viewSeedButton.setOnClickListener {
-            val phrase = WalletApplication.localStore!!.encryptedPhrase!!
             launchPINView(PinType.VIEW_SEED, "", phrase, false)
         }
 
         clearWalletButton.setOnClickListener {
-            val phrase = WalletApplication.localStore!!.encryptedPhrase!!
             launchPINView(PinType.CLEAR_WALLET, "", phrase, false)
         }
+
+        pinOnSendPaymentsButton.setOnClickListener {
+            WalletApplication.localStore.showPinOnSend = pinOnSendPaymentsButton.isChecked
+        }
+    }
+
+    private fun setSavedSettings() {
+        pinOnSendPaymentsButton.isChecked = WalletApplication.localStore.showPinOnSend
     }
 
 }

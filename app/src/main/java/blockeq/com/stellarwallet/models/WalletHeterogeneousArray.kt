@@ -6,8 +6,8 @@ import org.stellar.sdk.AssetTypeCreditAlphaNum
 import org.stellar.sdk.AssetTypeNative
 import org.stellar.sdk.responses.effects.*
 
-class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: AvailableBalance,
-                              pair: Pair<*, *>, effectsList: ArrayList<EffectResponse>?) : ArrayList<Any>() {
+class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: AvailableBalance,
+                               pair: Pair<*, *>, effectsList: ArrayList<EffectResponse>?) : ArrayList<Any>() {
 
     companion object {
         const val TOTAL_INDEX = 0
@@ -18,7 +18,7 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
 
 
     var array: ArrayList<Any> = ArrayList()
-    var availableBalanceOffsett = 0
+    var availableBalanceOffset = 0
 
     init {
         array.add(totalBalance)
@@ -42,20 +42,29 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
     }
 
     fun updatePair(p: Pair<*, *>) {
-        array.removeAt(PAIR_INDEX - availableBalanceOffsett)
-        array.add(PAIR_INDEX - availableBalanceOffsett, p)
+        array.removeAt(PAIR_INDEX - availableBalanceOffset)
+        array.add(PAIR_INDEX - availableBalanceOffset, p)
     }
 
-    fun updateEffectsList(list: ArrayList<EffectResponse>) {
-        array.subList(EFFECTS_LIST_INDEX - availableBalanceOffsett, array.size).clear()
+    fun updateEffectsList(list: ArrayList<EffectResponse>?) {
+        array.subList(EFFECTS_LIST_INDEX - availableBalanceOffset, array.size).clear()
         addFilteredEffects(list)
     }
 
     //endregion
 
     fun hideAvailableBalance() {
-        array.removeAt(AVAILABLE_INDEX)
-        availableBalanceOffsett = 1
+        if (availableBalanceOffset == 0) {
+            array.removeAt(AVAILABLE_INDEX)
+            availableBalanceOffset = 1
+        }
+    }
+
+    fun showAvailableBalance(balance: AvailableBalance) {
+        if (availableBalanceOffset != 0) {
+            availableBalanceOffset = 0
+            array.add(AVAILABLE_INDEX, balance)
+        }
     }
 
     private fun addFilteredEffects(list: ArrayList<EffectResponse>?) {
@@ -88,10 +97,10 @@ class WalletHeterogenousArray(totalBalance: TotalBalance, availableBalance: Avai
     private fun convertEffectsToAccountEffects(list: ArrayList<EffectResponse>) : ArrayList<Any> {
         return list.map {
             if (it is TradeEffectResponse) {
-                TradeEffect(it.type, it.createdAt, getBoughtAsset(it), getSoldAsset(it),
+                return@map TradeEffect(it.type, it.createdAt, getBoughtAsset(it), getSoldAsset(it),
                         it.boughtAmount, it.soldAmount)
             } else {
-                AccountEffect(it.type, it.createdAt, getAssetCode(it), getAmount(it))
+                return@map AccountEffect(it.type, it.createdAt, getAssetCode(it), getAmount(it))
             }
         } as ArrayList
     }

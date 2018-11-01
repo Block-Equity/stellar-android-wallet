@@ -8,15 +8,15 @@ import java.util.*
 
 class StringFormat {
     companion object {
-        fun getFormattedDate(str: String):String {
+        fun getFormattedDate(str: String): String {
             val formatter = DateTimeFormatter.ofPattern("MMM dd, uuuu", Locale.ENGLISH)
                     .withZone(ZoneId.of("UTC"))
             return formatter.format(Instant.parse(str))
         }
 
         fun truncateDecimalPlaces(string: String?): String {
-            if (string == null) return ""
-            return String.format("%.4f", string.toDouble())
+            if (string == null) return Constants.DEFAULT_ACCOUNT_BALANCE
+            return String.format(Locale.ENGLISH, "%.4f", string.toDouble())
         }
 
         /**

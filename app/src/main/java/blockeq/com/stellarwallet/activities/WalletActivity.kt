@@ -5,14 +5,13 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.fragments.SettingsFragment
-import blockeq.com.stellarwallet.fragments.TradingFragment
 import blockeq.com.stellarwallet.fragments.WalletFragment
 
-class MainActivity : BaseActivity() {
+class WalletActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_wallet)
 
         setupUI()
     }
@@ -26,11 +25,11 @@ class MainActivity : BaseActivity() {
                 openFragment(walletFragment)
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.nav_trading -> {
-                val tradingFragment = TradingFragment.newInstance()
-                openFragment(tradingFragment)
-                return@OnNavigationItemSelectedListener true
-            }
+//            R.id.nav_trading -> {
+//                val tradingFragment = TradingFragment.newInstance()
+//                openFragment(tradingFragment)
+//                return@OnNavigationItemSelectedListener true
+//            }
             R.id.nav_settings -> {
                 val settingsFragment = SettingsFragment.newInstance()
                 openFragment(settingsFragment)
@@ -48,7 +47,7 @@ class MainActivity : BaseActivity() {
 
     //endregion
 
-    override fun setupUI() {
+    private fun setupUI() {
         setupNav()
     }
 

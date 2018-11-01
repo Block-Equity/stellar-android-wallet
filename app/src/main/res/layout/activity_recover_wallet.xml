@@ -12,7 +12,6 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
-        app:title="@string/enter_phrase"
         app:titleTextColor="@color/colorPrimaryDark"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
@@ -22,7 +21,7 @@
         android:layout_below="@+id/recoverToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/invalid_word_count"
+        android:text="@string/invalid_input_for_phrase"
         style="@style/RegularText"
         android:gravity="center"
         android:textColor="@color/terracotta"
@@ -35,12 +34,37 @@
         android:layout_above="@id/nextButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:digits="@string/mnemonic_alphabet"
         style="@style/RegularText"
         android:padding="@dimen/activity_vertical_margin"
         android:background="@android:color/transparent"
         android:textSize="@dimen/text_size_medium"
         android:gravity="top"/>
 
+    <EditText
+        android:id="@+id/secretKeyEditText"
+        android:layout_below="@id/invalidPhraseTextView"
+        android:layout_above="@id/passphraseButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:digits="@string/stellar_address_alphabet"
+        style="@style/RegularText"
+        android:inputType="textCapCharacters"
+        android:padding="@dimen/activity_vertical_margin"
+        android:background="@android:color/transparent"
+        android:textSize="@dimen/text_size_medium"
+        android:gravity="top"/>
+
+    <TextView
+        android:id="@+id/passphraseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/advanced_security"
+        android:layout_above="@+id/nextButton"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/activity_vertical_margin"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/nextButton"

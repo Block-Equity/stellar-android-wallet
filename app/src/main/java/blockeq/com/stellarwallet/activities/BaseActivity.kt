@@ -7,21 +7,15 @@ import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
 
-open class BaseActivity : AppCompatActivity() {
-
-    open fun setupUI() {
-        throw IllegalStateException("Please override this function.")
-    }
-
+abstract class BaseActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
         if (WalletApplication.appReturnedFromBackground) {
             WalletApplication.appReturnedFromBackground =  false
 
-
-            if (!WalletApplication.localStore!!.encryptedPhrase.isNullOrEmpty()) {
-                launchPINView(PinType.LOGIN, "", "", true)
+            if (!WalletApplication.localStore.encryptedPhrase.isNullOrEmpty()) {
+                launchPINView(PinType.LOGIN, "", "", null, true)
             }
         }
     }
@@ -29,13 +23,13 @@ open class BaseActivity : AppCompatActivity() {
 
     //region Helper Functions
 
-    open fun launchPINView(pinType: PinType, message: String, mnemonic: String, isLogin: Boolean) {
-        val pinViewState = PinViewState(pinType, message, "", mnemonic)
+    open fun launchPINView(pinType: PinType, message: String, mnemonic: String, passphrase: String?, isLogin: Boolean) {
+        val pinViewState = PinViewState(pinType, message, "", mnemonic, passphrase)
         PinFlowController.launchPinActivity(this, pinViewState, isLogin)
     }
 
     fun launchWallet() {
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, WalletActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
     }

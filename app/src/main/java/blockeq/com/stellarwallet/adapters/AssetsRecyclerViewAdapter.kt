@@ -2,8 +2,8 @@ package blockeq.com.stellarwallet.adapters
 
 import android.app.Activity
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -12,26 +12,20 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.InflationActivity
 import blockeq.com.stellarwallet.helpers.Constants
-import blockeq.com.stellarwallet.interfaces.RecyclerViewListener
-import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
+import blockeq.com.stellarwallet.interfaces.ChangeTrustlineListener
 import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.models.SupportedAssetType
-import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.AccountUtils
-import blockeq.com.stellarwallet.utils.NetworkUtils
 import blockeq.com.stellarwallet.utils.StringFormat
 import com.squareup.picasso.Picasso
 import org.stellar.sdk.Asset
 import org.stellar.sdk.KeyPair
-import java.util.*
 
-
-class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerViewListener,
+class AssetsRecyclerViewAdapter(var context: Context, var listener: ChangeTrustlineListener,
                                 var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -135,15 +129,16 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerView
 
         viewHolder.assetButton!!.visibility = View.VISIBLE
         viewHolder.assetName!!.text = asset.name
-        viewHolder.assetAmount!!.text = StringFormat.truncateDecimalPlaces(asset.amount) + " " + asset.code.toUpperCase()
+        viewHolder.assetAmount!!.text = String.format(context.getString(R.string.balance_template),
+                StringFormat.truncateDecimalPlaces(asset.amount), asset.code.toUpperCase())
 
         Picasso.get().load(asset.image).into(viewHolder.assetImage)
 
         if (asset.code == Constants.LUMENS_ASSET_CODE) {
             viewHolder.assetButton!!.text = context.getString(R.string.set_inflation_message)
-            viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.mantis))
+            viewHolder.assetButton!!.setBackgroundColor(ContextCompat.getColor(context, R.color.mantis))
             viewHolder.assetButton!!.setOnClickListener {
-                if (WalletApplication.localStore!!.balances!!.isNotEmpty() &&
+                if (WalletApplication.localStore.balances!!.isNotEmpty() &&
                         AccountUtils.getTotalBalance(Constants.LUMENS_ASSET_TYPE).toDouble() > 1.0) {
                     context.startActivity(Intent(context, InflationActivity::class.java))
                 } else {
@@ -152,10 +147,9 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerView
             }
         } else if (asset.amount!!.toDouble() == 0.0) {
             viewHolder.assetButton!!.text = context.getString(R.string.remove_asset_message)
-            viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.apricot))
+            viewHolder.assetButton!!.setBackgroundColor(ContextCompat.getColor(context, R.color.apricot))
             viewHolder.assetButton!!.setOnClickListener {
-                listener.showProgressBar()
-                changeTrustLine(asset.asset!!, true)
+                listener.changeTrustline(asset.asset!!, true)
             }
         } else {
             viewHolder.assetButton!!.visibility = View.GONE
@@ -184,16 +178,16 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerView
         val asset = items[position] as SupportedAsset
         val trustLineAsset = Asset.createNonNativeAsset(asset.code.toUpperCase(), KeyPair.fromAccountId(asset.issuer))
 
-        viewHolder.assetName!!.text = asset.name + " (" + asset.code.toUpperCase() + ")"
+        viewHolder.assetName!!.text = String.format(context.getString(R.string.asset_template),
+                asset.name, asset.code.toUpperCase())
 
         viewHolder.assetAmount!!.visibility = View.GONE
         Picasso.get().load(asset.image).into(viewHolder.assetImage)
 
         viewHolder.assetButton!!.text = context.getString(R.string.add_asset)
-        viewHolder.assetButton!!.setBackgroundColor(context.resources.getColor(R.color.mantis))
+        viewHolder.assetButton!!.setBackgroundColor(ContextCompat.getColor(context, R.color.mantis))
         viewHolder.assetButton!!.setOnClickListener {
-            listener.showProgressBar()
-            changeTrustLine(trustLineAsset, false)
+            listener.changeTrustline(trustLineAsset, false)
         }
         viewHolder.assetButton!!.visibility = View.VISIBLE
     }
@@ -211,24 +205,4 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: RecyclerView
     }
     //endregion
 
-    private fun changeTrustLine(asset: Asset, removeTrust: Boolean) {
-        if (NetworkUtils(context).isNetworkAvailable()) {
-            Horizon.Companion.ChangeTrust(object : SuccessErrorCallback {
-                override fun onSuccess() {
-                    Toast.makeText(context, context.getString(R.string.success_trustline_changed), Toast.LENGTH_SHORT).show()
-                    listener.hideProgressBar()
-                    listener.reloadDataForAdapter()
-                }
-
-                override fun onError() {
-                    Toast.makeText(context, context.getString(R.string.error_trustline_changed), Toast.LENGTH_SHORT).show()
-                    listener.hideProgressBar()
-                }
-
-            }, asset, removeTrust).execute()
-        } else {
-            NetworkUtils(context).displayNoNetwork()
-            listener.hideProgressBar()
-        }
-    }
 }

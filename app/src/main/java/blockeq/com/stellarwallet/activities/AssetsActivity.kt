@@ -1,5 +1,6 @@
 package blockeq.com.stellarwallet.activities
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
@@ -8,11 +9,13 @@ import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.adapters.AssetsRecyclerViewAdapter
 import blockeq.com.stellarwallet.helpers.Constants
+import blockeq.com.stellarwallet.interfaces.ChangeTrustlineListener
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
-import blockeq.com.stellarwallet.interfaces.RecyclerViewListener
+import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.models.SupportedAssetType
 import blockeq.com.stellarwallet.services.networking.Horizon
+import blockeq.com.stellarwallet.utils.AccountUtils
 import blockeq.com.stellarwallet.utils.NetworkUtils
 import com.android.volley.Request
 import com.android.volley.Response
@@ -21,14 +24,17 @@ import com.android.volley.toolbox.Volley
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.content_assets_activity.*
+import org.stellar.sdk.Asset
+import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 
 
-class AssetsActivity : BasePopupActivity(), RecyclerViewListener {
+class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
     private var adapter :AssetsRecyclerViewAdapter? = null
     private var assetsList: ArrayList<Any>? = ArrayList()
     private var map: Map<String, SupportedAsset>? = null
+    private lateinit var context : Context
 
     override fun setContent(): Int {
         return R.layout.content_assets_activity
@@ -39,9 +45,10 @@ class AssetsActivity : BasePopupActivity(), RecyclerViewListener {
 
         setupUI()
         loadSupportedAssets()
+        context = applicationContext
     }
 
-    override fun setupUI() {
+    private fun setupUI() {
         progressBar.visibility = View.VISIBLE
         bindAdapter()
         titleText.text = getString(R.string.asset_title_text)
@@ -58,7 +65,7 @@ class AssetsActivity : BasePopupActivity(), RecyclerViewListener {
 
     private fun updateAdapter() {
         assetsList!!.clear()
-        assetsList!!.addAll(convertBalanceToSupportedAsset(WalletApplication.localStore!!.balances!!, map!!))
+        assetsList!!.addAll(convertBalanceToSupportedAsset(WalletApplication.localStore.balances!!, map!!))
         val filteredList = getFilteredSupportedAssets(map!!)
         if (!filteredList.isEmpty()) {
             assetsList!!.add(getString(R.string.supported_assets_header))
@@ -83,22 +90,25 @@ class AssetsActivity : BasePopupActivity(), RecyclerViewListener {
 
        if (balances.isNotEmpty()) {
            val nullableAssets = balances.map {
-               if (it.assetType == Constants.LUMENS_ASSET_TYPE) {
-                   list[0].amount = it.balance
-                   return@map null
-               } else if (supportedAssetsMap.containsKey(it.assetCode.toLowerCase())){
-                   val asset = supportedAssetsMap[it.assetCode.toLowerCase()]!!
-                   asset.amount = it.balance
-                   asset.type = SupportedAssetType.ADDED
-                   asset.code = asset.code
-                   asset.asset = it.asset
-                   return@map asset
-               } else {
-                   return@map null
+               when {
+                   it.assetType == Constants.LUMENS_ASSET_TYPE -> {
+                       list[0].amount = it.balance
+                       return@map null
+                   }
+                   supportedAssetsMap.containsKey(it.assetCode.toLowerCase()) -> {
+                       val asset = supportedAssetsMap[it.assetCode.toLowerCase()]!!
+                       asset.amount = it.balance
+                       asset.type = SupportedAssetType.ADDED
+                       asset.code = asset.code
+                       asset.asset = it.asset
+                       return@map asset
+                   }
+                   else -> return@map null
                }
            }
 
            // This cast is guaranteed to succeed
+           @Suppress("UNCHECKED_CAST")
            list.addAll((nullableAssets.filter { it != null }) as List<SupportedAsset>)
        }
 
@@ -106,8 +116,8 @@ class AssetsActivity : BasePopupActivity(), RecyclerViewListener {
     }
 
     private fun getFilteredSupportedAssets(map: Map<String, SupportedAsset>): List<SupportedAsset> {
-        return map.values.filter {
-            it.code.toUpperCase() !in WalletApplication.localStore!!.balances!!.map { it.assetCode }
+        return map.values.filter { it ->
+            it.code.toUpperCase() !in WalletApplication.localStore.balances!!.map { it.assetCode }
         }
     }
 
@@ -132,26 +142,55 @@ class AssetsActivity : BasePopupActivity(), RecyclerViewListener {
     }
 
     //region Call backs
-    override fun showProgressBar() {
+
+    override fun changeTrustline(asset: Asset, isRemoveAsset: Boolean) {
         progressBar.visibility = View.VISIBLE
+        val secretSeed = AccountUtils.getSecretSeed(context)
+        changeTrustLine(secretSeed, asset, isRemoveAsset)
     }
 
-    override fun hideProgressBar() {
-        progressBar.visibility = View.GONE
+    private fun changeTrustLine(secretSeed: CharArray, assetToChange: Asset, isRemove: Boolean) {
+        if (NetworkUtils(this).isNetworkAvailable()) {
+            Horizon.Companion.ChangeTrust(object : SuccessErrorCallback {
+                override fun onSuccess() {
+                    reloadDataForAdapter()
+                    Toast.makeText(this@AssetsActivity, getString(R.string.success_trustline_changed), Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.GONE
+                    if (isRemove) {
+                        WalletApplication.userSession.currAssetCode = Constants.LUMENS_ASSET_TYPE
+                        WalletApplication.userSession.currAssetName = Constants.LUMENS_ASSET_NAME
+                        WalletApplication.userSession.currAssetIssuer = ""
+                        finish()
+                    }
+                }
+
+                override fun onError() {
+                    Toast.makeText(this@AssetsActivity, getString(R.string.error_trustline_changed), Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.GONE
+                }
+            }, assetToChange, isRemove, secretSeed).execute()
+        } else {
+            NetworkUtils(this).displayNoNetwork()
+            progressBar.visibility = View.GONE
+        }
     }
 
-    override fun reloadDataForAdapter() {
+    fun reloadDataForAdapter() {
         if (NetworkUtils(this).isNetworkAvailable()) {
             Horizon.Companion.LoadAccountTask(object: OnLoadAccount {
+
                 override fun onLoadAccount(result: AccountResponse?) {
                     if (result != null) {
-                        WalletApplication.localStore!!.balances = result.balances
+                        WalletApplication.localStore.balances = result.balances
                         updateAdapter()
                     }
+                }
+
+                override fun onError(error: ErrorResponse) {
+                    Toast.makeText(this@AssetsActivity, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
                 }
             }).execute()
         }
     }
     //endregion
-
 }

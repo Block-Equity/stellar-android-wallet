@@ -1,40 +1,51 @@
 package blockeq.com.stellarwallet.activities
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.services.networking.Horizon
+import blockeq.com.stellarwallet.utils.AccountUtils
 import blockeq.com.stellarwallet.utils.NetworkUtils
 import kotlinx.android.synthetic.main.activity_inflation.*
 
-class InflationActivity : BaseActivity() {
+class InflationActivity : BasePopupActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_inflation)
 
         setupUI()
     }
 
-    override fun setupUI() {
+    override fun setContent(): Int {
+        return R.layout.activity_inflation
+    }
+
+    private fun setupUI() {
 
         addressEditText.setText(Constants.INFLATION_DESTINATION)
 
         saveButton.setOnClickListener {
+
+            progressBar.visibility = View.VISIBLE
+            val secretSeed = AccountUtils.getSecretSeed(it.context.applicationContext)
+
             if (NetworkUtils(this).isNetworkAvailable()) {
                 Horizon.Companion.JoinInflationDestination(object : SuccessErrorCallback {
                     override fun onSuccess() {
-                        Toast.makeText(this@InflationActivity, "Inflation destination set!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@InflationActivity, getString(R.string.inflation_set_success), Toast.LENGTH_SHORT).show()
+                        finish()
                     }
 
                     override fun onError() {
-                        Toast.makeText(this@InflationActivity, "There was an error setting inflation destination.", Toast.LENGTH_SHORT).show()
+                        progressBar.visibility = View.GONE
+                        Toast.makeText(this@InflationActivity, getString(R.string.inflation_set_error), Toast.LENGTH_SHORT).show()
                     }
-
-                }, addressEditText.text.toString()).execute()
+                }, secretSeed, addressEditText.text.toString()).execute()
             } else {
+                progressBar.visibility = View.GONE
                 NetworkUtils(this).displayNoNetwork()
             }
         }

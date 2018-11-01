@@ -6,10 +6,10 @@
         android:icon="@drawable/ic_wallet"
         android:title="@string/nav_wallet"/>
 
-    <item
-        android:id="@+id/nav_trading"
-        android:icon="@drawable/ic_trading"
-        android:title="@string/nav_trading"/>
+    <!--<item-->
+        <!--android:id="@+id/nav_trading"-->
+        <!--android:icon="@drawable/ic_trading"-->
+        <!--android:title="@string/nav_trading"/>-->
 
     <item
         android:id="@+id/nav_settings"
