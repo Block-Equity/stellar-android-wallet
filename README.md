@@ -1,15 +1,4 @@
-# BlockEQ Android Wallet
-
-<p align="center">
-  <a href="https://play.google.com/store/apps/details?id=blockeq.com.stellarwallet">
-    <img alt="Download on the Play Store" title="App Store" src="https://user-images.githubusercontent.com/2541326/47521746-d57d8300-d861-11e8-8652-0f1cabcaed04.png" width="140">
-  </a>
-</p>
-
-## Project Status
-[![Build Status](https://app.bitrise.io/app/aabf4854264f7412/status.svg?token=CLkPGE9X6FwMOTTBh1KqBA)](https://app.bitrise.io/app/aabf4854264f7412)
-[![Slack chat](https://img.shields.io/badge/chat-on_slack-004FB9.svg?&logo=slack)](https://blockeq.slack.com)
-[![Twitter](https://img.shields.io/twitter/url/https/github.com/block-equity/stellar-ios-wallet.svg?style=social)](https://twitter.com/block_eq)
+# BlockEQ Android Wallet <a href="https://play.google.com/store/apps/details?id=blockeq.com.stellarwallet"><img alt="Download on the Play Store" title="App Store" src="https://user-images.githubusercontent.com/2541326/47521746-d57d8300-d861-11e8-8652-0f1cabcaed04.png" width="140" style="vertical-align: middle;" /></a><br>[![Build Status](https://app.bitrise.io/app/aabf4854264f7412/status.svg?token=CLkPGE9X6FwMOTTBh1KqBA)](https://app.bitrise.io/app/aabf4854264f7412) [![Slack chat](https://img.shields.io/badge/chat-on_slack-004FB9.svg?&logo=slack)](https://blockeq.slack.com) [![Twitter](https://img.shields.io/twitter/url/https/github.com/block-equity/stellar-ios-wallet.svg?style=social)](https://twitter.com/block_eq)
 
 ## Table of Contents
 - [Introduction](#introduction)
