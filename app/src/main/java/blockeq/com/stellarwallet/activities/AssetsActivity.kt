@@ -151,7 +151,7 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
     private fun changeTrustLine(secretSeed: CharArray, assetToChange: Asset, isRemove: Boolean) {
         if (NetworkUtils(this).isNetworkAvailable()) {
-            Horizon.Companion.ChangeTrust(object : SuccessErrorCallback {
+            Horizon.getChangeTrust(object : SuccessErrorCallback {
                 override fun onSuccess() {
                     reloadDataForAdapter()
                     Toast.makeText(this@AssetsActivity, getString(R.string.success_trustline_changed), Toast.LENGTH_SHORT).show()
@@ -177,7 +177,7 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
     fun reloadDataForAdapter() {
         if (NetworkUtils(this).isNetworkAvailable()) {
-            Horizon.Companion.LoadAccountTask(object: OnLoadAccount {
+            Horizon.getLoadAccountTask(object: OnLoadAccount {
 
                 override fun onLoadAccount(result: AccountResponse?) {
                     if (result != null) {

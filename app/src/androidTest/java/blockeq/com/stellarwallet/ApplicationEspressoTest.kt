@@ -1,22 +1,25 @@
 package blockeq.com.stellarwallet
 
+import android.app.Activity
 import android.content.Context
 import android.support.test.espresso.Espresso
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions
 import android.support.test.espresso.assertion.ViewAssertions
 import android.support.test.espresso.contrib.RecyclerViewActions
+import android.support.test.espresso.intent.rule.IntentsTestRule
 import android.support.test.espresso.matcher.RootMatchers
 import android.support.test.espresso.matcher.ViewMatchers
-import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.support.v7.widget.RecyclerView
-import blockeq.com.stellarwallet.ApplicationEspressoTest.ActivityType.*
 import blockeq.com.stellarwallet.activities.LaunchActivity
+import blockeq.com.stellarwallet.activities.PinActivity
+import blockeq.com.stellarwallet.activities.WalletActivity
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.reflect.KClass
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -33,7 +36,7 @@ class ApplicationEspressoTest {
 
     @Rule
     @JvmField
-    val activityTestRule = ActivityTestRule<LaunchActivity>(LaunchActivity::class.java)
+    val activityTestRule = IntentsTestRule<LaunchActivity>(LaunchActivity::class.java)
 
     @Before
     fun before() {
@@ -42,22 +45,22 @@ class ApplicationEspressoTest {
 
     @Test
     fun testCreateWalletOption12Words() {
-        onActivity(ActivityType.LAUNCH_ACTIVITY)
+        onActivity(LaunchActivity::class)
 
         createWallet(MnemonicType.WORD_12, pin)
 
-        onActivity(WALLET_ACTIVITY)
+        onActivity(WalletActivity::class)
 
         clearWallet()
 
         writePin(pin)
 
-        onActivity(LAUNCH_ACTIVITY)
+        onActivity(LaunchActivity::class)
     }
 
     @Test
     fun testCreateWalletOption24Words() {
-        onActivity(ActivityType.LAUNCH_ACTIVITY)
+        onActivity(LaunchActivity::class)
 
         createWallet(MnemonicType.WORD_24, pin)
 
@@ -65,7 +68,7 @@ class ApplicationEspressoTest {
 
         writePin(pin)
 
-        onActivity(ActivityType.LAUNCH_ACTIVITY)
+        onActivity(LaunchActivity::class)
     }
 
     enum class MnemonicType {
@@ -73,35 +76,31 @@ class ApplicationEspressoTest {
         WORD_24
     }
 
-    enum class ActivityType {
-        LAUNCH_ACTIVITY,
-        WALLET_ACTIVITY,
-        PIN_ACTIVITY
-    }
-
     /**
      * Must be called from ActivityType.WALLET_ACTIVITY
      */
     private fun clearWallet() {
-        onActivity(WALLET_ACTIVITY)
+        onActivity(WalletActivity::class)
 
         onView(ViewMatchers.withId(R.id.nav_settings)).perform(ViewActions.click())
 
         onView(ViewMatchers.withId(R.id.clearWalletButton)).perform(ViewActions.click())
+
+        onActivity(LaunchActivity::class)
     }
 
-    private fun onActivity(activity : ActivityType) {
+    private fun onActivity(activity : KClass<out Activity>) {
         when (activity) {
-            LAUNCH_ACTIVITY -> {
+            LaunchActivity::class -> {
                 onView(ViewMatchers.withId(R.id.createWalletButton))
                 onView(ViewMatchers.withId(R.id.recoverWalletButton))
             }
 
-            WALLET_ACTIVITY -> {
+            WalletActivity::class -> {
                 onView(ViewMatchers.withId(R.id.navigationView))
             }
 
-            PIN_ACTIVITY -> {
+            PinActivity::class -> {
                 onView(ViewMatchers.withId(R.id.pinLockView))
             }
         }
@@ -111,7 +110,7 @@ class ApplicationEspressoTest {
      * Must be called from ActivityType.LAUNCH_ACTIVITY
      */
     private fun createWallet(option : MnemonicType, pin : String) {
-        onActivity(LAUNCH_ACTIVITY)
+        onActivity(LaunchActivity::class)
         onView(ViewMatchers.withId(R.id.createWalletButton)).perform(ViewActions.click())
 
         val optionString : String = when (option) {
@@ -135,7 +134,7 @@ class ApplicationEspressoTest {
      * Must be called from ActivityType.PIN_ACTIVITY
      */
     private fun writePin(pin : String) {
-        onActivity(PIN_ACTIVITY)
+        onActivity(PinActivity::class)
 
         if (pin.length != 4) {
             throw IllegalStateException("PIN has to have 4 characters, now it has " + pin.length)

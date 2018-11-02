@@ -33,7 +33,7 @@ class InflationActivity : BasePopupActivity() {
             val secretSeed = AccountUtils.getSecretSeed(it.context.applicationContext)
 
             if (NetworkUtils(this).isNetworkAvailable()) {
-                Horizon.Companion.JoinInflationDestination(object : SuccessErrorCallback {
+                Horizon.getJoinInflationDestination(object : SuccessErrorCallback {
                     override fun onSuccess() {
                         Toast.makeText(this@InflationActivity, getString(R.string.inflation_set_success), Toast.LENGTH_SHORT).show()
                         finish()

@@ -139,7 +139,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
 
             val secretSeed = AccountUtils.getSecretSeed(applicationContext)
 
-            Horizon.Companion.SendTask(this, address, secretSeed,
+            Horizon.getSendTask(this, address, secretSeed,
                     memoTextView.text.toString(), amountText).execute()
         } else {
             NetworkUtils(this).displayNoNetwork()

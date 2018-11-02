@@ -15,9 +15,12 @@ import kotlinx.android.synthetic.main.fragment_tab_trade.*
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
 import android.text.Editable
 import android.text.TextWatcher
+import blockeq.com.stellarwallet.services.networking.Horizon
+import blockeq.com.stellarwallet.utils.AccountUtils
+import org.stellar.sdk.Asset
 
 
-class TradeTab : Fragment(), View.OnClickListener {
+class TradeTabFragment : Fragment(), View.OnClickListener {
 
     private var sellingCurrencies = mutableListOf<SelectionModel>()
     private var buyingCurrencies = mutableListOf<SelectionModel>()
@@ -45,6 +48,7 @@ class TradeTab : Fragment(), View.OnClickListener {
         half.setOnClickListener(this)
         threeQuarters.setOnClickListener(this)
         all.setOnClickListener(this)
+        submitTrade.setOnClickListener(this)
 
         sellingCustomSelector.editText.addTextChangedListener(object : TextWatcher {
 
@@ -93,8 +97,8 @@ class TradeTab : Fragment(), View.OnClickListener {
         }
     }
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
+    override fun onClick(v: View) {
+        when (v.id) {
             R.id.toggleMarket -> {
                 toggleMarket.setBackgroundResource(R.drawable.left_toggle_selected)
                 toggleLimit.setBackgroundResource(R.drawable.right_toggle)
@@ -119,6 +123,18 @@ class TradeTab : Fragment(), View.OnClickListener {
             }
             R.id.all -> {
                 sellingCustomSelector.editText.setText(holdingsAmount.toString())
+            }
+            R.id.submitTrade -> {
+//                Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
+//                    override fun onExecuted() {
+//                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//                    }
+//
+//                    override fun onFailed() {
+//                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//                    }
+//
+//                }, AccountUtils.getSecretSeed(activity!!.applicationContext), Asset.createNonNativeAsset(), Asset.createNonNativeAsset(), "2", "0.1")
             }
         }
     }

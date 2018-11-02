@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.view.ContextThemeWrapper
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -168,10 +167,10 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
                 if (NetworkUtils(activity!!).isNetworkAvailable()) {
 
-                    Horizon.Companion.LoadAccountTask(this@WalletFragment)
+                    Horizon.getLoadAccountTask(this@WalletFragment)
                             .execute()
 
-                    Horizon.Companion.LoadEffectsTask(this@WalletFragment)
+                    Horizon.getLoadEffectsTask(this@WalletFragment)
                             .execute()
                 } else {
                     NetworkUtils(activity!!).displayNoNetwork()
