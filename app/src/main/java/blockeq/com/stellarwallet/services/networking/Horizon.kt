@@ -15,6 +15,7 @@ import org.stellar.sdk.requests.RequestBuilder
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.Page
 import org.stellar.sdk.responses.effects.EffectResponse
+import java.util.concurrent.TimeUnit
 
 object Horizon : HorizonTasks {
     private const val PROD_SERVER = "https://horizon.stellar.org"
@@ -267,11 +268,13 @@ object Horizon : HorizonTasks {
     }
 
     private fun getServer() : Server {
-        val clientOkHttp = OkHttpClient.Builder()
-                .addNetworkInterceptor(StethoInterceptor())
-                .build()
         val server = Server(PROD_SERVER)
-        server.httpClient = clientOkHttp
+        // These two clients are a copy of the liens 45 and 46 of org.stellar.sdk.Server class with the stetho interceptor
+        // REVIEW this once you upgrade stellar library
+        val httpClient = OkHttpClient.Builder().connectTimeout(10L, TimeUnit.SECONDS).readTimeout(30L, TimeUnit.SECONDS).retryOnConnectionFailure(true).addNetworkInterceptor(StethoInterceptor()).build()
+        val submitHttpClient = OkHttpClient.Builder().connectTimeout(10L, TimeUnit.SECONDS).readTimeout(65L, TimeUnit.SECONDS).retryOnConnectionFailure(true).addNetworkInterceptor(StethoInterceptor()).build()
+        server.httpClient = httpClient
+        server.submitHttpClient = submitHttpClient
 
         return server
     }

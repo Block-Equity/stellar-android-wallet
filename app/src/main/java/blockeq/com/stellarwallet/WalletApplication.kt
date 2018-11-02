@@ -5,7 +5,7 @@ import android.support.multidex.MultiDexApplication
 import blockeq.com.stellarwallet.helpers.LocalStore
 import blockeq.com.stellarwallet.helpers.WalletLifecycleListener
 import blockeq.com.stellarwallet.models.UserSession
-//import com.facebook.stetho.Stetho
+import com.facebook.stetho.Stetho
 import com.google.gson.Gson
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import java.security.Provider
@@ -43,7 +43,7 @@ class WalletApplication : MultiDexApplication() {
         localStore = LocalStore(sharedPreferences, Gson())
 
         if (BuildConfig.DEBUG) {
-//            Stetho.initializeWithDefaults(this)
+            Stetho.initializeWithDefaults(this)
         }
     }
 
