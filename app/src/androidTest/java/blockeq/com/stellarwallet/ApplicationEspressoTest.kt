@@ -10,6 +10,7 @@ import android.support.test.espresso.contrib.RecyclerViewActions
 import android.support.test.espresso.intent.rule.IntentsTestRule
 import android.support.test.espresso.matcher.RootMatchers
 import android.support.test.espresso.matcher.ViewMatchers
+import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.support.v7.widget.RecyclerView
 import blockeq.com.stellarwallet.activities.LaunchActivity
@@ -36,7 +37,7 @@ class ApplicationEspressoTest {
 
     @Rule
     @JvmField
-    val activityTestRule = IntentsTestRule<LaunchActivity>(LaunchActivity::class.java)
+    val activityTestRule = ActivityTestRule<LaunchActivity>(LaunchActivity::class.java)
 
     @Before
     fun before() {

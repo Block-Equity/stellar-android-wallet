@@ -7,6 +7,8 @@ import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
+import com.facebook.stetho.okhttp3.StethoInterceptor
+import okhttp3.OkHttpClient
 import org.stellar.sdk.*
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.requests.RequestBuilder
@@ -265,6 +267,12 @@ object Horizon : HorizonTasks {
     }
 
     private fun getServer() : Server {
-        return Server(PROD_SERVER)
+        val clientOkHttp = OkHttpClient.Builder()
+                .addNetworkInterceptor(StethoInterceptor())
+                .build()
+        val server = Server(PROD_SERVER)
+        server.httpClient = clientOkHttp
+
+        return server
     }
 }
