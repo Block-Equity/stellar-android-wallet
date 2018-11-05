@@ -7,7 +7,6 @@ import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.fragments.SettingsFragment
 import blockeq.com.stellarwallet.fragments.TradingFragment
 import blockeq.com.stellarwallet.fragments.WalletFragment
-import blockeq.com.stellarwallet.helpers.disableShiftMode
 
 class WalletActivity : BaseActivity() {
 
@@ -53,7 +52,6 @@ class WalletActivity : BaseActivity() {
 
     private fun setupNav() {
         val bottomNavigation: BottomNavigationView = findViewById(R.id.navigationView)
-        bottomNavigation.disableShiftMode()
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         bottomNavigation.selectedItemId = R.id.nav_wallet
     }

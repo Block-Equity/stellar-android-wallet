@@ -3,7 +3,7 @@
     <declare-styleable name="CustomSelector">
         <attr name="label" format="string" />
         <attr name="hint" format="string" />
-        <attr name="strokeColor" format="reference" />
+        <attr name="customStrokeColor" format="reference" />
         <attr name="focusColor" format="reference" />
         <attr name="cetTextColor" format="reference" />
         <attr name="hintColor" format="reference" />
