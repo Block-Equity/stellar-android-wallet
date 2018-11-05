@@ -29,6 +29,7 @@
         app:itemBackground="@color/bottomNavigationColor"
         app:itemIconTint="@color/color_nav_icons"
         app:itemTextColor="@color/color_nav_icons"
-        app:menu="@menu/navigation"/>
+        app:menu="@menu/navigation"
+        app:labelVisibilityMode="labeled" />
 
 </android.support.constraint.ConstraintLayout>

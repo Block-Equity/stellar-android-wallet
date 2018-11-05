@@ -37,7 +37,7 @@ class CustomSelector @JvmOverloads constructor(
             val typedArray = context.obtainStyledAttributes(it,
                     R.styleable.CustomSelector, 0, 0)
             setHint(typedArray.getString(R.styleable.CustomSelector_hint))
-            setColor(typedArray.getColor(R.styleable.CustomSelector_strokeColor,
+            setColor(typedArray.getColor(R.styleable.CustomSelector_customStrokeColor,
                     ContextCompat.getColor(context, R.color.alto)))
             setInputType(typedArray.getInt(R.styleable.CustomSelector_inputType, 0))
         }
