@@ -43,7 +43,7 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:name=".activities.ShowMnemonicActivity"
+            android:name=".activities.MnemonicActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity

@@ -1,5 +1,6 @@
 package blockeq.com.stellarwallet.activities
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
@@ -8,21 +9,34 @@ import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
 import blockeq.com.stellarwallet.helpers.PassphraseDialogHelper
+import blockeq.com.stellarwallet.models.MnemonicType
 import blockeq.com.stellarwallet.models.PinType
 import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_show_mnemonic.*
+import java.lang.IllegalStateException
 
-
-class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
+class MnemonicActivity : BaseActivity(), View.OnClickListener {
 
     companion object {
-        const val INTENT_DISPLAY_PHRASE = "INTENT_DISPLAY_PHRASE"
-        const val DECRYPTED_PHRASE = "DECRYPTED_PHRASE"
+        private const val MNEMONIC_PHRASE = "MNEMONIC_PHRASE"
+        private const val WALLET_LENGTH = "WALLET_LENGTH"
+
+        fun newCreateMnemonicIntent(context: Context, type : MnemonicType): Intent {
+            val intent = Intent(context, MnemonicActivity::class.java)
+            intent.putExtra(WALLET_LENGTH, type)
+            return intent
+        }
+
+        fun newDisplayMnemonicIntent(context: Context, mnemonic: String): Intent {
+            val intent = Intent(context, MnemonicActivity::class.java)
+            intent.putExtra(MnemonicActivity.MNEMONIC_PHRASE, mnemonic)
+            return intent
+        }
     }
 
-    private var mnemonicString : String? = null
-    private var passphrase : String? = null
-    private var isDisplayPhraseOnly = false
+    private var mnemonicString : String = String()
+    private var passphrase : String = String()
+    private var walletLength : MnemonicType = MnemonicType.WORD_12
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +58,7 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
     override fun onClick(v: View) {
         val itemId = v.id
         when (itemId) {
-            R.id.confirmButton -> launchPINView(PinType.CREATE, getString(R.string.please_create_a_pin), mnemonicString!!, passphrase, false)
+            R.id.confirmButton -> launchPINView(PinType.CREATE, getString(R.string.please_create_a_pin), mnemonicString, passphrase, false)
             R.id.passphraseButton -> {
                 val builder = PassphraseDialogHelper(this, object: PassphraseDialogHelper.PassphraseDialogListener {
                     override fun onOK(phrase: String) {
@@ -58,7 +72,7 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun setupUI() {
-        if (isDisplayPhraseOnly) {
+        if (!mnemonicString.isEmpty()) {
             confirmButton.visibility = View.GONE
             passphraseButton.visibility = View.GONE
             if (!WalletApplication.localStore.isRecoveryPhrase) {
@@ -92,24 +106,35 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
     //endregion
 
     //region Helper functions
-    private fun getMnemonic(): ArrayList<String> {
-        if (isDisplayPhraseOnly) {
-            return ArrayList(mnemonicString!!.split(" ".toRegex()).dropLastWhile { it.isEmpty() })
-        } else {
-            val mnemonic = if (intent.getIntExtra("walletLength", 12) == 12) {
+    private fun getMnemonic(): List<String> {
+        if (mnemonicString.isEmpty()) {
+            val mnemonic = if(walletLength == MnemonicType.WORD_12) {
                 Wallet.generate12WordMnemonic()
             } else {
                 Wallet.generate24WordMnemonic()
             }
-
             mnemonicString = String(mnemonic)
-            return String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
         }
+
+        return getMnemonicList(mnemonicString)
     }
 
     private fun loadIntent() {
-        isDisplayPhraseOnly = intent.getBooleanExtra(INTENT_DISPLAY_PHRASE, false)
-        mnemonicString = intent.getStringExtra(DECRYPTED_PHRASE)
+        if (!intent.hasExtra(MNEMONIC_PHRASE) && !intent.hasExtra(WALLET_LENGTH)) {
+           throw IllegalStateException("inconsistent intent extras, please use companion methods to create the intent")
+        }
+
+        if (intent.hasExtra(MNEMONIC_PHRASE)) {
+            mnemonicString = intent.getStringExtra(MNEMONIC_PHRASE)
+        }
+
+        if (intent.hasExtra(WALLET_LENGTH)) {
+            walletLength = intent.getSerializableExtra(WALLET_LENGTH) as MnemonicType
+        }
+    }
+
+    private fun getMnemonicList(mnemonic : String) : List<String> {
+        return mnemonic.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
     }
     //endregion
 }

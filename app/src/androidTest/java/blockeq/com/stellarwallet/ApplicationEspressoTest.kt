@@ -7,7 +7,6 @@ import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions
 import android.support.test.espresso.assertion.ViewAssertions
 import android.support.test.espresso.contrib.RecyclerViewActions
-import android.support.test.espresso.intent.rule.IntentsTestRule
 import android.support.test.espresso.matcher.RootMatchers
 import android.support.test.espresso.matcher.ViewMatchers
 import android.support.test.rule.ActivityTestRule
@@ -16,6 +15,7 @@ import android.support.v7.widget.RecyclerView
 import blockeq.com.stellarwallet.activities.LaunchActivity
 import blockeq.com.stellarwallet.activities.PinActivity
 import blockeq.com.stellarwallet.activities.WalletActivity
+import blockeq.com.stellarwallet.models.MnemonicType
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -70,11 +70,6 @@ class ApplicationEspressoTest {
         writePin(pin)
 
         onActivity(LaunchActivity::class)
-    }
-
-    enum class MnemonicType {
-        WORD_12,
-        WORD_24
     }
 
     /**

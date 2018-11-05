@@ -106,10 +106,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                             pinViewState.type == PinType.CLEAR_WALLET -> wipeAndRestart()
 
                             pinViewState.type == PinType.VIEW_PHRASE -> {
-                                val intent = Intent(this, ShowMnemonicActivity::class.java)
-                                intent.putExtra(ShowMnemonicActivity.INTENT_DISPLAY_PHRASE, true)
-                                intent.putExtra(ShowMnemonicActivity.DECRYPTED_PHRASE, mnemonic)
-                                startActivity(intent)
+                                startActivity(MnemonicActivity.newDisplayMnemonicIntent(this, mnemonic))
                                 finish()
                             }
 

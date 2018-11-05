@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.models.MnemonicType
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LaunchActivity : BaseActivity() {
@@ -42,14 +43,12 @@ class LaunchActivity : BaseActivity() {
                     // of the selected item
 
                     val walletLength = if (which == 0) {
-                        12
+                        MnemonicType.WORD_12
                     } else {
-                        24
+                        MnemonicType.WORD_24
                     }
 
-                    val intent = Intent(this, ShowMnemonicActivity::class.java)
-                    intent.putExtra("walletLength", walletLength)
-                    startActivity(intent)
+                    startActivity(MnemonicActivity.newCreateMnemonicIntent(this, walletLength))
                 }
         val dialog = builder.create()
         dialog.show()
