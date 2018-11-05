@@ -95,7 +95,9 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     fun updateTradingCurrencies(currencyCodeFrom: String?, currencyCodeTo: String?) {
-        orderBooksAdapter.setCurrencies(currencyCodeFrom, currencyCodeTo)
-        orderBooksAdapter.notifyDataSetChanged()
+        if (::orderBooksAdapter.isInitialized) {
+            orderBooksAdapter.setCurrencies(currencyCodeFrom, currencyCodeTo)
+            orderBooksAdapter.notifyDataSetChanged()
+        }
     }
 }

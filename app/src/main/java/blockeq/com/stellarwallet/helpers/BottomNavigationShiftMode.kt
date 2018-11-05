@@ -4,8 +4,7 @@ import android.annotation.SuppressLint
 import android.support.design.internal.BottomNavigationItemView
 import android.support.design.internal.BottomNavigationMenuView
 import android.support.design.widget.BottomNavigationView
-import android.util.Log
-import blockeq.com.stellarwallet.helpers.Constants.Companion.TAG
+import timber.log.Timber
 
 @SuppressLint("RestrictedApi")
 fun BottomNavigationView.disableShiftMode() {
@@ -21,8 +20,8 @@ fun BottomNavigationView.disableShiftMode() {
             item.setChecked(item.itemData.isChecked)
         }
     } catch (e: NoSuchFieldException) {
-        Log.e(TAG, "Unable to get shift mode field", e)
+        Timber.e( "Unable to get shift mode field $e")
     } catch (e: IllegalStateException) {
-        Log.e(TAG, "Unable to change value of shift mode", e)
+        Timber.e("Unable to change value of shift mode $e")
     }
 }

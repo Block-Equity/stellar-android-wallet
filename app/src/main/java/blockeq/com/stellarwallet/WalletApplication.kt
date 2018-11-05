@@ -8,6 +8,7 @@ import blockeq.com.stellarwallet.models.UserSession
 import com.facebook.stetho.Stetho
 import com.google.gson.Gson
 import org.bouncycastle.jce.provider.BouncyCastleProvider
+import timber.log.Timber
 import java.security.Provider
 import java.security.Security
 
@@ -44,6 +45,7 @@ class WalletApplication : MultiDexApplication() {
 
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
+            Timber.plant(Timber.DebugTree())
         }
     }
 

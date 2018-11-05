@@ -25,9 +25,7 @@ import com.squareup.picasso.Picasso
 import org.stellar.sdk.Asset
 import org.stellar.sdk.KeyPair
 
-class AssetsRecyclerViewAdapter(var context: Context, var listener: ChangeTrustlineListener,
-                                var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+class AssetsRecyclerViewAdapter(var context: Context, private var listener: ChangeTrustlineListener, private var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         const val TYPE_ASSET = 0
         const val TYPE_HEADER = 1
@@ -85,39 +83,21 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: ChangeTrustl
     //region View Holders
 
     class AssetViewHolder(v : View) : RecyclerView.ViewHolder(v) {
-        var assetImage : ImageView? = null
-        var assetName : TextView? = null
-        var assetAmount : TextView? = null
-        var assetButton : Button? = null
-
-        init {
-            assetImage = v.findViewById(R.id.assetImageView)
-            assetName = v.findViewById(R.id.assetNameTextView)
-            assetAmount = v.findViewById(R.id.assetAmountTextView)
-            assetButton = v.findViewById(R.id.assetButton)
-        }
+        val assetImage : ImageView = v.findViewById(R.id.assetImageView)
+        val assetName : TextView = v.findViewById(R.id.assetNameTextView)
+        val assetAmount : TextView = v.findViewById(R.id.assetAmountTextView)
+        val assetButton : Button = v.findViewById(R.id.assetButton)
     }
 
     class AssetHeaderViewHolder(v : View) : RecyclerView.ViewHolder(v) {
-        var title : TextView? = null
-
-        init {
-            title = v.findViewById(R.id.titleText)
-        }
+        val title : TextView = v.findViewById(R.id.titleText)
     }
 
     class SupportedAssetViewHolder(v : View) : RecyclerView.ViewHolder(v) {
-        var assetImage : ImageView? = null
-        var assetName : TextView? = null
-        var assetAmount : TextView? = null
-        var assetButton : Button? = null
-
-        init {
-            assetImage = v.findViewById(R.id.assetImageView)
-            assetName = v.findViewById(R.id.assetNameTextView)
-            assetAmount = v.findViewById(R.id.assetAmountTextView)
-            assetButton = v.findViewById(R.id.assetButton)
-        }
+        val assetImage : ImageView = v.findViewById(R.id.assetImageView)
+        val assetName : TextView = v.findViewById(R.id.assetNameTextView)
+        val assetAmount : TextView = v.findViewById(R.id.assetAmountTextView)
+        val assetButton : Button = v.findViewById(R.id.assetButton)
     }
 
     //endregion
@@ -127,17 +107,17 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: ChangeTrustl
     private fun configureAssetViewHolder(viewHolder : AssetViewHolder, position : Int) {
         val asset = items[position] as SupportedAsset
 
-        viewHolder.assetButton!!.visibility = View.VISIBLE
-        viewHolder.assetName!!.text = asset.name
-        viewHolder.assetAmount!!.text = String.format(context.getString(R.string.balance_template),
+        viewHolder.assetButton.visibility = View.VISIBLE
+        viewHolder.assetName.text = asset.name
+        viewHolder.assetAmount.text = String.format(context.getString(R.string.balance_template),
                 StringFormat.truncateDecimalPlaces(asset.amount), asset.code.toUpperCase())
 
         Picasso.get().load(asset.image).into(viewHolder.assetImage)
 
         if (asset.code == Constants.LUMENS_ASSET_CODE) {
-            viewHolder.assetButton!!.text = context.getString(R.string.set_inflation_message)
-            viewHolder.assetButton!!.setBackgroundColor(ContextCompat.getColor(context, R.color.mantis))
-            viewHolder.assetButton!!.setOnClickListener {
+            viewHolder.assetButton.text = context.getString(R.string.set_inflation_message)
+            viewHolder.assetButton.setBackgroundColor(ContextCompat.getColor(context, R.color.mantis))
+            viewHolder.assetButton.setOnClickListener {
                 if (WalletApplication.localStore.balances!!.isNotEmpty() &&
                         AccountUtils.getTotalBalance(Constants.LUMENS_ASSET_TYPE).toDouble() > 1.0) {
                     context.startActivity(Intent(context, InflationActivity::class.java))
@@ -146,13 +126,13 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: ChangeTrustl
                 }
             }
         } else if (asset.amount!!.toDouble() == 0.0) {
-            viewHolder.assetButton!!.text = context.getString(R.string.remove_asset_message)
-            viewHolder.assetButton!!.setBackgroundColor(ContextCompat.getColor(context, R.color.apricot))
-            viewHolder.assetButton!!.setOnClickListener {
+            viewHolder.assetButton.text = context.getString(R.string.remove_asset_message)
+            viewHolder.assetButton.setBackgroundColor(ContextCompat.getColor(context, R.color.apricot))
+            viewHolder.assetButton.setOnClickListener {
                 listener.changeTrustline(asset.asset!!, true)
             }
         } else {
-            viewHolder.assetButton!!.visibility = View.GONE
+            viewHolder.assetButton.visibility = View.GONE
         }
 
         viewHolder.itemView.setOnClickListener {
@@ -171,25 +151,25 @@ class AssetsRecyclerViewAdapter(var context: Context, var listener: ChangeTrustl
 
     private fun configureAssetHeaderViewHolder(viewHolder : AssetHeaderViewHolder, position : Int) {
         val titleText = items[position] as String
-        viewHolder.title!!.text = titleText
+        viewHolder.title.text = titleText
     }
 
     private fun configureSupportedAssetViewHolder(viewHolder: SupportedAssetViewHolder, position: Int) {
         val asset = items[position] as SupportedAsset
         val trustLineAsset = Asset.createNonNativeAsset(asset.code.toUpperCase(), KeyPair.fromAccountId(asset.issuer))
 
-        viewHolder.assetName!!.text = String.format(context.getString(R.string.asset_template),
+        viewHolder.assetName.text = String.format(context.getString(R.string.asset_template),
                 asset.name, asset.code.toUpperCase())
 
-        viewHolder.assetAmount!!.visibility = View.GONE
+        viewHolder.assetAmount.visibility = View.GONE
         Picasso.get().load(asset.image).into(viewHolder.assetImage)
 
-        viewHolder.assetButton!!.text = context.getString(R.string.add_asset)
-        viewHolder.assetButton!!.setBackgroundColor(ContextCompat.getColor(context, R.color.mantis))
-        viewHolder.assetButton!!.setOnClickListener {
+        viewHolder.assetButton.text = context.getString(R.string.add_asset)
+        viewHolder.assetButton.setBackgroundColor(ContextCompat.getColor(context, R.color.mantis))
+        viewHolder.assetButton.setOnClickListener {
             listener.changeTrustline(trustLineAsset, false)
         }
-        viewHolder.assetButton!!.visibility = View.VISIBLE
+        viewHolder.assetButton.visibility = View.VISIBLE
     }
 
     //endregion

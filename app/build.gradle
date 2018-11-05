@@ -80,7 +80,9 @@ dependencies {
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
 
-    implementation('com.github.stellar:java-stellar-sdk:0.3.3') {
+    implementation("com.github.stellar:java-stellar-sdk:$stellarVersion") {
         transitive = false
     }
+
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 }

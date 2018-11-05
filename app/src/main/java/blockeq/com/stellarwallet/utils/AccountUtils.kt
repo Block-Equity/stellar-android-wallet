@@ -7,6 +7,7 @@ import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.helpers.Constants
 import com.soneso.stellarmnemonics.Wallet
 import org.stellar.sdk.KeyPair
+import timber.log.Timber
 import java.security.PrivateKey
 
 class AccountUtils {
@@ -49,6 +50,7 @@ class AccountUtils {
                 passphrase = decryptedString.substring(decryptedString.lastIndexOf(" ") + 1)
                 decryptedString.substring(0, decryptedString.lastIndexOf(" "))
             } else {
+                Timber.d("decrypting mnemonic phrase, encryptedPhrase=$encryptedPhrase privateKey=${privateKey.encoded}")
                 cipherWrapper.decrypt(encryptedPhrase, privateKey)
             }
 

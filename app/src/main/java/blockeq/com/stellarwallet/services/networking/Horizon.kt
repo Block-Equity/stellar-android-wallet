@@ -1,7 +1,6 @@
 package blockeq.com.stellarwallet.services.networking
 
 import android.os.AsyncTask
-import android.util.Log
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
@@ -15,14 +14,13 @@ import org.stellar.sdk.requests.RequestBuilder
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.Page
 import org.stellar.sdk.responses.effects.EffectResponse
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 object Horizon : HorizonTasks {
     private const val PROD_SERVER = "https://horizon.stellar.org"
     private const val TEST_SERVER = "https://horizon-testnet.stellar.org"
     private const val SERVER_ERROR_MESSAGE = "Error response from the server."
-
-    private val TAG = Horizon::class.java.simpleName
 
     override fun getLoadEffectsTask(listener: OnLoadEffects): AsyncTask<Void, Void, ArrayList<EffectResponse>?> {
         return LoadEffectsTask(listener)
@@ -53,7 +51,7 @@ object Horizon : HorizonTasks {
                 account = server.accounts().account(sourceKeyPair)
 
             } catch (error : Exception) {
-                Log.d(TAG, error.message.toString())
+                Timber.d(error.message.toString())
                 if (error is ErrorResponse) {
                     listener.onError(error)
                 } else {
@@ -79,7 +77,7 @@ object Horizon : HorizonTasks {
                         .limit(Constants.NUM_TRANSACTIONS_SHOWN)
                         .forAccount(sourceKeyPair).execute()
             } catch (error : Exception) {
-                Log.d(TAG, error.message.toString())
+                Timber.e(error.message.toString())
             }
 
             return effectResults?.records
@@ -107,7 +105,7 @@ object Horizon : HorizonTasks {
                 try {
                     server.accounts().account(destKeyPair)
                 } catch (error : Exception) {
-                    Log.d(TAG, error.message.toString())
+                    Timber.e(error.message.toString())
                     if (error.message == SERVER_ERROR_MESSAGE) {
                         isCreateAccount = true
                     } else {
@@ -136,7 +134,7 @@ object Horizon : HorizonTasks {
                 server.submitTransaction(transaction)
 
             } catch (error : ErrorResponse) {
-                Log.d(TAG, error.body.toString())
+                Timber.e(error.body.toString())
                 return error
             }
 
@@ -177,7 +175,7 @@ object Horizon : HorizonTasks {
                 server.submitTransaction(transaction)
 
             } catch (error : Exception) {
-                Log.d(TAG, error.message.toString())
+                Timber.e(error.message.toString())
                 return error
             }
             return null
@@ -218,7 +216,7 @@ object Horizon : HorizonTasks {
                 }
 
             } catch (error : ErrorResponse) {
-                Log.d(TAG, error.body.toString())
+                Timber.e(error.body.toString())
                 return error
             }
             return null

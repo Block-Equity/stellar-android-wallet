@@ -28,13 +28,12 @@ import org.stellar.sdk.Asset
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 
-
 class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
-    private var adapter :AssetsRecyclerViewAdapter? = null
-    private var assetsList: ArrayList<Any>? = ArrayList()
     private var map: Map<String, SupportedAsset>? = null
+    private var assetsList: ArrayList<Any> = ArrayList()
     private lateinit var context : Context
+    private lateinit var adapter : AssetsRecyclerViewAdapter
 
     override fun setContent(): Int {
         return R.layout.content_assets_activity
@@ -58,21 +57,21 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
     //region User Interface
 
     private fun bindAdapter() {
-        adapter = AssetsRecyclerViewAdapter(this, this, assetsList!!)
+        adapter = AssetsRecyclerViewAdapter(this, this, assetsList)
         assetsRecyclerView.adapter = adapter
         assetsRecyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     private fun updateAdapter() {
-        assetsList!!.clear()
-        assetsList!!.addAll(convertBalanceToSupportedAsset(WalletApplication.localStore.balances!!, map!!))
+        assetsList.clear()
+        assetsList.addAll(convertBalanceToSupportedAsset(WalletApplication.localStore.balances!!, map!!))
         val filteredList = getFilteredSupportedAssets(map!!)
         if (!filteredList.isEmpty()) {
-            assetsList!!.add(getString(R.string.supported_assets_header))
-            assetsList!!.addAll(filteredList)
+            assetsList.add(getString(R.string.supported_assets_header))
+            assetsList.addAll(filteredList)
         }
 
-        adapter!!.notifyDataSetChanged()
+        adapter.notifyDataSetChanged()
         progressBar.visibility = View.GONE
     }
 
@@ -165,7 +164,7 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
                 }
 
                 override fun onError() {
-                    Toast.makeText(this@AssetsActivity, getString(R.string.error_trustline_changed), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.error_trustline_changed), Toast.LENGTH_SHORT).show()
                     progressBar.visibility = View.GONE
                 }
             }, assetToChange, isRemove, secretSeed).execute()
@@ -187,7 +186,7 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
                 }
 
                 override fun onError(error: ErrorResponse) {
-                    Toast.makeText(this@AssetsActivity, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
                 }
             }).execute()
         }

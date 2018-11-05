@@ -1,10 +1,10 @@
 package blockeq.com.stellarwallet.helpers
 
 import android.content.SharedPreferences
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import org.stellar.sdk.responses.AccountResponse
+import timber.log.Timber
 
 class LocalStore(private val sharedPreferences: SharedPreferences, private val gson: Gson) {
 
@@ -78,7 +78,7 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         return try {
             gson.fromJson(json, klass)
         } catch (e: JsonSyntaxException) {
-            Log.w("LocalStoreImpl", "unable to convert json", e)
+            Timber.w( "unable to convert json $e")
             null
         }
     }
