@@ -1,6 +1,8 @@
 package blockeq.com.stellarwallet.services.networking
 
 import android.os.AsyncTask
+import android.os.Handler
+import android.os.Looper
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
@@ -233,11 +235,13 @@ object Horizon : HorizonTasks {
 
     interface OnMarketOfferListener {
       fun onExecuted()
-      fun onFailed()
+      fun onFailed(errorMessage: String)
     }
 
     override fun getCreateMarketOffer(listener: OnMarketOfferListener, secretSeed: CharArray, sellingAsset: Asset, buyingAsset: Asset, amount: String, price: String) {
         AsyncTask.execute {
+            Network.usePublicNetwork()
+
             val server = getServer()
             val managedOfferOperation = ManageOfferOperation.Builder(sellingAsset, buyingAsset, amount, price).build()
             val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
@@ -246,10 +250,12 @@ object Horizon : HorizonTasks {
             val transaction = Transaction.Builder(sourceAccount).addOperation(managedOfferOperation).build()
             transaction.sign(sourceKeyPair)
             val response = server.submitTransaction(transaction)
-            if (response.isSuccess) {
-                listener.onFailed()
-            } else {
-                listener.onExecuted()
+            Handler(Looper.getMainLooper()).post {
+                if (response.isSuccess) {
+                    listener.onExecuted()
+                } else {
+                    listener.onFailed(response.extras.resultCodes.operationsResultCodes[0].toString())
+                }
             }
         }
     }
