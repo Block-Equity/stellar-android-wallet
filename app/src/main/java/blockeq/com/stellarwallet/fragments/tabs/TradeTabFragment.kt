@@ -3,32 +3,23 @@ package blockeq.com.stellarwallet.fragments.tabs
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.ViewGroup
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.Toast
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.interfaces.OnTradeCurrenciesChange
 import blockeq.com.stellarwallet.models.Currency
 import blockeq.com.stellarwallet.models.SelectionModel
-import kotlinx.android.synthetic.main.fragment_tab_trade.*
-import kotlinx.android.synthetic.main.view_custom_selector.view.*
-import android.text.Editable
-import android.text.TextWatcher
-import android.widget.Toast
-import blockeq.com.stellarwallet.WalletApplication
-import blockeq.com.stellarwallet.helpers.Constants
-import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.AccountUtils
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
+import kotlinx.android.synthetic.main.fragment_tab_trade.*
+import kotlinx.android.synthetic.main.view_custom_selector.view.*
 import org.stellar.sdk.Asset
-
 
 class TradeTabFragment : Fragment(), View.OnClickListener {
 
@@ -38,8 +29,6 @@ class TradeTabFragment : Fragment(), View.OnClickListener {
     private var selectedBuyingCurrency: SelectionModel? = null
     private var holdingsAmount = 0f
     private lateinit var onTradeCurrenciesChange: OnTradeCurrenciesChange
-
-    private var map : Map<String, SupportedAsset>? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_tab_trade, container, false)
