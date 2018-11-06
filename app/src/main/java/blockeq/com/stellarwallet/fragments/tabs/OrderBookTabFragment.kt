@@ -11,12 +11,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.adapters.OrderBooksAdapter
 import blockeq.com.stellarwallet.models.OrderBook
 import blockeq.com.stellarwallet.models.OrderBookAdapterTypes
 import blockeq.com.stellarwallet.models.OrderBookStickyHeader
+import blockeq.com.stellarwallet.services.networking.Horizon
 import com.brandongogetap.stickyheaders.StickyLayoutManager
 import kotlinx.android.synthetic.main.fragment_tab_order_book.*
+import org.stellar.sdk.Asset
+import org.stellar.sdk.responses.OrderBookResponse
 import java.util.*
 
 class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
@@ -44,6 +48,17 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
+        var accounts = WalletApplication.localStore.balances
+        Horizon.getOrderBook(object:Horizon.OnOrderBookListener {
+            override fun onOrderBook(asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>, base: Asset) {
+
+            }
+
+            override fun onFailed(errorMessage: String) {
+
+            }
+
+        }, accounts!![0].asset, accounts!![1].asset)
         //Mockup API call tor refresh
         val handler = Handler()
         val runnable = Runnable {

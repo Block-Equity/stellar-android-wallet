@@ -138,7 +138,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener {
 
                     }
 
-                }, AccountUtils.getSecretSeed(activity!!.applicationContext), selectedSellingCurrency!!.asset, selectedBuyingCurrency!!.asset,
+                }, AccountUtils.getSecretSeed(activity!!.applicationContext), selectedSellingCurrency!!.asset!!, selectedBuyingCurrency!!.asset!!,
                         sellingCustomSelector.editText.text.toString(), buyingCustomSelector.editText.text.toString())
             }
         }

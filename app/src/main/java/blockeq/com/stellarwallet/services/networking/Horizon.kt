@@ -12,8 +12,11 @@ import com.facebook.stetho.okhttp3.StethoInterceptor
 import okhttp3.OkHttpClient
 import org.stellar.sdk.*
 import org.stellar.sdk.requests.ErrorResponse
+import org.stellar.sdk.requests.OrderBookRequestBuilder
 import org.stellar.sdk.requests.RequestBuilder
 import org.stellar.sdk.responses.AccountResponse
+import org.stellar.sdk.responses.OfferResponse
+import org.stellar.sdk.responses.OrderBookResponse
 import org.stellar.sdk.responses.Page
 import org.stellar.sdk.responses.effects.EffectResponse
 import timber.log.Timber
@@ -238,6 +241,16 @@ object Horizon : HorizonTasks {
       fun onFailed(errorMessage: String)
     }
 
+    interface OnOrderBookListener {
+        fun onOrderBook(asks : Array<OrderBookResponse.Row>, bids : Array<OrderBookResponse.Row>, base : Asset)
+        fun onFailed(errorMessage: String)
+    }
+
+    interface OnOffersListener {
+        fun onOffers(offers : ArrayList<OfferResponse>)
+        fun onFailed(errorMessage: String)
+    }
+
     override fun getCreateMarketOffer(listener: OnMarketOfferListener, secretSeed: CharArray, sellingAsset: Asset, buyingAsset: Asset, amount: String, price: String) {
         AsyncTask.execute {
             Network.usePublicNetwork()
@@ -259,6 +272,39 @@ object Horizon : HorizonTasks {
             }
         }
     }
+
+    override fun getOrderBook(listener: OnOrderBookListener, buyingAsset: Asset, sellingAsset: Asset) {
+        AsyncTask.execute {
+            Network.usePublicNetwork()
+
+            val server = getServer()
+            val response = server.orderBook().buyingAsset(buyingAsset).sellingAsset(sellingAsset).execute()
+
+            Handler(Looper.getMainLooper()).post {
+                listener.onOrderBook(response.asks, response.bids, response.base)
+            }
+        }
+    }
+
+    override fun getOffers(listener: OnOffersListener) {
+        AsyncTask.execute {
+            Network.usePublicNetwork()
+
+            val server = getServer()
+            try {
+                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.stellarAccountId)
+                val response = server.offers().forAccount(sourceKeyPair).execute()
+                Handler(Looper.getMainLooper()).post {
+                    listener.onOffers(response.records)
+                }
+            } catch (error : ErrorResponse ) {
+                Handler(Looper.getMainLooper()).post {
+                    listener.onFailed(error.message!!)
+                }
+            }
+        }
+    }
+
 
     private fun getCurrentAsset(): Asset {
         val assetCode = WalletApplication.userSession.currAssetCode

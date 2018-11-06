@@ -18,6 +18,9 @@ import java.util.*
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.DividerItemDecoration
 import android.widget.Toast
+import blockeq.com.stellarwallet.services.networking.Horizon
+import org.stellar.sdk.responses.OfferResponse
+import kotlin.collections.ArrayList
 
 
 class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRefreshListener {
@@ -32,7 +35,7 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //Mockup Data
-//        mockupData()
+        mockupData()
         //**********
 
         myOffersRv.layoutManager = LinearLayoutManager(context)
@@ -45,6 +48,14 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
     }
 
     override fun onRefresh() {
+        Horizon.getOffers(object: Horizon.OnOffersListener {
+            override fun onOffers(offers: ArrayList<OfferResponse>) {
+            }
+
+            override fun onFailed(errorMessage: String) {
+            }
+
+        })
         //Mockup API call tor refresh
         val handler = Handler()
         val runnable = Runnable {
@@ -55,17 +66,17 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
         //**********
     }
 
-//    private fun mockupData() {
-//        myOffers.clear()
-//        val xlm = Currency(1, "XLM", "Stellar", 38.7832f)
-//        val cad = Currency(2, "CAD", "Canadian Dollar", 100.00f)
-//        val btc = Currency(3, "BTC", "Bitcoin", 0.23243414f)
-//        val mobi = Currency(4, "MOBI", "Mobi", 10.4322f)
-//        val offer1 = MyOffer(1, Date(), mobi, xlm, 0.5623f, 0.1233f)
-//        val offer2 = MyOffer(2, Date(), btc, cad, 0.013432f, 112.45f)
-//        myOffers.add(offer1)
-//        myOffers.add(offer2)
-//    }
+    private fun mockupData() {
+        myOffers.clear()
+        val xlm = Currency(1, "XLM", "Stellar", 38.7832f, null)
+        val cad = Currency(2, "CAD", "Canadian Dollar", 100.00f, null)
+        val btc = Currency(3, "BTC", "Bitcoin", 0.23243414f, null)
+        val mobi = Currency(4, "MOBI", "Mobi", 10.4322f, null)
+        val offer1 = MyOffer(1, Date(), mobi, xlm, 0.5623f, 0.1233f)
+        val offer2 = MyOffer(2, Date(), btc, cad, 0.013432f, 112.45f)
+        myOffers.add(offer1)
+        myOffers.add(offer2)
+    }
 
     override fun onDialogOpen(offerId: Int) {
         if (context != null) {
