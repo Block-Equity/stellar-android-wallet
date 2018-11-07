@@ -321,8 +321,20 @@ object Horizon : HorizonTasks {
         val server = Server(PROD_SERVER)
         // These two clients are a copy of the liens 45 and 46 of org.stellar.sdk.Server class with the stetho interceptor
         // REVIEW this once you upgrade stellar library
-        val httpClient = OkHttpClient.Builder().connectTimeout(10L, TimeUnit.SECONDS).readTimeout(30L, TimeUnit.SECONDS).retryOnConnectionFailure(true).addNetworkInterceptor(StethoInterceptor()).build()
-        val submitHttpClient = OkHttpClient.Builder().connectTimeout(10L, TimeUnit.SECONDS).readTimeout(65L, TimeUnit.SECONDS).retryOnConnectionFailure(true).addNetworkInterceptor(StethoInterceptor()).build()
+        val httpClient = OkHttpClient.Builder()
+                .connectTimeout(10L, TimeUnit.SECONDS)
+                .readTimeout(30L, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true)
+                .addNetworkInterceptor(StethoInterceptor())
+                .build()
+
+        val submitHttpClient = OkHttpClient.Builder()
+                .connectTimeout(10L, TimeUnit.SECONDS)
+                .readTimeout(65L, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true)
+                .addNetworkInterceptor(StethoInterceptor())
+                .build()
+
         server.httpClient = httpClient
         server.submitHttpClient = submitHttpClient
 
