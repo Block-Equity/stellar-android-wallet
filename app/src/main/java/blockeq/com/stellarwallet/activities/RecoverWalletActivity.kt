@@ -127,5 +127,5 @@ class RecoverWalletActivity : BaseActivity() {
             secretKeyEditText.text.toString().trim()
         }
     }
-    //endregions
+    //endregion
 }
