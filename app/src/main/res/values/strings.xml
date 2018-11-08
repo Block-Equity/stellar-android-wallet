@@ -38,6 +38,8 @@
     <string name="activity">ACTIVITY</string>
     <string name="amount">AMOUNT</string>
     <string name="no_transactions">Start trading!\n You currently have no transactions</string>
+    <string name="load_account_error">There was an error loading your account balance</string>
+    <string name="load_effects_error">There was an error loading your account activity</string>
 
     <!-- Login Strings -->
     <string name="create_new_wallet">Create new wallet</string>
@@ -169,5 +171,14 @@
     <string name="secret_seed">Secret Key</string>
     <string name="secret_seed_info_message">We do not recommend using your secret key with other applications as we cannot guarantee their security. \n\nIf your secret key is leaked by a 3rd party your funds can be stolen.</string>
     <string name="copy_address_content_descriptor">Copy address</string>
+
+    <!--Horizon Error Messages (Technical)-->
+    <string name="standard_error_message">%1$s: %2$s</string>
+
+    <!--Transaction Result Codes-->
+    <string name="tx_failed">tx_failed</string>
+
+    <!--Operation Result Codes-->
+    <string name="op_underfunded">op_underfunded</string>
 
 </resources>

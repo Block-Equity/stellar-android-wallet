@@ -7,6 +7,7 @@ import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
+import blockeq.com.stellarwallet.models.HorizonException
 import org.stellar.sdk.*
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.requests.RequestBuilder
@@ -73,9 +74,9 @@ class Horizon {
 
         class SendTask(private val listener: SuccessErrorCallback, private val destAddress: String,
                        private val secretSeed: CharArray, private val memo: String,
-                       private val amount : String) : AsyncTask<Void, Void, Exception>() {
+                       private val amount : String) : AsyncTask<Void, Void, HorizonException>() {
 
-            override fun doInBackground(vararg params: Void?): Exception? {
+            override fun doInBackground(vararg params: Void?): HorizonException? {
                 val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
                 val server = Server(PROD_SERVER)
                 val destKeyPair = KeyPair.fromAccountId(destAddress)
@@ -91,7 +92,9 @@ class Horizon {
                         if (error.message == SERVER_ERROR_MESSAGE) {
                             isCreateAccount = true
                         } else {
-                            return error
+                            return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
+                                    arrayListOf(error.message),
+                                    HorizonException.HorizonExceptionType.SEND)
                         }
                     }
 
@@ -116,24 +119,19 @@ class Horizon {
                     val response = server.submitTransaction(transaction)
 
                     if (!response.isSuccess) {
-                        val errorString = if (response.extras.resultCodes.operationsResultCodes != null
-                                && response.extras.resultCodes.operationsResultCodes.isNotEmpty()) {
-                            response.extras.resultCodes.transactionResultCode + ": " +
-                                    response.extras.resultCodes.operationsResultCodes[0]
-                        } else {
-                            response.extras.resultCodes.transactionResultCode
-                        }
-                        return Exception(errorString)
+                        return HorizonException(response.extras.resultCodes.transactionResultCode,
+                                response.extras.resultCodes.operationsResultCodes,
+                                HorizonException.HorizonExceptionType.SEND)
                     }
 
-                } catch (error : Exception) {
+                } catch (error : HorizonException) {
                     return error
                 }
 
                 return null
             }
 
-            override fun onPostExecute(result: Exception?) {
+            override fun onPostExecute(result: HorizonException?) {
                 if (result != null) {
                     listener.onError(result)
                 } else {
@@ -175,7 +173,9 @@ class Horizon {
 
             override fun onPostExecute(result: Exception?) {
                 if (result != null) {
-                    listener.onError(result)
+                    listener.onError(HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
+                            arrayListOf(result.message),
+                            HorizonException.HorizonExceptionType.INFLATION))
                 } else {
                     listener.onSuccess()
                 }
@@ -216,7 +216,9 @@ class Horizon {
 
             override fun onPostExecute(result: Exception?) {
                 if (result != null) {
-                    listener.onError(result)
+                    listener.onError(HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
+                            arrayListOf(result.message),
+                            HorizonException.HorizonExceptionType.CHANGE_TRUSTLINE))
                 } else {
                     listener.onSuccess()
                 }
