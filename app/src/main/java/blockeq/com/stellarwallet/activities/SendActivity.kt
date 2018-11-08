@@ -157,9 +157,9 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
         handler.postDelayed(runnableCode, 1000)
     }
 
-    override fun onError() {
+    override fun onError(error: Exception) {
         progressBar.visibility = View.GONE
-        Toast.makeText(this, getString(R.string.send_error_message), Toast.LENGTH_LONG).show()
+        Toast.makeText(this, error.message, Toast.LENGTH_LONG).show()
     }
     //endregion
 }

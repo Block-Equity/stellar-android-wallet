@@ -116,11 +116,17 @@ class Horizon {
                     val response = server.submitTransaction(transaction)
 
                     if (!response.isSuccess) {
-                        return Exception()
+                        val errorString = if (response.extras.resultCodes.operationsResultCodes != null
+                                && response.extras.resultCodes.operationsResultCodes.isNotEmpty()) {
+                            response.extras.resultCodes.transactionResultCode + ": " +
+                                    response.extras.resultCodes.operationsResultCodes[0]
+                        } else {
+                            response.extras.resultCodes.transactionResultCode
+                        }
+                        return Exception(errorString)
                     }
 
-                } catch (error : ErrorResponse) {
-                    Log.d(TAG, error.body.toString())
+                } catch (error : Exception) {
                     return error
                 }
 
@@ -129,7 +135,7 @@ class Horizon {
 
             override fun onPostExecute(result: Exception?) {
                 if (result != null) {
-                    listener.onError()
+                    listener.onError(result)
                 } else {
                     listener.onSuccess()
                 }
@@ -169,7 +175,7 @@ class Horizon {
 
             override fun onPostExecute(result: Exception?) {
                 if (result != null) {
-                    listener.onError()
+                    listener.onError(result)
                 } else {
                     listener.onSuccess()
                 }
@@ -210,7 +216,7 @@ class Horizon {
 
             override fun onPostExecute(result: Exception?) {
                 if (result != null) {
-                    listener.onError()
+                    listener.onError(result)
                 } else {
                     listener.onSuccess()
                 }

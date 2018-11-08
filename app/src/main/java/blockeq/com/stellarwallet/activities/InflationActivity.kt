@@ -39,7 +39,7 @@ class InflationActivity : BasePopupActivity() {
                         finish()
                     }
 
-                    override fun onError() {
+                    override fun onError(error: Exception) {
                         progressBar.visibility = View.GONE
                         Toast.makeText(this@InflationActivity, getString(R.string.inflation_set_error), Toast.LENGTH_SHORT).show()
                     }

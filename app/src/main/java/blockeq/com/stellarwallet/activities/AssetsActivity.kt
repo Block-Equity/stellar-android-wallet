@@ -158,7 +158,7 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
                     }
                 }
 
-                override fun onError() {
+                override fun onError(error: Exception) {
                     Toast.makeText(this@AssetsActivity, getString(R.string.error_trustline_changed), Toast.LENGTH_SHORT).show()
                     progressBar.visibility = View.GONE
                 }
