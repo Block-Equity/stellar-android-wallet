@@ -113,7 +113,11 @@ class Horizon {
 
                     transaction.sign(sourceKeyPair)
 
-                    server.submitTransaction(transaction)
+                    val response = server.submitTransaction(transaction)
+
+                    if (!response.isSuccess) {
+                        return Exception()
+                    }
 
                 } catch (error : ErrorResponse) {
                     Log.d(TAG, error.body.toString())
