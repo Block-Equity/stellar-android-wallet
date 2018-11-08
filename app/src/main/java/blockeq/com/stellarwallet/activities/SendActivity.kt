@@ -128,7 +128,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     }
 
     private fun isAmountValid() : Boolean {
-        return (amount <= WalletApplication.userSession.getAvailableBalance().toDouble())
+        return (amount <= WalletApplication.userSession.getAvailableBalance().toDouble() && amount != 0.0)
     }
 
     //endregion
