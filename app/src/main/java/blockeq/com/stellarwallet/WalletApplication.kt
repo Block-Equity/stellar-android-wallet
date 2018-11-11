@@ -2,6 +2,7 @@ package blockeq.com.stellarwallet
 
 import android.arch.lifecycle.ProcessLifecycleOwner
 import android.support.multidex.MultiDexApplication
+import blockeq.com.stellarwallet.encryption.PRNGFixes
 import blockeq.com.stellarwallet.helpers.LocalStore
 import blockeq.com.stellarwallet.helpers.WalletLifecycleListener
 import blockeq.com.stellarwallet.models.UserSession
@@ -10,7 +11,6 @@ import com.google.gson.Gson
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import java.security.Provider
 import java.security.Security
-
 
 class WalletApplication : MultiDexApplication() {
 
@@ -36,6 +36,8 @@ class WalletApplication : MultiDexApplication() {
         //removing the default provider coming from Android SDK.
         Security.removeProvider("BC")
         Security.addProvider(BouncyCastleProvider() as Provider?)
+
+        PRNGFixes.apply()
 
         setupLifecycleListener()
 
