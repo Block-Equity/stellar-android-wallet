@@ -35,8 +35,8 @@ class AccountUtils {
         }
 
         fun getDecryptedPassphhrase(encryptedPassphrase: String?, masterKey: java.security.KeyPair) : String? {
-            return if (WalletApplication.localStore!!.isPassphraseUsed) {
-                AccountUtils.getDecryptedPhrase(encryptedPassphrase!!, masterKey)
+            return if (WalletApplication.localStore!!.isPassphraseUsed && encryptedPassphrase != null) {
+                AccountUtils.getDecryptedPhrase(encryptedPassphrase, masterKey)
             } else {
                 null
             }

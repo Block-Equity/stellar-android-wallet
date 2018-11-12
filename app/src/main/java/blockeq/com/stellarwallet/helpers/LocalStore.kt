@@ -19,8 +19,8 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         set(encryptedPhrase) = set(KEY_ENCRYPTED_PHRASE, encryptedPhrase)
 
     var encryptedPassphrase: String?
-        get() = getString(KEY_ENCRYPTED_PHRASE)
-        set(encryptedPhrase) = set(KEY_ENCRYPTED_PHRASE, encryptedPhrase)
+        get() = getString(KEY_ENCRYPTED_PASSPHRASE)
+        set(encryptedPassphrase) = set(KEY_ENCRYPTED_PASSPHRASE, encryptedPassphrase)
 
     var publicKey: String?
         get() = getString(KEY_STELLAR_ACCOUNT_PUBLIC_KEY)
@@ -78,7 +78,7 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
     }
 
     private fun getString(key: String): String? {
-        return sharedPreferences.getString(key, "")
+        return sharedPreferences.getString(key, null)
     }
 
     private fun getBoolean(key: String): Boolean {
