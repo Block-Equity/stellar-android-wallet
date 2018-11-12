@@ -18,6 +18,10 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         get() = getString(KEY_ENCRYPTED_PHRASE)
         set(encryptedPhrase) = set(KEY_ENCRYPTED_PHRASE, encryptedPhrase)
 
+    var encryptedPassphrase: String?
+        get() = getString(KEY_ENCRYPTED_PHRASE)
+        set(encryptedPhrase) = set(KEY_ENCRYPTED_PHRASE, encryptedPhrase)
+
     var publicKey: String?
         get() = getString(KEY_STELLAR_ACCOUNT_PUBLIC_KEY)
         set(publicKey) = set(KEY_STELLAR_ACCOUNT_PUBLIC_KEY, publicKey)
@@ -50,6 +54,7 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
 
     private companion object {
         const val KEY_ENCRYPTED_PHRASE = "kEncryptedPhrase"
+        const val KEY_ENCRYPTED_PASSPHRASE = "kEncryptedPassphrase"
         const val KEY_PIN_DATA = "kPinData"
         const val KEY_STELLAR_ACCOUNT_PUBLIC_KEY = "kStellarAccountPublicKey"
         const val KEY_STELLAR_BALANCES_KEY = "kStellarBalancesKey"
@@ -93,6 +98,7 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
     fun clearUserData() {
         val editor = sharedPreferences.edit()
         editor.remove(KEY_ENCRYPTED_PHRASE)
+        editor.remove(KEY_ENCRYPTED_PASSPHRASE)
         editor.remove(KEY_PIN_DATA)
         editor.remove(KEY_STELLAR_ACCOUNT_PUBLIC_KEY)
         editor.remove(KEY_STELLAR_BALANCES_KEY)

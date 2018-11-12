@@ -13,15 +13,36 @@ class AccountUtils {
 
         fun getSecretSeed() : CharArray {
             val encryptedPhrase = WalletApplication.localStore!!.encryptedPhrase!!
+            val encryptedPassphrase = WalletApplication.localStore!!.encryptedPassphrase
             val masterKey = getPinMasterKey(WalletApplication.userSession.pin!!)!!
 
-            val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey)
-            val decryptedData = decryptedPair.first
-            val passphrase = decryptedPair.second
+            var decryptedPhrase = AccountUtils.getDecryptedPhrase(encryptedPhrase, masterKey)
+            var decryptedPassphrase = getDecryptedPassphhrase(encryptedPassphrase, masterKey)
 
-            return getKeyPair(decryptedData, passphrase).secretSeed
+            // TODO: Remove for new app, this is purely passphrase migration code
+            if (WalletApplication.localStore!!.isPassphraseUsed && WalletApplication.localStore!!.encryptedPassphrase == null) {
+                val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey)
+                decryptedPhrase = decryptedPair.first
+                decryptedPassphrase = decryptedPair.second
+            }
+
+            return getKeyPair(decryptedPhrase, decryptedPassphrase).secretSeed
         }
 
+        fun getDecryptedPhrase(encryptedPhrase: String, masterKey: java.security.KeyPair) : String {
+            val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
+            return cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
+        }
+
+        fun getDecryptedPassphhrase(encryptedPassphrase: String?, masterKey: java.security.KeyPair) : String? {
+            return if (WalletApplication.localStore!!.isPassphraseUsed) {
+                AccountUtils.getDecryptedPhrase(encryptedPassphrase!!, masterKey)
+            } else {
+                null
+            }
+        }
+
+        // TODO: Remove this method in new app
         fun getDecryptedMnemonicPhrasePair(encryptedPhrase: String, masterKey: java.security.KeyPair) : Pair<String, String?> {
             val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
             var passphrase : String? = null
