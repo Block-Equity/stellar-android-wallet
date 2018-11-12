@@ -1,7 +1,6 @@
 package blockeq.com.stellarwallet.fragments.tabs
 
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
@@ -11,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.adapters.OrderBooksAdapter
 import blockeq.com.stellarwallet.models.DataAsset
 import blockeq.com.stellarwallet.models.OrderBook
@@ -75,12 +73,27 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         orderBookRv.addItemDecoration(dividerItemDecoration)
         swipeRefresh.setOnRefreshListener(this)
 //        onRefresh()
+        loadOrderBook()
     }
 
     override fun onRefresh() {
         if(!isAdded || isDetached || !isVisible) {
             return
         }
+        loadOrderBook();
+        //Mockup API call tor refresh
+//        val handler = Handler()
+//        val runnable = Runnable {
+//            if (swipeRefresh != null) {
+//                swipeRefresh.isRefreshing = false
+//                Toast.makeText(context, getText(R.string.refreshed), Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//        handler.postDelayed(runnable, 1000)
+        //**********
+    }
+
+    private fun loadOrderBook() {
         Horizon.getOrderBook(object:Horizon.OnOrderBookListener {
             override fun onOrderBook(asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
                 orderBooks.clear()
@@ -115,21 +128,10 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }, buyingAsset, sellingAsset)
 
         if (swipeRefresh != null) {
-                swipeRefresh.isRefreshing = false
-                Toast.makeText(context, getText(R.string.refreshed), Toast.LENGTH_SHORT).show()
+            swipeRefresh.isRefreshing = false
+            Toast.makeText(context, getText(R.string.refreshed), Toast.LENGTH_SHORT).show()
         }
-        //Mockup API call tor refresh
-//        val handler = Handler()
-//        val runnable = Runnable {
-//            if (swipeRefresh != null) {
-//                swipeRefresh.isRefreshing = false
-//                Toast.makeText(context, getText(R.string.refreshed), Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//        handler.postDelayed(runnable, 1000)
-        //**********
     }
-
     private fun mockupData() {
         orderBooks.clear()
         val orderBooksTitle = OrderBook(type = OrderBookAdapterTypes.TITLE)
