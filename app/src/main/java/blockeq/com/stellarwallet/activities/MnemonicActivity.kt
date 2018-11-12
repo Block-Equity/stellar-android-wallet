@@ -12,7 +12,7 @@ import blockeq.com.stellarwallet.helpers.PassphraseDialogHelper
 import blockeq.com.stellarwallet.models.MnemonicType
 import blockeq.com.stellarwallet.models.PinType
 import com.soneso.stellarmnemonics.Wallet
-import kotlinx.android.synthetic.main.activity_show_mnemonic.*
+import kotlinx.android.synthetic.main.activity_mnemonic.*
 import java.lang.IllegalStateException
 
 class MnemonicActivity : BaseActivity(), View.OnClickListener {
@@ -40,7 +40,7 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_show_mnemonic)
+        setContentView(R.layout.activity_mnemonic)
 
         loadIntent()
         setupUI()

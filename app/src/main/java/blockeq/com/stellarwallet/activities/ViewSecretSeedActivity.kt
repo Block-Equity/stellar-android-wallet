@@ -22,7 +22,7 @@ class ViewSecretSeedActivity : BaseActivity() {
         setSupportActionBar(toolBar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        val secretSeed = intent.extras.getString(SECRET_SEED)
+        val secretSeed = intent!!.extras.getString(SECRET_SEED)
 
         secretSeedTextView.text = secretSeed
         copy_image_button.setOnClickListener { copyAddressToClipBoard(secretSeed)  }

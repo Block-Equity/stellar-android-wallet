@@ -16,13 +16,11 @@ import blockeq.com.stellarwallet.adapters.CustomArrayAdapter
 import blockeq.com.stellarwallet.models.SelectionModel
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
 
-
 class CustomSelector @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
-        defStyle: Int = 0,
-        defStyleRes: Int = 0
-) : LinearLayout(context, attrs, defStyle, defStyleRes) {
+        defStyle: Int = 0
+) : LinearLayout(context, attrs, defStyle) {
 
     private val INPUT_TYPE_NUMBER = 1
     private val INPUT_TYPE_DECIMAL = 2
@@ -36,10 +34,11 @@ class CustomSelector @JvmOverloads constructor(
         attrs?.let {
             val typedArray = context.obtainStyledAttributes(it,
                     R.styleable.CustomSelector, 0, 0)
-            setHint(typedArray.getString(R.styleable.CustomSelector_hint))
+            setHint(typedArray.getString(R.styleable.CustomSelector_hint)!!)
             setColor(typedArray.getColor(R.styleable.CustomSelector_customStrokeColor,
                     ContextCompat.getColor(context, R.color.alto)))
             setInputType(typedArray.getInt(R.styleable.CustomSelector_inputType, 0))
+            typedArray.recycle()
         }
     }
 
