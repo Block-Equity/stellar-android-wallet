@@ -8,6 +8,7 @@ import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
+import blockeq.com.stellarwallet.models.DataAsset
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import okhttp3.OkHttpClient
 import org.stellar.sdk.*
@@ -242,7 +243,7 @@ object Horizon : HorizonTasks {
     }
 
     interface OnOrderBookListener {
-        fun onOrderBook(asks : Array<OrderBookResponse.Row>, bids : Array<OrderBookResponse.Row>, base : Asset)
+        fun onOrderBook(asks : Array<OrderBookResponse.Row>, bids : Array<OrderBookResponse.Row>)
         fun onFailed(errorMessage: String)
     }
 
@@ -273,15 +274,28 @@ object Horizon : HorizonTasks {
         }
     }
 
-    override fun getOrderBook(listener: OnOrderBookListener, buyingAsset: Asset, sellingAsset: Asset) {
+    override fun getOrderBook(listener: OnOrderBookListener, buyingAsset: DataAsset, sellingAsset: DataAsset) {
         AsyncTask.execute {
             Network.usePublicNetwork()
 
             val server = getServer()
-            val response = server.orderBook().buyingAsset(buyingAsset).sellingAsset(sellingAsset).execute()
+            val buying : Asset
+            if (buyingAsset.type == "native") {
+                 buying = AssetTypeNative()
+            } else {
+                 buying = Asset.create(buyingAsset.type, buyingAsset.code, buyingAsset.issuer)
+            }
+
+            val selling : Asset
+            if(sellingAsset.type == "native") {
+                selling = AssetTypeNative()
+            } else {
+                selling = Asset.create(sellingAsset.type, sellingAsset.code, sellingAsset.issuer)
+            }
+            val response = server.orderBook().buyingAsset(buying).sellingAsset(selling).execute()
 
             Handler(Looper.getMainLooper()).post {
-                listener.onOrderBook(response.asks, response.bids, response.base)
+                listener.onOrderBook(response.asks, response.bids)
             }
         }
     }
