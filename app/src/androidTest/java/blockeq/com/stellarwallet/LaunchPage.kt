@@ -11,7 +11,8 @@ import android.support.test.espresso.matcher.ViewMatchers
 object LaunchPage : BasePage() {
 
     override fun onPageLoaded(): LaunchPage {
-        onView(ViewMatchers.withId(R.id.navigationView))
+        onView(ViewMatchers.withId(R.id.recoverWalletButton))
+        onView(ViewMatchers.withId(R.id.createWalletButton))
         return this
     }
 

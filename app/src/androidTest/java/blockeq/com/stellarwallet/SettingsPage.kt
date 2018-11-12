@@ -5,7 +5,7 @@ import android.support.test.espresso.matcher.ViewMatchers
 
 import android.support.test.espresso.Espresso.onView
 
-class SettingsPage : BasePage() {
+object SettingsPage : BasePage() {
     override fun onPageLoaded(): SettingsPage {
         onView(ViewMatchers.withId(R.id.clearWalletButton))
         return this

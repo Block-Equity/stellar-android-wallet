@@ -10,8 +10,8 @@ object WalletPage : BasePage() {
         return this
     }
 
-    fun pressSettings(): SettingsPage {
+    fun pressSettings(): WalletPage {
         onView(ViewMatchers.withId(R.id.nav_settings)).perform(ViewActions.click())
-        return SettingsPage().onPageLoaded()
+        return this
     }
 }
