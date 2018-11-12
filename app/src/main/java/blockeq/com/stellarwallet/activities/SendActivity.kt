@@ -11,6 +11,7 @@ import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
+import blockeq.com.stellarwallet.models.HorizonException
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.AccountUtils
@@ -157,9 +158,9 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
         handler.postDelayed(runnableCode, 1000)
     }
 
-    override fun onError(error: Exception) {
+    override fun onError(error: HorizonException) {
         progressBar.visibility = View.GONE
-        Toast.makeText(this, error.message, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, error.message(this), Toast.LENGTH_LONG).show()
     }
     //endregion
 }

@@ -179,8 +179,14 @@
     <string name="technical_tx_failed">tx_failed</string>
     <string name="readable_tx_failed">Transaction failed</string>
 
+    <string name="technical_tx_insufficient_balance">tx_insufficient_balance</string>
+    <string name="readable_tx_insufficient_balance">Insufficient balance</string>
+
     <!--Operation Result Codes-->
     <string name="technical_op_underfunded">op_underfunded</string>
     <string name="readable_op_underfunded">Payment is underfunded</string>
 
+    <string name="technical_op_low_reserve">op_low_reserve</string>
+    <string name="readable_op_low_reserve">You don\'t have enough Lumens to add another trust line</string>
+    
 </resources>

@@ -143,9 +143,9 @@ class Horizon {
         class JoinInflationDestination(private val listener: SuccessErrorCallback,
                                        private val secretSeed: CharArray,
                                        private val inflationDest : String)
-            : AsyncTask<Void, Void, Exception>() {
+            : AsyncTask<Void, Void, HorizonException>() {
 
-            override fun doInBackground(vararg params: Void?): Exception? {
+            override fun doInBackground(vararg params: Void?): HorizonException? {
                 Network.usePublicNetwork()
 
                 val server = Server(PROD_SERVER)
@@ -162,20 +162,26 @@ class Horizon {
                             .build()
 
                     transaction.sign(sourceKeyPair)
-                    server.submitTransaction(transaction)
+                    val response = server.submitTransaction(transaction)
+
+                    if (!response.isSuccess) {
+                        return HorizonException(response.extras.resultCodes.transactionResultCode,
+                                response.extras.resultCodes.operationsResultCodes,
+                                HorizonException.HorizonExceptionType.INFLATION)
+                    }
 
                 } catch (error : Exception) {
                     Log.d(TAG, error.message.toString())
-                    return error
+                    return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
+                            arrayListOf(error.message.toString()),
+                            HorizonException.HorizonExceptionType.INFLATION)
                 }
                 return null
             }
 
-            override fun onPostExecute(result: Exception?) {
+            override fun onPostExecute(result: HorizonException?) {
                 if (result != null) {
-                    listener.onError(HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
-                            arrayListOf(result.message),
-                            HorizonException.HorizonExceptionType.INFLATION))
+                    listener.onError(result)
                 } else {
                     listener.onSuccess()
                 }
@@ -184,9 +190,9 @@ class Horizon {
 
         class ChangeTrust(private val listener: SuccessErrorCallback, private val asset: Asset,
                           private val removeTrust: Boolean, private val secretSeed: CharArray)
-            : AsyncTask<Void, Void, Exception>() {
+            : AsyncTask<Void, Void, HorizonException?>() {
 
-            override fun doInBackground(vararg params: Void?): Exception? {
+            override fun doInBackground(vararg params: Void?): HorizonException? {
                 Network.usePublicNetwork()
 
                 val server = Server(PROD_SERVER)
@@ -204,21 +210,23 @@ class Horizon {
                     val response = server.submitTransaction(transaction)
 
                     if (!response.isSuccess) {
-                        return Exception()
+                        return HorizonException(response.extras.resultCodes.transactionResultCode,
+                                response.extras.resultCodes.operationsResultCodes,
+                                HorizonException.HorizonExceptionType.CHANGE_TRUSTLINE)
                     }
 
                 } catch (error : ErrorResponse) {
                     Log.d(TAG, error.body.toString())
-                    return error
+                    return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
+                            arrayListOf(error.body.toString()),
+                            HorizonException.HorizonExceptionType.CHANGE_TRUSTLINE)
                 }
                 return null
             }
 
-            override fun onPostExecute(result: Exception?) {
+            override fun onPostExecute(result: HorizonException?) {
                 if (result != null) {
-                    listener.onError(HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
-                            arrayListOf(result.message),
-                            HorizonException.HorizonExceptionType.CHANGE_TRUSTLINE))
+                    listener.onError(result)
                 } else {
                     listener.onSuccess()
                 }

@@ -6,6 +6,7 @@ import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
+import blockeq.com.stellarwallet.models.HorizonException
 import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.AccountUtils
 import blockeq.com.stellarwallet.utils.NetworkUtils
@@ -39,9 +40,9 @@ class InflationActivity : BasePopupActivity() {
                         finish()
                     }
 
-                    override fun onError(error: Exception) {
+                    override fun onError(error: HorizonException) {
                         progressBar.visibility = View.GONE
-                        Toast.makeText(this@InflationActivity, getString(R.string.inflation_set_error), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@InflationActivity, error.message(this@InflationActivity), Toast.LENGTH_SHORT).show()
                     }
                 }, secretSeed, addressEditText.text.toString()).execute()
             } else {
