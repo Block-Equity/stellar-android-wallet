@@ -44,7 +44,7 @@ class RecoverWalletActivity : BaseActivity() {
     }
 
     //region User Interface
-    override fun setupUI() {
+    private fun setupUI() {
         setupToolbar()
 
         if (isRecoveryPhrase) {
@@ -62,7 +62,7 @@ class RecoverWalletActivity : BaseActivity() {
             val recoveryString = getMnemonicString()
             val wordCount = getWordCount(recoveryString)
 
-            WalletApplication.localStore!!.isRecoveryPhrase = isRecoveryPhrase
+            WalletApplication.localStore.isRecoveryPhrase = isRecoveryPhrase
 
             if (isRecoveryPhrase) {
                 if (wordCount == 12 || wordCount == 24) {

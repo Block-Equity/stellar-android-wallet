@@ -14,234 +14,278 @@ import org.stellar.sdk.requests.RequestBuilder
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.Page
 import org.stellar.sdk.responses.effects.EffectResponse
-import java.util.*
 
+object Horizon : HorizonTasks {
+    private const val PROD_SERVER = "https://horizon.stellar.org"
+    private const val TEST_SERVER = "https://horizon-testnet.stellar.org"
+    private const val SERVER_ERROR_MESSAGE = "Error response from the server."
 
-class Horizon {
-    companion object {
-        const val PROD_SERVER = "https://horizon.stellar.org"
-        const val TEST_SERVER = "https://horizon-testnet.stellar.org"
-        const val SERVER_ERROR_MESSAGE = "Error response from the server."
+    private val TAG = Horizon::class.java.simpleName
 
-        private val TAG = Horizon::class.java.simpleName
+    override fun getLoadEffectsTask(listener: OnLoadEffects): AsyncTask<Void, Void, ArrayList<EffectResponse>?> {
+        return LoadEffectsTask(listener)
+    }
 
-        class LoadAccountTask(private val listener: OnLoadAccount) : AsyncTask<Void, Void, AccountResponse>() {
-            override fun doInBackground(vararg params: Void?) : AccountResponse? {
-                val server = Server(PROD_SERVER)
-                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
-                var account : AccountResponse? = null
-                try {
-                    account = server.accounts().account(sourceKeyPair)
+    override fun getSendTask(listener: SuccessErrorCallback, destAddress: String, secretSeed: CharArray, memo: String, amount: String): AsyncTask<Void, Void, HorizonException> {
+        return SendTask(listener, destAddress, secretSeed, memo, amount)
+    }
 
-                } catch (error : Exception) {
-                    Log.d(TAG, error.message.toString())
-                    if (error is ErrorResponse) {
-                        listener.onError(error)
-                    } else {
-                        listener.onError(ErrorResponse(Constants.UNKNOWN_ERROR, error.message))
-                    }
+    override fun getJoinInflationDestination(listener: SuccessErrorCallback, secretSeed: CharArray, inflationDest: String): AsyncTask<Void, Void, HorizonException> {
+        return JoinInflationDestination(listener, secretSeed, inflationDest)
+    }
+
+    override fun getChangeTrust(listener: SuccessErrorCallback, asset: Asset, removeTrust: Boolean, secretSeed: CharArray): AsyncTask<Void, Void, HorizonException?> {
+        return ChangeTrust(listener, asset, removeTrust, secretSeed)
+    }
+
+    override fun getLoadAccountTask(listener: OnLoadAccount): AsyncTask<Void, Void, AccountResponse> {
+        return LoadAccountTask(listener)
+    }
+
+    private class LoadAccountTask(private val listener: OnLoadAccount) : AsyncTask<Void, Void, AccountResponse>() {
+        override fun doInBackground(vararg params: Void?) : AccountResponse? {
+            val server = getServer()
+            val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.stellarAccountId)
+            var account : AccountResponse? = null
+            try {
+                account = server.accounts().account(sourceKeyPair)
+
+            } catch (error : Exception) {
+                Log.d(TAG, error.message.toString())
+                if (error is ErrorResponse) {
+                    listener.onError(error)
+                } else {
+                    listener.onError(ErrorResponse(Constants.UNKNOWN_ERROR, error.message))
                 }
-
-                return account
             }
 
-            override fun onPostExecute(result: AccountResponse?) {
-                listener.onLoadAccount(result)
-            }
+            return account
         }
 
-        class LoadEffectsTask(private val listener: OnLoadEffects) : AsyncTask<Void, Void, ArrayList<EffectResponse>?>() {
-            override fun doInBackground(vararg params: Void?): ArrayList<EffectResponse>? {
-                val server = Server(PROD_SERVER)
-                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore!!.publicKey)
-                var effectResults : Page<EffectResponse>? = null
-                try {
-                    effectResults = server.effects().order(RequestBuilder.Order.DESC)
-                            .limit(Constants.NUM_TRANSACTIONS_SHOWN)
-                            .forAccount(sourceKeyPair).execute()
-                } catch (error : Exception) {
-                    Log.d(TAG, error.message.toString())
-                }
+        override fun onPostExecute(result: AccountResponse?) {
+            listener.onLoadAccount(result)
+        }
+    }
 
-                return effectResults?.records
+    private class LoadEffectsTask(private val listener: OnLoadEffects) : AsyncTask<Void, Void, ArrayList<EffectResponse>?>() {
+        override fun doInBackground(vararg params: Void?): ArrayList<EffectResponse>? {
+            val server = getServer()
+            val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.stellarAccountId)
+            var effectResults : Page<EffectResponse>? = null
+            try {
+                effectResults = server.effects().order(RequestBuilder.Order.DESC)
+                        .limit(Constants.NUM_TRANSACTIONS_SHOWN)
+                        .forAccount(sourceKeyPair).execute()
+            } catch (error : Exception) {
+                Log.d(TAG, error.message.toString())
             }
 
-            override fun onPostExecute(result: ArrayList<EffectResponse>?) {
-                listener.onLoadEffects(result)
-            }
-
+            return effectResults?.records
         }
 
-        class SendTask(private val listener: SuccessErrorCallback, private val destAddress: String,
-                       private val secretSeed: CharArray, private val memo: String,
-                       private val amount : String) : AsyncTask<Void, Void, HorizonException>() {
+        override fun onPostExecute(result: ArrayList<EffectResponse>?) {
+            listener.onLoadEffects(result)
+        }
 
-            override fun doInBackground(vararg params: Void?): HorizonException? {
-                val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
-                val server = Server(PROD_SERVER)
-                val destKeyPair = KeyPair.fromAccountId(destAddress)
-                var isCreateAccount = false
+    }
 
-                Network.usePublicNetwork()
+    private class SendTask(private val listener: SuccessErrorCallback, private val destAddress: String,
+                           private val secretSeed: CharArray, private val memo: String,
+                           private val amount : String) : AsyncTask<Void, Void, HorizonException>() {
 
+        override fun doInBackground(vararg params: Void?): HorizonException? {
+            val server = getServer()
+            val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
+            val destKeyPair = KeyPair.fromAccountId(destAddress)
+            var isCreateAccount = false
+
+            Network.usePublicNetwork()
+
+            try {
                 try {
-                    try {
-                        server.accounts().account(destKeyPair)
-                    } catch (error : Exception) {
-                        Log.d(TAG, error.message.toString())
-                        if (error.message == SERVER_ERROR_MESSAGE) {
-                            isCreateAccount = true
-                        } else {
-                            return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
-                                    arrayListOf(error.message),
-                                    HorizonException.HorizonExceptionType.SEND)
-                        }
-                    }
-
-                    val sourceAccount = server.accounts().account(sourceKeyPair)
-
-                    val transaction = if (isCreateAccount) {
-                        Transaction.Builder(sourceAccount)
-                                .addOperation(CreateAccountOperation.Builder(destKeyPair, amount).build())
-                                // A memo allows you to add your own metadata to a transaction. It's
-                                // optional and does not affect how Stellar treats the transaction.
-                                .addMemo(Memo.text(memo))
-                                .build()
+                    server.accounts().account(destKeyPair)
+                } catch (error : Exception) {
+                    Log.d(TAG, error.message.toString())
+                    if (error.message == SERVER_ERROR_MESSAGE) {
+                        isCreateAccount = true
                     } else {
-                        Transaction.Builder(sourceAccount)
-                                .addOperation(PaymentOperation.Builder(destKeyPair, getCurrentAsset(), amount).build())
-                                .addMemo(Memo.text(memo))
-                                .build()
-                    }
-
-                    transaction.sign(sourceKeyPair)
-
-                    val response = server.submitTransaction(transaction)
-
-                    if (!response.isSuccess) {
-                        return HorizonException(response.extras.resultCodes.transactionResultCode,
-                                response.extras.resultCodes.operationsResultCodes,
+                        return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
+                                arrayListOf(error.message),
                                 HorizonException.HorizonExceptionType.SEND)
                     }
-
-                } catch (error : HorizonException) {
-                    return error
                 }
 
-                return null
-            }
+                val sourceAccount = server.accounts().account(sourceKeyPair)
 
-            override fun onPostExecute(result: HorizonException?) {
-                if (result != null) {
-                    listener.onError(result)
+                val transaction = if (isCreateAccount) {
+                    Transaction.Builder(sourceAccount)
+                            .addOperation(CreateAccountOperation.Builder(destKeyPair, amount).build())
+                            // A memo allows you to add your own metadata to a transaction. It's
+                            // optional and does not affect how Stellar treats the transaction.
+                            .addMemo(Memo.text(memo))
+                            .build()
                 } else {
-                    listener.onSuccess()
+                    Transaction.Builder(sourceAccount)
+                            .addOperation(PaymentOperation.Builder(destKeyPair, getCurrentAsset(), amount).build())
+                            .addMemo(Memo.text(memo))
+                            .build()
                 }
+
+                transaction.sign(sourceKeyPair)
+
+                val response = server.submitTransaction(transaction)
+
+                if (!response.isSuccess) {
+                    return HorizonException(response.extras.resultCodes.transactionResultCode,
+                            response.extras.resultCodes.operationsResultCodes,
+                            HorizonException.HorizonExceptionType.SEND)
+                }
+
+            } catch (error : HorizonException) {
+                Log.d(TAG, error.message)
+                return error
             }
+
+            return null
         }
 
-        class JoinInflationDestination(private val listener: SuccessErrorCallback,
-                                       private val secretSeed: CharArray,
-                                       private val inflationDest : String)
-            : AsyncTask<Void, Void, HorizonException>() {
+        override fun onPostExecute(result: HorizonException?) {
+            if (result != null) {
+                listener.onError(result)
+            } else {
+                listener.onSuccess()
+            }
+        }
+    }
 
-            override fun doInBackground(vararg params: Void?): HorizonException? {
-                Network.usePublicNetwork()
+    private class JoinInflationDestination(private val listener: SuccessErrorCallback,
+                                           private val secretSeed: CharArray,
+                                           private val inflationDest : String)
+        : AsyncTask<Void, Void, HorizonException>() {
 
-                val server = Server(PROD_SERVER)
-                val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
-                val destKeyPair = KeyPair.fromAccountId(inflationDest)
+        override fun doInBackground(vararg params: Void?): HorizonException? {
+            Network.usePublicNetwork()
 
-                try {
-                    val sourceAccount = server.accounts().account(sourceKeyPair)
+            val server = getServer()
+            val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
+            val destKeyPair = KeyPair.fromAccountId(inflationDest)
 
-                    val transaction = Transaction.Builder(sourceAccount)
-                            .addOperation(SetOptionsOperation.Builder()
-                                    .setInflationDestination(destKeyPair)
-                                    .build())
-                            .build()
+            try {
+                val sourceAccount = server.accounts().account(sourceKeyPair)
 
-                    transaction.sign(sourceKeyPair)
-                    val response = server.submitTransaction(transaction)
+                val transaction = Transaction.Builder(sourceAccount)
+                        .addOperation(SetOptionsOperation.Builder()
+                                .setInflationDestination(destKeyPair)
+                                .build())
+                        .build()
 
-                    if (!response.isSuccess) {
-                        return HorizonException(response.extras.resultCodes.transactionResultCode,
-                                response.extras.resultCodes.operationsResultCodes,
-                                HorizonException.HorizonExceptionType.INFLATION)
-                    }
+                transaction.sign(sourceKeyPair)
+                val response = server.submitTransaction(transaction)
 
-                } catch (error : Exception) {
-                    Log.d(TAG, error.message.toString())
-                    return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
-                            arrayListOf(error.message.toString()),
+                if (!response.isSuccess) {
+                    return HorizonException(response.extras.resultCodes.transactionResultCode,
+                            response.extras.resultCodes.operationsResultCodes,
                             HorizonException.HorizonExceptionType.INFLATION)
                 }
-                return null
-            }
 
-            override fun onPostExecute(result: HorizonException?) {
-                if (result != null) {
-                    listener.onError(result)
-                } else {
-                    listener.onSuccess()
-                }
+            } catch (error : Exception) {
+                Log.d(TAG, error.message.toString())
+                return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
+                        arrayListOf(error.message.toString()),
+                        HorizonException.HorizonExceptionType.INFLATION)
             }
+            return null
         }
 
-        class ChangeTrust(private val listener: SuccessErrorCallback, private val asset: Asset,
-                          private val removeTrust: Boolean, private val secretSeed: CharArray)
-            : AsyncTask<Void, Void, HorizonException?>() {
+        override fun onPostExecute(result: HorizonException?) {
+            if (result != null) {
+                listener.onError(result)
+            } else {
+                listener.onSuccess()
+            }
+        }
+    }
 
-            override fun doInBackground(vararg params: Void?): HorizonException? {
-                Network.usePublicNetwork()
+    private class ChangeTrust(private val listener: SuccessErrorCallback, private val asset: Asset,
+                              private val removeTrust: Boolean, private val secretSeed: CharArray)
+        : AsyncTask<Void, Void, HorizonException?>() {
 
-                val server = Server(PROD_SERVER)
-                val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
-                val limit = if (removeTrust) "0.0000000" else Constants.MAX_ASSET_STRING_VALUE
+        override fun doInBackground(vararg params: Void?): HorizonException? {
+            Network.usePublicNetwork()
 
-                try {
-                    val sourceAccount = server.accounts().account(sourceKeyPair)
+            val server = getServer()
+            val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
+            val limit = if (removeTrust) "0.0000000" else Constants.MAX_ASSET_STRING_VALUE
 
-                    val transaction = Transaction.Builder(sourceAccount)
-                            .addOperation(ChangeTrustOperation.Builder(asset, limit).build())
-                            .build()
+            try {
+                val sourceAccount = server.accounts().account(sourceKeyPair)
 
-                    transaction.sign(sourceKeyPair)
-                    val response = server.submitTransaction(transaction)
+                val transaction = Transaction.Builder(sourceAccount)
+                        .addOperation(ChangeTrustOperation.Builder(asset, limit).build())
+                        .build()
 
-                    if (!response.isSuccess) {
-                        return HorizonException(response.extras.resultCodes.transactionResultCode,
-                                response.extras.resultCodes.operationsResultCodes,
-                                HorizonException.HorizonExceptionType.CHANGE_TRUSTLINE)
-                    }
+                transaction.sign(sourceKeyPair)
+                val response = server.submitTransaction(transaction)
 
-                } catch (error : ErrorResponse) {
-                    Log.d(TAG, error.body.toString())
-                    return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
-                            arrayListOf(error.body.toString()),
+                if (!response.isSuccess) {
+                    return HorizonException(response.extras.resultCodes.transactionResultCode,
+                            response.extras.resultCodes.operationsResultCodes,
                             HorizonException.HorizonExceptionType.CHANGE_TRUSTLINE)
                 }
-                return null
-            }
 
-            override fun onPostExecute(result: HorizonException?) {
-                if (result != null) {
-                    listener.onError(result)
-                } else {
-                    listener.onSuccess()
-                }
+            } catch (error : ErrorResponse) {
+                Log.d(TAG, error.body.toString())
+                return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
+                        arrayListOf(error.body.toString()),
+                        HorizonException.HorizonExceptionType.CHANGE_TRUSTLINE)
             }
+            return null
         }
 
-        private fun getCurrentAsset(): Asset {
-            val assetCode = WalletApplication.userSession.currAssetCode
-            val assetIssuer = WalletApplication.userSession.currAssetIssuer
-
-            return if (assetCode == Constants.LUMENS_ASSET_TYPE) {
-                AssetTypeNative()
+        override fun onPostExecute(result: HorizonException?) {
+            if (result != null) {
+                listener.onError(result)
             } else {
-                Asset.createNonNativeAsset(assetCode, KeyPair.fromAccountId(assetIssuer))
+                listener.onSuccess()
             }
         }
+    }
+
+    interface OnMarketOfferListener {
+        fun onExecuted()
+        fun onFailed()
+    }
+
+    override fun getCreateMarketOffer(listener: OnMarketOfferListener, secretSeed: CharArray, sellingAsset: Asset, buyingAsset: Asset, amount: String, price: String) {
+        AsyncTask.execute {
+            val server = getServer()
+            val managedOfferOperation = ManageOfferOperation.Builder(sellingAsset, buyingAsset, amount, price).build()
+            val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
+            val sourceAccount = server.accounts().account(sourceKeyPair)
+
+            val transaction = Transaction.Builder(sourceAccount).addOperation(managedOfferOperation).build()
+            transaction.sign(sourceKeyPair)
+            val response = server.submitTransaction(transaction)
+            if (response.isSuccess) {
+                listener.onFailed()
+            } else {
+                listener.onExecuted()
+            }
+        }
+    }
+
+    private fun getCurrentAsset(): Asset {
+        val assetCode = WalletApplication.userSession.currAssetCode
+        val assetIssuer = WalletApplication.userSession.currAssetIssuer
+
+        return if (assetCode == Constants.LUMENS_ASSET_TYPE) {
+            AssetTypeNative()
+        } else {
+            Asset.createNonNativeAsset(assetCode, KeyPair.fromAccountId(assetIssuer))
+        }
+    }
+
+    private fun getServer() : Server {
+        return Server(PROD_SERVER)
     }
 }

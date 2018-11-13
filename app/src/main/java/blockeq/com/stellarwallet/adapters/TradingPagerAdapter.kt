@@ -3,58 +3,33 @@ package blockeq.com.stellarwallet.adapters
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import blockeq.com.stellarwallet.fragments.tabs.MyOffersTab
-import blockeq.com.stellarwallet.fragments.tabs.OrderBookTab
-import blockeq.com.stellarwallet.fragments.tabs.TradeTab
+import blockeq.com.stellarwallet.fragments.tabs.MyOffersTabFragment
+import blockeq.com.stellarwallet.fragments.tabs.OrderBookTabFragment
+import blockeq.com.stellarwallet.fragments.tabs.TradeTabFragment
 import blockeq.com.stellarwallet.helpers.TradingTabs
 import blockeq.com.stellarwallet.helpers.TradingTabs.*
+import java.lang.IllegalStateException
 
 class TradingPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-
-    private var orderBookTab: OrderBookTab? = null
-    private var tradeTab: TradeTab? = null
-    private var myOffersTab: MyOffersTab? = null
+    override fun getCount(): Int {
+        return TradingTabs.values().size
+    }
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            Trade.ordinal -> {
-                if (tradeTab != null) {
-                    tradeTab!!
-                } else {
-                    tradeTab = TradeTab()
-                    tradeTab!!
-                }
-            }
-            OrderBook.ordinal -> {
-                if (orderBookTab != null) {
-                    orderBookTab!!
-                } else {
-                    orderBookTab = OrderBookTab()
-                    orderBookTab!!
-                }
-            }
-            else -> {
-                if (myOffersTab != null) {
-                    myOffersTab!!
-                } else {
-                    myOffersTab = MyOffersTab()
-                    myOffersTab!!
-                }
-            }
+            Trade.ordinal -> TradeTabFragment()
+            OrderBook.ordinal -> OrderBookTabFragment()
+            MyOffers.ordinal -> MyOffersTabFragment()
+            else -> throw IllegalStateException("position not valid for" + TradingPagerAdapter::class.simpleName)
         }
-    }
-
-    override fun getCount(): Int {
-        return TradingTabs.values().size
     }
 
     override fun getPageTitle(position: Int): CharSequence {
         return when (position) {
             Trade.ordinal -> Trade.title
             OrderBook.ordinal -> OrderBook.title
-            else -> {
-                return MyOffers.title
-            }
+            MyOffers.ordinal -> MyOffers.title
+            else -> throw IllegalStateException("position not valid for" + TradingPagerAdapter::class.simpleName)
         }
     }
 }

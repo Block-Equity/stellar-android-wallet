@@ -6,8 +6,7 @@ import android.support.v7.app.AlertDialog
 import blockeq.com.stellarwallet.R
 import kotlinx.android.synthetic.main.activity_login.*
 
-
-class LoginActivity : BaseActivity() {
+class LaunchActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -23,7 +22,7 @@ class LoginActivity : BaseActivity() {
     }
 
     //region User Interface
-    override fun setupUI() {
+    private fun setupUI() {
 
         createWalletButton.setOnClickListener {
             showCreateDialog()
@@ -35,7 +34,7 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun showCreateDialog() {
-        val builder = AlertDialog.Builder(this@LoginActivity)
+        val builder = AlertDialog.Builder(this@LaunchActivity)
         val walletLengthList = listOf(getString(R.string.create_word_option_1), getString(R.string.create_word_option_2)).toTypedArray()
         builder.setTitle(getString(R.string.create_wallet))
                 .setItems(walletLengthList) { _, which ->
@@ -57,7 +56,7 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun showRecoverDialog() {
-        val builder = AlertDialog.Builder(this@LoginActivity)
+        val builder = AlertDialog.Builder(this@LaunchActivity)
         val walletLengthList = listOf(getString(R.string.recover_from_phrase), getString(R.string.recover_from_seed)).toTypedArray()
         builder.setTitle(getString(R.string.recover_wallet))
                 .setItems(walletLengthList) { _, which ->

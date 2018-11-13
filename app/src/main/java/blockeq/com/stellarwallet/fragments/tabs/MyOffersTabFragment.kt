@@ -20,7 +20,7 @@ import android.support.v7.widget.DividerItemDecoration
 import android.widget.Toast
 
 
-class MyOffersTab : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRefreshListener {
+class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRefreshListener {
 
     private var myOffers = mutableListOf<MyOffer>()
     private lateinit var myOffersAdapter: MyOffersAdapter
