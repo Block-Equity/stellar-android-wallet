@@ -11,12 +11,12 @@ class StellarRecoveryString (string : String, isRecoveryPhrase : Boolean) {
         val wordCount = recoveryString.split(" ".toRegex()).size
 
         if (isRecoveryPhrase) {
-            if (wordCount != 12 || wordCount != 24) {
-                throw InvalidWordCountException("InvalidWordCountException: Please check the number of words in your phrase or any extra spaces between words")
+            if (wordCount != 12 && wordCount != 24) {
+                throw InvalidWordCountException("Invalid Word Count: Please check the number of words in your phrase or any extra spaces between words")
             }
         } else {
             if (recoveryString.length != Constants.STELLAR_ADDRESS_LENGTH || recoveryString[0] != 'S') {
-                throw InvalidStellarSecretSeedException("InvalidStellarSecretSeedException: Length ${recoveryString.length} should be ${Constants.STELLAR_ADDRESS_LENGTH}. The first character (${recoveryString[0]} should be 'S')")
+                throw InvalidStellarSecretSeedException("Invalid Secret Seed: Length should be ${Constants.STELLAR_ADDRESS_LENGTH} characters. The first character should be 'S'")
             }
         }
     }
