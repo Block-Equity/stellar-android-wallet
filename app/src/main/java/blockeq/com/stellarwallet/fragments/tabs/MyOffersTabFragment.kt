@@ -73,7 +73,6 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
                         }
                         else -> {
                             throw IllegalStateException("uknown asset type:" + it.toString())
-
                         }
                     }
                     val currencyBuy = Currency(1, buyingCode, "$buyingCode COIN", 0.0f, null)
@@ -89,8 +88,7 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
                             sellingCode = "LMX"
                         }
                         else -> {
-                            throw IllegalStateException("uknown asset type:" + it.toString())
-
+                            throw IllegalStateException("unknown asset type:" + it.toString())
                         }
                     }
 
