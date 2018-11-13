@@ -1,6 +1,7 @@
 package blockeq.com.stellarwallet.activities
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -9,8 +10,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
-import blockeq.com.stellarwallet.encryption.CipherWrapper
-import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
@@ -22,17 +21,16 @@ class PinActivity : BaseActivity(), PinLockListener {
 
     companion object {
         const val PIN_REQUEST_CODE = 0
-        const val RESULT_FAIL = 2
-
         const val MAX_ATTEMPTS = 3
         const val KEY_SECRET_SEED = "kDecryptedPhrase"
     }
 
     private var needConfirm = true
-    private var PIN : String? = null
-    private var phrase : String? = null
-    private var pinViewState: PinViewState? = null
+    private lateinit var PIN : String
+    private lateinit var mnemonic : String
+    private lateinit var pinViewState: PinViewState
     private var numAttempts = 0
+    private lateinit var context : Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,13 +39,16 @@ class PinActivity : BaseActivity(), PinLockListener {
         pinLockView.attachIndicatorDots(indicatorDots)
 
         pinViewState = getPinState()
-        phrase = pinViewState!!.mnemonic
-        val message = pinViewState!!.message
-        PIN = pinViewState!!.pin
+        mnemonic = pinViewState.mnemonic
+        val message = pinViewState.message
+        //TODO: review pin since it looks like is always EMPTY here
+        PIN = pinViewState.pin
 
         if (!message.isEmpty()) {
             customMessageTextView.text = message
         }
+
+        context = applicationContext
     }
 
     override fun onEmpty() {
@@ -56,7 +57,7 @@ class PinActivity : BaseActivity(), PinLockListener {
     override fun onComplete(pin: String) {
         val handler = Handler()
         val runnableCode = Runnable {
-            when (pinViewState!!.type) {
+            when (pinViewState.type) {
                 PinType.CREATE -> {
                     when {
                         needConfirm -> {
@@ -70,27 +71,11 @@ class PinActivity : BaseActivity(), PinLockListener {
                         else -> {
                             setResult(Activity.RESULT_OK)
 
-                            val keyStoreWrapper = KeyStoreWrapper(applicationContext)
-                            keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin)
+                            WalletApplication.localStore.encryptedPhrase = AccountUtils.getEncryptedMnemonicPhrase(applicationContext, pinViewState.mnemonic, pinViewState.passphrase, pin)
 
-                            val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
-                            val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
+                            val stellarKeyPair = AccountUtils.getStellarKeyPair(pinViewState.mnemonic, pinViewState.passphrase)
 
-                            if (pinViewState!!.passphrase.isNullOrEmpty()) {
-                                WalletApplication.localStore!!.isPassphraseUsed = false
-                            } else {
-                                WalletApplication.localStore!!.isPassphraseUsed = true
-                                WalletApplication.localStore!!.encryptedPassphrase = cipherWrapper.encrypt(pinViewState!!.passphrase!!, masterKey?.public)
-                            }
-
-                            val encryptedPhrase = cipherWrapper.encrypt(pinViewState!!.mnemonic, masterKey?.public)
-
-
-                            WalletApplication.localStore!!.encryptedPhrase = encryptedPhrase
-
-                            val keyPair = AccountUtils.getKeyPair(pinViewState!!.mnemonic, pinViewState!!.passphrase)
-
-                            WalletApplication.localStore!!.publicKey = keyPair.accountId
+                            WalletApplication.localStore.stellarAccountId = stellarKeyPair.accountId
                             WalletApplication.userSession.pin = pin
 
                             launchWallet()
@@ -98,36 +83,36 @@ class PinActivity : BaseActivity(), PinLockListener {
                     }
                 }
                 else -> {
-                    val encryptedPhrase = getEncryptedPhrase(pinViewState!!.type)
-                    val encryptedPassphrase = WalletApplication.localStore!!.encryptedPassphrase
-                    val masterKey = AccountUtils.getPinMasterKey(pin)
+                    val encryptedPhrase = getEncryptedPhrase(pinViewState.type)
+                    val encryptedPassphrase = WalletApplication.localStore.encryptedPassphrase
+                    val masterKey = AccountUtils.getPinMasterKey(context, pin)
 
                     if (masterKey != null) {
                         var decryptedPhrase = AccountUtils.getDecryptedPhrase(encryptedPhrase, masterKey)
                         var decryptedPassphrase = AccountUtils.getDecryptedPassphhrase(encryptedPassphrase, masterKey)
 
                         // TODO: Remove for new app, this is purely passphrase migration code
-                        if (WalletApplication.localStore!!.isPassphraseUsed && WalletApplication.localStore!!.encryptedPassphrase == null) {
-                            val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey)
+                        if (WalletApplication.localStore.isPassphraseUsed && WalletApplication.localStore.encryptedPassphrase == null) {
+                            val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey.private)
                             decryptedPhrase = decryptedPair.first
                             decryptedPassphrase = decryptedPair.second
                         }
 
                         when {
-                            pinViewState!!.type == PinType.LOGIN -> {
+                            pinViewState.type == PinType.LOGIN -> {
                                 WalletApplication.userSession.pin = pin
                                 launchWallet()
                             }
-                            pinViewState!!.type == PinType.CHECK -> {
-                                val keyPair = AccountUtils.getKeyPair(decryptedPhrase, decryptedPassphrase)
+                            pinViewState.type == PinType.CHECK -> {
+                                val keyPair = AccountUtils.getStellarKeyPair(decryptedPhrase, decryptedPassphrase)
                                 val intent = Intent()
                                 intent.putExtra(KEY_SECRET_SEED, keyPair.secretSeed)
                                 setResult(Activity.RESULT_OK, intent)
                                 finishActivity()
                             }
-                            pinViewState!!.type == PinType.CLEAR_WALLET -> wipeAndRestart()
+                            pinViewState.type == PinType.CLEAR_WALLET -> wipeAndRestart()
 
-                            pinViewState!!.type == PinType.VIEW_PHRASE -> {
+                            pinViewState.type == PinType.VIEW_PHRASE -> {
                                 val intent = Intent(this, ShowMnemonicActivity::class.java)
                                 intent.putExtra(ShowMnemonicActivity.INTENT_DISPLAY_PHRASE, true)
                                 intent.putExtra(ShowMnemonicActivity.DECRYPTED_PHRASE, decryptedPhrase)
@@ -135,8 +120,8 @@ class PinActivity : BaseActivity(), PinLockListener {
                                 finish()
                             }
 
-                            pinViewState!!.type == PinType.VIEW_SEED -> {
-                                val keyPair = AccountUtils.getKeyPair(decryptedPhrase, decryptedPassphrase)
+                            pinViewState.type == PinType.VIEW_SEED -> {
+                                val keyPair = AccountUtils.getStellarKeyPair(decryptedPhrase, decryptedPassphrase)
                                 val secretSeed = keyPair.secretSeed.joinToString("")
                                 val intent = Intent(this, ViewSecretSeedActivity::class.java)
 
@@ -151,6 +136,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                 }
             }
         }
+        //TODO move the work to non ui Thread, this delay is to not freeze the animation of the last pin dot.
         handler.postDelayed(runnableCode, 200)
     }
 
@@ -208,17 +194,16 @@ class PinActivity : BaseActivity(), PinLockListener {
 
     private fun getEncryptedPhrase(pinType: PinType) : String {
         return if (pinType == PinType.CHECK || pinType == PinType.LOGIN) {
-            WalletApplication.localStore!!.encryptedPhrase!!
+            WalletApplication.localStore.encryptedPhrase!!
         } else {
-            pinViewState!!.mnemonic
+            pinViewState.mnemonic
         }
     }
 
     private fun wipeAndRestart() {
-        WalletApplication.localStore!!.clearUserData()
-        val intent = Intent(this, LoginActivity::class.java)
+        WalletApplication.localStore.clearUserData()
+        val intent = Intent(this, LaunchActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
     }
-    //endregion
 }

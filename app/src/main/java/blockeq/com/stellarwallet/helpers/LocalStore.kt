@@ -2,17 +2,11 @@ package blockeq.com.stellarwallet.helpers
 
 import android.content.SharedPreferences
 import android.util.Log
-import blockeq.com.stellarwallet.models.PinViewState
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import org.stellar.sdk.responses.AccountResponse
 
-
 class LocalStore(private val sharedPreferences: SharedPreferences, private val gson: Gson) {
-
-    var pinViewState: PinViewState?
-        get() = get<PinViewState>(KEY_PIN_DATA, PinViewState::class.java)
-        set(viewState) = set<PinViewState>(KEY_PIN_DATA, viewState!!)
 
     var encryptedPhrase: String?
         get() = getString(KEY_ENCRYPTED_PHRASE)
@@ -22,7 +16,7 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         get() = getString(KEY_ENCRYPTED_PASSPHRASE)
         set(encryptedPassphrase) = set(KEY_ENCRYPTED_PASSPHRASE, encryptedPassphrase)
 
-    var publicKey: String?
+    var stellarAccountId: String?
         get() = getString(KEY_STELLAR_ACCOUNT_PUBLIC_KEY)
         set(publicKey) = set(KEY_STELLAR_ACCOUNT_PUBLIC_KEY, publicKey)
 
@@ -45,7 +39,6 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
     var isPassphraseUsed : Boolean
         get() = getBoolean(KEY_IS_PASSPHRASE_USED)
         set(isPassphraseUsed) = set(KEY_IS_PASSPHRASE_USED, isPassphraseUsed)
-
 
     init {
         balances = arrayOf()
@@ -82,6 +75,7 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
     }
 
     private fun getBoolean(key: String): Boolean {
+        //TODO: refactor this, the default value true is the expected behavior for isRecoveryPhrase and showPinOnSend.
         return sharedPreferences.getBoolean(key, true)
     }
 
@@ -109,11 +103,5 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
 
         balances = arrayOf()
         availableBalance = Constants.DEFAULT_ACCOUNT_BALANCE
-    }
-
-    fun clearPINData() {
-        val editor = sharedPreferences.edit()
-        editor.remove(KEY_PIN_DATA)
-        editor.apply()
     }
 }

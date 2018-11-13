@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/fragmentBg"
-    tools:context="blockeq.com.stellarwallet.activities.MainActivity">
+    tools:context="blockeq.com.stellarwallet.activities.WalletActivity">
 
     <FrameLayout
         android:id="@+id/container"
@@ -29,6 +29,7 @@
         app:itemBackground="@color/bottomNavigationColor"
         app:itemIconTint="@color/color_nav_icons"
         app:itemTextColor="@color/color_nav_icons"
-        app:menu="@menu/navigation"/>
+        app:menu="@menu/navigation"
+        app:labelVisibilityMode="labeled" />
 
 </android.support.constraint.ConstraintLayout>

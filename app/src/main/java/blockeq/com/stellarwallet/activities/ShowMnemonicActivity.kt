@@ -41,8 +41,8 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
     }
 
     //region User Interface
-    override fun onClick(v: View?) {
-        val itemId = v!!.id
+    override fun onClick(v: View) {
+        val itemId = v.id
         when (itemId) {
             R.id.confirmButton -> launchPINView(PinType.CREATE, getString(R.string.please_create_a_pin), mnemonicString!!, passphrase, false)
             R.id.passphraseButton -> {
@@ -57,11 +57,11 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
-    override fun setupUI() {
+    private fun setupUI() {
         if (isDisplayPhraseOnly) {
             confirmButton.visibility = View.GONE
             passphraseButton.visibility = View.GONE
-            if (!WalletApplication.localStore!!.isRecoveryPhrase) {
+            if (!WalletApplication.localStore.isRecoveryPhrase) {
                 warningPhraseTextView.text = getString(R.string.no_mnemonic_set)
                 mnemonicView.visibility = View.GONE
             }
@@ -103,8 +103,7 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
             }
 
             mnemonicString = String(mnemonic)
-            val words = String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
-            return words
+            return String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
         }
     }
 

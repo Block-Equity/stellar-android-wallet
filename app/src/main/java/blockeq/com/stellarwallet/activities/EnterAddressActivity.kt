@@ -11,7 +11,6 @@ import blockeq.com.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LEN
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.content_enter_address.*
 
-
 class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
 
     val ADDRESS_DATA = "ADDRESS"
@@ -45,16 +44,16 @@ class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
     }
 
     //region User Interface
-    override fun setupUI() {
+    private fun setupUI() {
 
-        titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance()
+        titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance(applicationContext)
 
         cameraImageButton.setOnClickListener(this)
         nextButton.setOnClickListener(this)
     }
 
-    override fun onClick(v: View?) {
-        when(v!!.id) {
+    override fun onClick(v: View) {
+        when(v.id) {
             R.id.nextButton -> {
                 val address = addressEditText.text.toString()
                 if (address.length == STELLAR_ADDRESS_LENGTH) {

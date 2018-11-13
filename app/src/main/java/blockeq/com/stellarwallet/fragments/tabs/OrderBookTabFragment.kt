@@ -19,7 +19,7 @@ import com.brandongogetap.stickyheaders.StickyLayoutManager
 import kotlinx.android.synthetic.main.fragment_tab_order_book.*
 import java.util.*
 
-class OrderBookTab : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private var orderBooks = mutableListOf<OrderBook>()
     private lateinit var orderBooksAdapter: OrderBooksAdapter

@@ -22,13 +22,13 @@ class BalanceSummaryActivity : BasePopupActivity() {
         setupUI()
     }
 
-    override fun setupUI() {
+    private fun setupUI() {
         val minimumBalance = WalletApplication.userSession.minimumBalance
 
         if (minimumBalance != null) {
 
             totalBalanceTextView.text = AccountUtils.getTotalBalance(Constants.LUMENS_ASSET_TYPE)
-            availableBalanceTextView.text = WalletApplication.localStore!!.availableBalance
+            availableBalanceTextView.text = WalletApplication.localStore.availableBalance
 
             baseReserveAmountTextView.text = BASE_RESERVE_AMOUNT
             baseReserveXLMTextView.text = Constants.BASE_RESERVE.toString()

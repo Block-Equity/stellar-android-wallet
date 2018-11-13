@@ -1,41 +1,61 @@
 package blockeq.com.stellarwallet.utils
 
+import android.content.Context
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.encryption.CipherWrapper
 import blockeq.com.stellarwallet.encryption.KeyStoreWrapper
 import blockeq.com.stellarwallet.helpers.Constants
 import com.soneso.stellarmnemonics.Wallet
 import org.stellar.sdk.KeyPair
+import java.security.PrivateKey
 
 class AccountUtils {
 
     companion object {
+        private const val CIPHER_TRANSFORMATION : String = "RSA/ECB/PKCS1Padding"
 
-        fun getSecretSeed() : CharArray {
-            val encryptedPhrase = WalletApplication.localStore!!.encryptedPhrase!!
-            val encryptedPassphrase = WalletApplication.localStore!!.encryptedPassphrase
-            val masterKey = getPinMasterKey(WalletApplication.userSession.pin!!)!!
+        fun getSecretSeed(context : Context) : CharArray {
+            val encryptedPhrase = WalletApplication.localStore.encryptedPhrase!!
+            val encryptedPassphrase = WalletApplication.localStore.encryptedPassphrase
+            val masterKey = getPinMasterKey(context, WalletApplication.userSession.pin!!)!!
 
-            var decryptedPhrase = AccountUtils.getDecryptedPhrase(encryptedPhrase, masterKey)
+            var decryptedPhrase = getDecryptedPhrase(encryptedPhrase, masterKey)
             var decryptedPassphrase = getDecryptedPassphhrase(encryptedPassphrase, masterKey)
 
             // TODO: Remove for new app, this is purely passphrase migration code
-            if (WalletApplication.localStore!!.isPassphraseUsed && WalletApplication.localStore!!.encryptedPassphrase == null) {
-                val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey)
+            if (WalletApplication.localStore.isPassphraseUsed && WalletApplication.localStore.encryptedPassphrase == null) {
+                val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey.private)
                 decryptedPhrase = decryptedPair.first
                 decryptedPassphrase = decryptedPair.second
             }
 
-            return getKeyPair(decryptedPhrase, decryptedPassphrase).secretSeed
+            return getStellarKeyPair(decryptedPhrase, decryptedPassphrase).secretSeed
+        }
+
+        fun getEncryptedMnemonicPhrase(context: Context, mnemonic: String, passphrase: String?, pin: String) : String {
+            val keyStoreWrapper = KeyStoreWrapper(context)
+            keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin)
+
+            val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
+            val cipherWrapper = CipherWrapper(CIPHER_TRANSFORMATION)
+
+            return if (passphrase.isNullOrEmpty()) {
+                WalletApplication.localStore.isPassphraseUsed = false
+                cipherWrapper.encrypt(mnemonic, masterKey?.public)
+            } else {
+                WalletApplication.localStore.isPassphraseUsed = true
+                WalletApplication.localStore.encryptedPassphrase = cipherWrapper.encrypt(passphrase!!, masterKey?.public)
+                cipherWrapper.encrypt("$mnemonic $passphrase", masterKey?.public)
+            }
         }
 
         fun getDecryptedPhrase(encryptedPhrase: String, masterKey: java.security.KeyPair) : String {
-            val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
+            val cipherWrapper = CipherWrapper(CIPHER_TRANSFORMATION)
             return cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
         }
 
         fun getDecryptedPassphhrase(encryptedPassphrase: String?, masterKey: java.security.KeyPair) : String? {
-            return if (WalletApplication.localStore!!.isPassphraseUsed && encryptedPassphrase != null) {
+            return if (WalletApplication.localStore.isPassphraseUsed && encryptedPassphrase != null) {
                 AccountUtils.getDecryptedPhrase(encryptedPassphrase, masterKey)
             } else {
                 null
@@ -43,22 +63,22 @@ class AccountUtils {
         }
 
         // TODO: Remove this method in new app
-        fun getDecryptedMnemonicPhrasePair(encryptedPhrase: String, masterKey: java.security.KeyPair) : Pair<String, String?> {
-            val cipherWrapper = CipherWrapper("RSA/ECB/PKCS1Padding")
+        fun getDecryptedMnemonicPhrasePair(encryptedPhrase: String, privateKey: PrivateKey) : Pair<String, String?> {
+            val cipherWrapper = CipherWrapper(CIPHER_TRANSFORMATION)
             var passphrase : String? = null
-            val decryptedData = if (WalletApplication.localStore!!.isPassphraseUsed) {
-                val decryptedString = cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
+            val decryptedData = if (WalletApplication.localStore.isPassphraseUsed) {
+                val decryptedString = cipherWrapper.decrypt(encryptedPhrase, privateKey)
                 passphrase = decryptedString.substring(decryptedString.lastIndexOf(" ") + 1)
                 decryptedString.substring(0, decryptedString.lastIndexOf(" "))
             } else {
-                cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
+                cipherWrapper.decrypt(encryptedPhrase, privateKey)
             }
 
             return Pair(decryptedData, passphrase)
         }
 
         fun getTotalBalance(type : String) : String {
-            WalletApplication.localStore!!.balances!!.forEach {
+            WalletApplication.localStore.balances!!.forEach {
                 if (it.assetType == type) {
                     return StringFormat.truncateDecimalPlaces(it.balance)
                 } else if (it.assetCode == type) {
@@ -68,17 +88,17 @@ class AccountUtils {
             return Constants.DEFAULT_ACCOUNT_BALANCE
         }
 
-        fun getPinMasterKey(pin: String) : java.security.KeyPair? {
-            val keyStoreWrapper = KeyStoreWrapper(WalletApplication.applicationContext())
+        fun getPinMasterKey(context : Context, pin: String) : java.security.KeyPair? {
+            val keyStoreWrapper = KeyStoreWrapper(context)
 
             return keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
         }
 
-        fun getKeyPair(recoveryString: String, passphrase: String?) : KeyPair {
-            return if (WalletApplication.localStore!!.isRecoveryPhrase) {
-                Wallet.createKeyPair(recoveryString.toCharArray(), passphrase?.toCharArray(), Constants.USER_INDEX)
+        fun getStellarKeyPair(mnemonic: String, passphrase: String?) : KeyPair {
+            return if (WalletApplication.localStore.isRecoveryPhrase) {
+                Wallet.createKeyPair(mnemonic.toCharArray(), passphrase?.toCharArray(), Constants.USER_INDEX)
             } else {
-                KeyPair.fromSecretSeed(recoveryString)
+                KeyPair.fromSecretSeed(mnemonic)
             }
         }
 

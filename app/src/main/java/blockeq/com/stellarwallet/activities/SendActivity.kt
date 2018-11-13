@@ -38,7 +38,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance()
+        titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance(applicationContext)
         assetCodeTextView.text = WalletApplication.userSession.getFormattedCurrentAssetCode()
 
         amountTextView.text = "0"
@@ -49,7 +49,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
 
         send_button.setOnClickListener {
             if (isAmountValid()) {
-                if (WalletApplication.localStore!!.showPinOnSend) {
+                if (WalletApplication.localStore.showPinOnSend) {
                     launchPINView(PinType.CHECK, "", "", null, false)
                 } else {
                     sendPayment()
@@ -137,9 +137,9 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
         if (NetworkUtils(this).isNetworkAvailable()) {
             progressBar.visibility = View.VISIBLE
 
-            val secretSeed = AccountUtils.getSecretSeed()
+            val secretSeed = AccountUtils.getSecretSeed(applicationContext)
 
-            Horizon.Companion.SendTask(this, address, secretSeed,
+            Horizon.getSendTask(this, address, secretSeed,
                     memoTextView.text.toString(), amountText).execute()
         } else {
             NetworkUtils(this).displayNoNetwork()
