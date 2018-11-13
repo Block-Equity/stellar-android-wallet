@@ -45,7 +45,7 @@ public class AccountUtilsTest {
         KeyPair keyPair = AccountUtils.Companion.getPinMasterKey(context, pin);
         assertNotNull(keyPair);
 
-        Pair<String, String> decryptedPair = AccountUtils.Companion.getDecryptedMnemonicPhrasePair(phrase, keyPair.getPrivate());
+        Pair<String, String> decryptedPair = AccountUtils.Companion.getOldDecryptedPair(phrase, keyPair.getPrivate());
         assertNull(decryptedPair.component2());
         assertEquals(decryptedPair.component1(), mnemonicString);
     }
@@ -62,7 +62,7 @@ public class AccountUtilsTest {
         KeyPair keyPair = AccountUtils.Companion.getPinMasterKey(context, pin);
         assertNotNull(keyPair);
 
-        Pair<String, String> decryptedPair = AccountUtils.Companion.getDecryptedMnemonicPhrasePair(phrase, keyPair.getPrivate());
+        Pair<String, String> decryptedPair = AccountUtils.Companion.getOldDecryptedPair(phrase, keyPair.getPrivate());
         assertEquals(passPhrase, decryptedPair.component2());
         assertEquals(decryptedPair.component1(), mnemonicString);
     }
@@ -81,7 +81,7 @@ public class AccountUtilsTest {
     //        KeyPair keyPair = AccountUtils.Companion.getPinMasterKey(context, pin);
     //        assertNotNull(keyPair);
     //
-    //        Pair<String, String> decryptedPair = AccountUtils.Companion.getDecryptedMnemonicPhrasePair(phrase, keyPair.getPrivate());
+    //        Pair<String, String> decryptedPair = AccountUtils.Companion.getOldDecryptedPair(phrase, keyPair.getPrivate());
     //        assertEquals(passPhrase, decryptedPair.component2());
     //        assertEquals(decryptedPair.component1(), mnemonicString);
     //    }

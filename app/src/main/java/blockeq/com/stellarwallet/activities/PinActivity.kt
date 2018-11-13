@@ -93,8 +93,8 @@ class PinActivity : BaseActivity(), PinLockListener {
 
                         // TODO: Remove for new app, this is purely passphrase migration code
                         // backwards compatible for wallets 1.0.3 or older
-                        if (WalletApplication.localStore.isPassphraseUsed && WalletApplication.localStore.encryptedPassphrase == null) {
-                            val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey.private)
+                        if (AccountUtils.isOldWalletWithPassphrase()) {
+                            val decryptedPair = AccountUtils.getOldDecryptedPair(encryptedPhrase, masterKey.private)
                             decryptedPhrase = decryptedPair.first
                             decryptedPassphrase = decryptedPair.second
                         }

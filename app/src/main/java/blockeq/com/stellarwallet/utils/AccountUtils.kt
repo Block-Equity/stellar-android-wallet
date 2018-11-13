@@ -23,8 +23,8 @@ class AccountUtils {
             var decryptedPassphrase = getDecryptedPassphrase(encryptedPassphrase, masterKey)
 
             // TODO: Remove for new app, this is purely passphrase migration code
-            if (WalletApplication.localStore.isPassphraseUsed && WalletApplication.localStore.encryptedPassphrase == null) {
-                val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey.private)
+            if (isOldWalletWithPassphrase()) {
+                val decryptedPair = AccountUtils.getOldDecryptedPair(encryptedPhrase, masterKey.private)
                 decryptedPhrase = decryptedPair.first
                 decryptedPassphrase = decryptedPair.second
             }
@@ -63,7 +63,7 @@ class AccountUtils {
         }
 
         // TODO: Remove this method in new app
-        fun getDecryptedMnemonicPhrasePair(encryptedPhrase: String, privateKey: PrivateKey) : Pair<String, String?> {
+        fun getOldDecryptedPair(encryptedPhrase: String, privateKey: PrivateKey) : Pair<String, String?> {
             val cipherWrapper = CipherWrapper(CIPHER_TRANSFORMATION)
             var passphrase : String? = null
             val decryptedData = if (WalletApplication.localStore.isPassphraseUsed) {
@@ -75,6 +75,11 @@ class AccountUtils {
             }
 
             return Pair(decryptedData, passphrase)
+        }
+
+        // TODO: Remove in new app
+        fun isOldWalletWithPassphrase() : Boolean {
+            return WalletApplication.localStore.isPassphraseUsed && WalletApplication.localStore.encryptedPassphrase == null
         }
 
         fun getTotalBalance(type : String) : String {
