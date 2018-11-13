@@ -20,7 +20,7 @@ class AccountUtils {
             val masterKey = getPinMasterKey(context, WalletApplication.userSession.pin!!)!!
 
             var decryptedPhrase = getDecryptedPhrase(encryptedPhrase, masterKey)
-            var decryptedPassphrase = getDecryptedPassphhrase(encryptedPassphrase, masterKey)
+            var decryptedPassphrase = getDecryptedPassphrase(encryptedPassphrase, masterKey)
 
             // TODO: Remove for new app, this is purely passphrase migration code
             if (WalletApplication.localStore.isPassphraseUsed && WalletApplication.localStore.encryptedPassphrase == null) {
@@ -54,7 +54,7 @@ class AccountUtils {
             return cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
         }
 
-        fun getDecryptedPassphhrase(encryptedPassphrase: String?, masterKey: java.security.KeyPair) : String? {
+        fun getDecryptedPassphrase(encryptedPassphrase: String?, masterKey: java.security.KeyPair) : String? {
             return if (WalletApplication.localStore.isPassphraseUsed && encryptedPassphrase != null) {
                 AccountUtils.getDecryptedPhrase(encryptedPassphrase, masterKey)
             } else {

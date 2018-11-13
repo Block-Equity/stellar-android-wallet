@@ -89,7 +89,7 @@ class PinActivity : BaseActivity(), PinLockListener {
 
                     if (masterKey != null) {
                         var decryptedPhrase = AccountUtils.getDecryptedPhrase(encryptedPhrase, masterKey)
-                        var decryptedPassphrase = AccountUtils.getDecryptedPassphhrase(encryptedPassphrase, masterKey)
+                        var decryptedPassphrase = AccountUtils.getDecryptedPassphrase(encryptedPassphrase, masterKey)
 
                         // TODO: Remove for new app, this is purely passphrase migration code
                         // backwards compatible for wallets 1.0.3 or older
