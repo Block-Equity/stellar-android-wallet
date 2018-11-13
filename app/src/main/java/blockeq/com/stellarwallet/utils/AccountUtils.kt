@@ -39,13 +39,17 @@ class AccountUtils {
             val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
             val cipherWrapper = CipherWrapper(CIPHER_TRANSFORMATION)
 
-            return if (passphrase.isNullOrEmpty()) {
+            if (passphrase.isNullOrEmpty()) {
                 WalletApplication.localStore.isPassphraseUsed = false
-                cipherWrapper.encrypt(mnemonic, masterKey?.public)
+                return cipherWrapper.encrypt(mnemonic, masterKey?.public)
             } else {
                 WalletApplication.localStore.isPassphraseUsed = true
-                WalletApplication.localStore.encryptedPassphrase = cipherWrapper.encrypt(passphrase!!, masterKey?.public)
-                cipherWrapper.encrypt("$mnemonic $passphrase", masterKey?.public)
+                if (AccountUtils.isOldWalletWithPassphrase()) {
+                    return cipherWrapper.encrypt("$mnemonic $passphrase", masterKey?.public)
+                } else {
+                    WalletApplication.localStore.encryptedPassphrase = cipherWrapper.encrypt(passphrase!!, masterKey?.public)
+                    return cipherWrapper.encrypt(mnemonic, masterKey?.public)
+                }
             }
         }
 
