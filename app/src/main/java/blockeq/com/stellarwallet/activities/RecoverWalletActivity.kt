@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
@@ -60,15 +61,19 @@ class RecoverWalletActivity : BaseActivity() {
         }
 
         nextButton.setOnClickListener {
-            val recoveryString = StellarRecoveryString(getMnemonicString(), isRecoveryPhrase).recoveryString
+            try {
+                val recoveryString = StellarRecoveryString(getMnemonicString(), isRecoveryPhrase).recoveryString
 
-            WalletApplication.localStore.isRecoveryPhrase = isRecoveryPhrase
+                WalletApplication.localStore.isRecoveryPhrase = isRecoveryPhrase
 
-            launchPINView(PinType.CREATE,
-                    getString(R.string.please_create_a_pin),
-                    recoveryString,
-                    passphrase,
-                    false)
+                launchPINView(PinType.CREATE,
+                        getString(R.string.please_create_a_pin),
+                        recoveryString,
+                        passphrase,
+                        false)
+            } catch (e: Exception) {
+                showErrorMessage(e.message)
+            }
         }
 
         passphraseButton.setOnClickListener {
@@ -93,7 +98,10 @@ class RecoverWalletActivity : BaseActivity() {
         }
     }
 
-    private fun showErrorMessage() {
+    private fun showErrorMessage(message : String?) {
+        if (message != null) {
+            invalidPhraseTextView.text = message
+        }
         invalidPhraseTextView.visibility = View.VISIBLE
     }
 
