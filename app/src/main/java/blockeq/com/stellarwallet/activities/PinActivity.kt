@@ -88,7 +88,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                     val masterKey = AccountUtils.getPinMasterKey(context, pin)
 
                     if (masterKey != null) {
-                        var decryptedPhrase = AccountUtils.getDecryptedPhrase(encryptedPhrase, masterKey)
+                        var decryptedPhrase = AccountUtils.getDecryptedString(encryptedPhrase, masterKey)
                         var decryptedPassphrase = AccountUtils.getDecryptedPassphrase(encryptedPassphrase, masterKey)
 
                         // TODO: Remove for new app, this is purely passphrase migration code
