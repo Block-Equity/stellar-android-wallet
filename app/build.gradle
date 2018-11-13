@@ -9,8 +9,8 @@ android {
         applicationId "blockeq.com.stellarwallet"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 14
-        versionName "1.0.4"
+        versionCode getVersionCode()
+        versionName "1.0.4-" + getVersionHash()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -32,6 +32,26 @@ android {
         baseline file("lint-baseline.xml")
     }
 }
+
+def getVersionCode() {
+    def commandResult = 'git log --oneline'.execute(null, rootDir) | 'wc -l'.execute(null, rootDir)
+    def revNum = commandResult.text.trim()
+    def matcher = revNum =~ /(\d+)\+?/
+    if (!matcher.matches()) {
+        throw new IllegalArgumentException("Git psuedo-revision $revNum does not match \\d+\\+?.")
+    }
+    def code = matcher[0][1]
+    return code.toInteger()
+}
+
+def getVersionHash() {
+    return ('git rev-parse --short HEAD').execute(null, rootDir).text.trim()
+}
+
+def getBranch() {
+    return ('git branch').execute(null, rootDir).text.trim()
+}
+
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -83,5 +103,4 @@ dependencies {
 
     //TODO this should be used only in debug builds
     implementation 'com.facebook.stetho:stetho:1.5.0'
-
 }
