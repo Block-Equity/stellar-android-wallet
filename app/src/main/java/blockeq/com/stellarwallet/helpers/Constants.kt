@@ -25,5 +25,7 @@ class Constants {
 
         // Maximum double representation in string ((2^63)-1)/(10^7)
         const val MAX_ASSET_STRING_VALUE = "922337203685.4775807"
+
+        const val DEFAULT_TRANSACTION_FAILED_CODE = "tx_failed"
     }
 }

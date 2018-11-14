@@ -7,6 +7,7 @@ import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
+import blockeq.com.stellarwallet.models.HorizonException
 import org.stellar.sdk.*
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.requests.RequestBuilder
@@ -25,15 +26,15 @@ object Horizon : HorizonTasks {
         return LoadEffectsTask(listener)
     }
 
-    override fun getSendTask(listener: SuccessErrorCallback, destAddress: String, secretSeed: CharArray, memo: String, amount: String): AsyncTask<Void, Void, Exception> {
+    override fun getSendTask(listener: SuccessErrorCallback, destAddress: String, secretSeed: CharArray, memo: String, amount: String): AsyncTask<Void, Void, HorizonException> {
         return SendTask(listener, destAddress, secretSeed, memo, amount)
     }
 
-    override fun getJoinInflationDestination(listener: SuccessErrorCallback, secretSeed: CharArray, inflationDest: String): AsyncTask<Void, Void, Exception> {
+    override fun getJoinInflationDestination(listener: SuccessErrorCallback, secretSeed: CharArray, inflationDest: String): AsyncTask<Void, Void, HorizonException> {
         return JoinInflationDestination(listener, secretSeed, inflationDest)
     }
 
-    override fun getChangeTrust(listener: SuccessErrorCallback, asset: Asset, removeTrust: Boolean, secretSeed: CharArray): AsyncTask<Void, Void, Exception> {
+    override fun getChangeTrust(listener: SuccessErrorCallback, asset: Asset, removeTrust: Boolean, secretSeed: CharArray): AsyncTask<Void, Void, HorizonException?> {
         return ChangeTrust(listener, asset, removeTrust, secretSeed)
     }
 
@@ -89,10 +90,10 @@ object Horizon : HorizonTasks {
     }
 
     private class SendTask(private val listener: SuccessErrorCallback, private val destAddress: String,
-                   private val secretSeed: CharArray, private val memo: String,
-                   private val amount : String) : AsyncTask<Void, Void, Exception>() {
+                           private val secretSeed: CharArray, private val memo: String,
+                           private val amount : String) : AsyncTask<Void, Void, HorizonException>() {
 
-        override fun doInBackground(vararg params: Void?): Exception? {
+        override fun doInBackground(vararg params: Void?): HorizonException? {
             val server = getServer()
             val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
             val destKeyPair = KeyPair.fromAccountId(destAddress)
@@ -108,7 +109,9 @@ object Horizon : HorizonTasks {
                     if (error.message == SERVER_ERROR_MESSAGE) {
                         isCreateAccount = true
                     } else {
-                        return error
+                        return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
+                                arrayListOf(error.message),
+                                HorizonException.HorizonExceptionType.SEND)
                     }
                 }
 
@@ -130,19 +133,25 @@ object Horizon : HorizonTasks {
 
                 transaction.sign(sourceKeyPair)
 
-                server.submitTransaction(transaction)
+                val response = server.submitTransaction(transaction)
 
-            } catch (error : ErrorResponse) {
-                Log.d(TAG, error.body.toString())
+                if (!response.isSuccess) {
+                    return HorizonException(response.extras.resultCodes.transactionResultCode,
+                            response.extras.resultCodes.operationsResultCodes,
+                            HorizonException.HorizonExceptionType.SEND)
+                }
+
+            } catch (error : HorizonException) {
+                Log.d(TAG, error.message)
                 return error
             }
 
             return null
         }
 
-        override fun onPostExecute(result: Exception?) {
+        override fun onPostExecute(result: HorizonException?) {
             if (result != null) {
-                listener.onError()
+                listener.onError(result)
             } else {
                 listener.onSuccess()
             }
@@ -150,11 +159,11 @@ object Horizon : HorizonTasks {
     }
 
     private class JoinInflationDestination(private val listener: SuccessErrorCallback,
-                                   private val secretSeed: CharArray,
-                                   private val inflationDest : String)
-        : AsyncTask<Void, Void, Exception>() {
+                                           private val secretSeed: CharArray,
+                                           private val inflationDest : String)
+        : AsyncTask<Void, Void, HorizonException>() {
 
-        override fun doInBackground(vararg params: Void?): Exception? {
+        override fun doInBackground(vararg params: Void?): HorizonException? {
             Network.usePublicNetwork()
 
             val server = getServer()
@@ -171,18 +180,26 @@ object Horizon : HorizonTasks {
                         .build()
 
                 transaction.sign(sourceKeyPair)
-                server.submitTransaction(transaction)
+                val response = server.submitTransaction(transaction)
+
+                if (!response.isSuccess) {
+                    return HorizonException(response.extras.resultCodes.transactionResultCode,
+                            response.extras.resultCodes.operationsResultCodes,
+                            HorizonException.HorizonExceptionType.INFLATION)
+                }
 
             } catch (error : Exception) {
                 Log.d(TAG, error.message.toString())
-                return error
+                return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
+                        arrayListOf(error.message.toString()),
+                        HorizonException.HorizonExceptionType.INFLATION)
             }
             return null
         }
 
-        override fun onPostExecute(result: Exception?) {
+        override fun onPostExecute(result: HorizonException?) {
             if (result != null) {
-                listener.onError()
+                listener.onError(result)
             } else {
                 listener.onSuccess()
             }
@@ -190,10 +207,10 @@ object Horizon : HorizonTasks {
     }
 
     private class ChangeTrust(private val listener: SuccessErrorCallback, private val asset: Asset,
-                      private val removeTrust: Boolean, private val secretSeed: CharArray)
-        : AsyncTask<Void, Void, Exception>() {
+                              private val removeTrust: Boolean, private val secretSeed: CharArray)
+        : AsyncTask<Void, Void, HorizonException?>() {
 
-        override fun doInBackground(vararg params: Void?): Exception? {
+        override fun doInBackground(vararg params: Void?): HorizonException? {
             Network.usePublicNetwork()
 
             val server = getServer()
@@ -211,19 +228,23 @@ object Horizon : HorizonTasks {
                 val response = server.submitTransaction(transaction)
 
                 if (!response.isSuccess) {
-                    return Exception()
+                    return HorizonException(response.extras.resultCodes.transactionResultCode,
+                            response.extras.resultCodes.operationsResultCodes,
+                            HorizonException.HorizonExceptionType.CHANGE_TRUSTLINE)
                 }
 
             } catch (error : ErrorResponse) {
                 Log.d(TAG, error.body.toString())
-                return error
+                return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
+                        arrayListOf(error.body.toString()),
+                        HorizonException.HorizonExceptionType.CHANGE_TRUSTLINE)
             }
             return null
         }
 
-        override fun onPostExecute(result: Exception?) {
+        override fun onPostExecute(result: HorizonException?) {
             if (result != null) {
-                listener.onError()
+                listener.onError(result)
             } else {
                 listener.onSuccess()
             }
@@ -231,8 +252,8 @@ object Horizon : HorizonTasks {
     }
 
     interface OnMarketOfferListener {
-      fun onExecuted()
-      fun onFailed()
+        fun onExecuted()
+        fun onFailed()
     }
 
     override fun getCreateMarketOffer(listener: OnMarketOfferListener, secretSeed: CharArray, sellingAsset: Asset, buyingAsset: Asset, amount: String, price: String) {
