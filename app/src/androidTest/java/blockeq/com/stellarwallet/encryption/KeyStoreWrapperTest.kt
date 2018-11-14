@@ -9,18 +9,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class KeyStoreWrapperTest {
     val aliases = arrayOf("1234", "5678", "0987")
-    val mnemonic = arrayOf("abandon",
-            "ability",
-            "able",
-            "about",
-            "above",
-            "absent",
-            "absorb",
-            "abstract",
-            "absurd",
-            "abuse",
-            "access",
-            "accident")
 
     @Test
     fun clear_aliases() {
@@ -28,7 +16,7 @@ class KeyStoreWrapperTest {
         val keyStoreWrapper = KeyStoreWrapper(context)
 
         aliases.forEach {
-            AccountUtils.getEncryptedMnemonicPhrase(context, mnemonic.joinToString(" "), null, it)
+            keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(it)
         }
 
         aliases.forEach {
