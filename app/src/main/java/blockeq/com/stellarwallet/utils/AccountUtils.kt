@@ -32,25 +32,30 @@ class AccountUtils {
             return getStellarKeyPair(decryptedPhrase, decryptedPassphrase).secretSeed
         }
 
-        fun getEncryptedMnemonicPhrase(context: Context, mnemonic: String, passphrase: String?, pin: String) : String {
+        fun encryptAndStoreWallet(context: Context, mnemonic: String, passphrase: String?, pin: String) : Boolean {
             val keyStoreWrapper = KeyStoreWrapper(context)
             keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin)
 
-            val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin)
+            val masterKey = keyStoreWrapper.getAndroidKeyStoreAsymmetricKeyPair(pin) ?: return false
             val cipherWrapper = CipherWrapper(CIPHER_TRANSFORMATION)
+            val encryptedPhrase : String
 
             if (passphrase.isNullOrEmpty()) {
                 WalletApplication.localStore.isPassphraseUsed = false
-                return cipherWrapper.encrypt(mnemonic, masterKey?.public)
+                encryptedPhrase = cipherWrapper.encrypt(mnemonic, masterKey.public)
             } else {
-                WalletApplication.localStore.isPassphraseUsed = true
                 if (AccountUtils.isOldWalletWithPassphrase()) {
-                    return cipherWrapper.encrypt("$mnemonic $passphrase", masterKey?.public)
+                    encryptedPhrase = cipherWrapper.encrypt("$mnemonic $passphrase", masterKey.public)
                 } else {
-                    WalletApplication.localStore.encryptedPassphrase = cipherWrapper.encrypt(passphrase!!, masterKey?.public)
-                    return cipherWrapper.encrypt(mnemonic, masterKey?.public)
+                    WalletApplication.localStore.encryptedPassphrase = cipherWrapper.encrypt(passphrase!!, masterKey.public)
+                    encryptedPhrase = cipherWrapper.encrypt(mnemonic, masterKey.public)
                 }
+                WalletApplication.localStore.isPassphraseUsed = true
             }
+
+            WalletApplication.localStore.encryptedPhrase = encryptedPhrase
+            return true
+
         }
 
         fun getDecryptedString(encryptedPhrase: String, masterKey: java.security.KeyPair) : String {
@@ -66,7 +71,7 @@ class AccountUtils {
             }
         }
 
-        // TODO: Remove this method in new app
+        @Deprecated("TODO: Remove this method in new app")
         fun getOldDecryptedPair(encryptedPhrase: String, privateKey: PrivateKey) : Pair<String, String?> {
             val cipherWrapper = CipherWrapper(CIPHER_TRANSFORMATION)
             var passphrase : String? = null
@@ -81,7 +86,7 @@ class AccountUtils {
             return Pair(decryptedData, passphrase)
         }
 
-        // TODO: Remove in new app
+        @Deprecated("TODO: Remove this method in new app")
         fun isOldWalletWithPassphrase() : Boolean {
             return WalletApplication.localStore.isPassphraseUsed && WalletApplication.localStore.encryptedPassphrase == null
         }
