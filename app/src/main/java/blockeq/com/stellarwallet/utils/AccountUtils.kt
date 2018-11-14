@@ -85,5 +85,14 @@ class AccountUtils {
             return StringFormat.truncateDecimalPlaces(
                     (getTotalBalance(Constants.LUMENS_ASSET_TYPE).toDouble() - minimumBalance.totalAmount).toString())
         }
+
+        fun wipe(context: Context, pin: String?) {
+            if (!pin.isNullOrEmpty()) {
+                val keyStoreWrapper = KeyStoreWrapper(context)
+                keyStoreWrapper.createAndroidKeyStoreAsymmetricKey(pin!!)
+                keyStoreWrapper.removeAndroidKeyStoreKey(pin)
+            }
+            WalletApplication.localStore.clearUserData()
+        }
     }
 }
