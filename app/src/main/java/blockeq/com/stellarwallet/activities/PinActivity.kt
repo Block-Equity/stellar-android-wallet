@@ -194,7 +194,7 @@ class PinActivity : BaseActivity(), PinLockListener {
     }
 
     private fun wipeAndRestart() {
-        AccountUtils.wipe(this, WalletApplication.userSession.pin)
+        AccountUtils.wipe(this)
         val intent = Intent(this, LaunchActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
