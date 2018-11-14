@@ -16,6 +16,8 @@ abstract class BaseActivity : AppCompatActivity() {
 
             if (!WalletApplication.localStore.encryptedPhrase.isNullOrEmpty() && !WalletApplication.localStore.stellarAccountId.isNullOrEmpty()) {
                 launchPINView(PinType.LOGIN, "", "", null, true)
+            } else {
+                WalletApplication.localStore.clearUserData()
             }
         }
     }
