@@ -90,9 +90,6 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
     }
 
     fun clearUserData() : Boolean {
-        balances = arrayOf()
-        availableBalance = Constants.DEFAULT_ACCOUNT_BALANCE
-
         val editor = sharedPreferences.edit()
         editor.remove(KEY_ENCRYPTED_PHRASE)
         editor.remove(KEY_ENCRYPTED_PASSPHRASE)
@@ -102,6 +99,11 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         editor.remove(KEY_STELLAR_AVAILABLE_BALANCE_KEY)
         editor.remove(KEY_IS_RECOVERY_PHRASE)
         editor.remove(KEY_IS_PASSPHRASE_USED)
-        return editor.commit()
+        val result = editor.commit()
+
+        balances = arrayOf()
+        availableBalance = Constants.DEFAULT_ACCOUNT_BALANCE
+
+        return result;
     }
 }
