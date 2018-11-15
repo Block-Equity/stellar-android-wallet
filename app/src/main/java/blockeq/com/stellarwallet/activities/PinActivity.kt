@@ -71,7 +71,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                         else -> {
                             setResult(Activity.RESULT_OK)
 
-                            WalletApplication.localStore.encryptedPhrase = AccountUtils.getEncryptedMnemonicPhrase(applicationContext, pinViewState.mnemonic, pinViewState.passphrase, pin)
+                            AccountUtils.encryptAndStoreWallet(applicationContext, pinViewState.mnemonic, pinViewState.passphrase, pin)
 
                             val stellarKeyPair = AccountUtils.getStellarKeyPair(pinViewState.mnemonic, pinViewState.passphrase)
 
@@ -84,12 +84,20 @@ class PinActivity : BaseActivity(), PinLockListener {
                 }
                 else -> {
                     val encryptedPhrase = getEncryptedPhrase(pinViewState.type)
+                    val encryptedPassphrase = WalletApplication.localStore.encryptedPassphrase
                     val masterKey = AccountUtils.getPinMasterKey(context, pin)
 
                     if (masterKey != null) {
-                        val decryptedPair = AccountUtils.getDecryptedMnemonicPhrasePair(encryptedPhrase, masterKey.private)
-                        val mnemonic = decryptedPair.first
-                        val passphrase = decryptedPair.second
+                        var decryptedPhrase = AccountUtils.getDecryptedString(encryptedPhrase, masterKey)
+                        var decryptedPassphrase = AccountUtils.getDecryptedPassphrase(encryptedPassphrase, masterKey)
+
+                        // TODO: Remove for new app, this is purely passphrase migration code
+                        // backwards compatible for wallets 1.0.3 or older
+                        if (AccountUtils.isOldWalletWithPassphrase()) {
+                            val decryptedPair = AccountUtils.getOldDecryptedPair(encryptedPhrase, masterKey.private)
+                            decryptedPhrase = decryptedPair.first
+                            decryptedPassphrase = decryptedPair.second
+                        }
 
                         when {
                             pinViewState.type == PinType.LOGIN -> {
@@ -97,7 +105,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                                 launchWallet()
                             }
                             pinViewState.type == PinType.CHECK -> {
-                                val keyPair = AccountUtils.getStellarKeyPair(mnemonic, passphrase)
+                                val keyPair = AccountUtils.getStellarKeyPair(decryptedPhrase, decryptedPassphrase)
                                 val intent = Intent()
                                 intent.putExtra(KEY_SECRET_SEED, keyPair.secretSeed)
                                 setResult(Activity.RESULT_OK, intent)
@@ -111,7 +119,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                             }
 
                             pinViewState.type == PinType.VIEW_SEED -> {
-                                val keyPair = AccountUtils.getStellarKeyPair(mnemonic, passphrase)
+                                val keyPair = AccountUtils.getStellarKeyPair(decryptedPhrase, decryptedPassphrase)
                                 val secretSeed = keyPair.secretSeed.joinToString("")
                                 val intent = Intent(this, ViewSecretSeedActivity::class.java)
 
@@ -191,7 +199,7 @@ class PinActivity : BaseActivity(), PinLockListener {
     }
 
     private fun wipeAndRestart() {
-        WalletApplication.localStore.clearUserData()
+        AccountUtils.wipe(this)
         val intent = Intent(this, LaunchActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)

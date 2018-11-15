@@ -12,6 +12,7 @@ import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.ChangeTrustlineListener
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
+import blockeq.com.stellarwallet.models.HorizonException
 import blockeq.com.stellarwallet.models.SupportedAsset
 import blockeq.com.stellarwallet.models.SupportedAssetType
 import blockeq.com.stellarwallet.services.networking.Horizon
@@ -163,8 +164,8 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
                     }
                 }
 
-                override fun onError() {
-                    Toast.makeText(context, getString(R.string.error_trustline_changed), Toast.LENGTH_SHORT).show()
+                override fun onError(error: HorizonException) {
+                    Toast.makeText(this@AssetsActivity, error.message(this@AssetsActivity), Toast.LENGTH_SHORT).show()
                     progressBar.visibility = View.GONE
                 }
             }, assetToChange, isRemove, secretSeed).execute()
