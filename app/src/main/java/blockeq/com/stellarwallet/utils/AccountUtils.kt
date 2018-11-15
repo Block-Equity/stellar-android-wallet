@@ -88,7 +88,7 @@ class AccountUtils {
 
         @Deprecated("TODO: Remove this method in new app")
         fun isOldWalletWithPassphrase() : Boolean {
-            return WalletApplication.localStore.isPassphraseUsed && WalletApplication.localStore.encryptedPassphrase == null
+            return WalletApplication.localStore.isPassphraseUsed && WalletApplication.localStore.encryptedPassphrase == null && WalletApplication.localStore.encryptedPhrase != null
         }
 
         fun getTotalBalance(type : String) : String {
@@ -122,10 +122,10 @@ class AccountUtils {
                     (getTotalBalance(Constants.LUMENS_ASSET_TYPE).toDouble() - minimumBalance.totalAmount).toString())
         }
 
-        fun wipe(context: Context) {
+        fun wipe(context: Context) : Boolean {
             val keyStoreWrapper = KeyStoreWrapper(context)
             keyStoreWrapper.clear()
-            WalletApplication.localStore.clearUserData()
+            return WalletApplication.localStore.clearUserData()
         }
     }
 }
