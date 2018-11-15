@@ -104,6 +104,6 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         balances = arrayOf()
         availableBalance = Constants.DEFAULT_ACCOUNT_BALANCE
 
-        return result;
+        return result
     }
 }
