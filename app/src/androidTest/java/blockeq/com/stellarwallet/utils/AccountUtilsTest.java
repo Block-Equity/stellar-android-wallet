@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.security.KeyPair;
-import java.util.Arrays;
 
 import blockeq.com.stellarwallet.WalletApplication;
 import blockeq.com.stellarwallet.encryption.CipherWrapper;
@@ -44,7 +43,7 @@ public class AccountUtilsTest {
     public void basic_encryption_mnemonic() {
         Context context = InstrumentationRegistry.getTargetContext();
 
-        String mnemonicString =  String.join(" ", mnemonic);
+        String mnemonicString = TextUtils.join(" ", mnemonic);
         AccountUtils.Companion.encryptAndStoreWallet(InstrumentationRegistry.getTargetContext(), mnemonicString, null, pin);
         String phrase = WalletApplication.localStore.getEncryptedPhrase();
 
@@ -101,7 +100,7 @@ public class AccountUtilsTest {
     @Test
     public void backwards_compatibility_test_login() {
         Context context = InstrumentationRegistry.getTargetContext();
-        String mnemonicString =  String.join(" ", mnemonic);
+        String mnemonicString = TextUtils.join(" ", mnemonic);
         String passphrase = "this_is_a_passphrase";
         String CIPHER_TRANSFORMATION = "RSA/ECB/PKCS1Padding";
 
@@ -115,7 +114,7 @@ public class AccountUtilsTest {
         CipherWrapper cipherWrapper = new CipherWrapper(CIPHER_TRANSFORMATION);
 
         assert masterKey != null;
-        String encryptedPhrase = cipherWrapper.encrypt(String.join(" ", mnemonic) + " "  + passphrase, masterKey.getPublic(), false);
+        String encryptedPhrase = cipherWrapper.encrypt(mnemonicString + " "  + passphrase, masterKey.getPublic(), false);
 
         WalletApplication.localStore.setEncryptedPhrase(encryptedPhrase);
         WalletApplication.localStore.setPassphraseUsed(true);
@@ -149,7 +148,7 @@ public class AccountUtilsTest {
     @Test
     public void backwards_compatibility_test_recovery() {
         Context context = InstrumentationRegistry.getTargetContext();
-        String mnemonicString =  String.join(" ", mnemonic);
+        String mnemonicString = TextUtils.join(" ", mnemonic);
         String passphrase = "this_is_a_passphrase";
         
         AccountUtils.Companion.encryptAndStoreWallet(InstrumentationRegistry.getTargetContext(),
