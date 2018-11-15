@@ -62,9 +62,9 @@ class RecoverWalletActivity : BaseActivity() {
 
         nextButton.setOnClickListener {
             try {
-                val recoveryString = StellarRecoveryString(getMnemonicString(), isRecoveryPhrase).recoveryString
-
                 WalletApplication.localStore.isRecoveryPhrase = isRecoveryPhrase
+
+                val recoveryString = StellarRecoveryString(getMnemonicString(), passphrase, isRecoveryPhrase).recoveryString
 
                 launchPINView(PinType.CREATE,
                         getString(R.string.please_create_a_pin),
