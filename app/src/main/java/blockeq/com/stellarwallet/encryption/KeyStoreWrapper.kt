@@ -64,6 +64,16 @@ class KeyStoreWrapper(private val context: Context) {
      */
     fun removeAndroidKeyStoreKey(alias: String) = keyStore.deleteEntry(alias)
 
+    /**
+     * Clears all aliases in the Android Key Store
+     */
+    fun clear() {
+        val aliases = keyStore.aliases()
+        aliases.iterator().forEach {
+            keyStore.deleteEntry(it)
+        }
+    }
+
     fun createDefaultKeyStoreSymmetricKey(alias: String, password: String) {
         val key = generateDefaultSymmetricKey()
         val keyEntry = KeyStore.SecretKeyEntry(key)
