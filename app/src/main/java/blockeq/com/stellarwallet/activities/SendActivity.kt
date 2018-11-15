@@ -11,6 +11,7 @@ import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
+import blockeq.com.stellarwallet.models.HorizonException
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.AccountUtils
@@ -128,7 +129,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     }
 
     private fun isAmountValid() : Boolean {
-        return (amount <= WalletApplication.userSession.getAvailableBalance().toDouble())
+        return (amount <= WalletApplication.userSession.getAvailableBalance().toDouble() && amount != 0.0)
     }
 
     //endregion
@@ -157,9 +158,9 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
         handler.postDelayed(runnableCode, 1000)
     }
 
-    override fun onError() {
+    override fun onError(error: HorizonException) {
         progressBar.visibility = View.GONE
-        Toast.makeText(this, getString(R.string.send_error_message), Toast.LENGTH_LONG).show()
+        Toast.makeText(this, error.message(this), Toast.LENGTH_LONG).show()
     }
     //endregion
 }
