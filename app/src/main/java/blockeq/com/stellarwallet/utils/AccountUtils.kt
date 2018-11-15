@@ -83,25 +83,20 @@ class AccountUtils {
                 val wordCount = StringFormat.getWordCount(decryptedString)
                 val words = decryptedString.split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
 
-                if (wordCount <= 24) {
-                    // Take first 12 words as phrase, the rest as passphrase
-                    var index = 0
-                    for (i in 0..11) {
-                        index += words[i].length + 1
-                    }
-
-                    decryptedPhrase = decryptedString.substring(0, index - 1)
-                    passphrase = decryptedString.substring(index)
+                val range = if (wordCount <= 24) {
+                    0..11
                 } else {
-                    // Take first 24 words as phrase, the rest as passphrase
-                    var index = 0
-                    for (i in 0..23) {
-                        index += words[i].length + 1
-                    }
-
-                    decryptedPhrase = decryptedString.substring(0, index - 1)
-                    passphrase = decryptedString.substring(index)
+                    0..23
                 }
+
+                var index = 0
+                for (i in range) {
+                    index += words[i].length + 1
+                }
+
+                decryptedPhrase = decryptedString.substring(0, index - 1)
+                passphrase = decryptedString.substring(index)
+
             } else {
                 decryptedPhrase = cipherWrapper.decrypt(encryptedPhrase, privateKey)
             }
