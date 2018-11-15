@@ -4,6 +4,7 @@ package blockeq.com.stellarwallet.utils;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
+import android.text.TextUtils;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +39,7 @@ public class AccountUtilsTest {
     @Test
     public void basic_encryption_mnemonic() {
         Context context = InstrumentationRegistry.getTargetContext();
-        String mnemonicString =  String.join(" ", mnemonic);
+        String mnemonicString = TextUtils.join(" ", mnemonic);
         String phrase = AccountUtils.Companion.getEncryptedMnemonicPhrase(InstrumentationRegistry.getTargetContext(), mnemonicString, null, pin);
         assertNotNull(phrase);
 
@@ -53,7 +54,7 @@ public class AccountUtilsTest {
     @Test
     public void basic_encryption_mnemonic_with_pass_phrase() {
         Context context = InstrumentationRegistry.getTargetContext();
-        String mnemonicString =  String.join(" ", mnemonic);
+        String mnemonicString = TextUtils.join(" ", mnemonic);
         String passPhrase = "this_is_a_passphrase";
 
         String phrase = AccountUtils.Companion.getEncryptedMnemonicPhrase(InstrumentationRegistry.getTargetContext(), mnemonicString, passPhrase, pin);
