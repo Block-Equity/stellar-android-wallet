@@ -6,6 +6,7 @@ import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.flowcontrollers.PinFlowController
 import blockeq.com.stellarwallet.models.PinType
 import blockeq.com.stellarwallet.models.PinViewState
+import blockeq.com.stellarwallet.utils.AccountUtils
 
 abstract class BaseActivity : AppCompatActivity() {
     override fun onResume() {
@@ -17,7 +18,7 @@ abstract class BaseActivity : AppCompatActivity() {
             if (!WalletApplication.localStore.encryptedPhrase.isNullOrEmpty() && !WalletApplication.localStore.stellarAccountId.isNullOrEmpty()) {
                 launchPINView(PinType.LOGIN, "", "", null, true)
             } else {
-                WalletApplication.localStore.clearUserData()
+                AccountUtils.wipe(this)
             }
         }
     }
