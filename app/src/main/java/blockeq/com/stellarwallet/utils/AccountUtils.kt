@@ -75,15 +75,38 @@ class AccountUtils {
         fun getOldDecryptedPair(encryptedPhrase: String, privateKey: PrivateKey) : Pair<String, String?> {
             val cipherWrapper = CipherWrapper(CIPHER_TRANSFORMATION)
             var passphrase : String? = null
-            val decryptedData = if (WalletApplication.localStore.isPassphraseUsed) {
+            val decryptedPhrase: String
+
+            if (WalletApplication.localStore.isPassphraseUsed) {
                 val decryptedString = cipherWrapper.decrypt(encryptedPhrase, privateKey)
-                passphrase = decryptedString.substring(decryptedString.lastIndexOf(" ") + 1)
-                decryptedString.substring(0, decryptedString.lastIndexOf(" "))
+
+                val wordCount = StringFormat.getWordCount(decryptedString)
+                val words = decryptedString.split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
+
+                if (wordCount <= 24) {
+                    // Take first 12 words as phrase, the rest as passphrase
+                    var index = 0
+                    for (i in 0..11) {
+                        index += words[i].length + 1
+                    }
+
+                    decryptedPhrase = decryptedString.substring(0, index - 1)
+                    passphrase = decryptedString.substring(index)
+                } else {
+                    // Take first 24 words as phrase, the rest as passphrase
+                    var index = 0
+                    for (i in 0..23) {
+                        index += words[i].length + 1
+                    }
+
+                    decryptedPhrase = decryptedString.substring(0, index - 1)
+                    passphrase = decryptedString.substring(index)
+                }
             } else {
-                cipherWrapper.decrypt(encryptedPhrase, privateKey)
+                decryptedPhrase = cipherWrapper.decrypt(encryptedPhrase, privateKey)
             }
 
-            return Pair(decryptedData, passphrase)
+            return Pair(decryptedPhrase, passphrase)
         }
 
         @Deprecated("TODO: Remove this method in new app")

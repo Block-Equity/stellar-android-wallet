@@ -67,7 +67,6 @@ public class AccountUtilsTest {
 
     @Test
     public void basic_encryption_mnemonic_with_passphrase() {
-
         AccountUtils.Companion.encryptAndStoreWallet(context, mnemonic, passPhrase, pin);
         String phrase = WalletApplication.localStore.getEncryptedPhrase();
         assertNotNull(phrase);
@@ -83,23 +82,23 @@ public class AccountUtilsTest {
     }
 
 
-    //TODO: https://github.com/Block-Equity/stellar-android-wallet/issues/74
-    //    @Test
-    //    public void basic_encryption_mnemonic_with_pass_phrase_with_spaces() {
-    //        Context context = InstrumentationRegistry.getTargetContext();
-    //        String mnemonicString =  String.join(" ", mnemonic);
-    //        String passPhrase = "this is a passphrase";
-    //
-    //        String phrase = AccountUtils.Companion.encryptAndStoreWallet(InstrumentationRegistry.getTargetContext(), mnemonicString, passPhrase, pin);
-    //        assertNotNull(phrase);
-    //
-    //        KeyPair keyPair = AccountUtils.Companion.getPinMasterKey(context, pin);
-    //        assertNotNull(keyPair);
-    //
-    //        Pair<String, String> decryptedPair = AccountUtils.Companion.getOldDecryptedPair(phrase, keyPair.getPrivate());
-    //        assertEquals(passPhrase, decryptedPair.component2());
-    //        assertEquals(decryptedPair.component1(), mnemonicString);
-    //    }
+    @Test
+    public void basic_encryption_mnemonic_with_pass_phrase_with_spaces() {
+        String passphrase = "passphrase with spaces";
+
+        AccountUtils.Companion.encryptAndStoreWallet(context, mnemonic, passphrase, pin);
+        String phrase = WalletApplication.localStore.getEncryptedPhrase();
+        assertNotNull(phrase);
+
+        KeyPair keyPair = AccountUtils.Companion.getPinMasterKey(context, pin);
+        assertNotNull(keyPair);
+
+        String decryptedPhrase = AccountUtils.Companion.getDecryptedString(phrase, keyPair);
+        String decryptedPassphrase = AccountUtils.Companion.getDecryptedPassphrase(WalletApplication.localStore.getEncryptedPassphrase(), keyPair);
+
+        assertEquals(mnemonic, decryptedPhrase);
+        assertEquals(passphrase, decryptedPassphrase);
+    }
 
     // TODO: Remove in new app
     // Creates a passphrase wallet with the <= 1.0.3 version
