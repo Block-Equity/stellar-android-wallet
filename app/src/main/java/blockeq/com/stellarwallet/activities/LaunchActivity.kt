@@ -36,7 +36,7 @@ class LaunchActivity : BaseActivity() {
     private fun checkNewApp() {
         val builder = AlertDialog.Builder(this@LaunchActivity)
         builder.setTitle("The Beta program has ended")
-        builder.setMessage("The current app is not longer maintained, please install the new app")
+        builder.setMessage("The current app is no longer maintained, please install the new app")
         builder.setPositiveButton("Download") { _, _ ->
             val appPackageName = packageName // getPackageName() from Context or Activity object
             try {

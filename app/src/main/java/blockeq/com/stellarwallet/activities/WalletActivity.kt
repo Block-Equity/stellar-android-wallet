@@ -32,7 +32,7 @@ class WalletActivity : BaseActivity() {
     private fun checkNewApp() {
         val builder = AlertDialog.Builder(this@WalletActivity)
         builder.setTitle("The Beta program has ended")
-        builder.setMessage("The current app is not longer maintained. Please make sure you have written down your recovery phrase (12-24 words) or saved a copy of your secret key. After you have saved a back-up, please delete this app and then recover your wallet using the new version here")
+        builder.setMessage("The current app is no longer maintained. Please make sure you have written down your recovery phrase (12-24 words) or saved a copy of your secret key. After you have saved a back-up, please delete this app and then recover your wallet using the new version here")
         builder.setPositiveButton("Download") { _, _ ->
             val appPackageName = packageName // getPackageName() from Context or Activity object
             try {
