@@ -1,8 +1,5 @@
 package blockeq.com.stellarwallet.activities
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
@@ -11,10 +8,9 @@ import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.fragments.SettingsFragment
 import blockeq.com.stellarwallet.fragments.TradingFragment
 import blockeq.com.stellarwallet.fragments.WalletFragment
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
+import blockeq.com.stellarwallet.models.GooglePlayApp
+import blockeq.com.stellarwallet.utils.UpdateAppDialog
+import blockeq.com.stellarwallet.utils.UpdateAppDialog.NEW_APP_PACKAGE
 
 class WalletActivity : BaseActivity() {
     private lateinit var newAppDialog : AlertDialog
@@ -25,33 +21,9 @@ class WalletActivity : BaseActivity() {
 
         setupUI()
 
-        checkNewApp()
-    }
-
-
-    private fun checkNewApp() {
-        val builder = AlertDialog.Builder(this@WalletActivity)
-        builder.setTitle("The Beta program has ended")
-        builder.setMessage("The current app is no longer maintained. Please make sure you have written down your recovery phrase (12-24 words) or saved a copy of your secret key. After you have saved a back-up, please delete this app and then recover your wallet using the new version here")
-        builder.setPositiveButton("Download") { _, _ ->
-            val appPackageName = packageName // getPackageName() from Context or Activity object
-            try {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackageName")));
-            } catch (e : ActivityNotFoundException) {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")));
-            }
+        if (packageName != NEW_APP_PACKAGE) {
+            newAppDialog = UpdateAppDialog.createDialog(this, GooglePlayApp(NEW_APP_PACKAGE), getString(R.string.update_app_dialog_message_2))
         }
-        builder.setNegativeButton("Later", null)
-        val queue = Volley.newRequestQueue(this)
-
-        val request = StringRequest(Request.Method.GET, "https://play.google.com/store/apps/details?id=blockeq.com.stellarwallet", Response.Listener<String> {
-            if (!isFinishing) {
-                newAppDialog.show()
-            }
-        }, null)
-
-        newAppDialog = builder.create()
-        queue.add(request)
     }
 
     //region Navigation

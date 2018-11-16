@@ -1,6 +1,7 @@
 package blockeq.com.stellarwallet.activities
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
@@ -10,7 +11,9 @@ import android.view.View
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.helpers.Constants
+import blockeq.com.stellarwallet.models.GooglePlayApp
 import blockeq.com.stellarwallet.models.SupportedAsset
+import blockeq.com.stellarwallet.utils.UpdateAppDialog
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
@@ -29,26 +32,26 @@ class LaunchActivity : BaseActivity() {
 
         setupUI()
 
-        checkNewApp()
+        if (packageName != UpdateAppDialog.NEW_APP_PACKAGE) {
+            newAppDialog = UpdateAppDialog.createDialog(this, GooglePlayApp(UpdateAppDialog.NEW_APP_PACKAGE), getString(R.string.update_app_dialog_message_1))
+        }
     }
 
-
-    private fun checkNewApp() {
-        val builder = AlertDialog.Builder(this@LaunchActivity)
-        builder.setTitle("The Beta program has ended")
-        builder.setMessage("The current app is no longer maintained, please install the new app")
-        builder.setPositiveButton("Download") { _, _ ->
-            val appPackageName = packageName // getPackageName() from Context or Activity object
+    private fun checkNewApp(context : Context, app : GooglePlayApp, message : String) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(getString(R.string.update_app_dialog_title))
+        builder.setMessage(message)
+        builder.setPositiveButton(getString(R.string.update_app_dialog_positive_button)) { _, _ ->
             try {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackageName")));
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(app.getDeepLink())))
             } catch (e : ActivityNotFoundException) {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")));
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(app.getUrl())))
             }
         }
-        builder.setNegativeButton("Later", null)
+        builder.setNegativeButton(getString(R.string.update_app_dialog_negative_button), null)
         val queue = Volley.newRequestQueue(this)
 
-        val request = StringRequest(Request.Method.GET, "https://play.google.com/store/apps/details?id=blockeq.com.stellarwallet", Response.Listener<String> {
+        val request = StringRequest(Request.Method.GET, app.getUrl(), Response.Listener<String> {
             if (!isFinishing) {
                 newAppDialog.show()
             }
