@@ -9,7 +9,6 @@ class StellarRecoveryString (string : String, val isRecoveryPhrase : Boolean, va
     class InvalidWordCountException(message: String): Exception(message)
     class InvalidStellarSecretSeedException(message: String): Exception(message)
 
-
     @Throws(InvalidWordCountException::class, InvalidStellarSecretSeedException::class)
     fun getString() : String {
         val wordCount = recoveryString.split(" ".toRegex()).size
@@ -26,7 +25,6 @@ class StellarRecoveryString (string : String, val isRecoveryPhrase : Boolean, va
                 throw InvalidWordCountException("Invalid Word Count: Please check the number of words in your phrase or any extra spaces between words")
             }
         } else {
-
             if (recoveryString.length != Constants.STELLAR_ADDRESS_LENGTH || recoveryString[0] != 'S' || invalidRecovery) {
                 throw InvalidStellarSecretSeedException("Invalid Secret Seed: Length should be ${Constants.STELLAR_ADDRESS_LENGTH} characters. The first character should be 'S'")
             }
