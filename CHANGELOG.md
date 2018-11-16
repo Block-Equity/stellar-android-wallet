@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Trade support.
 
-## [1.0.4] - 2017-11-16
+## [1.0.4] - 2018-11-16
 ### Added
 - Start using changelog
 - GH-85 Add more checks for stellar recovery string and move the logic outside of the ui
@@ -38,12 +38,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GH-70 Apply a secure random generator patch
 
 
-## [1.0.3] - 2017-10-30
+## [1.0.3] - 2018-10-30
 ### Added
 - Passphrase support (known limitation it does not support spaces)
 
 
-## [1.0.2] - 2017-10-22
+## [1.0.2] - 2018-10-22
 ### Fixed
 - Fixing the problem with non English locale and decimals (truncateDecimalPlaces())
 - Fixing crash NumberFormatException and ClassCastException in the error response from horizon.
@@ -51,4 +51,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Improved the the error response for Horizon (uknown error)
 
-## [1.0.1] - 2017-10-16
+## [1.0.1] - 2018-10-16
