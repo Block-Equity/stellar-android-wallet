@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrading kotlin library from 1.2.50 to 1.2.71
 - Adding ui test: WalletCreationTest and AccountUtilsTest and KeySToreWrapperTest
 - Added Bitrise support for ui testing.
+- TDD test for GH-52
 
 ### Changed
 - Clearing the wallet was improved deleting any keystore’s alias.
