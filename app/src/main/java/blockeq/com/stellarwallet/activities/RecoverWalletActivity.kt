@@ -12,6 +12,7 @@ import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.helpers.PassphraseDialogHelper
 import blockeq.com.stellarwallet.helpers.StellarRecoveryString
 import blockeq.com.stellarwallet.models.PinType
+import blockeq.com.stellarwallet.utils.StringFormat
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
 
 
@@ -108,10 +109,6 @@ class RecoverWalletActivity : BaseActivity() {
     //endregion
 
     //region Helper functions
-    private fun getWordCount(word : String) : Int {
-        return word.split(" ".toRegex()).size
-    }
-
     private fun getMnemonicString() : String {
         return if (isRecoveryPhrase) {
             phraseEditText.text.toString()
