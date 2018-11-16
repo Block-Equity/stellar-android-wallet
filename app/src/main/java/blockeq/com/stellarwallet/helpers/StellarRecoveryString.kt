@@ -2,14 +2,16 @@ package blockeq.com.stellarwallet.helpers
 
 import blockeq.com.stellarwallet.utils.AccountUtils
 
-class StellarRecoveryString (string : String, passphrase : String?, isRecoveryPhrase : Boolean) {
+class StellarRecoveryString (string : String, val isRecoveryPhrase : Boolean, val passphrase : String? = null) {
 
-    var recoveryString: String = string.trim()
+    private var recoveryString: String = string.trim()
 
     class InvalidWordCountException(message: String): Exception(message)
     class InvalidStellarSecretSeedException(message: String): Exception(message)
 
-    init {
+
+    @Throws(InvalidWordCountException::class, InvalidStellarSecretSeedException::class)
+    fun getString() : String {
         val wordCount = recoveryString.split(" ".toRegex()).size
 
         var invalidRecovery = false
@@ -29,5 +31,7 @@ class StellarRecoveryString (string : String, passphrase : String?, isRecoveryPh
                 throw InvalidStellarSecretSeedException("Invalid Secret Seed: Length should be ${Constants.STELLAR_ADDRESS_LENGTH} characters. The first character should be 'S'")
             }
         }
+
+        return recoveryString
     }
 }

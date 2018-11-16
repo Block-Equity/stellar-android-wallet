@@ -23,7 +23,7 @@ class StellarRecoveryStringTest {
     fun regular_mnemonic12() {
         var isError = false
         try {
-            StellarRecoveryString(mnemonic12, null, true).recoveryString
+            StellarRecoveryString(mnemonic12, true, null).getString()
         } catch (e: Exception) {
             isError = true
         }
@@ -34,7 +34,7 @@ class StellarRecoveryStringTest {
     fun regular_mnemonic24() {
         var isError = false
         try {
-            StellarRecoveryString(mnemonic24, null, true).recoveryString
+            StellarRecoveryString(mnemonic24, true, null).getString()
         } catch (e: Exception) {
             isError = true
         }
@@ -45,7 +45,7 @@ class StellarRecoveryStringTest {
     fun regular_secret_seed() {
         var isError = false
         try {
-            StellarRecoveryString(secretSeed, null, true).recoveryString
+            StellarRecoveryString(secretSeed, true, null).getString()
         } catch (e: Exception) {
             isError = true
         }
@@ -56,7 +56,7 @@ class StellarRecoveryStringTest {
     fun empty_string_mnemonic() {
         var isError = false
         try {
-            StellarRecoveryString(emptyString, null, true).recoveryString
+            StellarRecoveryString(emptyString, true, null).getString()
         } catch (e: Exception) {
             isError = true
         }
@@ -67,7 +67,7 @@ class StellarRecoveryStringTest {
     fun empty_string_secret_seed() {
         var isError = false
         try {
-            StellarRecoveryString(emptyString, null, false).recoveryString
+            StellarRecoveryString(emptyString, false, null).getString()
         } catch (e: Exception) {
             isError = true
         }
@@ -78,7 +78,7 @@ class StellarRecoveryStringTest {
     fun less_words_mnemonic12() {
         var isError = false
         try {
-            StellarRecoveryString(lessWordsMnemonic12, null, false).recoveryString
+            StellarRecoveryString(lessWordsMnemonic12, false, null).getString()
         } catch (e: Exception) {
             isError = true
         }
@@ -89,7 +89,7 @@ class StellarRecoveryStringTest {
     fun more_words_mnemonic12() {
         var isError = false
         try {
-            StellarRecoveryString(moreWordsMnemonic12, null, false).recoveryString
+            StellarRecoveryString(moreWordsMnemonic12, false, null).getString()
         } catch (e: Exception) {
             isError = true
         }
@@ -100,7 +100,7 @@ class StellarRecoveryStringTest {
     fun less_words_mnemonic24() {
         var isError = false
         try {
-            StellarRecoveryString(lessWordsMnemonic24, null, false).recoveryString
+            StellarRecoveryString(lessWordsMnemonic24, false, null).getString()
         } catch (e: Exception) {
             isError = true
         }
@@ -111,7 +111,7 @@ class StellarRecoveryStringTest {
     fun more_words_mnemonic24() {
         var isError = false
         try {
-            StellarRecoveryString(moreWordsMnemonic24, null, false).recoveryString
+            StellarRecoveryString(moreWordsMnemonic24, false, null).getString()
         } catch (e: Exception) {
             isError = true
         }
@@ -122,7 +122,7 @@ class StellarRecoveryStringTest {
     fun invalid_starting_char_secret_seed() {
         var isError = false
         try {
-            StellarRecoveryString(invalidStartingCharSecretSeed, null, false).recoveryString
+            StellarRecoveryString(invalidStartingCharSecretSeed, false, null).getString()
         } catch (e: Exception) {
             isError = true
         }
@@ -133,7 +133,7 @@ class StellarRecoveryStringTest {
     fun less_chars_secret_seed() {
         var isError = false
         try {
-            StellarRecoveryString(lessCharsSecretSeed, null, false).recoveryString
+            StellarRecoveryString(lessCharsSecretSeed, false, null).getString()
         } catch (e: Exception) {
             isError = true
         }
@@ -144,7 +144,7 @@ class StellarRecoveryStringTest {
     fun more_chars_secret_seed() {
         var isError = false
         try {
-            StellarRecoveryString(moreCharsSecretSeed, null, false).recoveryString
+            StellarRecoveryString(moreCharsSecretSeed, false, null).getString()
         } catch (e: Exception) {
             isError = true
         }
@@ -155,7 +155,7 @@ class StellarRecoveryStringTest {
     fun invalid_secret_seed_with_valid_length_and_starting_char() {
         var isError = false
         try {
-            StellarRecoveryString(invalidSecretSeedWithValidLengthAndStartingChar, null, false).recoveryString
+            StellarRecoveryString(invalidSecretSeedWithValidLengthAndStartingChar, false, null).getString()
         } catch (e: Exception) {
             isError = true
         }

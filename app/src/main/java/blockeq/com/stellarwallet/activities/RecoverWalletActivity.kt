@@ -4,15 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
-import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.helpers.PassphraseDialogHelper
 import blockeq.com.stellarwallet.helpers.StellarRecoveryString
 import blockeq.com.stellarwallet.models.PinType
-import blockeq.com.stellarwallet.utils.StringFormat
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
 
 
@@ -65,7 +62,7 @@ class RecoverWalletActivity : BaseActivity() {
             try {
                 WalletApplication.localStore.isRecoveryPhrase = isRecoveryPhrase
 
-                val recoveryString = StellarRecoveryString(getMnemonicString(), passphrase, isRecoveryPhrase).recoveryString
+                val recoveryString = StellarRecoveryString(getMnemonicString(), isRecoveryPhrase, passphrase).getString()
 
                 launchPINView(PinType.CREATE,
                         getString(R.string.please_create_a_pin),
