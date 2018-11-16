@@ -13,8 +13,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 
 object UpdateAppDialog {
-//     const val NEW_APP_PACKAGE : String = "com.blockeq.stellarwallet"
-    const val NEW_APP_PACKAGE : String = "com.google.android.youtube"
+     const val NEW_APP_PACKAGE : String = "com.blockeq.stellarwallet"
 
      fun createDialog(activity : Activity, app : GooglePlayApp, message : String) : AlertDialog {
         val alertDialog : AlertDialog
