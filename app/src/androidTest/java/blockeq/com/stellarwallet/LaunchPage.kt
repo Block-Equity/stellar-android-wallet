@@ -37,4 +37,15 @@ object LaunchPage : BasePage() {
         PinPage.onPageLoaded().proceedWithPin(pin).proceedWithPin(pin)
     }
 
+    fun clickRecoverFromSecretKey() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+
+        onView(ViewMatchers.withId(R.id.recoverWalletButton)).perform(ViewActions.click())
+        val string = context.getString(R.string.recover_from_seed)
+
+        Espresso.onView(ViewMatchers.withText(string))
+                .inRoot(RootMatchers.isDialog())
+                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+                .perform(ViewActions.click())
+    }
 }
