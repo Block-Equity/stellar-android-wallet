@@ -103,7 +103,7 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
             }
 
             mnemonicString = String(mnemonic)
-            return String(mnemonic).split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
+            return mnemonicString!!.split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
         }
     }
 

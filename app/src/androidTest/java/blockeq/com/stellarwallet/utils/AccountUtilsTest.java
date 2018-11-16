@@ -24,14 +24,15 @@ import static org.junit.Assert.assertNull;
 
 @RunWith(AndroidJUnit4.class)
 public class AccountUtilsTest {
-    private String mnemonic;
+    private String mnemonic12;
+    private String mnemonic24;
     private Context context;
     private String pin = "1234";
     private String passPhrase = "this_is_a_passphrase";
 
     @Before
     public void before(){
-        String[] mnemonicWords = {
+        String[] mnemonicWords12 = {
                 "abandon",
                 "ability",
                 "able",
@@ -46,13 +47,41 @@ public class AccountUtilsTest {
                 "accident"
         };
 
-        mnemonic = TextUtils.join(" ", mnemonicWords);
+        String[] mnemonicWords24 = {
+                "abandon",
+                "ability",
+                "able",
+                "about",
+                "above",
+                "absent",
+                "absorb",
+                "abstract",
+                "absurd",
+                "abuse",
+                "access",
+                "accident",
+                "account",
+                "accuse",
+                "achieve",
+                "acid",
+                "acoustic",
+                "acquire",
+                "across",
+                "act",
+                "action",
+                "actor",
+                "actress",
+                "actual"
+        };
+
+        mnemonic12 = TextUtils.join(" ", mnemonicWords12);
+        mnemonic24 = TextUtils.join(" ", mnemonicWords24);
         context = InstrumentationRegistry.getTargetContext();
     }
 
     @Test
     public void basic_encryption_mnemonic() {
-        AccountUtils.Companion.encryptAndStoreWallet(context, mnemonic, null, pin);
+        AccountUtils.Companion.encryptAndStoreWallet(context, mnemonic12, null, pin);
         String phrase = WalletApplication.localStore.getEncryptedPhrase();
 
         assertNotNull(phrase);
@@ -62,13 +91,12 @@ public class AccountUtilsTest {
 
         Pair<String, String> decryptedPair = AccountUtils.Companion.getOldDecryptedPair(phrase, keyPair.getPrivate());
         assertNull(decryptedPair.component2());
-        assertEquals(decryptedPair.component1(), mnemonic);
+        assertEquals(decryptedPair.component1(), mnemonic12);
     }
 
     @Test
     public void basic_encryption_mnemonic_with_passphrase() {
-
-        AccountUtils.Companion.encryptAndStoreWallet(context, mnemonic, passPhrase, pin);
+        AccountUtils.Companion.encryptAndStoreWallet(context, mnemonic12, passPhrase, pin);
         String phrase = WalletApplication.localStore.getEncryptedPhrase();
         assertNotNull(phrase);
 
@@ -78,28 +106,46 @@ public class AccountUtilsTest {
         String decryptedPhrase = AccountUtils.Companion.getDecryptedString(phrase, keyPair);
         String decryptedPassphrase = AccountUtils.Companion.getDecryptedPassphrase(WalletApplication.localStore.getEncryptedPassphrase(), keyPair);
 
-        assertEquals(mnemonic, decryptedPhrase);
+        assertEquals(mnemonic12, decryptedPhrase);
         assertEquals(passPhrase, decryptedPassphrase);
     }
 
 
-    //TODO: https://github.com/Block-Equity/stellar-android-wallet/issues/74
-    //    @Test
-    //    public void basic_encryption_mnemonic_with_pass_phrase_with_spaces() {
-    //        Context context = InstrumentationRegistry.getTargetContext();
-    //        String mnemonicString =  String.join(" ", mnemonic);
-    //        String passPhrase = "this is a passphrase";
-    //
-    //        String phrase = AccountUtils.Companion.encryptAndStoreWallet(InstrumentationRegistry.getTargetContext(), mnemonicString, passPhrase, pin);
-    //        assertNotNull(phrase);
-    //
-    //        KeyPair keyPair = AccountUtils.Companion.getPinMasterKey(context, pin);
-    //        assertNotNull(keyPair);
-    //
-    //        Pair<String, String> decryptedPair = AccountUtils.Companion.getOldDecryptedPair(phrase, keyPair.getPrivate());
-    //        assertEquals(passPhrase, decryptedPair.component2());
-    //        assertEquals(decryptedPair.component1(), mnemonicString);
-    //    }
+    @Test
+    public void basic_encryption_mnemonic12_with_pass_phrase_with_spaces() {
+        String passphrase = "passphrase with spaces";
+
+        AccountUtils.Companion.encryptAndStoreWallet(context, mnemonic12, passphrase, pin);
+        String phrase = WalletApplication.localStore.getEncryptedPhrase();
+        assertNotNull(phrase);
+
+        KeyPair keyPair = AccountUtils.Companion.getPinMasterKey(context, pin);
+        assertNotNull(keyPair);
+
+        String decryptedPhrase = AccountUtils.Companion.getDecryptedString(phrase, keyPair);
+        String decryptedPassphrase = AccountUtils.Companion.getDecryptedPassphrase(WalletApplication.localStore.getEncryptedPassphrase(), keyPair);
+
+        assertEquals(mnemonic12, decryptedPhrase);
+        assertEquals(passphrase, decryptedPassphrase);
+    }
+
+    @Test
+    public void basic_encryption_mnemonic24_with_pass_phrase_with_spaces() {
+        String passphrase = "passphrase with spaces";
+
+        AccountUtils.Companion.encryptAndStoreWallet(context, mnemonic24, passphrase, pin);
+        String phrase = WalletApplication.localStore.getEncryptedPhrase();
+        assertNotNull(phrase);
+
+        KeyPair keyPair = AccountUtils.Companion.getPinMasterKey(context, pin);
+        assertNotNull(keyPair);
+
+        String decryptedPhrase = AccountUtils.Companion.getDecryptedString(phrase, keyPair);
+        String decryptedPassphrase = AccountUtils.Companion.getDecryptedPassphrase(WalletApplication.localStore.getEncryptedPassphrase(), keyPair);
+
+        assertEquals(mnemonic24, decryptedPhrase);
+        assertEquals(passphrase, decryptedPassphrase);
+    }
 
     // TODO: Remove in new app
     // Creates a passphrase wallet with the <= 1.0.3 version
@@ -116,7 +162,7 @@ public class AccountUtilsTest {
         CipherWrapper cipherWrapper = new CipherWrapper("RSA/ECB/PKCS1Padding");
 
         assert masterKey != null;
-        String encryptedPhrase = cipherWrapper.encrypt(mnemonic + " "  + passPhrase, masterKey.getPublic(), false);
+        String encryptedPhrase = cipherWrapper.encrypt(mnemonic12 + " "  + passPhrase, masterKey.getPublic(), false);
 
         WalletApplication.localStore.setEncryptedPhrase(encryptedPhrase);
         WalletApplication.localStore.setPassphraseUsed(true);
@@ -139,7 +185,7 @@ public class AccountUtilsTest {
             decryptedPassphrase = decryptedPair.getSecond();
         }
 
-        assertEquals(mnemonic, decryptedPhrase);
+        assertEquals(mnemonic12, decryptedPhrase);
         assertEquals(passPhrase, decryptedPassphrase);
     }
 
