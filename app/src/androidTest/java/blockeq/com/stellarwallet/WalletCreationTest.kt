@@ -42,4 +42,14 @@ class WalletCreationTest {
         //restart
         LaunchPage.onPageLoaded()
     }
+
+
+    @Test
+    fun test_cancelling_from_recovery_flow() {
+        //TDD for GH-52
+        LaunchPage.onPageLoaded().clickRecoverFromSecretKey()
+        RecoveryWalletPage.onPageLoaded().next().goBack()
+
+        testCreateWalletOption12Words()
+    }
 }
