@@ -10,6 +10,7 @@ import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.content_enter_address.*
+import org.stellar.sdk.KeyPair
 
 class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
 
@@ -56,6 +57,7 @@ class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
         when(v.id) {
             R.id.nextButton -> {
                 val address = addressEditText.text.toString()
+
                 if (address.length == STELLAR_ADDRESS_LENGTH) {
                     val intent = Intent(this, SendActivity::class.java).apply {
                         putExtra(ADDRESS_DATA, address)

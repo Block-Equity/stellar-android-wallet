@@ -7,10 +7,9 @@ import android.view.View
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
-import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.helpers.PassphraseDialogHelper
+import blockeq.com.stellarwallet.helpers.StellarRecoveryString
 import blockeq.com.stellarwallet.models.PinType
-import blockeq.com.stellarwallet.utils.StringFormat
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
 
 
@@ -60,31 +59,18 @@ class RecoverWalletActivity : BaseActivity() {
         }
 
         nextButton.setOnClickListener {
-            val recoveryString = getMnemonicString()
-            val wordCount = StringFormat.getWordCount(recoveryString)
+            try {
+                WalletApplication.localStore.isRecoveryPhrase = isRecoveryPhrase
 
-            WalletApplication.localStore.isRecoveryPhrase = isRecoveryPhrase
+                val recoveryString = StellarRecoveryString(getMnemonicString(), isRecoveryPhrase, passphrase).getString()
 
-            if (isRecoveryPhrase) {
-                if (wordCount == 12 || wordCount == 24) {
-                    launchPINView(PinType.CREATE,
-                            getString(R.string.please_create_a_pin),
-                            recoveryString,
-                            passphrase,
-                            false)
-                } else {
-                    showErrorMessage()
-                }
-            } else {
-                if (recoveryString.length == Constants.STELLAR_ADDRESS_LENGTH && recoveryString[0] == 'S') {
-                    launchPINView(PinType.CREATE,
-                            getString(R.string.please_create_a_pin),
-                            recoveryString,
-                            passphrase,
-                            false)
-                } else {
-                    showErrorMessage()
-                }
+                launchPINView(PinType.CREATE,
+                        getString(R.string.please_create_a_pin),
+                        recoveryString,
+                        passphrase,
+                        false)
+            } catch (e: Exception) {
+                showErrorMessage(e.message)
             }
         }
 
@@ -110,7 +96,10 @@ class RecoverWalletActivity : BaseActivity() {
         }
     }
 
-    private fun showErrorMessage() {
+    private fun showErrorMessage(message : String?) {
+        if (message != null) {
+            invalidPhraseTextView.text = message
+        }
         invalidPhraseTextView.visibility = View.VISIBLE
     }
 
@@ -119,10 +108,10 @@ class RecoverWalletActivity : BaseActivity() {
     //region Helper functions
     private fun getMnemonicString() : String {
         return if (isRecoveryPhrase) {
-            phraseEditText.text.toString().trim()
+            phraseEditText.text.toString()
         } else {
-            secretKeyEditText.text.toString().trim()
+            secretKeyEditText.text.toString()
         }
     }
-    //endregions
+    //endregion
 }
