@@ -73,8 +73,7 @@
         android:padding="8dp"
         android:layout_marginTop="2dp"
         android:background="@color/white"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/amountTextView"
@@ -84,14 +83,16 @@
             android:background="@android:color/transparent"
             android:textAlignment="center"
             android:text="0"
-            android:textColor="@color/toryBlue"/>
+            android:textColor="@color/toryBlue"
+            android:gravity="center" />
 
         <TextView
             android:id="@+id/assetCodeTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:textColor="@color/currencyTextColor" />
+            android:textColor="@color/currencyTextColor"
+            android:gravity="center" />
 
     </LinearLayout>
 
