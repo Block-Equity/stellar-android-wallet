@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.security.KeyPair;
-import java.util.Arrays;
 
 import blockeq.com.stellarwallet.WalletApplication;
 import blockeq.com.stellarwallet.encryption.CipherWrapper;
