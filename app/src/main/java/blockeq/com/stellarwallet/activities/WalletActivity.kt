@@ -34,10 +34,10 @@ class WalletActivity : BaseActivity() {
                 val walletFragment = WalletFragment.newInstance()
                 openFragment(walletFragment)
             }
-            R.id.nav_trading -> {
-                val tradingFragment = TradingFragment.newInstance()
-                openFragment(tradingFragment)
-            }
+//            R.id.nav_trading -> {
+//                val tradingFragment = TradingFragment.newInstance()
+//                openFragment(tradingFragment)
+//            }
             R.id.nav_settings -> {
                 val settingsFragment = SettingsFragment.newInstance()
                 openFragment(settingsFragment)
