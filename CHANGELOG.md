@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.4.1] - 2018-11-17
 ### Fixed
-- Disabling and hiding the navigation item: `trading`, the feature was not ready.
+- Disabling and hiding the navigation item: `trading`, the feature was not read
+(kotlin.UninitializedPropertyAccessException OrderBookTabFragment.updateTradingCurrencies)
 
 ## [1.0.4] - 2018-11-16
 ### Added
