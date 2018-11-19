@@ -20,7 +20,11 @@ class AccountUtils {
             val masterKey = getPinMasterKey(context, WalletApplication.userSession.pin!!)!!
 
             var decryptedPhrase = getDecryptedString(encryptedPhrase, masterKey)
-            var decryptedPassphrase = getDecryptedPassphrase(encryptedPassphrase, masterKey)
+
+            var decryptedPassphrase : String? = null
+            if (encryptedPassphrase != null) {
+                decryptedPassphrase = getDecryptedString(encryptedPassphrase, masterKey)
+            }
 
             // TODO: Remove for new app, this is purely passphrase migration code
             if (isOldWalletWithPassphrase()) {
@@ -40,17 +44,15 @@ class AccountUtils {
             val cipherWrapper = CipherWrapper(CIPHER_TRANSFORMATION)
             val encryptedPhrase : String
 
-            if (passphrase.isNullOrEmpty()) {
-                WalletApplication.localStore.isPassphraseUsed = false
+            if (passphrase == null || passphrase.isEmpty()) {
                 encryptedPhrase = cipherWrapper.encrypt(mnemonic, masterKey.public)
             } else {
                 if (AccountUtils.isOldWalletWithPassphrase()) {
                     encryptedPhrase = cipherWrapper.encrypt("$mnemonic $passphrase", masterKey.public)
                 } else {
-                    WalletApplication.localStore.encryptedPassphrase = cipherWrapper.encrypt(passphrase!!, masterKey.public)
+                    WalletApplication.localStore.encryptedPassphrase = cipherWrapper.encrypt(passphrase, masterKey.public)
                     encryptedPhrase = cipherWrapper.encrypt(mnemonic, masterKey.public)
                 }
-                WalletApplication.localStore.isPassphraseUsed = true
             }
 
             WalletApplication.localStore.encryptedPhrase = encryptedPhrase
@@ -63,26 +65,23 @@ class AccountUtils {
             return cipherWrapper.decrypt(encryptedPhrase, masterKey.private)
         }
 
-        fun getDecryptedPassphrase(encryptedPassphrase: String?, masterKey: java.security.KeyPair) : String? {
-            return if (WalletApplication.localStore.isPassphraseUsed && encryptedPassphrase != null) {
-                AccountUtils.getDecryptedString(encryptedPassphrase, masterKey)
-            } else {
-                null
-            }
-        }
-
         @Deprecated("TODO: Remove this method in new app")
         fun getOldDecryptedPair(encryptedPhrase: String, privateKey: PrivateKey) : Pair<String, String?> {
             val cipherWrapper = CipherWrapper(CIPHER_TRANSFORMATION)
             var passphrase : String? = null
-            val decryptedPhrase: String
+            val mnemonic: String
+
+            val decryptedString = cipherWrapper.decrypt(encryptedPhrase, privateKey)
+
+            val wordCount = StringFormat.getWordCount(decryptedString)
+            val words = decryptedString.split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
+
+            // Check for inconsistent state of isPassphraseUsed
+            if ((wordCount == 12 || wordCount == 24) && WalletApplication.localStore.isPassphraseUsed) {
+                WalletApplication.localStore.isPassphraseUsed = false
+            }
 
             if (WalletApplication.localStore.isPassphraseUsed) {
-                val decryptedString = cipherWrapper.decrypt(encryptedPhrase, privateKey)
-
-                val wordCount = StringFormat.getWordCount(decryptedString)
-                val words = decryptedString.split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
-
                 val range = if (wordCount <= 24) {
                     0..11
                 } else {
@@ -94,14 +93,13 @@ class AccountUtils {
                     index += words[i].length + 1
                 }
 
-                decryptedPhrase = decryptedString.substring(0, index - 1)
+                mnemonic = decryptedString.substring(0, index - 1)
                 passphrase = decryptedString.substring(index)
-
             } else {
-                decryptedPhrase = cipherWrapper.decrypt(encryptedPhrase, privateKey)
+                mnemonic = cipherWrapper.decrypt(encryptedPhrase, privateKey)
             }
 
-            return Pair(decryptedPhrase, passphrase)
+            return Pair(mnemonic, passphrase)
         }
 
         @Deprecated("TODO: Remove this method in new app")

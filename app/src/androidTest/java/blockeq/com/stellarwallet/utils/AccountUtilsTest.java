@@ -104,7 +104,11 @@ public class AccountUtilsTest {
         assertNotNull(keyPair);
 
         String decryptedPhrase = AccountUtils.Companion.getDecryptedString(phrase, keyPair);
-        String decryptedPassphrase = AccountUtils.Companion.getDecryptedPassphrase(WalletApplication.localStore.getEncryptedPassphrase(), keyPair);
+        String encryptedPassphrase = WalletApplication.localStore.getEncryptedPassphrase();
+        String decryptedPassphrase = null;
+        if (encryptedPassphrase != null) {
+            decryptedPassphrase = AccountUtils.Companion.getDecryptedString(encryptedPassphrase, keyPair);
+        }
 
         assertEquals(mnemonic12, decryptedPhrase);
         assertEquals(passPhrase, decryptedPassphrase);
@@ -123,7 +127,11 @@ public class AccountUtilsTest {
         assertNotNull(keyPair);
 
         String decryptedPhrase = AccountUtils.Companion.getDecryptedString(phrase, keyPair);
-        String decryptedPassphrase = AccountUtils.Companion.getDecryptedPassphrase(WalletApplication.localStore.getEncryptedPassphrase(), keyPair);
+        String encryptedPassphrase = WalletApplication.localStore.getEncryptedPassphrase();
+        String decryptedPassphrase = null;
+        if (encryptedPassphrase != null) {
+            decryptedPassphrase = AccountUtils.Companion.getDecryptedString(encryptedPassphrase, keyPair);
+        }
 
         assertEquals(mnemonic12, decryptedPhrase);
         assertEquals(passphrase, decryptedPassphrase);
@@ -141,7 +149,11 @@ public class AccountUtilsTest {
         assertNotNull(keyPair);
 
         String decryptedPhrase = AccountUtils.Companion.getDecryptedString(phrase, keyPair);
-        String decryptedPassphrase = AccountUtils.Companion.getDecryptedPassphrase(WalletApplication.localStore.getEncryptedPassphrase(), keyPair);
+        String encryptedPassphrase = WalletApplication.localStore.getEncryptedPassphrase();
+        String decryptedPassphrase = null;
+        if (encryptedPassphrase != null) {
+            decryptedPassphrase = AccountUtils.Companion.getDecryptedString(encryptedPassphrase, keyPair);
+        }
 
         assertEquals(mnemonic24, decryptedPhrase);
         assertEquals(passphrase, decryptedPassphrase);
@@ -177,7 +189,11 @@ public class AccountUtilsTest {
         assertNotNull(keyPair);
 
         String decryptedPhrase = AccountUtils.Companion.getDecryptedString(encryptedPhrase, keyPair);
-        String decryptedPassphrase = AccountUtils.Companion.getDecryptedPassphrase(WalletApplication.localStore.getEncryptedPassphrase(), keyPair);
+        String encryptedPassphrase = WalletApplication.localStore.getEncryptedPassphrase();
+        String decryptedPassphrase = null;
+        if (encryptedPassphrase != null) {
+            decryptedPassphrase = AccountUtils.Companion.getDecryptedString(encryptedPassphrase, keyPair);
+        }
 
         if (AccountUtils.Companion.isOldWalletWithPassphrase()) {
             Pair<String, String> decryptedPair = AccountUtils.Companion.getOldDecryptedPair(encryptedPhrase, keyPair.getPrivate());
