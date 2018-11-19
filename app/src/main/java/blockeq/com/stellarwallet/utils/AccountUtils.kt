@@ -74,7 +74,6 @@ class AccountUtils {
             val decryptedString = cipherWrapper.decrypt(encryptedPhrase, privateKey)
 
             val wordCount = StringFormat.getWordCount(decryptedString)
-            val words = decryptedString.split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
 
             // Check for inconsistent state of isPassphraseUsed
             if ((wordCount == 12 || wordCount == 24) && WalletApplication.localStore.isPassphraseUsed) {
@@ -82,6 +81,8 @@ class AccountUtils {
             }
 
             if (WalletApplication.localStore.isPassphraseUsed) {
+                val words = decryptedString.split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
+
                 val range = if (wordCount <= 24) {
                     0..11
                 } else {
