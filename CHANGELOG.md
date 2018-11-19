@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.4.2] - 2018-11-19
 ## Fixed
 - GH-93 [StringIndexOutOfBoundsException] calling getOldDecryptedPair()
+- GH-95 [Empty passphrase bug]
+
+## Changed
+- Changed the empty transactions string: Removed the words "Start trading!" Since it is not implemented yet.
 
 ## [1.0.4.1] - 2018-11-17
 ### Fixed
