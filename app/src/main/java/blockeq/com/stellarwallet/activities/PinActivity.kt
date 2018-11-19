@@ -77,6 +77,7 @@ class PinActivity : BaseActivity(), PinLockListener {
 
                             WalletApplication.localStore.stellarAccountId = stellarKeyPair.accountId
                             WalletApplication.userSession.pin = pin
+                            WalletApplication.localStore.isPassphraseUsed = pinViewState.passphrase != null
 
                             launchWallet()
                         }
