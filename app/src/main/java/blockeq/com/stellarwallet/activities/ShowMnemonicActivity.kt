@@ -28,11 +28,6 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_mnemonic)
 
-        // TODO: Problem linked to setting isRecoveryPhrase before it is confirmed in
-        // RecoveryWalletActivity.kt for a secret seed, so that needs to be refactored to
-        // after the account is created in PinActivity.kt
-        WalletApplication.localStore.isRecoveryPhrase = true
-
         loadIntent()
         setupUI()
         setOnClickListeners()
@@ -70,6 +65,11 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
                 warningPhraseTextView.text = getString(R.string.no_mnemonic_set)
                 mnemonicView.visibility = View.GONE
             }
+        } else {
+            // TODO: Problem linked to setting isRecoveryPhrase before it is confirmed in
+            // RecoveryWalletActivity.kt for a secret seed, so that needs to be refactored to
+            // after the account is created in PinActivity.kt
+            WalletApplication.localStore.isRecoveryPhrase = true
         }
         setupActionBar()
         setupMnemonicView()
