@@ -79,10 +79,10 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
                     val sellingCode : String
                     when(it.selling) {
                         is AssetTypeCreditAlphaNum4 -> {
-                            sellingCode = (it.buying as AssetTypeCreditAlphaNum4).code
+                            sellingCode = (it.selling as AssetTypeCreditAlphaNum4).code
                         }
                         is AssetTypeCreditAlphaNum12 -> {
-                            sellingCode = (it.buying as AssetTypeCreditAlphaNum12).code
+                            sellingCode = (it.selling as AssetTypeCreditAlphaNum12).code
                         }
                         is AssetTypeNative -> {
                             sellingCode = "LMX"

@@ -19,12 +19,9 @@ import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.models.AvailableBalance
-import blockeq.com.stellarwallet.models.MinimumBalance
 import blockeq.com.stellarwallet.models.TotalBalance
 import blockeq.com.stellarwallet.models.WalletHeterogeneousArray
-import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.AccountUtils
-import blockeq.com.stellarwallet.utils.NetworkUtils
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
@@ -33,8 +30,6 @@ import org.stellar.sdk.responses.effects.EffectResponse
 
 class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
-    private var handler = Handler()
-    private var runnableCode : Runnable? = null
     private var adapter : WalletRecyclerViewAdapter? = null
     private var effectsList : java.util.ArrayList<EffectResponse>? = null
     private var recyclerViewArrayList: WalletHeterogeneousArray? = null
@@ -65,12 +60,6 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
     override fun onResume() {
         super.onResume()
         bindAdapter()
-        startPollingAccount()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        endPollingAccount()
     }
 
     //region User Interface
@@ -121,11 +110,6 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
     //region Call backs
 
     override fun onLoadAccount(result: AccountResponse?) {
-        if (result != null && walletProgressBar != null) {
-            WalletApplication.localStore.balances = result.balances
-            WalletApplication.userSession.minimumBalance = MinimumBalance(result)
-            WalletApplication.localStore.availableBalance = AccountUtils.calculateAvailableBalance()
-        }
         recyclerViewArrayList!!.updateTotalBalance(
                 TotalBalance(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode)))
         recyclerViewArrayList!!.updateAvailableBalance(
@@ -153,38 +137,6 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
             adapter!!.notifyDataSetChanged()
             walletProgressBar.visibility = View.GONE
         }
-    }
-
-    //endregion
-
-
-    //region API Polling
-
-    //TODO polling for only non-created accounts on Stellar.
-    private fun startPollingAccount() {
-        runnableCode = object : Runnable {
-            override fun run() {
-
-                if (NetworkUtils(activity!!).isNetworkAvailable()) {
-
-                    Horizon.getLoadAccountTask(this@WalletFragment)
-                            .execute()
-
-                    Horizon.getLoadEffectsTask(this@WalletFragment)
-                            .execute()
-                } else {
-                    NetworkUtils(activity!!).displayNoNetwork()
-                }
-
-                handler.postDelayed(this, 5000)
-            }
-        }
-
-        handler.post(runnableCode)
-    }
-
-    private fun endPollingAccount() {
-        handler.removeCallbacks(runnableCode)
     }
 
     //endregion
