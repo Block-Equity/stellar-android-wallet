@@ -12,10 +12,11 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
+        tools:ignore="UnusedAttribute"
         app:title="@string/secret_phrase"
         app:titleTextColor="@color/colorPrimaryDark"
         android:theme="@style/ToolbarTheme"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <TextView
         android:id="@+id/warningPhraseTextView"

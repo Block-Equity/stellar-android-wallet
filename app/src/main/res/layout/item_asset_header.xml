@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:text="BlockEQ Asset"
         android:textSize="@dimen/text_size_small"
-        android:textColor="@color/silverChalice"
-        android:layout_alignParentStart="true"/>
+        android:textColor="@color/silverChalice"/>
 
 </LinearLayout>

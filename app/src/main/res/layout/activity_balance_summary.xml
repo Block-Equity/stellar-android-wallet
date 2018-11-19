@@ -16,6 +16,7 @@
         android:layout_gravity="start"/>
 
     <LinearLayout
+        android:baselineAligned="false"
         android:orientation="horizontal"
         android:background="@color/blue2"
         android:layout_width="match_parent"
