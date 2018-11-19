@@ -2,7 +2,6 @@ package blockeq.com.stellarwallet.encryption
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import blockeq.com.stellarwallet.utils.AccountUtils
 import org.junit.Test
 import org.junit.runner.RunWith
 

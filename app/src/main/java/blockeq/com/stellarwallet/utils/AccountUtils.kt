@@ -76,16 +76,33 @@ class AccountUtils {
         fun getOldDecryptedPair(encryptedPhrase: String, privateKey: PrivateKey) : Pair<String, String?> {
             val cipherWrapper = CipherWrapper(CIPHER_TRANSFORMATION)
             var passphrase : String? = null
-            val decryptedData = if (WalletApplication.localStore.isPassphraseUsed) {
+            val decryptedPhrase: String
+
+            if (WalletApplication.localStore.isPassphraseUsed) {
                 val decryptedString = cipherWrapper.decrypt(encryptedPhrase, privateKey)
-                passphrase = decryptedString.substring(decryptedString.lastIndexOf(" ") + 1)
-                decryptedString.substring(0, decryptedString.lastIndexOf(" "))
+
+                val wordCount = StringFormat.getWordCount(decryptedString)
+                val words = decryptedString.split(" ".toRegex()).dropLastWhile { it.isEmpty() } as ArrayList
+
+                val range = if (wordCount <= 24) {
+                    0..11
+                } else {
+                    0..23
+                }
+
+                var index = 0
+                for (i in range) {
+                    index += words[i].length + 1
+                }
+
+                decryptedPhrase = decryptedString.substring(0, index - 1)
+                passphrase = decryptedString.substring(index)
+
             } else {
-                Timber.d("decrypting mnemonic phrase, encryptedPhrase=$encryptedPhrase privateKey=${privateKey.encoded}")
-                cipherWrapper.decrypt(encryptedPhrase, privateKey)
+                decryptedPhrase = cipherWrapper.decrypt(encryptedPhrase, privateKey)
             }
 
-            return Pair(decryptedData, passphrase)
+            return Pair(decryptedPhrase, passphrase)
         }
 
         @Deprecated("TODO: Remove this method in new app")

@@ -8,6 +8,10 @@ import java.util.*
 
 class StringFormat {
     companion object {
+        fun getWordCount(word : String) : Int {
+            return word.split(" ".toRegex()).size
+        }
+
         fun getFormattedDate(str: String): String {
             val formatter = DateTimeFormatter.ofPattern("MMM dd, uuuu", Locale.ENGLISH)
                     .withZone(ZoneId.of("UTC"))
