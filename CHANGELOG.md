@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 - Trade support.
+## [1.0.4.3] - 2018-11-19
+## Fixed
+- GH-98 [Empty passphrase bug]
+
 ## [1.0.4.2] - 2018-11-19
 ## Fixed
 - GH-93 [StringIndexOutOfBoundsException] calling getOldDecryptedPair()
