@@ -58,6 +58,7 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun setupUI() {
+        // Show mnemonic UI
         if (isDisplayPhraseOnly) {
             confirmButton.visibility = View.GONE
             passphraseButton.visibility = View.GONE
@@ -66,6 +67,8 @@ class ShowMnemonicActivity : BaseActivity(), View.OnClickListener {
                 mnemonicView.visibility = View.GONE
             }
         } else {
+            // Create mnemonic UI
+
             // TODO: Problem linked to setting isRecoveryPhrase before it is confirmed in
             // RecoveryWalletActivity.kt for a secret seed, so that needs to be refactored to
             // after the account is created in PinActivity.kt
