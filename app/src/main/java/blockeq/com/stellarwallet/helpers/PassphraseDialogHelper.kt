@@ -38,21 +38,25 @@ class PassphraseDialogHelper(private val activity: Activity, private val listene
         val dialog = super.show()
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val phrase = inputEditText!!.text.toString()
-            if (isConfirm) {
-                if (originalPhrase == phrase) {
-                    listener.onOK(phrase)
-                    dialog.cancel()
-                } else {
-                    dialog.setMessage(context.getString(R.string.passphrase_dialog_error))
-                    val shakeAnimation = AnimationUtils.loadAnimation(activity, R.anim.shake)
-                    inputEditText!!.startAnimation(shakeAnimation)
-                    inputEditText!!.setText("")
-                }
+            if (phrase.isEmpty()) {
+                dialog.setMessage(context.getString(R.string.passphrase_dialog_info) + "\n\n" + context.getString(R.string.passphrase_dialog_empty_field))
             } else {
-                originalPhrase = phrase
-                inputEditText!!.setText("")
-                dialog.setMessage(context.getString(R.string.passphrase_dialog_confirm))
-                isConfirm = true
+                if (isConfirm) {
+                    if (originalPhrase == phrase) {
+                        listener.onOK(phrase)
+                        dialog.cancel()
+                    } else {
+                        dialog.setMessage(context.getString(R.string.passphrase_dialog_error))
+                        val shakeAnimation = AnimationUtils.loadAnimation(activity, R.anim.shake)
+                        inputEditText!!.startAnimation(shakeAnimation)
+                        inputEditText!!.setText("")
+                    }
+                } else {
+                    originalPhrase = phrase
+                    inputEditText!!.setText("")
+                    dialog.setMessage(context.getString(R.string.passphrase_dialog_confirm))
+                    isConfirm = true
+                }
             }
         }
         return dialog

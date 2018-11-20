@@ -31,7 +31,7 @@
     <string name="learn_more">Learn more</string>
     <string name="activity">ACTIVITY</string>
     <string name="amount">AMOUNT</string>
-    <string name="no_transactions">Start trading!\n You currently have no transactions</string>
+    <string name="no_transactions">You currently have no transactions</string>
     <string name="load_account_error">There was an error loading your account balance</string>
     <string name="load_effects_error">There was an error loading your account activity</string>
 
@@ -58,6 +58,7 @@
     <string name="passphrase_dialog_error">Please retry, passphrases don\'t match</string>
     <string name="passphrase_dialog_confirm">Please confirm your passphrase</string>
     <string name="passphrase_applied">Passphrase applied</string>
+    <string name="passphrase_dialog_empty_field">Empty passphrase field</string>
 
     <!--Settings Fragment-->
     <string name="recovery">Recovery</string>
