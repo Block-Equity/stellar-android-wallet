@@ -59,10 +59,7 @@ class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
                 val address = addressEditText.text.toString()
 
                 if (address.length == STELLAR_ADDRESS_LENGTH) {
-                    val intent = Intent(this, SendActivity::class.java).apply {
-                        putExtra(ADDRESS_DATA, address)
-                    }
-                    startActivity(intent)
+                    startActivity(SendActivity.newIntent(this, address))
 
                     this.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
                 } else {
