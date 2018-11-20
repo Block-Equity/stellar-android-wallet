@@ -114,6 +114,7 @@
                 android:layout_marginTop="@dimen/activity_vertical_margin"/>
 
             <RadioGroup
+                android:id="@+id/phraseRadioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -145,6 +146,7 @@
                 android:layout_marginTop="@dimen/activity_vertical_margin"/>
 
             <RadioGroup
+                android:id="@+id/passphraseRadioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -170,6 +172,7 @@
                 android:layout_marginTop="@dimen/activity_vertical_margin"/>
 
             <EditText
+                android:id="@+id/explanationEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lines="4"
