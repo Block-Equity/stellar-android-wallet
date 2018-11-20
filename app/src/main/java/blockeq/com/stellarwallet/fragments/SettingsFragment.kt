@@ -9,7 +9,6 @@ import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.models.PinType
 import kotlinx.android.synthetic.main.fragment_settings.*
 
-
 class SettingsFragment : BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -27,8 +26,12 @@ class SettingsFragment : BaseFragment() {
 
     //region User Interface
 
-    private fun setupUI() {
+    override fun onResume() {
+        super.onResume()
         setSavedSettings()
+    }
+
+    private fun setupUI() {
         val phrase = WalletApplication.localStore.encryptedPhrase!!
         
         viewPhraseButton.setOnClickListener {
@@ -44,7 +47,7 @@ class SettingsFragment : BaseFragment() {
         }
 
         pinOnSendPaymentsButton.setOnClickListener {
-            WalletApplication.localStore.showPinOnSend = pinOnSendPaymentsButton.isChecked
+            launchPINView(PinType.TOGGLE_PIN_ON_SENDING, "", phrase, false)
         }
     }
 
