@@ -1,6 +1,7 @@
 package blockeq.com.stellarwallet.utils
 
 import android.os.Build
+import java.util.*
 
 class DiagnosticUtils {
 
@@ -17,6 +18,10 @@ class DiagnosticUtils {
 
         fun getAndroidVersion() : String {
             return android.os.Build.VERSION.SDK_INT.toString()
+        }
+
+        fun getLocale() : String {
+            return Locale.getDefault().language
         }
     }
 }
