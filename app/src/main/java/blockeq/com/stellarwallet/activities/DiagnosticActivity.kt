@@ -19,5 +19,6 @@ class DiagnosticActivity : BaseActivity() {
         deviceModelTextView.text = DiagnosticUtils.getDeviceName()
         androidVersionTextView.text = DiagnosticUtils.getAndroidVersion()
         localeTextView.text = DiagnosticUtils.getLocale()
+        appVersionTextView.text = DiagnosticUtils.getAppVersion()
     }
 }
