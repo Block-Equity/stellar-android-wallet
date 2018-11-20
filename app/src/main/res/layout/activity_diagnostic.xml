@@ -98,11 +98,13 @@
                 style="@style/SettingsButton" />
 
             <TextView
+                android:id="@+id/publicAddressTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/RegularText"
                 android:textColor="@color/paleSky"
-                android:layout_marginStart="@dimen/activity_vertical_margin" />
+                android:layout_marginStart="@dimen/activity_vertical_margin"
+                android:layout_marginEnd="@dimen/activity_vertical_margin"/>
 
         </LinearLayout>
     </ScrollView>

@@ -2,6 +2,7 @@ package blockeq.com.stellarwallet.activities
 
 import android.os.Bundle
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.utils.DiagnosticUtils
 import kotlinx.android.synthetic.main.activity_diagnostic.*
 
@@ -20,5 +21,6 @@ class DiagnosticActivity : BaseActivity() {
         androidVersionTextView.text = DiagnosticUtils.getAndroidVersion()
         localeTextView.text = DiagnosticUtils.getLocale()
         appVersionTextView.text = DiagnosticUtils.getAppVersion()
+        publicAddressTextView.text = WalletApplication.localStore.stellarAccountId
     }
 }
