@@ -78,4 +78,18 @@
         android:text="@string/clear_wallet"
         style="@style/SettingsButton" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/troubleshooting"
+        style="@style/SettingsTitle"
+        android:layout_margin="@dimen/activity_vertical_margin" />
+
+    <TextView
+        android:id="@+id/diagnosticButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/bug_report"
+        style="@style/SettingsButton" />
+
 </LinearLayout>
