@@ -56,5 +56,20 @@ class StringFormat {
                 assetCode
             }
         }
+
+        /**
+         * Capitalizes the first character of a string
+         */
+        fun capitalize(s: String?): String {
+            if (s == null || s.length == 0) {
+                return ""
+            }
+            val first = s[0]
+            return if (Character.isUpperCase(first)) {
+                s
+            } else {
+                Character.toUpperCase(first) + s.substring(1)
+            }
+        }
     }
 }
