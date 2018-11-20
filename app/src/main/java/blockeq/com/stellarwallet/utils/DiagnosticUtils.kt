@@ -14,5 +14,9 @@ class DiagnosticUtils {
                 StringFormat.capitalize(manufacturer) + " " + model
             }
         }
+
+        fun getAndroidVersion() : String {
+            return android.os.Build.VERSION.SDK_INT.toString()
+        }
     }
 }

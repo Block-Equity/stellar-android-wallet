@@ -17,5 +17,6 @@ class DiagnosticActivity : BaseActivity() {
 
     fun setupUI() {
         deviceModelTextView.text = DiagnosticUtils.getDeviceName()
+        androidVersionTextView.text = DiagnosticUtils.getAndroidVersion()
     }
 }
