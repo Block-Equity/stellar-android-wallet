@@ -26,14 +26,10 @@ import blockeq.com.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
 import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.contents_send.*
-import java.util.*
-
 
 class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCallback {
 
@@ -156,26 +152,26 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     }
 
     private fun isAmountValid() : Boolean {
-        return (amount <= WalletApplication.userSession.getAvailableBalance().toDouble() && amount != 0.0)
+        return amount <= WalletApplication.userSession.getAvailableBalance().toDouble() && amount != 0.0
     }
 
     //endregion
 
     private fun sendPayment() {
-        if (exchange != null && memoTextView.text.isEmpty()) {
-            exchange?.let {
+        exchange.let {
+            if (it != null && memoTextView.text.isEmpty()) {
                 Toast.makeText(applicationContext, "you must write a {${it.memo}}", Toast.LENGTH_SHORT).show()
-            }
-        } else {
-            if (NetworkUtils(this).isNetworkAvailable()) {
-                progressBar.visibility = View.VISIBLE
-
-                val secretSeed = AccountUtils.getSecretSeed(applicationContext)
-
-                Horizon.getSendTask(this, address, secretSeed,
-                        memoTextView.text.toString(), amountText).execute()
             } else {
-                NetworkUtils(this).displayNoNetwork()
+                if (NetworkUtils(applicationContext).isNetworkAvailable()) {
+                    progressBar.visibility = View.VISIBLE
+
+                    val secretSeed = AccountUtils.getSecretSeed(applicationContext)
+
+                    Horizon.getSendTask(this, address, secretSeed,
+                            memoTextView.text.toString(), amountText).execute()
+                } else {
+                    NetworkUtils(applicationContext).displayNoNetwork()
+                }
             }
         }
     }
@@ -183,7 +179,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     //region Horizon callbacks
     override fun onSuccess() {
         progressBar.visibility = View.GONE
-        Toast.makeText(this, getString(R.string.send_success_message), Toast.LENGTH_LONG).show()
+        Toast.makeText(applicationContext, getString(R.string.send_success_message), Toast.LENGTH_LONG).show()
         val handler = Handler()
         val runnableCode = Runnable {
             launchWallet()
@@ -198,7 +194,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     //endregion
 
     private fun updateExchangeProviderText(providers : List<ExchangeProvider>) {
-        val provider = providers.first { it -> it.address == address }
+        val provider = providers.find { it -> it.address == address  }
         if (provider != null) {
             identifiedAddressTextView.text = Html.fromHtml(getString(R.string.send_address_identified, provider.name))
             identifiedAddressTextView.visibility = View.VISIBLE
@@ -206,13 +202,11 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
             memoTextView.hint = null
         } else {
             identifiedAddressTextView.visibility = View.GONE
-
         }
-
     }
 
     private fun loadExchangeProviderAddresses() {
-        val queue = Volley.newRequestQueue(this)
+        val queue = Volley.newRequestQueue(applicationContext)
 
         // TODO: Use retrofit and dagger
         val request = JsonArrayRequest(Request.Method.GET, Constants.BLOCKEQ_EXCHANGES_URL, null,
