@@ -46,6 +46,10 @@ class SettingsFragment : BaseFragment() {
         pinOnSendPaymentsButton.setOnClickListener {
             WalletApplication.localStore.showPinOnSend = pinOnSendPaymentsButton.isChecked
         }
+
+        diagnosticButton.setOnClickListener {
+
+        }
     }
 
     private fun setSavedSettings() {
