@@ -1,6 +1,7 @@
 package blockeq.com.stellarwallet.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.RadioButton
 import android.widget.Toast
@@ -59,16 +60,12 @@ class DiagnosticActivity : BaseActivity() {
 
                 val emailBody = "Bug report details:\n" + explanationEditText.text + "\n\nJSON format details:\n\n" + json.toString()
 
-                val intent = Intent(Intent.ACTION_SEND)
-                intent.type = "message/rfc822"
-                intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("hello@blockeq.com"))
+                val intent = Intent(Intent.ACTION_SENDTO)
+                intent.data = Uri.parse("mailto:hello@blockeq.com")
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Bug report")
                 intent.putExtra(Intent.EXTRA_TEXT, emailBody)
-                try {
-                    startActivity(Intent.createChooser(intent, "Send mail..."))
-                } catch (ex: android.content.ActivityNotFoundException) {
-                    Toast.makeText(applicationContext, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
-                }
+                startActivity(intent)
+                finish()
             }
         }
     }
