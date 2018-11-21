@@ -11,7 +11,6 @@ import blockeq.com.stellarwallet.activities.DiagnosticActivity
 import blockeq.com.stellarwallet.models.PinType
 import kotlinx.android.synthetic.main.fragment_settings.*
 
-
 class SettingsFragment : BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =

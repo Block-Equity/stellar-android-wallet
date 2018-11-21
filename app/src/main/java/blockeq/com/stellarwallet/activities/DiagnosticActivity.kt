@@ -10,6 +10,7 @@ import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.utils.DiagnosticUtils
 import kotlinx.android.synthetic.main.activity_diagnostic.*
 import org.json.JSONObject
+import android.content.ComponentName
 
 
 class DiagnosticActivity : BaseActivity() {
@@ -64,7 +65,15 @@ class DiagnosticActivity : BaseActivity() {
                 intent.data = Uri.parse("mailto:hello@blockeq.com")
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Bug report")
                 intent.putExtra(Intent.EXTRA_TEXT, emailBody)
-                startActivity(intent)
+
+                // fallback component was found in most emulators without email app
+                val emailApp = intent.resolveActivity(packageManager)
+                val unsupportedAction = ComponentName.unflattenFromString("com.android.fallback/.Fallback")
+                if (emailApp != null && emailApp != unsupportedAction) {
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(applicationContext, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
+                }
                 finish()
             }
         }
