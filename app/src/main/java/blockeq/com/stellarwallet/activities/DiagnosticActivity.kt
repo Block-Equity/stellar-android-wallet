@@ -62,7 +62,7 @@ class DiagnosticActivity : BaseActivity() {
             try {
                 startActivity(Intent.createChooser(intent, "Send mail..."))
             } catch (ex: android.content.ActivityNotFoundException) {
-                Toast.makeText(this@DiagnosticActivity, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
             }
 
         }
