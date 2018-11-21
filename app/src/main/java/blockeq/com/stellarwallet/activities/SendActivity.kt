@@ -1,34 +1,29 @@
 package blockeq.com.stellarwallet.activities
 
 import android.app.Activity
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.text.Html
-import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
-import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
 import blockeq.com.stellarwallet.models.ExchangeProvider
 import blockeq.com.stellarwallet.models.HorizonException
 import blockeq.com.stellarwallet.models.PinType
+import blockeq.com.stellarwallet.models.SendingViewModel
 import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.AccountUtils
 import blockeq.com.stellarwallet.utils.NetworkUtils
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import blockeq.com.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.Volley
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
-import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.contents_send.*
 
 class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCallback {
@@ -47,7 +42,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     private var amountText: String = ""
     private var amount: Double = 0.0
     private var address: String = ""
-    private var exchange : ExchangeProvider? = null
+    private var viewModel : SendingViewModel = ViewModelProviders.of(this).get(SendingViewModel::class.java)
 
     override fun setContent(): Int {
         return R.layout.contents_send
@@ -82,7 +77,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
             }
         }
 
-        loadExchangeProviderAddresses()
+        updateExchangeText(viewModel.getExchangeProvider(address))
     }
 
     //region User Interface
@@ -158,20 +153,19 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     //endregion
 
     private fun sendPayment() {
-        exchange.let {
-            if (it != null && memoTextView.text.isEmpty()) {
-                Toast.makeText(applicationContext, "you must write a {${it.memo}}", Toast.LENGTH_SHORT).show()
+        val exchange = viewModel.getExchangeProvider(address)
+        if (exchange != null && memoTextView.text.isEmpty()) {
+            Toast.makeText(applicationContext, "you must write a {${exchange.memo}}", Toast.LENGTH_SHORT).show()
+        } else {
+            if (NetworkUtils(applicationContext).isNetworkAvailable()) {
+                progressBar.visibility = View.VISIBLE
+
+                val secretSeed = AccountUtils.getSecretSeed(applicationContext)
+
+                Horizon.getSendTask(this, address, secretSeed,
+                        memoTextView.text.toString(), amountText).execute()
             } else {
-                if (NetworkUtils(applicationContext).isNetworkAvailable()) {
-                    progressBar.visibility = View.VISIBLE
-
-                    val secretSeed = AccountUtils.getSecretSeed(applicationContext)
-
-                    Horizon.getSendTask(this, address, secretSeed,
-                            memoTextView.text.toString(), amountText).execute()
-                } else {
-                    NetworkUtils(applicationContext).displayNoNetwork()
-                }
+                NetworkUtils(applicationContext).displayNoNetwork()
             }
         }
     }
@@ -193,8 +187,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     }
     //endregion
 
-    private fun updateExchangeProviderText(providers : List<ExchangeProvider>) {
-        val provider = providers.find { it -> it.address == address  }
+    private fun updateExchangeText(provider : ExchangeProvider?) {
         if (provider != null) {
             identifiedAddressTextView.text = Html.fromHtml(getString(R.string.send_address_identified, provider.name))
             identifiedAddressTextView.visibility = View.VISIBLE
@@ -204,24 +197,4 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
             identifiedAddressTextView.visibility = View.GONE
         }
     }
-
-    private fun loadExchangeProviderAddresses() {
-        val queue = Volley.newRequestQueue(applicationContext)
-
-        // TODO: Use retrofit and dagger
-        val request = JsonArrayRequest(Request.Method.GET, Constants.BLOCKEQ_EXCHANGES_URL, null,
-                Response.Listener { response ->
-                    // display response
-                    val gson = GsonBuilder().create()
-                    val list = gson.fromJson(response.toString(), Array<ExchangeProvider>::class.java)
-                    updateExchangeProviderText(list.toList())
-                },
-                Response.ErrorListener {
-                    it.networkResponse
-                    Log.e("error", "error loading exchange providers")
-                })
-
-        queue.add(request)
-    }
-
 }
