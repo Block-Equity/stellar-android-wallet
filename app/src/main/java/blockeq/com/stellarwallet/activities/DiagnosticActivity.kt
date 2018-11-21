@@ -14,7 +14,7 @@ import org.json.JSONObject
 class DiagnosticActivity : BaseActivity() {
 
     private var recoveryType : String = ""
-    private var isPassphrase : Boolean = false
+    private var isPassphrase : Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,26 +43,30 @@ class DiagnosticActivity : BaseActivity() {
         }
 
         sendReportButton.setOnClickListener {
-            val json = JSONObject()
-            json.put("device", deviceModelTextView.text)
-            json.put("androidVersion", androidVersionTextView.text)
-            json.put("locale", localeTextView.text)
-            json.put("appVersion", appVersionTextView.text)
-            json.put("publicAddress", publicAddressTextView.text)
+            if (recoveryType.isEmpty() || isPassphrase == null || explanationEditText.text.isEmpty()) {
+                Toast.makeText(applicationContext, "You have one or more empty fields", Toast.LENGTH_SHORT).show()
+            } else {
+                val json = JSONObject()
+                json.put("device", deviceModelTextView.text)
+                json.put("androidVersion", androidVersionTextView.text)
+                json.put("locale", localeTextView.text)
+                json.put("appVersion", appVersionTextView.text)
+                json.put("publicAddress", publicAddressTextView.text)
 
-            json.put("recoveryType", recoveryType)
-            json.put("passphrase", isPassphrase)
-            json.put("detail", explanationEditText.text)
+                json.put("recoveryType", recoveryType)
+                json.put("passphrase", isPassphrase!!)
+                json.put("detail", explanationEditText.text)
 
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.type = "message/rfc822"
-            intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("hello@blockeq.com"))
-            intent.putExtra(Intent.EXTRA_SUBJECT, "Bug report")
-            intent.putExtra(Intent.EXTRA_TEXT, json.toString())
-            try {
-                startActivity(Intent.createChooser(intent, "Send mail..."))
-            } catch (ex: android.content.ActivityNotFoundException) {
-                Toast.makeText(applicationContext, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.type = "message/rfc822"
+                intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("hello@blockeq.com"))
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Bug report")
+                intent.putExtra(Intent.EXTRA_TEXT, json.toString())
+                try {
+                    startActivity(Intent.createChooser(intent, "Send mail..."))
+                } catch (ex: android.content.ActivityNotFoundException) {
+                    Toast.makeText(applicationContext, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
