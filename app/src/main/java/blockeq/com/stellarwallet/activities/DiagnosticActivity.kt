@@ -57,11 +57,13 @@ class DiagnosticActivity : BaseActivity() {
                 json.put("passphrase", isPassphrase!!)
                 json.put("detail", explanationEditText.text)
 
+                val emailBody = "Bug report details:\n" + explanationEditText.text + "\n\nJSON format details:\n\n" + json.toString()
+
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.type = "message/rfc822"
                 intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("hello@blockeq.com"))
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Bug report")
-                intent.putExtra(Intent.EXTRA_TEXT, json.toString())
+                intent.putExtra(Intent.EXTRA_TEXT, emailBody)
                 try {
                     startActivity(Intent.createChooser(intent, "Send mail..."))
                 } catch (ex: android.content.ActivityNotFoundException) {
