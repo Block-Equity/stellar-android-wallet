@@ -1,14 +1,15 @@
 package blockeq.com.stellarwallet.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.WalletApplication
+import blockeq.com.stellarwallet.activities.DiagnosticActivity
 import blockeq.com.stellarwallet.models.PinType
 import kotlinx.android.synthetic.main.fragment_settings.*
-
 
 class SettingsFragment : BaseFragment() {
 
@@ -45,6 +46,10 @@ class SettingsFragment : BaseFragment() {
 
         pinOnSendPaymentsButton.setOnClickListener {
             WalletApplication.localStore.showPinOnSend = pinOnSendPaymentsButton.isChecked
+        }
+
+        diagnosticButton.setOnClickListener {
+            startActivity(Intent(context, DiagnosticActivity::class.java))
         }
     }
 
