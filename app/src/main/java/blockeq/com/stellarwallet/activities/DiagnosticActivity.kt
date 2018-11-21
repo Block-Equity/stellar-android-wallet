@@ -56,7 +56,7 @@ class DiagnosticActivity : BaseActivity() {
 
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "message/rfc822"
-            intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("daniel@blockeq.com"))
+            intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("hello@blockeq.com"))
             intent.putExtra(Intent.EXTRA_SUBJECT, "Bug report")
             intent.putExtra(Intent.EXTRA_TEXT, json.toString())
             try {
@@ -64,7 +64,6 @@ class DiagnosticActivity : BaseActivity() {
             } catch (ex: android.content.ActivityNotFoundException) {
                 Toast.makeText(applicationContext, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
             }
-
         }
     }
 }
