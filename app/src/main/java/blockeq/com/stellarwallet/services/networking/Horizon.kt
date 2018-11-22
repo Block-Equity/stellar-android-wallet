@@ -1,26 +1,32 @@
 package blockeq.com.stellarwallet.services.networking
 
 import android.os.AsyncTask
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.interfaces.OnLoadAccount
 import blockeq.com.stellarwallet.interfaces.OnLoadEffects
 import blockeq.com.stellarwallet.interfaces.SuccessErrorCallback
+import blockeq.com.stellarwallet.models.DataAsset
 import blockeq.com.stellarwallet.models.HorizonException
+import com.facebook.stetho.okhttp3.StethoInterceptor
+import okhttp3.OkHttpClient
 import org.stellar.sdk.*
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.requests.RequestBuilder
 import org.stellar.sdk.responses.AccountResponse
+import org.stellar.sdk.responses.OfferResponse
+import org.stellar.sdk.responses.OrderBookResponse
 import org.stellar.sdk.responses.Page
 import org.stellar.sdk.responses.effects.EffectResponse
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 object Horizon : HorizonTasks {
     private const val PROD_SERVER = "https://horizon.stellar.org"
     private const val TEST_SERVER = "https://horizon-testnet.stellar.org"
     private const val SERVER_ERROR_MESSAGE = "Error response from the server."
-
-    private val TAG = Horizon::class.java.simpleName
 
     override fun getLoadEffectsTask(listener: OnLoadEffects): AsyncTask<Void, Void, ArrayList<EffectResponse>?> {
         return LoadEffectsTask(listener)
@@ -51,7 +57,7 @@ object Horizon : HorizonTasks {
                 account = server.accounts().account(sourceKeyPair)
 
             } catch (error : Exception) {
-                Log.d(TAG, error.message.toString())
+                Timber.d(error.message.toString())
                 if (error is ErrorResponse) {
                     listener.onError(error)
                 } else {
@@ -77,7 +83,7 @@ object Horizon : HorizonTasks {
                         .limit(Constants.NUM_TRANSACTIONS_SHOWN)
                         .forAccount(sourceKeyPair).execute()
             } catch (error : Exception) {
-                Log.d(TAG, error.message.toString())
+                Timber.e(error.message.toString())
             }
 
             return effectResults?.records
@@ -105,7 +111,7 @@ object Horizon : HorizonTasks {
                 try {
                     server.accounts().account(destKeyPair)
                 } catch (error : Exception) {
-                    Log.d(TAG, error.message.toString())
+                    Timber.e(error.message.toString())
                     if (error.message == SERVER_ERROR_MESSAGE) {
                         isCreateAccount = true
                     } else {
@@ -134,18 +140,17 @@ object Horizon : HorizonTasks {
                 transaction.sign(sourceKeyPair)
 
                 val response = server.submitTransaction(transaction)
-
                 if (!response.isSuccess) {
                     return HorizonException(response.extras.resultCodes.transactionResultCode,
                             response.extras.resultCodes.operationsResultCodes,
-                            HorizonException.HorizonExceptionType.SEND)
+                            HorizonException.HorizonExceptionType.INFLATION)
                 }
-
-            } catch (error : HorizonException) {
-                Log.d(TAG, error.message)
-                return error
+            } catch (error : Exception) {
+                Timber.d(error.message.toString())
+                return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
+                        arrayListOf(error.message.toString()),
+                        HorizonException.HorizonExceptionType.INFLATION)
             }
-
             return null
         }
 
@@ -189,7 +194,7 @@ object Horizon : HorizonTasks {
                 }
 
             } catch (error : Exception) {
-                Log.d(TAG, error.message.toString())
+                Timber.e(error.message.toString())
                 return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
                         arrayListOf(error.message.toString()),
                         HorizonException.HorizonExceptionType.INFLATION)
@@ -234,7 +239,7 @@ object Horizon : HorizonTasks {
                 }
 
             } catch (error : ErrorResponse) {
-                Log.d(TAG, error.body.toString())
+                Timber.e(error.body.toString())
                 return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
                         arrayListOf(error.body.toString()),
                         HorizonException.HorizonExceptionType.CHANGE_TRUSTLINE)
@@ -252,12 +257,24 @@ object Horizon : HorizonTasks {
     }
 
     interface OnMarketOfferListener {
-        fun onExecuted()
-        fun onFailed()
+      fun onExecuted()
+      fun onFailed(errorMessage: String)
+    }
+
+    interface OnOrderBookListener {
+        fun onOrderBook(asks : Array<OrderBookResponse.Row>, bids : Array<OrderBookResponse.Row>)
+        fun onFailed(errorMessage: String)
+    }
+
+    interface OnOffersListener {
+        fun onOffers(offers : ArrayList<OfferResponse>)
+        fun onFailed(errorMessage: String)
     }
 
     override fun getCreateMarketOffer(listener: OnMarketOfferListener, secretSeed: CharArray, sellingAsset: Asset, buyingAsset: Asset, amount: String, price: String) {
         AsyncTask.execute {
+            Network.usePublicNetwork()
+
             val server = getServer()
             val managedOfferOperation = ManageOfferOperation.Builder(sellingAsset, buyingAsset, amount, price).build()
             val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
@@ -266,13 +283,61 @@ object Horizon : HorizonTasks {
             val transaction = Transaction.Builder(sourceAccount).addOperation(managedOfferOperation).build()
             transaction.sign(sourceKeyPair)
             val response = server.submitTransaction(transaction)
-            if (response.isSuccess) {
-                listener.onFailed()
-            } else {
-                listener.onExecuted()
+            Handler(Looper.getMainLooper()).post {
+                if (response.isSuccess) {
+                    listener.onExecuted()
+                } else {
+                    listener.onFailed(response.extras.resultCodes.operationsResultCodes[0].toString())
+                }
             }
         }
     }
+
+    override fun getOrderBook(listener: OnOrderBookListener, buyingAsset: DataAsset, sellingAsset: DataAsset) {
+        AsyncTask.execute {
+            Network.usePublicNetwork()
+
+            val server = getServer()
+            val buying : Asset
+            if (buyingAsset.type == "native") {
+                 buying = AssetTypeNative()
+            } else {
+                 buying = Asset.create(buyingAsset.type, buyingAsset.code, buyingAsset.issuer)
+            }
+
+            val selling : Asset
+            if(sellingAsset.type == "native") {
+                selling = AssetTypeNative()
+            } else {
+                selling = Asset.create(sellingAsset.type, sellingAsset.code, sellingAsset.issuer)
+            }
+            val response = server.orderBook().buyingAsset(buying).sellingAsset(selling).execute()
+
+            Handler(Looper.getMainLooper()).post {
+                listener.onOrderBook(response.asks, response.bids)
+            }
+        }
+    }
+
+    override fun getOffers(listener: OnOffersListener) {
+        AsyncTask.execute {
+            Network.usePublicNetwork()
+
+            val server = getServer()
+            try {
+                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.stellarAccountId)
+                val response = server.offers().forAccount(sourceKeyPair).execute()
+                Handler(Looper.getMainLooper()).post {
+                    listener.onOffers(response.records)
+                }
+            } catch (error : ErrorResponse ) {
+                Handler(Looper.getMainLooper()).post {
+                    listener.onFailed(error.message!!)
+                }
+            }
+        }
+    }
+
 
     private fun getCurrentAsset(): Asset {
         val assetCode = WalletApplication.userSession.currAssetCode
@@ -286,6 +351,26 @@ object Horizon : HorizonTasks {
     }
 
     private fun getServer() : Server {
-        return Server(PROD_SERVER)
+        val server = Server(PROD_SERVER)
+        // These two clients are a copy of the liens 45 and 46 of org.stellar.sdk.Server class with the stetho interceptor
+        // REVIEW this once you upgrade stellar library
+        val httpClient = OkHttpClient.Builder()
+                .connectTimeout(10L, TimeUnit.SECONDS)
+                .readTimeout(30L, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true)
+                .addNetworkInterceptor(StethoInterceptor())
+                .build()
+
+        val submitHttpClient = OkHttpClient.Builder()
+                .connectTimeout(10L, TimeUnit.SECONDS)
+                .readTimeout(65L, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true)
+                .addNetworkInterceptor(StethoInterceptor())
+                .build()
+
+        server.httpClient = httpClient
+        server.submitHttpClient = submitHttpClient
+
+        return server
     }
 }

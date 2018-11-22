@@ -16,6 +16,7 @@ import blockeq.com.stellarwallet.models.PinViewState
 import blockeq.com.stellarwallet.utils.AccountUtils
 import com.andrognito.pinlockview.PinLockListener
 import kotlinx.android.synthetic.main.activity_pin.*
+import kotlinx.android.synthetic.main.fragment_settings.*
 
 class PinActivity : BaseActivity(), PinLockListener {
 
@@ -117,11 +118,13 @@ class PinActivity : BaseActivity(), PinLockListener {
                             }
                             pinViewState.type == PinType.CLEAR_WALLET -> wipeAndRestart()
 
+                            pinViewState.type == PinType.TOGGLE_PIN_ON_SENDING -> {
+                                WalletApplication.localStore.showPinOnSend = !WalletApplication.localStore.showPinOnSend
+                                finish()
+                            }
+
                             pinViewState.type == PinType.VIEW_PHRASE -> {
-                                val intent = Intent(this, ShowMnemonicActivity::class.java)
-                                intent.putExtra(ShowMnemonicActivity.INTENT_DISPLAY_PHRASE, true)
-                                intent.putExtra(ShowMnemonicActivity.DECRYPTED_PHRASE, decryptedPhrase)
-                                startActivity(intent)
+                                startActivity(MnemonicActivity.newDisplayMnemonicIntent(this, mnemonic))
                                 finish()
                             }
 

@@ -18,6 +18,15 @@ import java.util.*
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.DividerItemDecoration
 import android.widget.Toast
+import blockeq.com.stellarwallet.services.networking.Horizon
+import kotlinx.android.synthetic.main.abc_activity_chooser_view.*
+import org.stellar.sdk.AssetTypeCreditAlphaNum12
+import org.stellar.sdk.AssetTypeCreditAlphaNum4
+import org.stellar.sdk.AssetTypeNative
+import org.stellar.sdk.responses.OfferResponse
+import timber.log.Timber
+import java.lang.IllegalStateException
+import kotlin.collections.ArrayList
 
 
 class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRefreshListener {
@@ -32,7 +41,7 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //Mockup Data
-        mockupData()
+//        mockupData()
         //**********
 
         myOffersRv.layoutManager = LinearLayoutManager(context)
@@ -42,25 +51,87 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
                 LinearLayoutManager(context).orientation)
         myOffersRv.addItemDecoration(dividerItemDecoration)
         swipeRefresh.setOnRefreshListener(this)
+
+        onRefresh()
     }
 
     override fun onRefresh() {
+        Horizon.getOffers(object: Horizon.OnOffersListener {
+            override fun onOffers(offers: ArrayList<OfferResponse>) {
+                var id = 1
+                offers.forEach {
+                    val buyingCode : String
+                    when(it.buying) {
+                        is AssetTypeCreditAlphaNum4 -> {
+                            buyingCode = (it.buying as AssetTypeCreditAlphaNum4).code
+                        }
+                        is AssetTypeCreditAlphaNum12 -> {
+                            buyingCode = (it.buying as AssetTypeCreditAlphaNum12).code
+                        }
+                        is AssetTypeNative -> {
+                            buyingCode = "LMX"
+                        }
+                        else -> {
+                            throw IllegalStateException("uknown asset type:" + it.toString())
+                        }
+                    }
+                    val currencyBuy = Currency(1, buyingCode, "$buyingCode COIN", 0.0f, null)
+                    val sellingCode : String
+                    when(it.selling) {
+                        is AssetTypeCreditAlphaNum4 -> {
+                            sellingCode = (it.selling as AssetTypeCreditAlphaNum4).code
+                        }
+                        is AssetTypeCreditAlphaNum12 -> {
+                            sellingCode = (it.selling as AssetTypeCreditAlphaNum12).code
+                        }
+                        is AssetTypeNative -> {
+                            sellingCode = "LMX"
+                        }
+                        else -> {
+                            throw IllegalStateException("unknown asset type:" + it.toString())
+                        }
+                    }
+
+                    val currencySelling = Currency(2, sellingCode, sellingCode+ " COIN", 0.0f, null)
+                    myOffers.add(MyOffer(id, Date(), currencySelling, currencyBuy, it.amount.toFloat(), it.price.toFloat()))
+                    id++
+                }
+                myOffersAdapter.notifyDataSetChanged()
+
+                val handler = Handler()
+                val runnable = Runnable {
+                    swipeRefresh.isRefreshing = false
+                    Toast.makeText(context, getText(R.string.refreshed), Toast.LENGTH_SHORT).show()
+                }
+                handler.post(runnable)
+            }
+
+            override fun onFailed(errorMessage: String) {
+            }
+
+        })
         //Mockup API call tor refresh
-        val handler = Handler()
-        val runnable = Runnable {
-            swipeRefresh.isRefreshing = false
-            Toast.makeText(context, getText(R.string.refreshed), Toast.LENGTH_SHORT).show()
-        }
-        handler.postDelayed(runnable, 1000)
+
         //**********
     }
 
     private fun mockupData() {
+//        "Sell 1amount 2selling.Code for 3price 4ubying.code at a price of 5price"
+//
+//        holder.description.text = context?.getString(R.string.rowDescription,
+//                myOffer.amountFrom,
+//                myOffer.currencyFrom.code, myOffer.amountTo, myOffer.currencyTo.code,
+//                (myOffer.amountTo / myOffer.amountFrom))
+//
+//        var id: Int, var date: Date, var currencyFrom: Currency,
+//        var currencyTo: Currency, var amountFrom: Float, var amountTo: Float)
+
+
         myOffers.clear()
-        val xlm = Currency(1, "XLM", "Stellar", 38.7832f)
-        val cad = Currency(2, "CAD", "Canadian Dollar", 100.00f)
-        val btc = Currency(3, "BTC", "Bitcoin", 0.23243414f)
-        val mobi = Currency(4, "MOBI", "Mobi", 10.4322f)
+        val xlm = Currency(1, "XLM", "Stellar", 38.7832f, null)
+        val cad = Currency(2, "CAD", "Canadian Dollar", 100.00f, null)
+        val btc = Currency(3, "BTC", "Bitcoin", 0.23243414f, null)
+        val mobi = Currency(4, "MOBI", "Mobi", 10.4322f, null)
         val offer1 = MyOffer(1, Date(), mobi, xlm, 0.5623f, 0.1233f)
         val offer2 = MyOffer(2, Date(), btc, cad, 0.013432f, 112.45f)
         myOffers.add(offer1)

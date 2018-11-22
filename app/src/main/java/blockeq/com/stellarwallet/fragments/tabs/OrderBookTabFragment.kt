@@ -1,7 +1,6 @@
 package blockeq.com.stellarwallet.fragments.tabs
 
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
@@ -12,17 +11,36 @@ import android.view.ViewGroup
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import blockeq.com.stellarwallet.adapters.OrderBooksAdapter
+import blockeq.com.stellarwallet.models.DataAsset
 import blockeq.com.stellarwallet.models.OrderBook
 import blockeq.com.stellarwallet.models.OrderBookAdapterTypes
 import blockeq.com.stellarwallet.models.OrderBookStickyHeader
+import blockeq.com.stellarwallet.services.networking.Horizon
 import com.brandongogetap.stickyheaders.StickyLayoutManager
 import kotlinx.android.synthetic.main.fragment_tab_order_book.*
+import org.stellar.sdk.responses.OrderBookResponse
 import java.util.*
 
 class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private var orderBooks = mutableListOf<OrderBook>()
     private lateinit var orderBooksAdapter: OrderBooksAdapter
+    private lateinit var buyingAsset : DataAsset
+    private lateinit var sellingAsset : DataAsset
+
+    companion object {
+        private const val ARG_FROM_ASSET = "ARG_FROM_ASSET"
+        private const val ARG_TO_ASSET = "ARG_TO_ASSET"
+
+        fun newInstance(fromAsset: DataAsset, toAsset: DataAsset): Fragment {
+            val args = Bundle()
+            args.putParcelable(ARG_FROM_ASSET, fromAsset)
+            args.putParcelable(ARG_TO_ASSET, toAsset)
+            val fragment = OrderBookTabFragment()
+            fragment.arguments = args
+            return fragment
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_tab_order_book, container, false)
@@ -31,29 +49,89 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //Mockup Data
-        mockupData()
+//        mockupData()
         //**********
 
-        orderBooksAdapter = OrderBooksAdapter(orderBooks, "CAD", "XLM", context)
+        val args = arguments
+        if (args == null ||
+                !args.containsKey(ARG_FROM_ASSET) || args.get(ARG_TO_ASSET) == null ||
+                !args.containsKey(ARG_FROM_ASSET) || args.get(ARG_TO_ASSET) == null) {
+            throw IllegalStateException("unexpected arguments, please use: ${javaClass.canonicalName}#newInstance(...)")
+        }
+
+        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+        buyingAsset = args.getParcelable(ARG_FROM_ASSET)
+        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+        sellingAsset = args.getParcelable(ARG_TO_ASSET)
+
+
+        orderBooksAdapter = OrderBooksAdapter(orderBooks, buyingAsset.code, sellingAsset.code, context)
         orderBookRv.layoutManager = StickyLayoutManager(context, orderBooksAdapter)
         orderBookRv.adapter = orderBooksAdapter
         val dividerItemDecoration = DividerItemDecoration(context,
                 LinearLayoutManager(context).orientation)
         orderBookRv.addItemDecoration(dividerItemDecoration)
         swipeRefresh.setOnRefreshListener(this)
+//        onRefresh()
+        loadOrderBook()
     }
 
     override fun onRefresh() {
-        //Mockup API call tor refresh
-        val handler = Handler()
-        val runnable = Runnable {
-            swipeRefresh.isRefreshing = false
-            Toast.makeText(context, getText(R.string.refreshed), Toast.LENGTH_SHORT).show()
+        if(!isAdded || isDetached || !isVisible) {
+            return
         }
-        handler.postDelayed(runnable, 1000)
+        loadOrderBook();
+        //Mockup API call tor refresh
+//        val handler = Handler()
+//        val runnable = Runnable {
+//            if (swipeRefresh != null) {
+//                swipeRefresh.isRefreshing = false
+//                Toast.makeText(context, getText(R.string.refreshed), Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//        handler.postDelayed(runnable, 1000)
         //**********
     }
 
+    private fun loadOrderBook() {
+        Horizon.getOrderBook(object:Horizon.OnOrderBookListener {
+            override fun onOrderBook(asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
+                orderBooks.clear()
+                val orderBooksTitle = OrderBook(type = OrderBookAdapterTypes.TITLE)
+                val buyOffer = OrderBookStickyHeader(type = OrderBookAdapterTypes.BUY_HEADER)
+                val sellOffer = OrderBookStickyHeader(type = OrderBookAdapterTypes.SELL_HEADER)
+                val subheader = OrderBook(type = OrderBookAdapterTypes.SUBHEADER)
+                orderBooks.add(orderBooksTitle)
+                orderBooks.add(buyOffer)
+                orderBooks.add(subheader)
+                var id = 1
+                bids.forEach {
+                    val item = OrderBook(id, Date(), it.price.toFloat(), it.amount.toFloat() / it.price.toFloat() , it.amount.toFloat(), OrderBookAdapterTypes.ITEM)
+                    orderBooks.add(item)
+                    id++
+                }
+                orderBooks.add(sellOffer)
+                orderBooks.add(subheader)
+                asks.forEach {
+                    val item = OrderBook(id, Date(), it.price.toFloat(),  it.amount.toFloat(), it.price.toFloat() * it.amount.toFloat(), OrderBookAdapterTypes.ITEM)
+                    orderBooks.add(item)
+                    id++
+
+                }
+                orderBooksAdapter.notifyDataSetChanged()
+            }
+
+            override fun onFailed(errorMessage: String) {
+
+            }
+
+        }, buyingAsset, sellingAsset)
+
+        if (swipeRefresh != null) {
+            swipeRefresh.isRefreshing = false
+            Toast.makeText(context, getText(R.string.refreshed), Toast.LENGTH_SHORT).show()
+        }
+    }
     private fun mockupData() {
         orderBooks.clear()
         val orderBooksTitle = OrderBook(type = OrderBookAdapterTypes.TITLE)
@@ -95,7 +173,9 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     fun updateTradingCurrencies(currencyCodeFrom: String?, currencyCodeTo: String?) {
-        orderBooksAdapter.setCurrencies(currencyCodeFrom, currencyCodeTo)
-        orderBooksAdapter.notifyDataSetChanged()
+        if (::orderBooksAdapter.isInitialized) {
+            orderBooksAdapter.setCurrencies(currencyCodeFrom, currencyCodeTo)
+            orderBooksAdapter.notifyDataSetChanged()
+        }
     }
 }

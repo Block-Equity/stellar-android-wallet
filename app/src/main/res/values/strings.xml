@@ -74,6 +74,8 @@
     <string name="clear_wallet">Clear Wallet</string>
     <string name="security">Security</string>
     <string name="pin_send_payments">Request PIN when sending payments</string>
+    <string name="troubleshooting">Troubleshooting</string>
+    <string name="bug_report">Send a bug report</string>
 
     <!--Trading Fragment-->
     <string name="tab_trade">Trade</string>
@@ -173,6 +175,21 @@
     <string name="secret_seed">Secret Key</string>
     <string name="secret_seed_info_message">We do not recommend using your secret key with other applications as we cannot guarantee their security. \n\nIf your secret key is leaked by a 3rd party your funds can be stolen.</string>
     <string name="copy_address_content_descriptor">Copy address</string>
+
+    <!--Diagnostic Activity-->
+    <string name="bug_report_message">Here is some information that will be sent to BlockEQ for troubleshooting and bug reports.</string>
+    <string name="device_model">Device Model</string>
+    <string name="android_version">Android version</string>
+    <string name="locale">Locale</string>
+    <string name="blockeq_app_version">BlockEQ App version</string>
+    <string name="public_address_of_stellar_account">Public address of Stellar account</string>
+    <string name="send_report">Send report by email</string>
+    <string name="recovery_type">Recovery type</string>
+    <string name="mnemonic_phrase_12_words">Mnemonic Phrase (12 words)</string>
+    <string name="mnemonic_phrase_24_words">Mnemonic Phrase (24 words)</string>
+    <string name="advanced_security_passphrase">Did you use advanced security passphrase?</string>
+    <string name="explain_problem">Explain the problem in detailed steps</string>
+    <string name="explanation_hint">Provide details on which screen it happened, the steps that led to the issue, etc.</string>
 
     <!--Horizon Error Messages (Technical followed by user readable)-->
     <string name="standard_error_message">%1$s: %2$s</string>
