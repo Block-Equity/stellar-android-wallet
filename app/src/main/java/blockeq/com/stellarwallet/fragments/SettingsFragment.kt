@@ -28,8 +28,12 @@ class SettingsFragment : BaseFragment() {
 
     //region User Interface
 
-    private fun setupUI() {
+    override fun onResume() {
+        super.onResume()
         setSavedSettings()
+    }
+
+    private fun setupUI() {
         val phrase = WalletApplication.localStore.encryptedPhrase!!
         
         viewPhraseButton.setOnClickListener {
@@ -45,7 +49,7 @@ class SettingsFragment : BaseFragment() {
         }
 
         pinOnSendPaymentsButton.setOnClickListener {
-            WalletApplication.localStore.showPinOnSend = pinOnSendPaymentsButton.isChecked
+            launchPINView(PinType.TOGGLE_PIN_ON_SENDING, "", phrase, false)
         }
 
         diagnosticButton.setOnClickListener {
