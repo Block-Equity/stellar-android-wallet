@@ -2,7 +2,7 @@
 
 Thank you for taking the time to read this, and your interest in contributing to the project.
 
-The following is a set of guidelines for contributing to [BlockEQ](https://blockeq.com) and its wallets, which are hosted in the [Block Equity organization](https://github.com/block-equity) on GitHub. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request. There are many ways that you can contribute, beyond writing code. 
+The following is a set of guidelines for contributing to [BlockEQ](https://com.blockeq) and its wallets, which are hosted in the [Block Equity organization](https://github.com/block-equity) on GitHub. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request. There are many ways that you can contribute, beyond writing code. 
 
 ## Table of Contents
 - [Contributing to BlockEQ](#contributing-to-blockeq)
@@ -33,19 +33,19 @@ The following is a set of guidelines for contributing to [BlockEQ](https://block
 # Asking and Answering Questions
 Have a question? Rather than opening an issue here, please ask away on [Stack Overflow](https://stackoverflow.com/questions/tagged/blockeq-android) using the tag '`blockeq-android`'.
 
-There are people from [BlockEQ](https://blockeq.com) and the community there who will be eager to assist you. Your questions will serve as a better resource for others searching for help.
+There are people from [BlockEQ](https://com.blockeq) and the community there who will be eager to assist you. Your questions will serve as a better resource for others searching for help.
 
 # How Can I Contribute?
 ## Bounties
-Occasionally, [BlockEQ](https://blockeq.com) might post bounties for the community to help tackle bugs and features that we don't have the bandwidth for. Bounties are [BlockEQ](https://blockeq.com)'s way of giving something back to contributors for helping us accomplish our mission.
+Occasionally, [BlockEQ](https://com.blockeq) might post bounties for the community to help tackle bugs and features that we don't have the bandwidth for. Bounties are [BlockEQ](https://com.blockeq)'s way of giving something back to contributors for helping us accomplish our mission.
 
-Bounties are issued at the discretion of each project's development team, and are valued _subjectively_ by individuals from [BlockEQ](https://blockeq.com) based on several factors:
+Bounties are issued at the discretion of each project's development team, and are valued _subjectively_ by individuals from [BlockEQ](https://com.blockeq) based on several factors:
 * Importance
 * Urgency
 * Usefulness
 * Quality
 
-**NOTE:** The the reward amount between two bounties should never be compared - conditions and requirements under which they are issued change daily based on [BlockEQ](https://blockeq.com)'s roadmap, what we're working on, who issued it, as well as other factors.
+**NOTE:** The the reward amount between two bounties should never be compared - conditions and requirements under which they are issued change daily based on [BlockEQ](https://com.blockeq)'s roadmap, what we're working on, who issued it, as well as other factors.
 
 Bounties have three simple states: `Offered`, `Accepted`, and `Closed`:  
 * **Offered:** The bounty is available for the community to work on.  
@@ -53,7 +53,7 @@ Bounties have three simple states: `Offered`, `Accepted`, and `Closed`:
 * **Closed:** The bounty is no longer available, either due to completion or removing it from being offered.  
 
 ### **Bounty Rewards**
-Bounties are awarded in the form of [Block Points (PTS)](https://blockeq.com/block-points) and require that the recipient have a [Stellar](https://stellar.org) wallet capable of receiving `PTS`. Any Stellar wallet should be capable of supporting the token, but the BlockEQ Android & iOS wallets explictly support `PTS`.
+Bounties are awarded in the form of [Block Points (PTS)](https://com.blockeq/block-points) and require that the recipient have a [Stellar](https://stellar.org) wallet capable of receiving `PTS`. Any Stellar wallet should be capable of supporting the token, but the BlockEQ Android & iOS wallets explictly support `PTS`.
 
 ### **Working on a Bounty**
 An individual must submit their intent to officially work on a bounty. The first person to submit work that satisfies its requirements will be awarded the bounty.
@@ -68,7 +68,7 @@ Your comments and feedback are welcome, and members of the development team are 
 * [GitHub Issues](https://github.com/block-equity/stellar-android-wallet/issues)
 * [Slack](https://blockeq.slack.com/)
 * [BlockEQ Subreddit](https://reddit.com/r/blockeq)
-* [BlockEQ Email](mailto://hello@blockeq.com)
+* [BlockEQ Email](mailto://hello@com.blockeq)
 
 Whichever form you chose, please make sure to include as much contextual information as you can such as which wallet you're referring to, the version, etc.
 

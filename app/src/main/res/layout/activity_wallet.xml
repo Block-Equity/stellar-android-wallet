@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/fragmentBg"
-    tools:context="blockeq.com.stellarwallet.activities.WalletActivity">
+    tools:context="com.blockeq.stellarwallet.activities.WalletActivity">
 
     <FrameLayout
         android:id="@+id/container"

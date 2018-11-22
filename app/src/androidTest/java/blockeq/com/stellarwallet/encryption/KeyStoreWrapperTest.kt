@@ -1,4 +1,4 @@
-package blockeq.com.stellarwallet.encryption
+package com.blockeq.stellarwallet.encryption
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4

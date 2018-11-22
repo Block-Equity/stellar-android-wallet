@@ -1,4 +1,4 @@
-package blockeq.com.stellarwallet
+package com.blockeq.stellarwallet
 
 import android.support.test.espresso.action.ViewActions
 import android.support.test.espresso.matcher.ViewMatchers

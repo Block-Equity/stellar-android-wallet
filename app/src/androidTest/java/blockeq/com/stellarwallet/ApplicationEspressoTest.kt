@@ -1,4 +1,4 @@
-package blockeq.com.stellarwallet
+package com.blockeq.stellarwallet
 
 import android.app.Activity
 import android.content.Context
@@ -12,10 +12,10 @@ import android.support.test.espresso.matcher.ViewMatchers
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.support.v7.widget.RecyclerView
-import blockeq.com.stellarwallet.activities.LaunchActivity
-import blockeq.com.stellarwallet.activities.PinActivity
-import blockeq.com.stellarwallet.activities.WalletActivity
-import blockeq.com.stellarwallet.models.MnemonicType
+import com.blockeq.stellarwallet.activities.LaunchActivity
+import com.blockeq.stellarwallet.activities.PinActivity
+import com.blockeq.stellarwallet.activities.WalletActivity
+import com.blockeq.stellarwallet.models.MnemonicType
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

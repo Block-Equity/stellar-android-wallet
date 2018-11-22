@@ -1,4 +1,4 @@
-package blockeq.com.stellarwallet.utils;
+package com.blockeq.stellarwallet.utils;
 
 
 import android.content.Context;
@@ -13,9 +13,9 @@ import org.junit.runner.RunWith;
 
 import java.security.KeyPair;
 
-import blockeq.com.stellarwallet.WalletApplication;
-import blockeq.com.stellarwallet.encryption.CipherWrapper;
-import blockeq.com.stellarwallet.encryption.KeyStoreWrapper;
+import com.blockeq.stellarwallet.WalletApplication;
+import com.blockeq.stellarwallet.encryption.CipherWrapper;
+import com.blockeq.stellarwallet.encryption.KeyStoreWrapper;
 import kotlin.Pair;
 
 import static org.junit.Assert.assertEquals;

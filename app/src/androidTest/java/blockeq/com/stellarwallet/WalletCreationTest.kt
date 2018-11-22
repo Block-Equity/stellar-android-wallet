@@ -1,8 +1,8 @@
-package blockeq.com.stellarwallet
+package com.blockeq.stellarwallet
 
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
-import blockeq.com.stellarwallet.activities.LaunchActivity
+import com.blockeq.stellarwallet.activities.LaunchActivity
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

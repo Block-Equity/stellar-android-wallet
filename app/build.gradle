@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "blockeq.com.stellarwallet"
+        applicationId "com.blockeq.stellarwallet"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 21

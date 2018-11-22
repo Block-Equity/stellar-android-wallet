@@ -1,4 +1,4 @@
-package blockeq.com.stellarwallet.helpers
+package com.blockeq.stellarwallet.helpers
 
 import android.support.test.runner.AndroidJUnit4
 import org.junit.Test

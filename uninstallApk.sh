@@ -1,2 +1,2 @@
-adb uninstall blockeq.com.stellarwallet
-adb uninstall blockeq.com.stellarwallet.test
+adb uninstall com.blockeq.stellarwallet
+adb uninstall com.blockeq.stellarwallet.test

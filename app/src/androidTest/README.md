@@ -1,7 +1,7 @@
 # Android Test
 
 ## Trouble shooting
-- Test running failed: Unable to find instrumentation target package: blockeq.com.stellarwallet. onError: commandError=true message=INSTRUMENTATION_FAILED: blockeq.com.stellarwallet.test/android.support.test.runner.AndroidJUnitRunner
+- Test running failed: Unable to find instrumentation target package: com.blockeq.stellarwallet. onError: commandError=true message=INSTRUMENTATION_FAILED: com.blockeq.stellarwallet.test/android.support.test.runner.AndroidJUnitRunner
 Empty test suite.
 
 Make sure you uninstall the app and any other previous test

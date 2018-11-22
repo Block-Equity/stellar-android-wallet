@@ -1,4 +1,4 @@
-package blockeq.com.stellarwallet
+package com.blockeq.stellarwallet
 
 enum class MnemonicType {
     WORD_12,

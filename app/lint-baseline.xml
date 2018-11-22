@@ -62,7 +62,7 @@
         errorLine1="                val item_view = (context as Activity).layoutInflater.inflate(R.layout.item_view_phrase_word, null)"
         errorLine2="                                                                                                             ~~~~">
         <location
-            file="src/main/java/blockeq/com/stellarwallet/reusables/views/MnemonicView.kt"
+            file="src/main/java/com.blockeq/stellarwallet/reusables/views/MnemonicView.kt"
             line="26"
             column="110"/>
     </issue>
