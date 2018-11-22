@@ -25,8 +25,8 @@ class ReceiveActivity : BasePopupActivity() {
         val pubAddress = WalletApplication.localStore.stellarAccountId
 
         addressEditText.text = pubAddress
-        generateQRCode(pubAddress!!, address_qrcode, 500)
-        copy_image_button.setOnClickListener { copyAddressToClipBoard(pubAddress)  }
+        generateQRCode(pubAddress!!, qrImageView, 500)
+        copyImageButton.setOnClickListener { copyAddressToClipBoard(pubAddress)  }
     }
 
     private fun generateQRCode(data: String, imageView: ImageView, size: Int) {
