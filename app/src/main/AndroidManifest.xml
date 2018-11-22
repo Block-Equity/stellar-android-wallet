@@ -8,14 +8,14 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        tools:replace="allowBackup, supportsRtl"
-        android:allowBackup="false"
         android:name=".WalletApplication"
+        android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="allowBackup, supportsRtl">
         <activity
             android:name=".activities.LaunchActivity"
             android:label="@string/app_name"
@@ -81,6 +81,10 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activities.DiagnosticActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.WebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
     </application>

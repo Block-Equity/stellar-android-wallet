@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.DiagnosticActivity
+import com.blockeq.stellarwallet.activities.WebViewActivity
 import com.blockeq.stellarwallet.models.PinType
 import kotlinx.android.synthetic.main.fragment_settings.*
 
@@ -54,6 +56,14 @@ class SettingsFragment : BaseFragment() {
 
         diagnosticButton.setOnClickListener {
             startActivity(Intent(context, DiagnosticActivity::class.java))
+        }
+
+        privacyPolicyButton.setOnClickListener {
+            startActivity(WebViewActivity.newWebsiteIntent(context, "https://www.blockeq.com/privacy.html"))
+        }
+
+        termsOfServiceButton.setOnClickListener {
+            startActivity(WebViewActivity.newWebsiteIntent(context, "https://www.blockeq.com/terms.html"))
         }
     }
 
