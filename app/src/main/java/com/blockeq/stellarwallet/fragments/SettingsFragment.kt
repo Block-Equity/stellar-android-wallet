@@ -11,6 +11,7 @@ import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.DiagnosticActivity
 import com.blockeq.stellarwallet.activities.WebViewActivity
 import com.blockeq.stellarwallet.models.PinType
+import com.blockeq.stellarwallet.utils.DiagnosticUtils
 import kotlinx.android.synthetic.main.fragment_settings.*
 
 class SettingsFragment : BaseFragment() {
@@ -65,6 +66,9 @@ class SettingsFragment : BaseFragment() {
         termsOfServiceButton.setOnClickListener {
             startActivity(WebViewActivity.newWebsiteIntent(context, "https://www.blockeq.com/terms.html"))
         }
+
+        val versionText = "Version: " + DiagnosticUtils.getAppVersion()
+        appVersionTextView.text = versionText
     }
 
     private fun setSavedSettings() {

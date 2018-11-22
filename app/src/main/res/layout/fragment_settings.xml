@@ -90,6 +90,20 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/troubleshooting"
+                style="@style/SettingsTitle"
+                android:layout_margin="@dimen/activity_vertical_margin" />
+
+            <TextView
+                android:id="@+id/diagnosticButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bug_report"
+                style="@style/SettingsButton" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/about"
                 style="@style/SettingsTitle"
                 android:layout_margin="@dimen/activity_vertical_margin" />
@@ -119,23 +133,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/RegularText"
-                android:text="2.0 (25)"
                 android:textColor="@color/paleSky"
-                android:layout_marginStart="@dimen/activity_vertical_margin" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/troubleshooting"
-                style="@style/SettingsTitle"
-                android:layout_margin="@dimen/activity_vertical_margin" />
-
-            <TextView
-                android:id="@+id/diagnosticButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/bug_report"
-                style="@style/SettingsButton" />
+                android:layout_marginStart="@dimen/activity_vertical_margin"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
         </LinearLayout>
     </ScrollView>
