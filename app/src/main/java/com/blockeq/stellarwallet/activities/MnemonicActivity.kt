@@ -5,15 +5,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.widget.ImageView
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
 import com.blockeq.stellarwallet.helpers.PassphraseDialogHelper
 import com.blockeq.stellarwallet.models.MnemonicType
 import com.blockeq.stellarwallet.models.PinType
+import com.google.zxing.BarcodeFormat
 import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_mnemonic.*
 import java.lang.IllegalStateException
+import com.journeyapps.barcodescanner.BarcodeEncoder
 
 class MnemonicActivity : BaseActivity(), View.OnClickListener {
 
@@ -73,15 +76,18 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
 
     private fun setupUI() {
         if (!mnemonicString.isEmpty()) {
-        // Show mnemonic UI
+            // Show mnemonic UI
             confirmButton.visibility = View.GONE
             passphraseButton.visibility = View.GONE
+            generateQRCode(mnemonicString, qrImageView, 500)
+
             if (!WalletApplication.localStore.isRecoveryPhrase) {
                 warningPhraseTextView.text = getString(R.string.no_mnemonic_set)
                 mnemonicView.visibility = View.GONE
             }
         } else {
             // Create mnemonic UI
+            qrLayout.visibility = View.GONE
 
             // TODO: Problem linked to setting isRecoveryPhrase before it is confirmed in
             // RecoveryWalletActivity.kt for a secret seed, so that needs to be refactored to
@@ -143,6 +149,12 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
 
     private fun getMnemonicList(mnemonic : String) : List<String> {
         return mnemonic.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
+    }
+
+    private fun generateQRCode(data: String, imageView: ImageView, size: Int) {
+        val barcodeEncoder = BarcodeEncoder()
+        val bitmap = barcodeEncoder.encodeBitmap(data, BarcodeFormat.QR_CODE, size, size)
+        imageView.setImageBitmap(bitmap)
     }
     //endregion
 }

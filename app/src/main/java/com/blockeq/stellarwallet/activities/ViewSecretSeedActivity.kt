@@ -25,7 +25,7 @@ class ViewSecretSeedActivity : BaseActivity() {
         val secretSeed = intent!!.extras.getString(SECRET_SEED)
 
         secretSeedTextView.text = secretSeed
-        copy_image_button.setOnClickListener { copyAddressToClipBoard(secretSeed)  }
+        copyImageButton.setOnClickListener { copyAddressToClipBoard(secretSeed)  }
     }
 
     private fun copyAddressToClipBoard(data: String) {

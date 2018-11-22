@@ -15,7 +15,7 @@
         android:layout_gravity="start"  />
     
     <RelativeLayout
-        android:id="@+id/qrcode_layout"
+        android:id="@+id/qrLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.60"
@@ -23,7 +23,7 @@
         android:background="@color/qrCodeLayoutBackGroundColor">
 
         <ImageView
-            android:id="@+id/address_qrcode"
+            android:id="@+id/qrImageView"
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:layout_centerInParent="true"
@@ -32,7 +32,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/address_layout"
+        android:id="@+id/addressLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.40"
@@ -41,7 +41,7 @@
         android:padding="18dp">
 
         <TextView
-            android:id="@+id/address_title"
+            android:id="@+id/addressTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/your_wallet_address"
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="25dp"
-            android:layout_below="@+id/address_title"
+            android:layout_below="@+id/addressTitle"
             android:orientation="horizontal"
             android:background="@drawable/rounded_corner">
 
@@ -69,7 +69,7 @@
                 android:textSize="12sp" />
 
             <ImageButton
-                android:id="@+id/copy_image_button"
+                android:id="@+id/copyImageButton"
                 android:layout_width="0dp"
                 android:layout_weight="0.2"
                 android:layout_height="match_parent"
