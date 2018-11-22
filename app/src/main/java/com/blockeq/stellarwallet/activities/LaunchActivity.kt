@@ -1,57 +1,19 @@
 package com.blockeq.stellarwallet.activities
 
-import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.blockeq.stellarwallet.R
-import com.blockeq.stellarwallet.models.GooglePlayApp
 import com.blockeq.stellarwallet.models.MnemonicType
-import com.blockeq.stellarwallet.utils.UpdateAppDialog
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LaunchActivity : BaseActivity() {
-    private lateinit var newAppDialog : AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         setupUI()
-
-        if (packageName != UpdateAppDialog.NEW_APP_PACKAGE) {
-            newAppDialog = UpdateAppDialog.createDialog(this, GooglePlayApp(UpdateAppDialog.NEW_APP_PACKAGE), getString(R.string.update_app_dialog_message_1))
-        }
-    }
-
-    private fun checkNewApp(context : Context, app : GooglePlayApp, message : String) {
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle(getString(R.string.update_app_dialog_title))
-        builder.setMessage(message)
-        builder.setPositiveButton(getString(R.string.update_app_dialog_positive_button)) { _, _ ->
-            try {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(app.getDeepLink())))
-            } catch (e : ActivityNotFoundException) {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(app.getUrl())))
-            }
-        }
-        builder.setNegativeButton(getString(R.string.update_app_dialog_negative_button), null)
-        val queue = Volley.newRequestQueue(this)
-
-        val request = StringRequest(Request.Method.GET, app.getUrl(), Response.Listener<String> {
-            if (!isFinishing) {
-                newAppDialog.show()
-            }
-        }, null)
-
-        newAppDialog = builder.create()
-        queue.add(request)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -109,13 +71,6 @@ class LaunchActivity : BaseActivity() {
                 }
         val dialog = builder.create()
         dialog.show()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (newAppDialog.isShowing) {
-            newAppDialog.dismiss()
-        }
     }
 
     //endregion

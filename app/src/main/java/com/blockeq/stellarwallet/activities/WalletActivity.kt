@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.fragments.SettingsFragment
@@ -12,17 +11,14 @@ import com.blockeq.stellarwallet.fragments.TradingFragment
 import com.blockeq.stellarwallet.fragments.WalletFragment
 import com.blockeq.stellarwallet.interfaces.OnLoadAccount
 import com.blockeq.stellarwallet.interfaces.OnLoadEffects
-import com.blockeq.stellarwallet.models.GooglePlayApp
 import com.blockeq.stellarwallet.models.MinimumBalance
 import com.blockeq.stellarwallet.services.networking.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
-import com.blockeq.stellarwallet.utils.UpdateAppDialog
-import com.blockeq.stellarwallet.utils.UpdateAppDialog.NEW_APP_PACKAGE
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
-import java.util.ArrayList
+import java.util.*
 
 class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects {
     private enum class WalletFragmentType {
@@ -31,7 +27,6 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects {
         SETTING
     }
 
-    private lateinit var newAppDialog : AlertDialog
     private lateinit var bottomNavigation : BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,10 +34,6 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects {
         setContentView(R.layout.activity_wallet)
 
         setupUI()
-
-        if (packageName != NEW_APP_PACKAGE) {
-            newAppDialog = UpdateAppDialog.createDialog(this, GooglePlayApp(NEW_APP_PACKAGE), getString(R.string.update_app_dialog_message_2))
-        }
     }
 
     //region Navigation
@@ -85,13 +76,6 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects {
     }
 
     //endregion
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (newAppDialog.isShowing) {
-            newAppDialog.dismiss()
-        }
-    }
 
     override fun onResume() {
         super.onResume()
