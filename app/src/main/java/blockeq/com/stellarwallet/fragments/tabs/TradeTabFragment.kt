@@ -3,22 +3,23 @@ package blockeq.com.stellarwallet.fragments.tabs
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.ViewGroup
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.Toast
 import blockeq.com.stellarwallet.R
+import blockeq.com.stellarwallet.WalletApplication
 import blockeq.com.stellarwallet.interfaces.OnTradeCurrenciesChange
 import blockeq.com.stellarwallet.models.Currency
 import blockeq.com.stellarwallet.models.SelectionModel
-import kotlinx.android.synthetic.main.fragment_tab_trade.*
-import kotlinx.android.synthetic.main.view_custom_selector.view.*
-import android.text.Editable
-import android.text.TextWatcher
 import blockeq.com.stellarwallet.services.networking.Horizon
 import blockeq.com.stellarwallet.utils.AccountUtils
+import kotlinx.android.synthetic.main.fragment_tab_trade.*
+import kotlinx.android.synthetic.main.view_custom_selector.view.*
 import org.stellar.sdk.Asset
-
 
 class TradeTabFragment : Fragment(), View.OnClickListener {
 
@@ -97,8 +98,9 @@ class TradeTabFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
+    override fun onClick(view: View) {
+        val context = view.context.applicationContext
+        when (view.id) {
             R.id.toggleMarket -> {
                 toggleMarket.setBackgroundResource(R.drawable.left_toggle_selected)
                 toggleLimit.setBackgroundResource(R.drawable.right_toggle)
@@ -125,16 +127,19 @@ class TradeTabFragment : Fragment(), View.OnClickListener {
                 sellingCustomSelector.editText.setText(holdingsAmount.toString())
             }
             R.id.submitTrade -> {
-//                Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
-//                    override fun onExecuted() {
-//                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//                    }
-//
-//                    override fun onFailed() {
-//                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//                    }
-//
-//                }, AccountUtils.getSecretSeed(activity!!.applicationContext), Asset.createNonNativeAsset(), Asset.createNonNativeAsset(), "2", "0.1")
+                WalletApplication.userSession.getAvailableBalance()
+                Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
+                    override fun onExecuted() {
+                       Toast.makeText(context,"Order executed", Toast.LENGTH_LONG).show()
+                    }
+
+                    override fun onFailed(errorMessage : String) {
+                        Toast.makeText(context, "Order failed: $errorMessage", Toast.LENGTH_LONG).show()
+
+                    }
+
+                }, AccountUtils.getSecretSeed(activity!!.applicationContext), selectedSellingCurrency!!.asset!!, selectedBuyingCurrency!!.asset!!,
+                        sellingCustomSelector.editText.text.toString(), buyingCustomSelector.editText.text.toString())
             }
         }
     }
@@ -150,21 +155,22 @@ class TradeTabFragment : Fragment(), View.OnClickListener {
 
     // Mockup Data. This would be populated through an API or a DB call
     private fun mockupData(both: Boolean) {
-        val xlm = Currency(1, "XLM", "Stellar", 38.7832f)
-        val cad = Currency(2, "CAD", "Canadian Dollar", 100.00f)
-        val usd = Currency(3, "USD", "US Dollar", 98.00f)
-        val btc = Currency(4, "BTC", "Bitcoin", 0.23243414f)
+        var accounts = WalletApplication.localStore.balances
+        val xlm = Currency(1, "XLM", "Stellar", accounts!![2].balance.toFloat(), Asset.create("native", null, null))
+
+        var CAD = accounts!![0].asset
+        var PTS = accounts!![1].asset
+        val cad = Currency(2, "CAD", "Canadian Dollar",  accounts!![0].balance.toFloat(), CAD)
+        val usd = Currency(3, "PTS", "PTS",  accounts!![1].balance.toFloat(), PTS)
         if (both) {
             sellingCurrencies.add(xlm)
             sellingCurrencies.add(cad)
             sellingCurrencies.add(usd)
-            sellingCurrencies.add(btc)
         }
         buyingCurrencies = mutableListOf<SelectionModel>()
         buyingCurrencies.add(xlm)
         buyingCurrencies.add(cad)
         buyingCurrencies.add(usd)
-        buyingCurrencies.add(btc)
         // ******************
     }
 

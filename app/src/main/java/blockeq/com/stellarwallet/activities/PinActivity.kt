@@ -124,10 +124,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                             }
 
                             pinViewState.type == PinType.VIEW_PHRASE -> {
-                                val intent = Intent(this, ShowMnemonicActivity::class.java)
-                                intent.putExtra(ShowMnemonicActivity.INTENT_DISPLAY_PHRASE, true)
-                                intent.putExtra(ShowMnemonicActivity.DECRYPTED_PHRASE, decryptedPhrase)
-                                startActivity(intent)
+                                startActivity(MnemonicActivity.newDisplayMnemonicIntent(this, mnemonic))
                                 finish()
                             }
 

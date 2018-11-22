@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.mnemonic_custon_view.view.*
 
 class MnemonicView(context: Context?, attrs: AttributeSet?) : ScrollView(context, attrs) {
 
-    var mnemonic : ArrayList<String>? = null
+    var mnemonic : List<String>? = null
 
     init {
         inflate(getContext(), R.layout.mnemonic_custon_view, this)

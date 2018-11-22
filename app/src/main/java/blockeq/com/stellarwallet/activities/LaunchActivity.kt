@@ -2,25 +2,18 @@ package blockeq.com.stellarwallet.activities
 
 import android.content.ActivityNotFoundException
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.view.View
-import android.widget.Toast
 import blockeq.com.stellarwallet.R
-import blockeq.com.stellarwallet.helpers.Constants
 import blockeq.com.stellarwallet.models.GooglePlayApp
-import blockeq.com.stellarwallet.models.SupportedAsset
+import blockeq.com.stellarwallet.models.MnemonicType
 import blockeq.com.stellarwallet.utils.UpdateAppDialog
 import com.android.volley.Request
 import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LaunchActivity : BaseActivity() {
@@ -89,14 +82,12 @@ class LaunchActivity : BaseActivity() {
                     // of the selected item
 
                     val walletLength = if (which == 0) {
-                        12
+                        MnemonicType.WORD_12
                     } else {
-                        24
+                        MnemonicType.WORD_24
                     }
 
-                    val intent = Intent(this, ShowMnemonicActivity::class.java)
-                    intent.putExtra("walletLength", walletLength)
-                    startActivity(intent)
+                    startActivity(MnemonicActivity.newCreateMnemonicIntent(this, walletLength))
                 }
         val dialog = builder.create()
         dialog.show()

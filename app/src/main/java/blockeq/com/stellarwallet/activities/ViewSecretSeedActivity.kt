@@ -4,13 +4,12 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.Toast
 import blockeq.com.stellarwallet.R
 import kotlinx.android.synthetic.main.activity_view_secret_seed.*
 
-class ViewSecretSeedActivity : AppCompatActivity() {
+class ViewSecretSeedActivity : BaseActivity() {
 
     companion object {
         const val SECRET_SEED = "kSecretSeed"
