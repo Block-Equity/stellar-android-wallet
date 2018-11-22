@@ -8,6 +8,7 @@ import com.blockeq.stellarwallet.helpers.WalletLifecycleListener
 import com.blockeq.stellarwallet.models.UserSession
 import com.facebook.stetho.Stetho
 import com.google.gson.Gson
+import com.squareup.leakcanary.LeakCanary
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import timber.log.Timber
 import java.security.Provider
@@ -48,6 +49,14 @@ class WalletApplication : MultiDexApplication() {
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
             Timber.plant(Timber.DebugTree())
+
+            if (LeakCanary.isInAnalyzerProcess(this)) {
+                // This process is dedicated to LeakCanary for heap analysis.
+                // You should not init your app in this process.
+                return
+            }
+            LeakCanary.install(this)
+            // Normal app init code...
         }
     }
 
