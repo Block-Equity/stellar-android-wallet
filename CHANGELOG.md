@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 - Trade support.
+## [1.0.5] - 2018-11-21
+## Changed
+- GH-105 Email diagnostic tool
+- New app icon with a beta ribbon on it
+- "Beta" Added to the app title
+
+*ATTENTION This will be the last update of the Beta app, as we will be freezing the code and developing the release app for a December release*
+
 ## [1.0.4.3] - 2018-11-19
 ## Fixed
 - GH-98 [Empty passphrase bug]
