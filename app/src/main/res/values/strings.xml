@@ -52,7 +52,7 @@
     <string name="enter_phrase">Enter Phrase</string>
     <string name="enter_secret_key">Enter Secret Key</string>
     <string name="secret_phrase">Secret Phrase</string>
-    <string name="invalid_input_for_phrase">Invalid number of words (must be 12, 15, 18, 21 or 24).</string>
+    <string name="invalid_input_for_phrase">Invalid number of words (must be one of the followings: %s).</string>
     <string name="invalid_input_for_secret">Invalid secret key.</string>
     <string name="create_word_option_1">Use a 12 word recovery phrase</string>
     <string name="create_word_option_2">Use a 24 word recovery phrase</string>

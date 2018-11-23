@@ -7,6 +7,7 @@ import android.view.View
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
+import com.blockeq.stellarwallet.helpers.Bip0039
 import com.blockeq.stellarwallet.helpers.PassphraseDialogHelper
 import com.blockeq.stellarwallet.helpers.StellarRecoveryString
 import com.blockeq.stellarwallet.models.PinType
@@ -50,7 +51,7 @@ class RecoverWalletActivity : BaseActivity() {
         if (isRecoveryPhrase) {
             secretKeyEditText.visibility = View.GONE
             phraseEditText.visibility = View.VISIBLE
-            invalidPhraseTextView.text = getString(R.string.invalid_input_for_phrase)
+            invalidPhraseTextView.text = getString(R.string.invalid_input_for_phrase, Bip0039.values().joinToString(",") { it.numberOfWords.toString()})
         } else {
             secretKeyEditText.visibility = View.VISIBLE
             phraseEditText.visibility = View.GONE
