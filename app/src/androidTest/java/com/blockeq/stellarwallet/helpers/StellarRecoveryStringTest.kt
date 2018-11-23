@@ -1,6 +1,9 @@
 package com.blockeq.stellarwallet.helpers
 
+import android.app.Instrumentation
+import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import com.blockeq.stellarwallet.R
 import org.junit.Test
 import org.junit.runner.RunWith
 
