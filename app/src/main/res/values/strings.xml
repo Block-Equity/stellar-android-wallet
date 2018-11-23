@@ -76,6 +76,10 @@
     <string name="pin_send_payments">Request PIN when sending payments</string>
     <string name="troubleshooting">Troubleshooting</string>
     <string name="bug_report">Send a bug report</string>
+    <string name="app_information">App information</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="about">About</string>
 
     <!--Trading Fragment-->
     <string name="tab_trade">Trade</string>
@@ -213,5 +217,7 @@
     <string name="update_app_dialog_message_2">The current app is no longer maintained. Please make sure you have written down your recovery phrase (12&#8211;24 words) or saved a copy of your secret key. After you have saved a back&#8211;up, please delete this app and then recover your wallet using the new version here</string>
     <string name="update_app_dialog_positive_button">Download</string>
     <string name="update_app_dialog_negative_button">Later</string>
+    <string name="privacy_policy_title">Privacy Policy</string>
+    <string name="terms_of_service_title">Terms of Service</string>
 
 </resources>
