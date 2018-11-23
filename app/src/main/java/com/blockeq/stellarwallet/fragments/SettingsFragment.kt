@@ -1,11 +1,11 @@
 package com.blockeq.stellarwallet.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.DiagnosticActivity
@@ -15,6 +15,7 @@ import com.blockeq.stellarwallet.utils.DiagnosticUtils
 import kotlinx.android.synthetic.main.fragment_settings.*
 
 class SettingsFragment : BaseFragment() {
+    private lateinit var appContext : Context
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_settings, container, false)
@@ -25,7 +26,7 @@ class SettingsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        appContext = view.context.applicationContext
         setupUI()
     }
 
@@ -56,15 +57,15 @@ class SettingsFragment : BaseFragment() {
         }
 
         diagnosticButton.setOnClickListener {
-            startActivity(Intent(context, DiagnosticActivity::class.java))
+            startActivity(Intent(appContext, DiagnosticActivity::class.java))
         }
 
         privacyPolicyButton.setOnClickListener {
-            startActivity(WebViewActivity.newWebsiteIntent(context, "https://www.blockeq.com/privacy.html"))
+            startActivity(WebViewActivity.newIntent(appContext, "Privacy Policy","https://www.blockeq.com/privacy.html"))
         }
 
         termsOfServiceButton.setOnClickListener {
-            startActivity(WebViewActivity.newWebsiteIntent(context, "https://www.blockeq.com/terms.html"))
+            startActivity(WebViewActivity.newIntent(appContext, "Terms of Service", "https://www.blockeq.com/terms.html"))
         }
 
         val versionText = "Version: " + DiagnosticUtils.getAppVersion()
