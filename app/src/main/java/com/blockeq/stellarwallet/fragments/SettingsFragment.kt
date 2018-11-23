@@ -1,5 +1,6 @@
 package com.blockeq.stellarwallet.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -61,15 +62,15 @@ class SettingsFragment : BaseFragment() {
         }
 
         privacyPolicyButton.setOnClickListener {
-            startActivity(WebViewActivity.newIntent(appContext, "Privacy Policy","https://www.blockeq.com/privacy.html"))
+            startActivity(WebViewActivity.newIntent(appContext, getString(R.string.privacy_policy_title),"https://www.blockeq.com/privacy.html"))
         }
 
         termsOfServiceButton.setOnClickListener {
-            startActivity(WebViewActivity.newIntent(appContext, "Terms of Service", "https://www.blockeq.com/terms.html"))
+            startActivity(WebViewActivity.newIntent(appContext, getString(R.string.terms_of_service_title), "https://www.blockeq.com/terms.html"))
         }
 
-        val versionText = "Version: " + DiagnosticUtils.getAppVersion()
-        appVersionTextView.text = versionText
+        @SuppressLint("SetTextI18n")
+        appVersionTextView.text = "Version: $DiagnosticUtils.getAppVersion()"
     }
 
     private fun setSavedSettings() {
