@@ -21,7 +21,7 @@ class StellarRecoveryString (string : String, val isRecoveryPhrase : Boolean, va
         }
 
         if (isRecoveryPhrase) {
-            if (Bip0039.isValidNumberOfWords(wordCount) || invalidRecovery) {
+            if (!Bip0039.isValidNumberOfWords(wordCount) || invalidRecovery) {
                 throw InvalidWordCountException("Invalid Word Count: Please check the number of words in your phrase or any extra spaces between words")
             }
         } else {
