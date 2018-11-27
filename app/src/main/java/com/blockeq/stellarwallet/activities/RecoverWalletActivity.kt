@@ -143,7 +143,7 @@ class RecoverWalletActivity : BaseActivity() {
 
         val tokens = phraseEditText.text.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
         var startIndex = 0
-        var endIndex = 0 //hi h
+        var endIndex = 0
 
         for (word in tokens) {
 
