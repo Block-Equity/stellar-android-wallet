@@ -69,8 +69,10 @@ class SettingsFragment : BaseFragment() {
             startActivity(WebViewActivity.newIntent(appContext, getString(R.string.terms_of_service_title), "https://www.blockeq.com/terms.html"))
         }
 
+        val appVersion = DiagnosticUtils.getAppVersion()
+
         @SuppressLint("SetTextI18n")
-        appVersionTextView.text = "Version: $DiagnosticUtils.getAppVersion()"
+        appVersionTextView.text = "Version: $appVersion"
     }
 
     private fun setSavedSettings() {

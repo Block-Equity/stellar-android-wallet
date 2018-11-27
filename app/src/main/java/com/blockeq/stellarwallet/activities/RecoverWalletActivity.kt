@@ -1,16 +1,21 @@
 package com.blockeq.stellarwallet.activities
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
+import android.text.Editable
+import android.text.Spannable
+import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
 import android.view.MenuItem
 import android.view.View
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
-import com.blockeq.stellarwallet.helpers.Bip0039
-import com.blockeq.stellarwallet.helpers.PassphraseDialogHelper
-import com.blockeq.stellarwallet.helpers.StellarRecoveryString
+import com.blockeq.stellarwallet.helpers.*
 import com.blockeq.stellarwallet.models.PinType
+import com.soneso.stellarmnemonics.mnemonic.WordList
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
 
 
@@ -84,6 +89,18 @@ class RecoverWalletActivity : BaseActivity() {
             })
             builder.show()
         }
+
+        phraseEditText.addTextChangedListener(object : OnTextChanged() {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                highlightMnemonic()
+            }
+        })
+
+        secretKeyEditText.addTextChangedListener(object : OnTextChanged() {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                highlightSeed()
+            }
+        })
     }
 
     private fun setupToolbar() {
@@ -107,6 +124,41 @@ class RecoverWalletActivity : BaseActivity() {
     //endregion
 
     //region Helper functions
+    private fun highlightMnemonic() {
+        val wordListBIP39 = WordList.ENGLISH.words.toHashSet()
+
+        val tokens = phraseEditText.text.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
+        var startIndex = 0
+        var endIndex = 0
+
+        for (word in tokens) {
+
+            // Color the last word
+            endIndex += word.length
+
+            val colorText = if (!wordListBIP39.contains(word)) {
+                ForegroundColorSpan(ContextCompat.getColor(this, R.color.apricot))
+            } else {
+                ForegroundColorSpan(ContextCompat.getColor(this, R.color.regularTextColor))
+            }
+
+            phraseEditText.text.setSpan(colorText, startIndex, endIndex, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            startIndex += word.length + 1
+            ++endIndex
+        }
+    }
+
+    private fun highlightSeed() {
+        val seedText = secretKeyEditText.text
+        val colorText = if (seedText.length != Constants.STELLAR_ADDRESS_LENGTH || seedText[0] != 'S') {
+            ForegroundColorSpan(ContextCompat.getColor(this, R.color.apricot))
+        } else {
+            ForegroundColorSpan(ContextCompat.getColor(this, R.color.regularTextColor))
+        }
+
+        secretKeyEditText.text.setSpan(colorText, 0, seedText.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+    }
+
     private fun getMnemonicString() : String {
         return if (isRecoveryPhrase) {
             phraseEditText.text.toString()
