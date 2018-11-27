@@ -93,33 +93,14 @@ class RecoverWalletActivity : BaseActivity() {
 
         phraseEditText.addTextChangedListener(object : TextWatcher {
 
-            override fun afterTextChanged(spannable: Editable) {
-            }
+            override fun afterTextChanged(spannable: Editable) {}
 
             override fun beforeTextChanged(s: CharSequence, start: Int,
-                                           count: Int, after: Int) {
-            }
+                                           count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence, start: Int,
                                        before: Int, count: Int) {
-                val wordListBIP39 = WordList.ENGLISH.words.toHashSet()
-
-                val tokens = phraseEditText.text.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
-                if (tokens.isNotEmpty()) {
-                    val word = tokens.last()
-
-                    // Color the last word
-                    val startIndex = phraseEditText.text.length - word.length
-                    val endIndex = phraseEditText.text.length
-
-                    val colorText = if (!wordListBIP39.contains(word)) {
-                        ForegroundColorSpan(Color.RED)
-                    } else {
-                        ForegroundColorSpan(Color.BLACK)
-                    }
-
-                    phraseEditText.text.setSpan(colorText, startIndex, endIndex, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-                }
+                highlightWords()
             }
         })
     }
@@ -145,6 +126,30 @@ class RecoverWalletActivity : BaseActivity() {
     //endregion
 
     //region Helper functions
+    private fun highlightWords() {
+        val wordListBIP39 = WordList.ENGLISH.words.toHashSet()
+
+        val tokens = phraseEditText.text.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
+        var startIndex = 0
+        var endIndex = 0 //hi h
+
+        for (word in tokens) {
+
+            // Color the last word
+            endIndex += word.length
+
+            val colorText = if (!wordListBIP39.contains(word)) {
+                ForegroundColorSpan(Color.RED)
+            } else {
+                ForegroundColorSpan(Color.BLACK)
+            }
+
+            phraseEditText.text.setSpan(colorText, startIndex, endIndex, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            startIndex += word.length + 1
+            ++endIndex
+        }
+    }
+
     private fun getMnemonicString() : String {
         return if (isRecoveryPhrase) {
             phraseEditText.text.toString()
