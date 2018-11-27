@@ -17,6 +17,7 @@ import com.blockeq.stellarwallet.helpers.Bip0039
 import com.blockeq.stellarwallet.helpers.PassphraseDialogHelper
 import com.blockeq.stellarwallet.helpers.StellarRecoveryString
 import com.blockeq.stellarwallet.models.PinType
+import com.soneso.stellarmnemonics.mnemonic.WordList
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
 
 
@@ -105,18 +106,17 @@ class RecoverWalletActivity : BaseActivity() {
 
             override fun onTextChanged(s: CharSequence, start: Int,
                                        before: Int, count: Int) {
-                val spannable = SpannableString(phraseEditText.text)
-                val hashset = hashSetOf<String>("hello")
+                val BIP39WordList = WordList.ENGLISH.words.toHashSet()
 
-                val tokens = spannable.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
+                val tokens = phraseEditText.text.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
                 if (tokens.isNotEmpty()) {
                     val word = tokens.last()
 
                     // Color the last word
-                    val startIndex = spannable.length - word.length
-                    val endIndex = spannable.length
+                    val startIndex = phraseEditText.text.length - word.length
+                    val endIndex = phraseEditText.text.length
 
-                    val colorText = if (!hashset.contains(word)) {
+                    val colorText = if (!BIP39WordList.contains(word)) {
                         ForegroundColorSpan(Color.RED)
                     } else {
                         ForegroundColorSpan(Color.BLACK)
