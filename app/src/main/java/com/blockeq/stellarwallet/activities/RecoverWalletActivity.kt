@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.Spannable
-import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.view.MenuItem
@@ -95,9 +94,6 @@ class RecoverWalletActivity : BaseActivity() {
         phraseEditText.addTextChangedListener(object : TextWatcher {
 
             override fun afterTextChanged(spannable: Editable) {
-                // Tokenize, get last word. check to see if it is in the word list
-                // color the string properly
-
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int,
@@ -106,7 +102,7 @@ class RecoverWalletActivity : BaseActivity() {
 
             override fun onTextChanged(s: CharSequence, start: Int,
                                        before: Int, count: Int) {
-                val BIP39WordList = WordList.ENGLISH.words.toHashSet()
+                val wordListBIP39 = WordList.ENGLISH.words.toHashSet()
 
                 val tokens = phraseEditText.text.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
                 if (tokens.isNotEmpty()) {
@@ -116,7 +112,7 @@ class RecoverWalletActivity : BaseActivity() {
                     val startIndex = phraseEditText.text.length - word.length
                     val endIndex = phraseEditText.text.length
 
-                    val colorText = if (!BIP39WordList.contains(word)) {
+                    val colorText = if (!wordListBIP39.contains(word)) {
                         ForegroundColorSpan(Color.RED)
                     } else {
                         ForegroundColorSpan(Color.BLACK)
