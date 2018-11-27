@@ -3,6 +3,7 @@ package com.blockeq.stellarwallet.activities
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.Spannable
 import android.text.TextWatcher
@@ -12,10 +13,7 @@ import android.view.View
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
-import com.blockeq.stellarwallet.helpers.Bip0039
-import com.blockeq.stellarwallet.helpers.Constants
-import com.blockeq.stellarwallet.helpers.PassphraseDialogHelper
-import com.blockeq.stellarwallet.helpers.StellarRecoveryString
+import com.blockeq.stellarwallet.helpers.*
 import com.blockeq.stellarwallet.models.PinType
 import com.soneso.stellarmnemonics.mnemonic.WordList
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
@@ -92,26 +90,14 @@ class RecoverWalletActivity : BaseActivity() {
             builder.show()
         }
 
-        phraseEditText.addTextChangedListener(object : TextWatcher {
-
-            override fun afterTextChanged(spannable: Editable) {}
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence, start: Int,
-                                       before: Int, count: Int) {
+        phraseEditText.addTextChangedListener(object : OnTextChanged() {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 highlightMnemonic()
             }
         })
 
-        secretKeyEditText.addTextChangedListener(object : TextWatcher {
-
-            override fun afterTextChanged(spannable: Editable) {}
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence, start: Int,
-                                       before: Int, count: Int) {
+        secretKeyEditText.addTextChangedListener(object : OnTextChanged() {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 highlightSeed()
             }
         })
@@ -151,9 +137,9 @@ class RecoverWalletActivity : BaseActivity() {
             endIndex += word.length
 
             val colorText = if (!wordListBIP39.contains(word)) {
-                ForegroundColorSpan(Color.RED)
+                ForegroundColorSpan(ContextCompat.getColor(this, R.color.apricot))
             } else {
-                ForegroundColorSpan(Color.BLACK)
+                ForegroundColorSpan(ContextCompat.getColor(this, R.color.regularTextColor))
             }
 
             phraseEditText.text.setSpan(colorText, startIndex, endIndex, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
@@ -165,9 +151,9 @@ class RecoverWalletActivity : BaseActivity() {
     private fun highlightSeed() {
         val seedText = secretKeyEditText.text
         val colorText = if (seedText.length != Constants.STELLAR_ADDRESS_LENGTH || seedText[0] != 'S') {
-            ForegroundColorSpan(Color.RED)
+            ForegroundColorSpan(ContextCompat.getColor(this, R.color.apricot))
         } else {
-            ForegroundColorSpan(Color.BLACK)
+            ForegroundColorSpan(ContextCompat.getColor(this, R.color.regularTextColor))
         }
 
         secretKeyEditText.text.setSpan(colorText, 0, seedText.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
