@@ -1,6 +1,7 @@
 package com.blockeq.stellarwallet.activities
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -12,12 +13,21 @@ import com.blockeq.stellarwallet.helpers.PassphraseDialogHelper
 import com.blockeq.stellarwallet.helpers.StellarRecoveryString
 import com.blockeq.stellarwallet.models.PinType
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.TextView
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 
 
 class RecoverWalletActivity : BaseActivity() {
 
     private var isRecoveryPhrase = true
     private var passphrase : String? = null
+    private var flag = false
+    var cursorPosStart = 0
+    var cursorPosEnd = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +94,54 @@ class RecoverWalletActivity : BaseActivity() {
             })
             builder.show()
         }
+
+        phraseEditText.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(spannable: Editable) {
+                // Tokenize, get last word. check to see if it is in the word list
+                // color the string properly
+
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int,
+                                           count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int,
+                                       before: Int, count: Int) {
+                if (flag) {
+                    flag = false
+                    return
+                } else {
+                    val spannable = SpannableString(phraseEditText.text)
+                    val hashset = hashSetOf<String>("hello")
+
+                    val tokens = spannable.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
+                    if (tokens.isNotEmpty()) {
+                        val word = tokens.last()
+
+                        flag = true
+                        // Color the last word
+                        val startIndex = spannable.length - word.length
+                        val endIndex = spannable.length
+
+                        cursorPosStart = phraseEditText.selectionStart
+                        cursorPosEnd = phraseEditText.selectionEnd
+
+                        val colorText = if (!hashset.contains(word)) {
+                            ForegroundColorSpan(Color.RED)
+                        } else {
+                            ForegroundColorSpan(Color.BLACK)
+                        }
+
+                        spannable.setSpan(colorText, startIndex, endIndex, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                        phraseEditText.setText(spannable, TextView.BufferType.SPANNABLE)
+                        phraseEditText.setSelection(cursorPosStart, cursorPosEnd)
+
+                    }
+                }
+            }
+        })
     }
 
     private fun setupToolbar() {
