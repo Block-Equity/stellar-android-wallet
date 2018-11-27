@@ -13,6 +13,7 @@ import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
 import com.blockeq.stellarwallet.helpers.Bip0039
+import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.helpers.PassphraseDialogHelper
 import com.blockeq.stellarwallet.helpers.StellarRecoveryString
 import com.blockeq.stellarwallet.models.PinType
@@ -95,12 +96,23 @@ class RecoverWalletActivity : BaseActivity() {
 
             override fun afterTextChanged(spannable: Editable) {}
 
-            override fun beforeTextChanged(s: CharSequence, start: Int,
-                                           count: Int, after: Int) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence, start: Int,
                                        before: Int, count: Int) {
-                highlightWords()
+                highlightMnemonic()
+            }
+        })
+
+        secretKeyEditText.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(spannable: Editable) {}
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence, start: Int,
+                                       before: Int, count: Int) {
+                highlightSeed()
             }
         })
     }
@@ -126,7 +138,7 @@ class RecoverWalletActivity : BaseActivity() {
     //endregion
 
     //region Helper functions
-    private fun highlightWords() {
+    private fun highlightMnemonic() {
         val wordListBIP39 = WordList.ENGLISH.words.toHashSet()
 
         val tokens = phraseEditText.text.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
@@ -148,6 +160,17 @@ class RecoverWalletActivity : BaseActivity() {
             startIndex += word.length + 1
             ++endIndex
         }
+    }
+
+    private fun highlightSeed() {
+        val seedText = secretKeyEditText.text
+        val colorText = if (seedText.length != Constants.STELLAR_ADDRESS_LENGTH || seedText[0] != 'S') {
+            ForegroundColorSpan(Color.RED)
+        } else {
+            ForegroundColorSpan(Color.BLACK)
+        }
+
+        secretKeyEditText.text.setSpan(colorText, 0, seedText.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
     }
 
     private fun getMnemonicString() : String {
