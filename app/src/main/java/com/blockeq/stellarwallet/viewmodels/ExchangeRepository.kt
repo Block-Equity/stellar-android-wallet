@@ -63,6 +63,10 @@ class ExchangeRepository(application: Application) {
 
         queue.add(request)
     }
+
+    fun getExchange(address : String) : ExchangeEntity {
+        return exchangeProviderDao.getExchangeProvider(address)
+    }
 //
 //    fun insert(exchange: ExchangeEntity) {
 //        exchangeProviderDao.insert(exchange)
