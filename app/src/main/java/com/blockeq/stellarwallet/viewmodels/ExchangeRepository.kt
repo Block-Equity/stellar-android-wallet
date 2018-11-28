@@ -2,6 +2,7 @@ package com.blockeq.stellarwallet.viewmodels
 
 import android.app.Application
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
@@ -15,19 +16,20 @@ import timber.log.Timber
 class ExchangeRepository(application: Application) {
     private val appContext = application.applicationContext
     private val exchangeProviderDao: ExchangeDao
-//    private val listLiveData: LiveData<List<ExchangeEntity>>
+    private val listLiveData: MutableLiveData<List<ExchangeEntity>>
     init {
         val exchangeRoomDatabase = ExchangesRoomDatabase.getDatabase(application)
         exchangeProviderDao = exchangeRoomDatabase!!.exchangeDao()
-//        listLiveData = exchangeProviderDao.getAllExchangeProviders()
+        listLiveData = MutableLiveData()
     }
 
-    fun getAllExchangeProviders(forceRefresh : Boolean = false) : List<ExchangeEntity> {
+    fun getAllExchangeProviders(forceRefresh : Boolean = false) : LiveData<List<ExchangeEntity>> {
         if (forceRefresh) {
-
+            refreshExchanges()
         } else {
+            listLiveData.postValue(exchangeProviderDao.getAllExchangeProviders())
         }
-        return exchangeProviderDao.getAllExchangeProviders()
+        return listLiveData
     }
 
     private fun populateExchangeDatabase(exchanges : List<ExchangeApiModel>) {
@@ -51,6 +53,7 @@ class ExchangeRepository(application: Application) {
 
                     if (list != null && list.isNotEmpty()) {
                         populateExchangeDatabase(list.toList())
+                        listLiveData.postValue(exchangeProviderDao.getAllExchangeProviders())
                     }
                 },
                 Response.ErrorListener {

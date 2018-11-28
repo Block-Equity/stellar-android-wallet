@@ -19,4 +19,5 @@ interface ExchangeDao {
 
     @Query("SELECT * FROM exchanges" )
     fun getAllExchangeProviders() : List<ExchangeEntity>
+
 }

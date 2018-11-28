@@ -13,6 +13,7 @@ import com.blockeq.stellarwallet.helpers.WalletLifecycleListener
 import com.blockeq.stellarwallet.models.ExchangeApiModel
 import com.blockeq.stellarwallet.models.ExchangeMapper
 import com.blockeq.stellarwallet.models.UserSession
+import com.blockeq.stellarwallet.viewmodels.ExchangeRepository
 import com.blockeq.stellarwallet.viewmodels.ExchangesRoomDatabase
 import com.facebook.stetho.Stetho
 import com.google.gson.Gson
@@ -66,6 +67,8 @@ class WalletApplication : MultiDexApplication() {
             LeakCanary.install(this)
             // Normal app init code...
         }
+
+        ExchangeRepository(this).getAllExchangeProviders(true)
     }
 
     private fun setupLifecycleListener() {

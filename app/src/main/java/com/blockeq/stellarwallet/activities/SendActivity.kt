@@ -1,6 +1,7 @@
 package com.blockeq.stellarwallet.activities
 
 import android.app.Activity
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
@@ -81,7 +82,10 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
         }
 
         val viewModel = ViewModelProviders.of(this).get(ExchangeViewModel::class.java)
-        updateExchangeProviderText(viewModel.getExchangeAddress(address))
+//        updateExchangeProviderText(viewModel.exchangeMatching(address))
+        viewModel.exchangeMatching(address).observe(this, Observer<ExchangeEntity> {
+           updateExchangeProviderText(it)
+        })
     }
 
     //region User Interface

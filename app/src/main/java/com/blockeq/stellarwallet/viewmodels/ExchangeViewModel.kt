@@ -1,27 +1,41 @@
 package com.blockeq.stellarwallet.viewmodels
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.content.Context
-import com.blockeq.stellarwallet.models.ExchangeApiModel
 
 class ExchangeViewModel(application: Application) : AndroidViewModel(application) {
-    @SuppressLint("StaticFieldLeak")
-    private val appContext: Context = application.applicationContext
-    private var localList : List<ExchangeEntity>
-
+    private var localList : List<ExchangeEntity> = ArrayList()
     private val repository : ExchangeRepository = ExchangeRepository(application)
-    val exchangeList = MutableLiveData<List<ExchangeApiModel>>()
+    private val matchingLiveData : MutableLiveData<ExchangeEntity> = MutableLiveData()
+    private var observedAddress : String? = null
+    fun exchangeMatching(address: String): LiveData<ExchangeEntity> {
+        observedAddress = address
+        notifyIfNeeded(address)
+        return matchingLiveData
+    }
 
-    fun getExchangeAddress(address: String): ExchangeEntity? {
+    private fun matchExchange(address : String) : ExchangeEntity? {
         return localList.find { it -> it.address == address  }
     }
 
+    private fun notifyIfNeeded(address: String?){
+        if (address != null && localList.isNotEmpty()) {
+            val exchangeEntity = matchExchange(address)
+            if (exchangeEntity != null) {
+                matchingLiveData.postValue(exchangeEntity)
+            }
+        }
+    }
+
     init {
-        localList = repository.getAllExchangeProviders()
-//        loadExchangeProviderAddresses()
+        repository.getAllExchangeProviders().observeForever {
+            if (it != null) {
+                localList = it
+                notifyIfNeeded(observedAddress)
+            }
+        }
     }
 
 }
