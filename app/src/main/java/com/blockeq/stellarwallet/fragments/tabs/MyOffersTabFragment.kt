@@ -18,13 +18,11 @@ import java.util.*
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.DividerItemDecoration
 import android.widget.Toast
-import com.blockeq.stellarwallet.services.networking.Horizon
-import kotlinx.android.synthetic.main.abc_activity_chooser_view.*
+import com.blockeq.stellarwallet.remote.Horizon
 import org.stellar.sdk.AssetTypeCreditAlphaNum12
 import org.stellar.sdk.AssetTypeCreditAlphaNum4
 import org.stellar.sdk.AssetTypeNative
 import org.stellar.sdk.responses.OfferResponse
-import timber.log.Timber
 import java.lang.IllegalStateException
 import kotlin.collections.ArrayList
 

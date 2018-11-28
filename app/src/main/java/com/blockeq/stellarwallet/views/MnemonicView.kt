@@ -1,4 +1,4 @@
-package com.blockeq.stellarwallet.reusables.views
+package com.blockeq.stellarwallet.views
 
 import android.app.Activity
 import android.content.Context
