@@ -2,22 +2,13 @@ package com.blockeq.stellarwallet
 
 import android.arch.lifecycle.ProcessLifecycleOwner
 import android.support.multidex.MultiDexApplication
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.Volley
 import com.blockeq.stellarwallet.encryption.PRNGFixes
-import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.helpers.LocalStore
 import com.blockeq.stellarwallet.helpers.WalletLifecycleListener
-import com.blockeq.stellarwallet.models.ExchangeApiModel
-import com.blockeq.stellarwallet.models.ExchangeMapper
 import com.blockeq.stellarwallet.models.UserSession
 import com.blockeq.stellarwallet.viewmodels.ExchangeRepository
-import com.blockeq.stellarwallet.viewmodels.ExchangesRoomDatabase
 import com.facebook.stetho.Stetho
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.squareup.leakcanary.LeakCanary
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import timber.log.Timber
@@ -68,6 +59,7 @@ class WalletApplication : MultiDexApplication() {
             // Normal app init code...
         }
 
+        // exchange providers addresses are not very likely to change but let's refresh them during application startup
         ExchangeRepository(this).getAllExchangeProviders(true)
     }
 

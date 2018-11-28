@@ -15,19 +15,19 @@ import timber.log.Timber
 
 class ExchangeRepository(application: Application) {
     private val appContext = application.applicationContext
-    private val exchangeProviderDao: ExchangeDao
+    private val exchangeDao: ExchangeDao
     private val listLiveData: MutableLiveData<List<ExchangeEntity>>
     init {
         val exchangeRoomDatabase = ExchangesRoomDatabase.getDatabase(application)
-        exchangeProviderDao = exchangeRoomDatabase!!.exchangeDao()
+        exchangeDao = exchangeRoomDatabase!!.exchangeDao()
         listLiveData = MutableLiveData()
     }
 
     fun getAllExchangeProviders(forceRefresh : Boolean = false) : LiveData<List<ExchangeEntity>> {
-        if (forceRefresh) {
+        if (forceRefresh || exchangeDao.getAllExchangeProviders().isEmpty()) {
             refreshExchanges()
         } else {
-            listLiveData.postValue(exchangeProviderDao.getAllExchangeProviders())
+            listLiveData.postValue(exchangeDao.getAllExchangeProviders())
         }
         return listLiveData
     }
@@ -53,7 +53,7 @@ class ExchangeRepository(application: Application) {
 
                     if (list != null && list.isNotEmpty()) {
                         populateExchangeDatabase(list.toList())
-                        listLiveData.postValue(exchangeProviderDao.getAllExchangeProviders())
+                        listLiveData.postValue(exchangeDao.getAllExchangeProviders())
                     }
                 },
                 Response.ErrorListener {
@@ -65,10 +65,10 @@ class ExchangeRepository(application: Application) {
     }
 
     fun getExchange(address : String) : ExchangeEntity {
-        return exchangeProviderDao.getExchangeProvider(address)
+        return exchangeDao.getExchangeProvider(address)
     }
 //
 //    fun insert(exchange: ExchangeEntity) {
-//        exchangeProviderDao.insert(exchange)
+//        exchangeDao.insert(exchange)
 //    }
 }
