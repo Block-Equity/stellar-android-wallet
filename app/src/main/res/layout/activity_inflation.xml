@@ -23,7 +23,7 @@
         android:layout_marginTop="25dp"
         android:layout_below="@+id/titleTextView"
         android:orientation="horizontal"
-        android:background="@drawable/rounded_corner">
+        android:background="@drawable/bg_rounded_button_blue">
 
         <EditText
             android:id="@+id/addressEditText"

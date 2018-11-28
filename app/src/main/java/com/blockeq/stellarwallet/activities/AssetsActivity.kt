@@ -1,6 +1,7 @@
 package com.blockeq.stellarwallet.activities
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
@@ -52,6 +53,9 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
         progressBar.visibility = View.VISIBLE
         bindAdapter()
         titleText.text = getString(R.string.asset_title_text)
+        manuallyAddAssetButton.setOnClickListener {
+            startActivity(Intent(this@AssetsActivity, AddAssetActivity::class.java))
+        }
     }
     //endregion
 
@@ -99,11 +103,15 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
                        val asset = supportedAssetsMap[it.assetCode.toLowerCase()]!!
                        asset.amount = it.balance
                        asset.type = SupportedAssetType.ADDED
-                       asset.code = asset.code
                        asset.asset = it.asset
                        return@map asset
                    }
-                   else -> return@map null
+                   else -> {
+                       val asset = SupportedAsset(0, it.assetCode.toLowerCase(), "",
+                               it.assetIssuer.accountId, it.limit, it.assetCode, "",
+                               "", it.balance, SupportedAssetType.ADDED, it.asset)
+                       return@map asset
+                   }
                }
            }
 

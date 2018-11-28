@@ -11,8 +11,19 @@
         android:layout_centerVertical="true"
         android:layout_margin="@dimen/activity_vertical_margin" />
 
+    <TextView
+        android:id="@+id/defaultAssetView"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_centerVertical="true"
+        android:background="@drawable/bg_rounded_button_grey"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_medium"
+        android:layout_margin="@dimen/activity_vertical_margin" />
+
     <LinearLayout
-        android:layout_toEndOf="@+id/assetImageView"
+        android:layout_marginStart="52dp"
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

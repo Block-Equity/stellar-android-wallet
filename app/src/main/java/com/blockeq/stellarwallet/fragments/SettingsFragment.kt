@@ -62,11 +62,11 @@ class SettingsFragment : BaseFragment() {
         }
 
         privacyPolicyButton.setOnClickListener {
-            startActivity(WebViewActivity.newIntent(appContext, getString(R.string.privacy_policy_title),"https://www.blockeq.com/privacy.html"))
+            startActivity(WebViewActivity.newIntent(appContext, getString(R.string.privacy_policy),"https://www.blockeq.com/privacy.html"))
         }
 
         termsOfServiceButton.setOnClickListener {
-            startActivity(WebViewActivity.newIntent(appContext, getString(R.string.terms_of_service_title), "https://www.blockeq.com/terms.html"))
+            startActivity(WebViewActivity.newIntent(appContext, getString(R.string.terms_of_service), "https://www.blockeq.com/terms.html"))
         }
 
         val appVersion = DiagnosticUtils.getAppVersion()
