@@ -66,7 +66,13 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
 
         orderBooksAdapter = OrderBooksAdapter(orderBooks, buyingAsset.code, sellingAsset.code, context)
-        orderBookRv.layoutManager = StickyLayoutManager(context, orderBooksAdapter)
+        val layout = StickyLayoutManager(context, orderBooksAdapter)
+        // this will solve the compilation issue Type Mismatch
+        if (layout is LinearLayoutManager) {
+            orderBookRv.layoutManager = LinearLayoutManager(context)
+        }
+        orderBookRv.layoutManager = LinearLayoutManager(context)
+
         orderBookRv.adapter = orderBooksAdapter
         val dividerItemDecoration = DividerItemDecoration(context,
                 LinearLayoutManager(context).orientation)

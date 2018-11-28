@@ -114,4 +114,9 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
     // Optional, if you use support library fragments:
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
+
+    // Room components
+    implementation "android.arch.persistence.room:runtime:$lifecycleVersion"
+    annotationProcessor  "android.arch.persistence.room:compiler:$lifecycleVersion"
+    kapt "android.arch.persistence.room:compiler:$lifecycleVersion"
 }

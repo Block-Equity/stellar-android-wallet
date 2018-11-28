@@ -2,12 +2,21 @@ package com.blockeq.stellarwallet
 
 import android.arch.lifecycle.ProcessLifecycleOwner
 import android.support.multidex.MultiDexApplication
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.Volley
 import com.blockeq.stellarwallet.encryption.PRNGFixes
+import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.helpers.LocalStore
 import com.blockeq.stellarwallet.helpers.WalletLifecycleListener
+import com.blockeq.stellarwallet.models.ExchangeApiModel
+import com.blockeq.stellarwallet.models.ExchangeMapper
 import com.blockeq.stellarwallet.models.UserSession
+import com.blockeq.stellarwallet.viewmodels.ExchangesRoomDatabase
 import com.facebook.stetho.Stetho
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.squareup.leakcanary.LeakCanary
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import timber.log.Timber
@@ -15,7 +24,6 @@ import java.security.Provider
 import java.security.Security
 
 class WalletApplication : MultiDexApplication() {
-
     private val lifecycleListener: WalletLifecycleListener by lazy {
         WalletLifecycleListener()
     }
