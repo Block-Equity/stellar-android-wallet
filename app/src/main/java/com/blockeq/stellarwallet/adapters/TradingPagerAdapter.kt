@@ -24,7 +24,12 @@ class TradingPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         val balance3 = accounts!![2]
 
         val dataAsset1 = DataAsset(balance1.assetType, balance1.assetCode, balance1.assetIssuer.accountId)
-        val dataAsset2 = DataAsset(balance3.assetType, "LMX", "Stellar")
+        val dataAsset2: DataAsset
+        if (balance2.assetType == "native") {
+            dataAsset2 = DataAsset(balance2.assetType, "LMX", "Stellar")
+        } else {
+            dataAsset2 = DataAsset(balance2.assetType, balance2.assetCode, balance2.assetIssuer.accountId)
+        }
 
         return when (position) {
             Trade.ordinal -> TradeTabFragment()
