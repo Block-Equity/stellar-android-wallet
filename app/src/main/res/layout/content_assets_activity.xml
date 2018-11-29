@@ -19,9 +19,11 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/assetsRecyclerView"
+        android:fadeScrollbars="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/titleText"/>
+        android:layout_below="@id/titleText"
+        android:layout_above="@+id/manuallyAddAssetButton"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -35,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="@string/add_asset"
+        android:text="@string/add_custom_asset"
         style="@style/PrimaryButtonStyle"
         android:background="@color/blue2"
         android:layout_margin="@dimen/activity_vertical_margin"/>

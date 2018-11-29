@@ -39,7 +39,7 @@ class AddAssetActivity : BaseActivity() {
                 progressBar.visibility = View.VISIBLE
                 changeTrustLine(secretSeed, asset)
             } else {
-                Toast.makeText(applicationContext, getString(R.string.empty_feilds), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, getString(R.string.empty_fields), Toast.LENGTH_SHORT).show()
             }
         }
     }
