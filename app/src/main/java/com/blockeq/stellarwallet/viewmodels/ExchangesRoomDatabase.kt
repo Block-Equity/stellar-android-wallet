@@ -21,9 +21,9 @@ abstract class ExchangesRoomDatabase : RoomDatabase() {
         private var INSTANCE: ExchangesRoomDatabase? = null
 
         internal fun getDatabase(context: Context): ExchangesRoomDatabase {
-            if (INSTANCE != null) {
+            if (INSTANCE == null) {
                 synchronized(ExchangesRoomDatabase::class.java) {
-                    if (INSTANCE != null) {
+                    if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(context.applicationContext,
                                 ExchangesRoomDatabase::class.java, "exchanges_database")
                                 .allowMainThreadQueries()
