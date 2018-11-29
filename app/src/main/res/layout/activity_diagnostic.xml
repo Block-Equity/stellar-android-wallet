@@ -110,6 +110,21 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/advanced_security_passphrase"
+                style="@style/SettingsButton"/>
+
+            <TextView
+                android:id="@+id/passphraseUsedTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/RegularText"
+                android:textColor="@color/paleSky"
+                android:layout_marginStart="@dimen/activity_vertical_margin"
+                android:layout_marginEnd="@dimen/activity_vertical_margin"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/recovery_type"
                 style="@style/SettingsButton"
                 android:layout_marginTop="@dimen/activity_vertical_margin"/>
@@ -139,53 +154,27 @@
 
             </RadioGroup>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/advanced_security_passphrase"
-                style="@style/SettingsButton"
-                android:layout_marginTop="@dimen/activity_vertical_margin"/>
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/explain_problem"-->
+                <!--style="@style/SettingsButton"-->
+                <!--android:layout_marginTop="@dimen/activity_vertical_margin"/>-->
 
-            <RadioGroup
-                android:id="@+id/passphraseRadioGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/yes"
-                    android:layout_margin="@dimen/activity_vertical_margin" />
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/no"
-                    android:layout_margin="@dimen/activity_vertical_margin" />
-
-            </RadioGroup>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/explain_problem"
-                style="@style/SettingsButton"
-                android:layout_marginTop="@dimen/activity_vertical_margin"/>
-
-            <EditText
-                android:id="@+id/explanationEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lines="4"
-                style="@style/RegularText"
-                android:gravity="top|start"
-                android:background="@drawable/bg_edit_text"
-                android:padding="@dimen/activity_vertical_margin"
-                android:importantForAutofill="no"
-                android:hint="@string/explanation_hint"
-                android:layout_margin="@dimen/activity_vertical_margin"
-                android:inputType="textMultiLine"
-                tools:ignore="UnusedAttribute" />
+            <!--<EditText-->
+                <!--android:id="@+id/explanationEditText"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:lines="4"-->
+                <!--style="@style/RegularText"-->
+                <!--android:gravity="top|start"-->
+                <!--android:background="@drawable/bg_edit_text"-->
+                <!--android:padding="@dimen/activity_vertical_margin"-->
+                <!--android:importantForAutofill="no"-->
+                <!--android:hint="@string/explanation_hint"-->
+                <!--android:layout_margin="@dimen/activity_vertical_margin"-->
+                <!--android:inputType="textMultiLine"-->
+                <!--tools:ignore="UnusedAttribute" />-->
 
             <Button
                 android:id="@+id/sendReportButton"

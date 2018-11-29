@@ -16,7 +16,6 @@ import android.content.ComponentName
 class DiagnosticActivity : BaseActivity() {
 
     private var recoveryType : String = ""
-    private var isPassphrase : Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,11 +25,14 @@ class DiagnosticActivity : BaseActivity() {
     }
 
     fun setupUI() {
+        val isPassphrase = WalletApplication.localStore.encryptedPassphrase != null
+
         deviceModelTextView.text = DiagnosticUtils.getDeviceName()
         androidVersionTextView.text = DiagnosticUtils.getAndroidVersion()
         localeTextView.text = DiagnosticUtils.getLocale()
         appVersionTextView.text = DiagnosticUtils.getAppVersion()
         publicAddressTextView.text = WalletApplication.localStore.stellarAccountId
+        passphraseUsedTextView.text = isPassphrase.toString()
 
         phraseRadioGroup.setOnCheckedChangeListener { radioGroup, _ ->
             val id = radioGroup.checkedRadioButtonId
@@ -38,14 +40,8 @@ class DiagnosticActivity : BaseActivity() {
             recoveryType = radioButton.text.toString()
         }
 
-        passphraseRadioGroup.setOnCheckedChangeListener { radioGroup, _ ->
-            val id = radioGroup.checkedRadioButtonId
-            val radioButton = findViewById<RadioButton>(id)
-            isPassphrase = (radioButton.text.toString() == getString(R.string.yes))
-        }
-
         sendReportButton.setOnClickListener {
-            if (recoveryType.isEmpty() || isPassphrase == null || explanationEditText.text.isEmpty()) {
+            if (recoveryType.isEmpty()) {
                 Toast.makeText(applicationContext, getString(R.string.empty_fields), Toast.LENGTH_SHORT).show()
             } else {
                 val json = JSONObject()
@@ -56,15 +52,15 @@ class DiagnosticActivity : BaseActivity() {
                 json.put("publicAddress", publicAddressTextView.text)
 
                 json.put("recoveryType", recoveryType)
-                json.put("passphrase", isPassphrase!!)
-                json.put("detail", explanationEditText.text)
+                json.put("passphrase", isPassphrase)
+//                json.put("detail", explanationEditText.text)
 
-                val emailBody = "Bug report details:\n" + explanationEditText.text + "\n\nJSON format details:\n\n" + json.toString()
+//                val emailBody = "Bug report details:\n" + explanationEditText.text + "\n\nJSON format details:\n\n" + json.toString()
 
                 val intent = Intent(Intent.ACTION_SENDTO)
                 intent.data = Uri.parse("mailto:hello@com.blockeq")
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Bug report")
-                intent.putExtra(Intent.EXTRA_TEXT, emailBody)
+//                intent.putExtra(Intent.EXTRA_TEXT, emailBody)
 
                 // fallback component was found in most emulators without email app
                 val emailApp = intent.resolveActivity(packageManager)
