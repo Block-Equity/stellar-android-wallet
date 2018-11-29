@@ -13,6 +13,12 @@ android {
         versionName "1.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas".toString())
+            }
+        }
     }
     androidExtensions {
         experimental = true
@@ -29,6 +35,7 @@ android {
     }
 
     lintOptions {
+        warningsAsErrors true
         baseline file("lint-baseline.xml")
     }
 }

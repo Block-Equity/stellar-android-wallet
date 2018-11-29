@@ -212,11 +212,6 @@
     <string name="technical_op_low_reserve">op_low_reserve</string>
     <string name="readable_op_low_reserve">You don\'t have enough Lumens to add another trust line</string>
 
-    <string name="update_app_dialog_title">The Beta program has ended</string>
-    <string name="update_app_dialog_message_1">The current app is no longer maintained, please install the new app</string>
-    <string name="update_app_dialog_message_2">The current app is no longer maintained. Please make sure you have written down your recovery phrase (12&#8211;24 words) or saved a copy of your secret key. After you have saved a back&#8211;up, please delete this app and then recover your wallet using the new version here</string>
-    <string name="update_app_dialog_positive_button">Download</string>
-    <string name="update_app_dialog_negative_button">Later</string>
     <string name="privacy_policy_title">Privacy Policy</string>
     <string name="terms_of_service_title">Terms of Service</string>
 

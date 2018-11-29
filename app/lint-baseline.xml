@@ -57,61 +57,6 @@
     </issue>
 
     <issue
-        id="InflateParams"
-        message="Avoid passing `null` as the view root (needed to resolve layout parameters on the inflated layout&apos;s root element)"
-        errorLine1="                val item_view = (context as Activity).layoutInflater.inflate(R.layout.item_view_phrase_word, null)"
-        errorLine2="                                                                                                             ~~~~">
-        <location
-            file="src/main/java/com.blockeq/stellarwallet/reusables/views/MnemonicView.kt"
-            line="26"
-            column="110"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of com.android.support.test.espresso:espresso-contrib than 2.0 is available: 3.0.2"
-        errorLine1="    androidTestImplementation(&apos;com.android.support.test.espresso:espresso-contrib:2.0&apos;) {"
-        errorLine2="    ^">
-        <location
-            file="build.gradle"
-            line="90"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="ObsoleteLayoutParam"
-        message="Invalid layout param in a `LinearLayout`: `layout_below`"
-        errorLine1="            android:layout_below=&quot;@+id/address_title&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/content_enter_address.xml"
-            line="36"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="ObsoleteLayoutParam"
-        message="Invalid layout param in a `LinearLayout`: `layout_alignParentStart`"
-        errorLine1="        android:layout_alignParentStart=&quot;true&quot;/>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_asset_header.xml"
-            line="14"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="DisableBaselineAlignment"
-        message="Set `android:baselineAligned=&quot;false&quot;` on this element for better performance"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_balance_summary.xml"
-            line="18"
-            column="6"/>
-    </issue>
-
-    <issue
         id="Overdraw"
         message="Possible overdraw: Root element paints background `@color/darkBlue` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
         errorLine1="    android:background=&quot;@color/darkBlue&quot;"
@@ -642,7 +587,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="78"
+            line="85"
             column="13"/>
     </issue>
 
@@ -653,7 +598,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="81"
+            line="88"
             column="13"/>
     </issue>
 
@@ -664,7 +609,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="82"
+            line="89"
             column="13"/>
     </issue>
 
@@ -675,7 +620,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="112"
+            line="119"
             column="13"/>
     </issue>
 
@@ -686,7 +631,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="113"
+            line="120"
             column="13"/>
     </issue>
 
@@ -697,7 +642,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="114"
+            line="121"
             column="13"/>
     </issue>
 
@@ -763,7 +708,7 @@
         errorLine2="             ~~~~~~~~">
         <location
             file="src/main/res/layout/content_enter_address.xml"
-            line="40"
+            line="39"
             column="14"/>
     </issue>
 
@@ -774,7 +719,7 @@
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/res/layout/contents_send.xml"
-            line="56"
+            line="72"
             column="10"/>
     </issue>
 
@@ -851,7 +796,7 @@
         errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/content_enter_address.xml"
-            line="53"
+            line="52"
             column="14"/>
     </issue>
 
@@ -961,7 +906,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/contents_send.xml"
-            line="85"
+            line="101"
             column="13"/>
     </issue>
 
