@@ -149,7 +149,7 @@
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/secret_seed"
+                    android:text="@string/recovered_secret_seed"
                     android:layout_margin="@dimen/activity_vertical_margin" />
 
             </RadioGroup>
