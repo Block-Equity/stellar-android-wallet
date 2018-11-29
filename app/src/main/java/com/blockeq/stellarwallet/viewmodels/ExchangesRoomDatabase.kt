@@ -20,10 +20,10 @@ abstract class ExchangesRoomDatabase : RoomDatabase() {
 
         private var INSTANCE: ExchangesRoomDatabase? = null
 
-        internal fun getDatabase(context: Context): ExchangesRoomDatabase? {
-            if (INSTANCE == null) {
+        internal fun getDatabase(context: Context): ExchangesRoomDatabase {
+            if (INSTANCE != null) {
                 synchronized(ExchangesRoomDatabase::class.java) {
-                    if (INSTANCE == null) {
+                    if (INSTANCE != null) {
                         INSTANCE = Room.databaseBuilder(context.applicationContext,
                                 ExchangesRoomDatabase::class.java, "exchanges_database")
                                 .allowMainThreadQueries()
@@ -32,7 +32,7 @@ abstract class ExchangesRoomDatabase : RoomDatabase() {
                                         super.onCreate(db)
                                         val json = readExchangesFromAssets(context.applicationContext)
                                         if (json != null) {
-                                            val exchanges = parse(json)
+                                            val exchanges = parseJson(json)
                                             val entities = exchanges.map {
                                                 ExchangeEntity(it.name, it.address, it.memo)
                                             }
@@ -41,15 +41,14 @@ abstract class ExchangesRoomDatabase : RoomDatabase() {
                                             Timber.d("Populating the emtpy database with a local resource")
                                         }
                                     }
-                                })
-                                .build()
+                                }).build()
                     }
                 }
             }
-            return INSTANCE
+            return INSTANCE as ExchangesRoomDatabase
         }
 
-        private fun parse(input : String) : List<ExchangeApiModel> {
+        private fun parseJson(input : String) : List<ExchangeApiModel> {
             val gson = GsonBuilder().create()
             val list = gson.fromJson(input, Array<ExchangeApiModel>::class.java)
             return list.toList()
@@ -74,10 +73,8 @@ abstract class ExchangesRoomDatabase : RoomDatabase() {
         private fun populateDatabase(context: Context, exchanges : List<ExchangeEntity>) {
             Executors.newSingleThreadScheduledExecutor().execute {
                 val database = getDatabase(context)
-                if (database != null) {
-                    database.exchangeDao().insertAll(exchanges)
-                    Timber.d("Populating exchange database from local resource")
-                }
+                database.exchangeDao().insertAll(exchanges)
+                Timber.d("Populating exchange database from local resource")
             }
         }
     }

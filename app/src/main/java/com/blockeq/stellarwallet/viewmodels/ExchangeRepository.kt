@@ -19,7 +19,7 @@ class ExchangeRepository(application: Application) {
     private val listLiveData: MutableLiveData<List<ExchangeEntity>>
     init {
         val exchangeRoomDatabase = ExchangesRoomDatabase.getDatabase(application)
-        exchangeDao = exchangeRoomDatabase!!.exchangeDao()
+        exchangeDao = exchangeRoomDatabase.exchangeDao()
         listLiveData = MutableLiveData()
     }
 
@@ -33,7 +33,7 @@ class ExchangeRepository(application: Application) {
     }
 
     private fun populateExchangeDatabase(exchanges : List<ExchangeApiModel>) {
-        val dao = ExchangesRoomDatabase.getDatabase(appContext)!!.exchangeDao()
+        val dao = ExchangesRoomDatabase.getDatabase(appContext).exchangeDao()
         dao.deleteAll()
         dao.insertAll(ExchangeMapper.toExchangeEntities(exchanges.toList()))
         Timber.d("Refreshing exchanges database from remote server")
