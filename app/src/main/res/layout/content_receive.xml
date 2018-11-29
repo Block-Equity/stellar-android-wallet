@@ -54,7 +54,7 @@
             android:layout_marginTop="25dp"
             android:layout_below="@+id/addressTitle"
             android:orientation="horizontal"
-            android:background="@drawable/rounded_corner">
+            android:background="@drawable/bg_rounded_button_blue">
 
             <TextView
                 android:id="@+id/addressEditText"

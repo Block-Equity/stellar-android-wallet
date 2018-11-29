@@ -84,6 +84,7 @@ class AssetsRecyclerViewAdapter(var context: Context, private var listener: Chan
 
     class AssetViewHolder(v : View) : RecyclerView.ViewHolder(v) {
         val assetImage : ImageView = v.findViewById(R.id.assetImageView)
+        val defaultImage : TextView = v.findViewById(R.id.defaultAssetView)
         val assetName : TextView = v.findViewById(R.id.assetNameTextView)
         val assetAmount : TextView = v.findViewById(R.id.assetAmountTextView)
         val assetButton : Button = v.findViewById(R.id.assetButton)
@@ -95,6 +96,7 @@ class AssetsRecyclerViewAdapter(var context: Context, private var listener: Chan
 
     class SupportedAssetViewHolder(v : View) : RecyclerView.ViewHolder(v) {
         val assetImage : ImageView = v.findViewById(R.id.assetImageView)
+        val defaultImage : TextView = v.findViewById(R.id.defaultAssetView)
         val assetName : TextView = v.findViewById(R.id.assetNameTextView)
         val assetAmount : TextView = v.findViewById(R.id.assetAmountTextView)
         val assetButton : Button = v.findViewById(R.id.assetButton)
@@ -112,7 +114,15 @@ class AssetsRecyclerViewAdapter(var context: Context, private var listener: Chan
         viewHolder.assetAmount.text = String.format(context.getString(R.string.balance_template),
                 StringFormat.truncateDecimalPlaces(asset.amount), asset.code.toUpperCase())
 
-        Picasso.get().load(asset.image).into(viewHolder.assetImage)
+        if (asset.image.isNotEmpty()) {
+            viewHolder.defaultImage.visibility = View.GONE
+            viewHolder.assetImage.visibility = View.VISIBLE
+            Picasso.get().load(asset.image).into(viewHolder.assetImage)
+        } else {
+            viewHolder.defaultImage.text = asset.name[0].toString()
+            viewHolder.defaultImage.visibility = View.VISIBLE
+            viewHolder.assetImage.visibility = View.GONE
+        }
 
         if (asset.code == Constants.LUMENS_ASSET_CODE) {
             viewHolder.assetButton.text = context.getString(R.string.set_inflation_message)
@@ -162,6 +172,8 @@ class AssetsRecyclerViewAdapter(var context: Context, private var listener: Chan
                 asset.name, asset.code.toUpperCase())
 
         viewHolder.assetAmount.visibility = View.GONE
+        viewHolder.defaultImage.visibility = View.GONE
+
         Picasso.get().load(asset.image).into(viewHolder.assetImage)
 
         viewHolder.assetButton.text = context.getString(R.string.add_asset)

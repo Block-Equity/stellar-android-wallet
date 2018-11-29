@@ -46,7 +46,7 @@ class DiagnosticActivity : BaseActivity() {
 
         sendReportButton.setOnClickListener {
             if (recoveryType.isEmpty() || isPassphrase == null || explanationEditText.text.isEmpty()) {
-                Toast.makeText(applicationContext, "You have one or more empty fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, getString(R.string.empty_fields), Toast.LENGTH_SHORT).show()
             } else {
                 val json = JSONObject()
                 json.put("device", deviceModelTextView.text)
