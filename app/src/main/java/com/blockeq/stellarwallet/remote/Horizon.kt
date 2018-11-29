@@ -1,4 +1,4 @@
-package com.blockeq.stellarwallet.services.networking
+package com.blockeq.stellarwallet.remote
 
 import android.os.AsyncTask
 import android.os.Handler

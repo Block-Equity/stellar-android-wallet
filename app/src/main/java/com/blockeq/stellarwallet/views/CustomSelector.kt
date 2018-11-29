@@ -1,4 +1,4 @@
-package com.blockeq.stellarwallet.reusables.views
+package com.blockeq.stellarwallet.views
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable

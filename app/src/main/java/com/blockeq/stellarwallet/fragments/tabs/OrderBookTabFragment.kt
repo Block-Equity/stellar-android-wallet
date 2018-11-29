@@ -15,7 +15,7 @@ import com.blockeq.stellarwallet.models.DataAsset
 import com.blockeq.stellarwallet.models.OrderBook
 import com.blockeq.stellarwallet.models.OrderBookAdapterTypes
 import com.blockeq.stellarwallet.models.OrderBookStickyHeader
-import com.blockeq.stellarwallet.services.networking.Horizon
+import com.blockeq.stellarwallet.remote.Horizon
 import com.brandongogetap.stickyheaders.StickyLayoutManager
 import kotlinx.android.synthetic.main.fragment_tab_order_book.*
 import org.stellar.sdk.responses.OrderBookResponse
@@ -66,7 +66,13 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
 
         orderBooksAdapter = OrderBooksAdapter(orderBooks, buyingAsset.code, sellingAsset.code, context)
-        orderBookRv.layoutManager = StickyLayoutManager(context, orderBooksAdapter)
+        val layout = StickyLayoutManager(context, orderBooksAdapter)
+        // this will solve the compilation issue Type Mismatch
+        if (layout is LinearLayoutManager) {
+            orderBookRv.layoutManager = LinearLayoutManager(context)
+        }
+        orderBookRv.layoutManager = LinearLayoutManager(context)
+
         orderBookRv.adapter = orderBooksAdapter
         val dividerItemDecoration = DividerItemDecoration(context,
                 LinearLayoutManager(context).orientation)
