@@ -1,34 +1,33 @@
 package com.blockeq.stellarwallet.activities
 
 import android.app.Activity
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.text.Html
-import android.util.Log
+import android.text.Spanned
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
-import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
-import com.blockeq.stellarwallet.models.ExchangeProvider
+import com.blockeq.stellarwallet.models.ExchangeApiModel
 import com.blockeq.stellarwallet.models.HorizonException
 import com.blockeq.stellarwallet.models.PinType
-import com.blockeq.stellarwallet.services.networking.Horizon
+import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.Volley
+import com.blockeq.stellarwallet.viewmodels.ExchangeEntity
+import com.blockeq.stellarwallet.viewmodels.ExchangeViewModel
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
-import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.contents_send.*
 
 class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCallback {
@@ -47,7 +46,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     private var amountText: String = ""
     private var amount: Double = 0.0
     private var address: String = ""
-    private var exchange : ExchangeProvider? = null
+    private var exchange : ExchangeApiModel? = null
 
     override fun setContent(): Int {
         return R.layout.contents_send
@@ -82,7 +81,10 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
             }
         }
 
-        loadExchangeProviderAddresses()
+        val viewModel = ViewModelProviders.of(this).get(ExchangeViewModel::class.java)
+        viewModel.exchangeMatching(address).observe(this, Observer<ExchangeEntity> {
+           updateExchangeProviderText(it)
+        })
     }
 
     //region User Interface
@@ -193,35 +195,24 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     }
     //endregion
 
-    private fun updateExchangeProviderText(providers : List<ExchangeProvider>) {
-        val provider = providers.find { it -> it.address == address  }
+    @Suppress("DEPRECATION")
+    private fun fromHtml(html: String): Spanned {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            Html.fromHtml(html)
+        }
+    }
+
+    private fun updateExchangeProviderText(provider : ExchangeEntity?) {
         if (provider != null) {
-            identifiedAddressTextView.text = Html.fromHtml(getString(R.string.send_address_identified, provider.name))
+            identifiedAddressTextView.text = fromHtml(getString(R.string.send_address_identified, provider.name))
             identifiedAddressTextView.visibility = View.VISIBLE
             memoTitleTextView.text = provider.memo
             memoTextView.hint = null
         } else {
             identifiedAddressTextView.visibility = View.GONE
         }
-    }
-
-    private fun loadExchangeProviderAddresses() {
-        val queue = Volley.newRequestQueue(applicationContext)
-
-        // TODO: Use retrofit and dagger
-        val request = JsonArrayRequest(Request.Method.GET, Constants.BLOCKEQ_EXCHANGES_URL, null,
-                Response.Listener { response ->
-                    // display response
-                    val gson = GsonBuilder().create()
-                    val list = gson.fromJson(response.toString(), Array<ExchangeProvider>::class.java)
-                    updateExchangeProviderText(list.toList())
-                },
-                Response.ErrorListener {
-                    it.networkResponse
-                    Log.e("error", "error loading exchange providers")
-                })
-
-        queue.add(request)
     }
 
 }

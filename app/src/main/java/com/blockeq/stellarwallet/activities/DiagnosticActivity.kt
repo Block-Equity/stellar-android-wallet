@@ -32,13 +32,13 @@ class DiagnosticActivity : BaseActivity() {
         appVersionTextView.text = DiagnosticUtils.getAppVersion()
         publicAddressTextView.text = WalletApplication.localStore.stellarAccountId
 
-        phraseRadioGroup.setOnCheckedChangeListener { radioGroup, i ->
+        phraseRadioGroup.setOnCheckedChangeListener { radioGroup, _ ->
             val id = radioGroup.checkedRadioButtonId
             val radioButton = findViewById<RadioButton>(id)
             recoveryType = radioButton.text.toString()
         }
 
-        passphraseRadioGroup.setOnCheckedChangeListener { radioGroup, i ->
+        passphraseRadioGroup.setOnCheckedChangeListener { radioGroup, _ ->
             val id = radioGroup.checkedRadioButtonId
             val radioButton = findViewById<RadioButton>(id)
             isPassphrase = (radioButton.text.toString() == getString(R.string.yes))

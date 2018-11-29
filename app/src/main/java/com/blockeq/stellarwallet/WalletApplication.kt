@@ -6,6 +6,7 @@ import com.blockeq.stellarwallet.encryption.PRNGFixes
 import com.blockeq.stellarwallet.helpers.LocalStore
 import com.blockeq.stellarwallet.helpers.WalletLifecycleListener
 import com.blockeq.stellarwallet.models.UserSession
+import com.blockeq.stellarwallet.viewmodels.ExchangeRepository
 import com.facebook.stetho.Stetho
 import com.google.gson.Gson
 import com.squareup.leakcanary.LeakCanary
@@ -15,7 +16,6 @@ import java.security.Provider
 import java.security.Security
 
 class WalletApplication : MultiDexApplication() {
-
     private val lifecycleListener: WalletLifecycleListener by lazy {
         WalletLifecycleListener()
     }
@@ -58,6 +58,9 @@ class WalletApplication : MultiDexApplication() {
             LeakCanary.install(this)
             // Normal app init code...
         }
+
+        // exchange providers addresses are not very likely to change but let's refresh them during application startup
+        ExchangeRepository(this).getAllExchangeProviders(true)
     }
 
     private fun setupLifecycleListener() {

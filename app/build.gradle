@@ -13,6 +13,12 @@ android {
         versionName "1.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas".toString())
+            }
+        }
     }
     androidExtensions {
         experimental = true
@@ -29,6 +35,7 @@ android {
     }
 
     lintOptions {
+        warningsAsErrors true
         baseline file("lint-baseline.xml")
     }
 }
@@ -114,4 +121,9 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
     // Optional, if you use support library fragments:
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
+
+    // Room components
+    implementation "android.arch.persistence.room:runtime:$lifecycleVersion"
+    annotationProcessor  "android.arch.persistence.room:compiler:$lifecycleVersion"
+    kapt "android.arch.persistence.room:compiler:$lifecycleVersion"
 }
