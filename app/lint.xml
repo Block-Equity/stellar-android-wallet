@@ -9,4 +9,8 @@
     <issue id="ObsoleteLintCustomCheck">
         <ignore regexp="timber.lint" />
     </issue>
+    <!--Overdraw of the ripple background on the actual background-->
+    <issue id="Overdraw">
+        <ignore path="res/layout/item_asset.xml" />
+    </issue>
 </lint>

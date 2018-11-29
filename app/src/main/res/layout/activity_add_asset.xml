@@ -45,7 +45,9 @@
             android:scrollHorizontally="true"
             android:digits="@string/stellar_address_alphabet"
             android:inputType="textCapCharacters"
-            android:hint="@string/asset_code_hint" />
+            android:hint="@string/asset_code_hint"
+            android:importantForAutofill="no"
+            tools:ignore="UnusedAttribute" />
 
         <TextView
             style="@style/BoldText"
@@ -68,7 +70,9 @@
             android:scrollHorizontally="true"
             android:digits="@string/stellar_address_alphabet"
             android:inputType="textCapCharacters"
-            android:hint="@string/send_address_hint" />
+            android:hint="@string/send_address_hint"
+            android:importantForAutofill="no"
+            tools:ignore="UnusedAttribute" />
 
         <Button
             android:id="@+id/addAssetButton"
