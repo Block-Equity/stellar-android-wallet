@@ -187,13 +187,14 @@
     <string name="locale">Locale</string>
     <string name="blockeq_app_version">BlockEQ App version</string>
     <string name="public_address_of_stellar_account">Public address of Stellar account</string>
-    <string name="send_report">Send report by email</string>
+    <string name="send_report">Report issue</string>
     <string name="recovery_type">Recovery type</string>
-    <string name="mnemonic_phrase_12_words">Mnemonic Phrase (12 words)</string>
-    <string name="mnemonic_phrase_24_words">Mnemonic Phrase (24 words)</string>
-    <string name="advanced_security_passphrase">Did you use advanced security passphrase?</string>
+    <string name="mnemonic_phrase_12_words">Recovered with 12-word Mnemonic</string>
+    <string name="mnemonic_phrase_24_words">Recovered with 24-word Mnemonic</string>
+    <string name="advanced_security_passphrase">Is passphrase used?</string>
     <string name="explain_problem">Explain the problem in detailed steps</string>
     <string name="explanation_hint">Provide details on which screen it happened, the steps that led to the issue, etc.</string>
+    <string name="recovered_secret_seed">Recovered from Secret Seed</string>
 
     <!--Horizon Error Messages (Technical followed by user readable)-->
     <string name="standard_error_message">%1$s: %2$s</string>

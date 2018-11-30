@@ -7,7 +7,6 @@ import com.blockeq.stellarwallet.encryption.KeyStoreWrapper
 import com.blockeq.stellarwallet.helpers.Constants
 import com.soneso.stellarmnemonics.Wallet
 import org.stellar.sdk.KeyPair
-import timber.log.Timber
 import java.security.PrivateKey
 
 class AccountUtils {
