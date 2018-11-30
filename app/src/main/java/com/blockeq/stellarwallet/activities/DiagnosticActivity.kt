@@ -56,7 +56,7 @@ class DiagnosticActivity : BaseActivity() {
 
                 val json = Diagnostic(fields).toJSON()
 
-                val emailBody = "Bug report details:\n" + explanationEditText.text + "\n\nJSON format details:\n\n" + json.toString()
+                val emailBody = "Issue report details:\n" + explanationEditText.text + "\n\nJSON format details:\n\n" + json.toString()
 
                 val postRequest = object : JsonObjectRequest(Request.Method.POST,
                         Constants.BLOCKEQ_DIAGNOSTIC_URL, json,
@@ -99,7 +99,7 @@ class DiagnosticActivity : BaseActivity() {
     private fun callEmailClient(emailBody: String, issueId : String) {
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:support@com.blockeq")
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Bug report [$issueId]")
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Issue report [$issueId]")
         intent.putExtra(Intent.EXTRA_TEXT, emailBody)
 
         // fallback component was found in most emulators without email app
