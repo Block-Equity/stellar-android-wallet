@@ -4,27 +4,23 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.app.AlertDialog
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.blockeq.stellarwallet.R
-import com.blockeq.stellarwallet.interfaces.OnDeleteRequest
 import com.blockeq.stellarwallet.adapters.MyOffersAdapter
+import com.blockeq.stellarwallet.interfaces.OnDeleteRequest
+import com.blockeq.stellarwallet.models.AssetUtil
 import com.blockeq.stellarwallet.models.Currency
 import com.blockeq.stellarwallet.models.MyOffer
-import kotlinx.android.synthetic.main.fragment_tab_my_offers.*
-import java.util.*
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.DividerItemDecoration
-import android.widget.Toast
 import com.blockeq.stellarwallet.remote.Horizon
-import org.stellar.sdk.AssetTypeCreditAlphaNum12
-import org.stellar.sdk.AssetTypeCreditAlphaNum4
-import org.stellar.sdk.AssetTypeNative
+import kotlinx.android.synthetic.main.fragment_tab_my_offers.*
 import org.stellar.sdk.responses.OfferResponse
-import java.lang.IllegalStateException
-import kotlin.collections.ArrayList
+import timber.log.Timber
+import java.util.*
 
 
 class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRefreshListener {
@@ -38,9 +34,6 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //Mockup Data
-//        mockupData()
-        //**********
 
         myOffersRv.layoutManager = LinearLayoutManager(context)
         myOffersAdapter = MyOffersAdapter(myOffers, context, this)
@@ -48,8 +41,11 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
         val dividerItemDecoration = DividerItemDecoration(context,
                 LinearLayoutManager(context).orientation)
         myOffersRv.addItemDecoration(dividerItemDecoration)
-        swipeRefresh.setOnRefreshListener(this)
+        swipeRefreshOffer.setOnRefreshListener(this)
+    }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
         onRefresh()
     }
 
@@ -57,41 +53,12 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
         Horizon.getOffers(object: Horizon.OnOffersListener {
             override fun onOffers(offers: ArrayList<OfferResponse>) {
                 var id = 1
+                myOffers.clear()
                 offers.forEach {
-                    val buyingCode : String
-                    when(it.buying) {
-                        is AssetTypeCreditAlphaNum4 -> {
-                            buyingCode = (it.buying as AssetTypeCreditAlphaNum4).code
-                        }
-                        is AssetTypeCreditAlphaNum12 -> {
-                            buyingCode = (it.buying as AssetTypeCreditAlphaNum12).code
-                        }
-                        is AssetTypeNative -> {
-                            buyingCode = "LMX"
-                        }
-                        else -> {
-                            throw IllegalStateException("uknown asset type:" + it.toString())
-                        }
-                    }
+                    val buyingCode : String = AssetUtil.getCode(it.buying)!!
                     val currencyBuy = Currency(1, buyingCode, "$buyingCode COIN", 0.0f, null)
-                    val sellingCode : String
-                    when(it.selling) {
-                        is AssetTypeCreditAlphaNum4 -> {
-                            sellingCode = (it.selling as AssetTypeCreditAlphaNum4).code
-                        }
-                        is AssetTypeCreditAlphaNum12 -> {
-                            sellingCode = (it.selling as AssetTypeCreditAlphaNum12).code
-                        }
-                        is AssetTypeNative -> {
-                            sellingCode = "LMX"
-                        }
-                        else -> {
-                            throw IllegalStateException("unknown asset type:" + it.toString())
-                        }
-                    }
-
-                    val currencySelling = Currency(2, sellingCode, sellingCode+ " COIN", 0.0f, null)
-                    myOffers.clear()
+                    val sellingCode : String = AssetUtil.getCode(it.selling)!!
+                    val currencySelling = Currency(2, sellingCode, "$sellingCode COIN", 0.0f, null)
                     myOffers.add(MyOffer(id, Date(), currencySelling, currencyBuy, it.amount.toFloat(), it.price.toFloat()))
                     id++
                 }
@@ -99,43 +66,18 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
 
                 val handler = Handler()
                 val runnable = Runnable {
-                    if(swipeRefresh != null) {
-                        swipeRefresh.isRefreshing = false
+                    if(swipeRefreshOffer != null) {
+                        swipeRefreshOffer.isRefreshing = false
                     }
                 }
                 handler.post(runnable)
             }
 
             override fun onFailed(errorMessage: String) {
+                Timber.e(errorMessage)
             }
 
         })
-        //Mockup API call tor refresh
-
-        //**********
-    }
-
-    private fun mockupData() {
-//        "Sell 1amount 2selling.Code for 3price 4ubying.code at a price of 5price"
-//
-//        holder.description.text = context?.getString(R.string.rowDescription,
-//                myOffer.amountFrom,
-//                myOffer.currencyFrom.code, myOffer.amountTo, myOffer.currencyTo.code,
-//                (myOffer.amountTo / myOffer.amountFrom))
-//
-//        var id: Int, var date: Date, var currencyFrom: Currency,
-//        var currencyTo: Currency, var amountFrom: Float, var amountTo: Float)
-
-
-        myOffers.clear()
-        val xlm = Currency(1, "XLM", "Stellar", 38.7832f, null)
-        val cad = Currency(2, "CAD", "Canadian Dollar", 100.00f, null)
-        val btc = Currency(3, "BTC", "Bitcoin", 0.23243414f, null)
-        val mobi = Currency(4, "MOBI", "Mobi", 10.4322f, null)
-        val offer1 = MyOffer(1, Date(), mobi, xlm, 0.5623f, 0.1233f)
-        val offer2 = MyOffer(2, Date(), btc, cad, 0.013432f, 112.45f)
-        myOffers.add(offer1)
-        myOffers.add(offer2)
     }
 
     override fun onDialogOpen(offerId: Int) {

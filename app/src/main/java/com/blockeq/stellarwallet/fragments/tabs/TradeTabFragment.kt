@@ -44,7 +44,6 @@ class TradeTabFragment : Fragment(), View.OnClickListener {
         tradingViewModel = ViewModelProviders.of(this).get(TradingViewModel::class.java)
 
         buyingCustomSelector.editText.isEnabled = false
-//        mockupData(true)
         refreshAddedCurrencies()
         setupListeners()
 
@@ -197,9 +196,5 @@ class TradeTabFragment : Fragment(), View.OnClickListener {
             sellingCurrencies.add(it)
             buyingCurrencies.add(it)
         }
-//
-//        addedCurrencies.drop(1).forEach {
-//            sellingCurrencies.add(it)
-//        }
     }
 }

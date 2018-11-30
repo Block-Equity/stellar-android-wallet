@@ -1,6 +1,8 @@
 package com.blockeq.stellarwallet.fragments.tabs
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
@@ -16,9 +18,9 @@ import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.remote.Horizon
 import kotlinx.android.synthetic.main.fragment_tab_order_book.*
 import org.stellar.sdk.responses.OrderBookResponse
+import timber.log.Timber
 import java.util.*
 import com.brandongogetap.stickyheaders.StickyLayoutManager
-import timber.log.Timber
 
 class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnUpdateTradingCurrencies {
 
@@ -33,11 +35,6 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //Mockup Data
-//        mockupData()
-        //**********
-
-
         val dividerItemDecoration = DividerItemDecoration(context,
                 LinearLayoutManager(context).orientation)
         orderBookRv.addItemDecoration(dividerItemDecoration)
@@ -47,8 +44,10 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
+        Timber.d("setUserVisibleHint %s", isVisibleToUser)
         if (isVisibleToUser && orderBookRv != null && buyingAsset != null && sellingAsset != null) {
             updateList(buyingAsset!!.code, sellingAsset!!.code)
+            Timber.d("setUserVisibleHint > Refreshing")
             onRefresh()
 
         }
@@ -56,12 +55,16 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
 
     override fun onRefresh() {
         if (!isAdded || isDetached || !isVisible) {
+            Timber.d("onRefresh failed fragment not ready")
             return
         }
+
+        Timber.d("buyingAsset %s sellingAsset %s", buyingAsset, sellingAsset)
 
         if (buyingAsset != null && sellingAsset != null) {
             loadOrderBook(buyingAsset!!, sellingAsset!!)
         }
+
     }
 
     private fun loadOrderBook(buy : DataAsset, sell : DataAsset) {
@@ -89,11 +92,15 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
                     id++
 
                 }
-                orderBooksAdapter.notifyDataSetChanged()
+                Timber.d("loading order book complete items %s", orderBooks.size)
+
+                Handler(Looper.getMainLooper()).post {
+                    orderBooksAdapter.notifyDataSetChanged()
+                }
             }
 
             override fun onFailed(errorMessage: String) {
-
+                Timber.d("failed to load the order book", errorMessage)
             }
 
         }, buy, sell)
@@ -102,45 +109,6 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
             swipeRefresh.isRefreshing = false
             Toast.makeText(context, getText(R.string.refreshed), Toast.LENGTH_SHORT).show()
         }
-    }
-    private fun mockupData() {
-        orderBooks.clear()
-        val orderBooksTitle = OrderBook(type = OrderBookAdapterTypes.TITLE)
-        val buyOffer = OrderBookStickyHeader(type = OrderBookAdapterTypes.BUY_HEADER)
-        val sellOffer = OrderBookStickyHeader(type = OrderBookAdapterTypes.SELL_HEADER)
-        val subheader = OrderBook(type = OrderBookAdapterTypes.SUBHEADER)
-        val item1 = OrderBook(1, Date(), 0.3000f, 29.5001f, 8.8500f, OrderBookAdapterTypes.ITEM)
-        val item2 = OrderBook(2, Date(), 0.2857f, 70.0000f, 20.0000f, OrderBookAdapterTypes.ITEM)
-        val item3 = OrderBook(3, Date(), 0.2500f, 60.0000f, 15.0000f, OrderBookAdapterTypes.ITEM)
-        val item4 = OrderBook(4, Date(), 0.1875f, 40.0000f, 7.5000f, OrderBookAdapterTypes.ITEM)
-        val item5 = OrderBook(5, Date(), 0.0600f, 500.0000f, 30.0000f, OrderBookAdapterTypes.ITEM)
-        val item6 = OrderBook(6, Date(), 1.0000f, 20.0000f, 20.0000f, OrderBookAdapterTypes.ITEM)
-        val item7 = OrderBook(7, Date(), 1.8000f, 1.0000f, 1.8000f, OrderBookAdapterTypes.ITEM)
-        val item8 = OrderBook(8, Date(), 2.6000f, 1.0000f, 2.6000f, OrderBookAdapterTypes.ITEM)
-        val item9 = OrderBook(9, Date(), 3.8000f, 1.0000f, 3.8000f, OrderBookAdapterTypes.ITEM)
-        orderBooks.add(orderBooksTitle)
-        orderBooks.add(buyOffer)
-        orderBooks.add(subheader)
-        orderBooks.add(item1)
-        orderBooks.add(item2)
-        orderBooks.add(item3)
-        orderBooks.add(item4)
-        orderBooks.add(item5)
-        orderBooks.add(sellOffer)
-        orderBooks.add(subheader)
-        orderBooks.add(item6)
-        orderBooks.add(item7)
-        orderBooks.add(item8)
-        orderBooks.add(item9)
-        orderBooks.add(item9)
-        orderBooks.add(item9)
-        orderBooks.add(item9)
-        orderBooks.add(item9)
-        orderBooks.add(item9)
-        orderBooks.add(item9)
-        orderBooks.add(item9)
-        orderBooks.add(item9)
-        orderBooks.add(item9)
     }
 
     override fun updateTradingCurrencies(currencyCodeFrom: SelectionModel, currencyCodeTo: SelectionModel) {
@@ -155,7 +123,7 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         }
     }
 
-    private fun updateList(codeFrom: String, codeTo: String){
+    private fun updateList(codeFrom: String, codeTo: String) {
         if (!::orderBooksAdapter.isInitialized) {
             orderBooksAdapter = OrderBooksAdapter(orderBooks, codeFrom, codeTo, context)
             orderBookRv.adapter = orderBooksAdapter
