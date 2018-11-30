@@ -20,7 +20,6 @@ import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.vmodels.TradingViewModel
 import kotlinx.android.synthetic.main.fragment_tab_trade.*
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
-import org.stellar.sdk.Asset
 import timber.log.Timber
 
 class TradeTabFragment : Fragment(), View.OnClickListener {
@@ -203,27 +202,4 @@ class TradeTabFragment : Fragment(), View.OnClickListener {
 //            sellingCurrencies.add(it)
 //        }
     }
-
-    // Mockup Data. This would be populated through an API or a DB call
-    private fun mockupData(both: Boolean) {
-        var accounts = WalletApplication.localStore.balances
-        val xlm = Currency(1, "XLM", "Stellar", accounts!![2].balance.toFloat(), Asset.create("native", null, null))
-
-        var CAD = accounts!![0].asset
-        var PTS = accounts!![1].asset
-        val cad = Currency(2, "CAD", "Canadian Dollar",  accounts!![0].balance.toFloat(), CAD)
-        val usd = Currency(3, "PTS", "PTS",  accounts!![1].balance.toFloat(), PTS)
-        if (both) {
-            sellingCurrencies.add(xlm)
-            sellingCurrencies.add(cad)
-            sellingCurrencies.add(usd)
-        }
-        buyingCurrencies = mutableListOf<SelectionModel>()
-        buyingCurrencies.add(xlm)
-        buyingCurrencies.add(cad)
-        buyingCurrencies.add(usd)
-        // ******************
-    }
-
-
 }

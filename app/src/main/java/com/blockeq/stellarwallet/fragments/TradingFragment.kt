@@ -23,8 +23,6 @@ class TradingFragment : Fragment(), OnTradeCurrenciesChanged {
     }
 
     override fun onCurrencyChange(currencyCodeFrom: SelectionModel, currencyCodeTo: SelectionModel) {
-//        val fragment = (fragmentAdapter.getItem(TradingTabs.OrderBook.ordinal) as OrderBookTabFragment)
-//        fragment.updateTradingCurrencies(currencyCodeFrom, currencyCodeTo)
         assetFrom = currencyCodeFrom
         assetTo = currencyCodeTo
         if (listener != null) {
