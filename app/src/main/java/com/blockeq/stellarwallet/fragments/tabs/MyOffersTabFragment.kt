@@ -91,6 +91,7 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
                     }
 
                     val currencySelling = Currency(2, sellingCode, sellingCode+ " COIN", 0.0f, null)
+                    myOffers.clear()
                     myOffers.add(MyOffer(id, Date(), currencySelling, currencyBuy, it.amount.toFloat(), it.price.toFloat()))
                     id++
                 }
@@ -101,7 +102,6 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
                     if(swipeRefresh != null) {
                         swipeRefresh.isRefreshing = false
                     }
-                    Toast.makeText(context, getText(R.string.refreshed), Toast.LENGTH_SHORT).show()
                 }
                 handler.post(runnable)
             }

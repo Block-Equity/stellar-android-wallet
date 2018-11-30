@@ -11,34 +11,21 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.adapters.OrderBooksAdapter
+import com.blockeq.stellarwallet.interfaces.OnUpdateTradingCurrencies
 import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.remote.Horizon
 import kotlinx.android.synthetic.main.fragment_tab_order_book.*
 import org.stellar.sdk.responses.OrderBookResponse
 import java.util.*
+import com.brandongogetap.stickyheaders.StickyLayoutManager
+import timber.log.Timber
 
-class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnUpdateTradingCurrencies {
 
     private var orderBooks = mutableListOf<OrderBook>()
     private lateinit var orderBooksAdapter: OrderBooksAdapter
-    private lateinit var buyingAsset : DataAsset
-    private lateinit var sellingAsset : DataAsset
-    private lateinit var currentCurrencyCodeFrom : SelectionModel
-    private lateinit var currentCurrencyCodeTo : SelectionModel
-
-    companion object {
-        private const val ARG_FROM_ASSET = "ARG_FROM_ASSET"
-        private const val ARG_TO_ASSET = "ARG_TO_ASSET"
-
-        fun newInstance(fromAsset: DataAsset, toAsset: DataAsset): Fragment {
-            val args = Bundle()
-            args.putParcelable(ARG_FROM_ASSET, fromAsset)
-            args.putParcelable(ARG_TO_ASSET, toAsset)
-            val fragment = OrderBookTabFragment()
-            fragment.arguments = args
-            return fragment
-        }
-    }
+    private var buyingAsset : DataAsset? = null
+    private var sellingAsset : DataAsset? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_tab_order_book, container, false)
@@ -50,28 +37,7 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 //        mockupData()
         //**********
 
-        val args = arguments
-        if (args == null ||
-                !args.containsKey(ARG_FROM_ASSET) || args.get(ARG_TO_ASSET) == null ||
-                !args.containsKey(ARG_FROM_ASSET) || args.get(ARG_TO_ASSET) == null) {
-            throw IllegalStateException("unexpected arguments, please use: ${javaClass.canonicalName}#newInstance(...)")
-        }
 
-        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-        buyingAsset = args.getParcelable(ARG_FROM_ASSET)
-        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-        sellingAsset = args.getParcelable(ARG_TO_ASSET)
-
-
-        orderBooksAdapter = OrderBooksAdapter(orderBooks, buyingAsset.code, sellingAsset.code, context)
-        val layout = StickyLayoutManager(context, orderBooksAdapter)
-        // this will solve the compilation issue Type Mismatch
-        if (layout is LinearLayoutManager) {
-            orderBookRv.layoutManager = LinearLayoutManager(context)
-        }
-        orderBookRv.layoutManager = LinearLayoutManager(context)
-
-        orderBookRv.adapter = orderBooksAdapter
         val dividerItemDecoration = DividerItemDecoration(context,
                 LinearLayoutManager(context).orientation)
         orderBookRv.addItemDecoration(dividerItemDecoration)
@@ -81,8 +47,10 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (::currentCurrencyCodeFrom.isInitialized && ::currentCurrencyCodeTo.isInitialized) {
-          onRefresh()
+        if (isVisibleToUser && orderBookRv != null && buyingAsset != null && sellingAsset != null) {
+            updateList(buyingAsset!!.code, sellingAsset!!.code)
+            onRefresh()
+
         }
     }
 
@@ -90,10 +58,13 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         if (!isAdded || isDetached || !isVisible) {
             return
         }
-        loadOrderBook()
+
+        if (buyingAsset != null && sellingAsset != null) {
+            loadOrderBook(buyingAsset!!, sellingAsset!!)
+        }
     }
 
-    private fun loadOrderBook() {
+    private fun loadOrderBook(buy : DataAsset, sell : DataAsset) {
         Horizon.getOrderBook(object:Horizon.OnOrderBookListener {
             override fun onOrderBook(asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
                 orderBooks.clear()
@@ -125,7 +96,7 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
             }
 
-        }, buyingAsset, sellingAsset)
+        }, buy, sell)
 
         if (swipeRefresh != null) {
             swipeRefresh.isRefreshing = false
@@ -172,14 +143,33 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         orderBooks.add(item9)
     }
 
-    fun updateTradingCurrencies(currencyCodeFrom: SelectionModel, currencyCodeTo: SelectionModel) {
-        if (::orderBooksAdapter.isInitialized) {
-            orderBooksAdapter.setCurrencies(currencyCodeFrom.label, currencyCodeTo.label)
-            orderBooksAdapter.notifyDataSetChanged()
+    override fun updateTradingCurrencies(currencyCodeFrom: SelectionModel, currencyCodeTo: SelectionModel) {
+        val buying =  AssetUtil.toDataAssetFrom(currencyCodeFrom)
+        val sell =  AssetUtil.toDataAssetFrom(currencyCodeTo)
+
+        buyingAsset = buying
+        sellingAsset = sell
+
+        if (orderBookRv != null) {
+            updateList(buyingAsset!!.code, sellingAsset!!.code)
+        }
+    }
+
+    private fun updateList(codeFrom: String, codeTo: String){
+        if (!::orderBooksAdapter.isInitialized) {
+            orderBooksAdapter = OrderBooksAdapter(orderBooks, codeFrom, codeTo, context)
+            orderBookRv.adapter = orderBooksAdapter
+
+            val layout = StickyLayoutManager(context, orderBooksAdapter)
+            // this will solve the compilation issue Type Mismatch
+            if (layout is LinearLayoutManager) {
+                orderBookRv.layoutManager = layout
+            }
         }
 
-        currentCurrencyCodeFrom = currencyCodeFrom
-        currentCurrencyCodeTo = currencyCodeTo
+        Timber.d("updateTradingCurrencies %s %s", codeFrom, codeTo)
+        orderBooksAdapter.setCurrencies(codeFrom, codeTo)
+        orderBooksAdapter.notifyDataSetChanged()
 
     }
 }
