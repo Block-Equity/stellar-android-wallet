@@ -4,7 +4,6 @@ import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.RadioButton
 import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.Response
@@ -15,7 +14,9 @@ import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.models.Diagnostic
 import com.blockeq.stellarwallet.models.Fields
+import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.DiagnosticUtils
+import com.blockeq.stellarwallet.utils.StringFormat
 import kotlinx.android.synthetic.main.activity_diagnostic.*
 import org.json.JSONObject
 
@@ -33,6 +34,7 @@ class DiagnosticActivity : BaseActivity() {
 
     fun setupUI() {
         val isPassphrase = WalletApplication.localStore.encryptedPassphrase != null
+        recoveryType = getRecoveryType()
 
         deviceModelTextView.text = DiagnosticUtils.getDeviceName()
         androidVersionTextView.text = DiagnosticUtils.getAndroidVersion()
@@ -40,12 +42,7 @@ class DiagnosticActivity : BaseActivity() {
         appVersionTextView.text = DiagnosticUtils.getAppVersion()
         publicAddressTextView.text = WalletApplication.localStore.stellarAccountId
         passphraseUsedTextView.text = isPassphrase.toString()
-
-        phraseRadioGroup.setOnCheckedChangeListener { radioGroup, _ ->
-            val id = radioGroup.checkedRadioButtonId
-            val radioButton = findViewById<RadioButton>(id)
-            recoveryType = radioButton.text.toString()
-        }
+        recoveryTypeTextView.text = recoveryType
 
         sendReportButton.setOnClickListener {
             if (recoveryType.isEmpty()) {
@@ -75,6 +72,28 @@ class DiagnosticActivity : BaseActivity() {
                 finish()
             }
         }
+    }
+
+    private fun getRecoveryType(): String {
+        val recoveryType : String
+        val encryptedPhrase = WalletApplication.localStore.encryptedPhrase
+        val masterKey = AccountUtils.getPinMasterKey(this, WalletApplication.userSession.pin!!)
+
+        if (encryptedPhrase != null && masterKey!= null) {
+            val decryptedPhrase = AccountUtils.getDecryptedString(encryptedPhrase, masterKey)
+            val wordCount = StringFormat.getWordCount(decryptedPhrase)
+
+            recoveryType = when (wordCount) {
+                1 -> getString(R.string.recovered_secret_seed)
+                12 -> getString(R.string.mnemonic_phrase_12_words)
+                24 -> getString(R.string.mnemonic_phrase_24_words)
+                else -> "Unknown"
+            }
+
+        } else {
+            recoveryType = "Unknown"
+        }
+        return recoveryType
     }
 
     private fun callEmailClient(emailBody: String, issueId : String) {
