@@ -1,6 +1,5 @@
 package com.blockeq.stellarwallet.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.RadioButton
 import android.widget.Toast
@@ -70,7 +69,7 @@ class DiagnosticActivity : BaseActivity() {
                 val postRequest = object : JsonObjectRequest(Request.Method.POST,
                         Constants.BLOCKEQ_DIAGNOSTIC_URL, json,
                         Response.Listener {
-                            
+
                         },
                         Response.ErrorListener {
                             Toast.makeText(applicationContext, "Problem sending diagnostic", Toast.LENGTH_SHORT).show()

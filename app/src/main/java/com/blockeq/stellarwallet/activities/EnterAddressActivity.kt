@@ -10,7 +10,6 @@ import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.content_enter_address.*
-import org.stellar.sdk.KeyPair
 
 class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
 

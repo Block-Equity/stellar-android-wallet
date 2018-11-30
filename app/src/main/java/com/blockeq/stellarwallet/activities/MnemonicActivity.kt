@@ -13,10 +13,10 @@ import com.blockeq.stellarwallet.helpers.PassphraseDialogHelper
 import com.blockeq.stellarwallet.models.MnemonicType
 import com.blockeq.stellarwallet.models.PinType
 import com.google.zxing.BarcodeFormat
+import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_mnemonic.*
 import java.lang.IllegalStateException
-import com.journeyapps.barcodescanner.BarcodeEncoder
 
 class MnemonicActivity : BaseActivity(), View.OnClickListener {
 

@@ -8,15 +8,14 @@ import android.os.Handler
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import com.andrognito.pinlockview.PinLockListener
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.flowcontrollers.PinFlowController
 import com.blockeq.stellarwallet.models.PinType
 import com.blockeq.stellarwallet.models.PinViewState
 import com.blockeq.stellarwallet.utils.AccountUtils
-import com.andrognito.pinlockview.PinLockListener
 import kotlinx.android.synthetic.main.activity_pin.*
-import kotlinx.android.synthetic.main.fragment_settings.*
 
 class PinActivity : BaseActivity(), PinLockListener {
 
