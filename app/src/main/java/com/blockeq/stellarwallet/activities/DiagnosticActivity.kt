@@ -13,6 +13,8 @@ import com.android.volley.toolbox.Volley
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants
+import com.blockeq.stellarwallet.models.Diagnostic
+import com.blockeq.stellarwallet.models.Fields
 import com.blockeq.stellarwallet.utils.DiagnosticUtils
 import kotlinx.android.synthetic.main.activity_diagnostic.*
 import org.json.JSONObject
@@ -50,22 +52,12 @@ class DiagnosticActivity : BaseActivity() {
                 Toast.makeText(applicationContext, getString(R.string.empty_fields), Toast.LENGTH_SHORT).show()
             } else {
                 val queue = Volley.newRequestQueue(this)
-                // Build json body
 
-                val json = JSONObject()
-                val fields = JSONObject()
+                val fields = Fields(appVersionTextView.text.toString(), deviceModelTextView.text.toString(),
+                        localeTextView.text.toString(), "Android " + androidVersionTextView.text,
+                        publicAddressTextView.text.toString(), explanationEditText.text.toString(), isPassphrase, recoveryType)
 
-                fields.put("Device Hardware", deviceModelTextView.text)
-                fields.put("Platform", "Android " + androidVersionTextView.text)
-                fields.put("Locale", localeTextView.text)
-                fields.put("App Version", appVersionTextView.text)
-                fields.put("Public Wallet Address", publicAddressTextView.text)
-                fields.put("Summary", explanationEditText.text)
-
-                fields.put("Wallet Creation Method", recoveryType)
-                fields.put("Used Passphrase", isPassphrase)
-
-                json.put("fields", fields)
+                val json = Diagnostic(fields).toJSON()
 
                 val emailBody = "Bug report details:\n" + explanationEditText.text + "\n\nJSON format details:\n\n" + json.toString()
 
