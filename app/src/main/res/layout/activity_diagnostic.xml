@@ -154,27 +154,27 @@
 
             </RadioGroup>
 
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="@string/explain_problem"-->
-                <!--style="@style/SettingsButton"-->
-                <!--android:layout_marginTop="@dimen/activity_vertical_margin"/>-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/explain_problem"
+                style="@style/SettingsButton"
+                android:layout_marginTop="@dimen/activity_vertical_margin"/>
 
-            <!--<EditText-->
-                <!--android:id="@+id/explanationEditText"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:lines="4"-->
-                <!--style="@style/RegularText"-->
-                <!--android:gravity="top|start"-->
-                <!--android:background="@drawable/bg_edit_text"-->
-                <!--android:padding="@dimen/activity_vertical_margin"-->
-                <!--android:importantForAutofill="no"-->
-                <!--android:hint="@string/explanation_hint"-->
-                <!--android:layout_margin="@dimen/activity_vertical_margin"-->
-                <!--android:inputType="textMultiLine"-->
-                <!--tools:ignore="UnusedAttribute" />-->
+            <EditText
+                android:id="@+id/explanationEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="4"
+                style="@style/RegularText"
+                android:gravity="top|start"
+                android:background="@drawable/bg_edit_text"
+                android:padding="@dimen/activity_vertical_margin"
+                android:importantForAutofill="no"
+                android:hint="@string/explanation_hint"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:inputType="textMultiLine"
+                tools:ignore="UnusedAttribute" />
 
             <Button
                 android:id="@+id/sendReportButton"

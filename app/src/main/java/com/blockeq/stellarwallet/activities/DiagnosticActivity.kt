@@ -1,5 +1,8 @@
 package com.blockeq.stellarwallet.activities
 
+import android.content.ComponentName
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.RadioButton
 import android.widget.Toast
@@ -57,43 +60,45 @@ class DiagnosticActivity : BaseActivity() {
                 fields.put("Locale", localeTextView.text)
                 fields.put("App Version", appVersionTextView.text)
                 fields.put("Public Wallet Address", publicAddressTextView.text)
-//                fields.put("detail", explanationEditText.text)
+                fields.put("Summary", explanationEditText.text)
 
                 fields.put("Wallet Creation Method", recoveryType)
                 fields.put("Used Passphrase", isPassphrase)
                 fields.put("Battery State", "Charging (20%)")
 
                 json.put("fields", fields)
-//                val emailBody = "Bug report details:\n" + explanationEditText.text + "\n\nJSON format details:\n\n" + json.toString()
+
+                val emailBody = "Bug report details:\n" + explanationEditText.text + "\n\nJSON format details:\n\n" + json.toString()
 
                 val postRequest = object : JsonObjectRequest(Request.Method.POST,
                         Constants.BLOCKEQ_DIAGNOSTIC_URL, json,
                         Response.Listener {
-
+                            val issueId = it["id"].toString()
+                            callEmailClient(emailBody, issueId)
                         },
                         Response.ErrorListener {
                             Toast.makeText(applicationContext, "Problem sending diagnostic", Toast.LENGTH_SHORT).show()
                         }) {}
 
                 queue.add(postRequest)
-
-
-                // Email client logic
-//                val intent = Intent(Intent.ACTION_SENDTO)
-//                intent.data = Uri.parse("mailto:hello@com.blockeq")
-//                intent.putExtra(Intent.EXTRA_SUBJECT, "Bug report")
-//                intent.putExtra(Intent.EXTRA_TEXT, emailBody)
-//
-//                // fallback component was found in most emulators without email app
-//                val emailApp = intent.resolveActivity(packageManager)
-//                val unsupportedAction = ComponentName.unflattenFromString("com.android.fallback/.Fallback")
-//                if (emailApp != null && emailApp != unsupportedAction) {
-//                    startActivity(intent)
-//                } else {
-//                    Toast.makeText(applicationContext, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
-//                }
-//                finish()
+                finish()
             }
+        }
+    }
+
+    private fun callEmailClient(emailBody: String, issueId : String) {
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:support@com.blockeq")
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Bug report [$issueId]")
+        intent.putExtra(Intent.EXTRA_TEXT, emailBody)
+
+        // fallback component was found in most emulators without email app
+        val emailApp = intent.resolveActivity(packageManager)
+        val unsupportedAction = ComponentName.unflattenFromString("com.android.fallback/.Fallback")
+        if (emailApp != null && emailApp != unsupportedAction) {
+            startActivity(intent)
+        } else {
+            Toast.makeText(applicationContext, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
         }
     }
 }
