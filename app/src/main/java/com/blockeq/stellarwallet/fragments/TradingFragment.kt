@@ -9,15 +9,21 @@ import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.adapters.TradingPagerAdapter
 import com.blockeq.stellarwallet.fragments.tabs.OrderBookTabFragment
 import com.blockeq.stellarwallet.helpers.TradingTabs
-import com.blockeq.stellarwallet.interfaces.OnTradeCurrenciesChange
+import com.blockeq.stellarwallet.interfaces.OnTradeCurrenciesChanged
+import com.blockeq.stellarwallet.models.SelectionModel
 import kotlinx.android.synthetic.main.fragment_trade.*
 
-class TradingFragment : Fragment(), OnTradeCurrenciesChange {
-    private lateinit var fragmentAdapter: TradingPagerAdapter
-
-    override fun onCurrencyChange(currencyCodeFrom: String?, currencyCodeTo: String?) {
-        (fragmentAdapter.getItem(TradingTabs.OrderBook.ordinal) as OrderBookTabFragment).updateTradingCurrencies(currencyCodeFrom, currencyCodeTo)
+class TradingFragment : Fragment(), OnTradeCurrenciesChanged {
+    companion object {
+        fun newInstance(): TradingFragment = TradingFragment()
     }
+
+    override fun onCurrencyChange(currencyCodeFrom: SelectionModel, currencyCodeTo: SelectionModel) {
+        val fragment = (fragmentAdapter.getItem(TradingTabs.OrderBook.ordinal) as OrderBookTabFragment)
+        fragment.updateTradingCurrencies(currencyCodeFrom, currencyCodeTo)
+    }
+
+    private lateinit var fragmentAdapter: TradingPagerAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_trade, container, false)
@@ -28,10 +34,6 @@ class TradingFragment : Fragment(), OnTradeCurrenciesChange {
         viewPager.adapter = fragmentAdapter
         viewPager.offscreenPageLimit = fragmentAdapter.count
         tabs.setupWithViewPager(viewPager)
-    }
-
-    companion object {
-        fun newInstance(): TradingFragment = TradingFragment()
     }
 
 }

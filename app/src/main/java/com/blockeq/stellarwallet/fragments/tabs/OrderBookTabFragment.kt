@@ -11,12 +11,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.adapters.OrderBooksAdapter
-import com.blockeq.stellarwallet.models.DataAsset
-import com.blockeq.stellarwallet.models.OrderBook
-import com.blockeq.stellarwallet.models.OrderBookAdapterTypes
-import com.blockeq.stellarwallet.models.OrderBookStickyHeader
+import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.remote.Horizon
-import com.brandongogetap.stickyheaders.StickyLayoutManager
 import kotlinx.android.synthetic.main.fragment_tab_order_book.*
 import org.stellar.sdk.responses.OrderBookResponse
 import java.util.*
@@ -27,6 +23,8 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var orderBooksAdapter: OrderBooksAdapter
     private lateinit var buyingAsset : DataAsset
     private lateinit var sellingAsset : DataAsset
+    private lateinit var currentCurrencyCodeFrom : SelectionModel
+    private lateinit var currentCurrencyCodeTo : SelectionModel
 
     companion object {
         private const val ARG_FROM_ASSET = "ARG_FROM_ASSET"
@@ -78,25 +76,21 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 LinearLayoutManager(context).orientation)
         orderBookRv.addItemDecoration(dividerItemDecoration)
         swipeRefresh.setOnRefreshListener(this)
-//        onRefresh()
-        loadOrderBook()
+
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (::currentCurrencyCodeFrom.isInitialized && ::currentCurrencyCodeTo.isInitialized) {
+          onRefresh()
+        }
     }
 
     override fun onRefresh() {
-        if(!isAdded || isDetached || !isVisible) {
+        if (!isAdded || isDetached || !isVisible) {
             return
         }
-        loadOrderBook();
-        //Mockup API call tor refresh
-//        val handler = Handler()
-//        val runnable = Runnable {
-//            if (swipeRefresh != null) {
-//                swipeRefresh.isRefreshing = false
-//                Toast.makeText(context, getText(R.string.refreshed), Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//        handler.postDelayed(runnable, 1000)
-        //**********
+        loadOrderBook()
     }
 
     private fun loadOrderBook() {
@@ -178,10 +172,14 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         orderBooks.add(item9)
     }
 
-    fun updateTradingCurrencies(currencyCodeFrom: String?, currencyCodeTo: String?) {
+    fun updateTradingCurrencies(currencyCodeFrom: SelectionModel, currencyCodeTo: SelectionModel) {
         if (::orderBooksAdapter.isInitialized) {
-            orderBooksAdapter.setCurrencies(currencyCodeFrom, currencyCodeTo)
+            orderBooksAdapter.setCurrencies(currencyCodeFrom.label, currencyCodeTo.label)
             orderBooksAdapter.notifyDataSetChanged()
         }
+
+        currentCurrencyCodeFrom = currencyCodeFrom
+        currentCurrencyCodeTo = currencyCodeTo
+
     }
 }

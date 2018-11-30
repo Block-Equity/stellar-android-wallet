@@ -1,6 +1,6 @@
 package com.blockeq.stellarwallet.models
 
-import com.blockeq.stellarwallet.viewmodels.ExchangeEntity
+import com.blockeq.stellarwallet.vmodels.ExchangeEntity
 
 class ExchangeMapper {
     companion object {
