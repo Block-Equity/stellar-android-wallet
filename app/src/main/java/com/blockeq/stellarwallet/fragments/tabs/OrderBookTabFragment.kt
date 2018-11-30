@@ -100,7 +100,7 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
             }
 
             override fun onFailed(errorMessage: String) {
-                Timber.d("failed to load the order book", errorMessage)
+                Timber.d("failed to load the order book %s", errorMessage)
             }
 
         }, buy, sell)
