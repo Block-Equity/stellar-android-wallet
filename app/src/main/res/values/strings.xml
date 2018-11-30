@@ -187,7 +187,7 @@
     <string name="locale">Locale</string>
     <string name="blockeq_app_version">BlockEQ App version</string>
     <string name="public_address_of_stellar_account">Public address of Stellar account</string>
-    <string name="send_report">Send diagnostic</string>
+    <string name="send_report">Report issue</string>
     <string name="recovery_type">Recovery type</string>
     <string name="mnemonic_phrase_12_words">Recovered with 12-word Mnemonic</string>
     <string name="mnemonic_phrase_24_words">Recovered with 24-word Mnemonic</string>
