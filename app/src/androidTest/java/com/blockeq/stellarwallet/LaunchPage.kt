@@ -48,4 +48,16 @@ object LaunchPage : BasePage() {
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
     }
+
+    fun clickRecoverFromPhrase() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+
+        onView(ViewMatchers.withId(R.id.recoverWalletButton)).perform(ViewActions.click())
+        val string = context.getString(R.string.recover_from_phrase)
+
+        Espresso.onView(ViewMatchers.withText(string))
+                .inRoot(RootMatchers.isDialog())
+                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+                .perform(ViewActions.click())
+    }
 }
