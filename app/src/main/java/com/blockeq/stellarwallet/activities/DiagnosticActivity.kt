@@ -64,7 +64,6 @@ class DiagnosticActivity : BaseActivity() {
 
                 fields.put("Wallet Creation Method", recoveryType)
                 fields.put("Used Passphrase", isPassphrase)
-                fields.put("Battery State", "Charging (20%)")
 
                 json.put("fields", fields)
 
@@ -73,7 +72,7 @@ class DiagnosticActivity : BaseActivity() {
                 val postRequest = object : JsonObjectRequest(Request.Method.POST,
                         Constants.BLOCKEQ_DIAGNOSTIC_URL, json,
                         Response.Listener {
-                            val issueId = it["id"].toString()
+                            val issueId = (it["fields"] as JSONObject).get("Report Id").toString()
                             callEmailClient(emailBody, issueId)
                         },
                         Response.ErrorListener {
