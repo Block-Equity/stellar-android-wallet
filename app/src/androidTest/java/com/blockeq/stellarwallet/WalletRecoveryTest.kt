@@ -30,6 +30,12 @@ class WalletRecoveryTest {
     @JvmField
     val activityTestRule = ActivityTestRule<LaunchActivity>(LaunchActivity::class.java)
 
+    private fun checkAccountId(accountId: String) {
+        WalletPage.onPageLoaded().pressReceive()
+        ReceivePage.onPageLoaded().checkAccount(accountId)
+        ReceivePage.onPageLoaded().goBack()
+    }
+
     private fun clearWallet() {
         WalletPage.onPageLoaded().pressSettings()
         SettingsPage.onPageLoaded().clearWallet()
@@ -40,25 +46,33 @@ class WalletRecoveryTest {
 
     @Test
     fun testRecoverWalletOption12Words() {
+        val accountId = "GCCG2BX3L4S4F6HP3MP7BECCCE5H3NNMRA6W4ROHT3WID3QEG2K2CQK4"
+
         LaunchPage.onPageLoaded().clickRecoverFromPhrase()
         RecoveryWalletPage.onPageLoaded().putPhrase(mnemonic12)
         RecoveryWalletPage.onPageLoaded().next()
         PinPage.onPageLoaded().proceedWithPin(pin).proceedWithPin(pin)
+        checkAccountId(accountId)
         clearWallet()
     }
 
     @Test
     fun testRecoverWalletOption24Words() {
+        val accountId = "GCTZMUXHQ65ZXCOLFH7MEHIWEDCPA3M4HI7G7HHXSF64WZ56PIMHEMV2"
+
         LaunchPage.onPageLoaded().clickRecoverFromPhrase()
         RecoveryWalletPage.onPageLoaded().putPhrase(mnemonic24)
         RecoveryWalletPage.onPageLoaded().next()
         PinPage.onPageLoaded().proceedWithPin(pin).proceedWithPin(pin)
+        checkAccountId(accountId)
         clearWallet()
     }
 
 
     @Test
     fun testRecoverWalletOption12WordsWithPassphrase() {
+        val accountId = "GDWWYBFVH5YJAZ6WSTLAWT4BGK6YDEDT772KRAGDUJRVQEJKCIMIM5HH"
+
         LaunchPage.onPageLoaded().clickRecoverFromPhrase()
         RecoveryWalletPage.onPageLoaded().putPhrase(mnemonic12)
         RecoveryWalletPage.onPageLoaded().clickPassphrase()
@@ -66,11 +80,14 @@ class WalletRecoveryTest {
 
         RecoveryWalletPage.onPageLoaded().next()
         PinPage.onPageLoaded().proceedWithPin(pin).proceedWithPin(pin)
+        checkAccountId(accountId)
         clearWallet()
     }
 
     @Test
     fun testRecoverWalletOption24WordsWithPassphrase() {
+        val accountId = "GBZKPBFWSOW772JCUUS7RPNRZ5ATTWL453HUYHKN2OVFZNLDV33IU7EH"
+
         LaunchPage.onPageLoaded().clickRecoverFromPhrase()
         RecoveryWalletPage.onPageLoaded().putPhrase(mnemonic24)
         RecoveryWalletPage.onPageLoaded().clickPassphrase()
@@ -78,15 +95,19 @@ class WalletRecoveryTest {
 
         RecoveryWalletPage.onPageLoaded().next()
         PinPage.onPageLoaded().proceedWithPin(pin).proceedWithPin(pin)
+        checkAccountId(accountId)
         clearWallet()
     }
 
     @Test
     fun testRecoverSecretSeed() {
+        val accountId = "GDRAR4QYEGCR7ON2E2QWUFITC56LQGDI7RZ67MIQYQASVSMYNQSRCTL6"
+
         LaunchPage.onPageLoaded().clickRecoverFromSecretKey()
         RecoveryWalletPage.onPageLoaded().putSecretKey(secretKey)
         RecoveryWalletPage.onPageLoaded().next()
         PinPage.onPageLoaded().proceedWithPin(pin).proceedWithPin(pin)
+        checkAccountId(accountId)
         clearWallet()
     }
 }

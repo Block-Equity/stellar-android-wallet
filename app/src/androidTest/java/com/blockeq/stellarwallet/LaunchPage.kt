@@ -61,7 +61,7 @@ object LaunchPage : BasePage() {
                 .inRoot(RootMatchers.isDialog())
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
-        
+
         return this
     }
 }
