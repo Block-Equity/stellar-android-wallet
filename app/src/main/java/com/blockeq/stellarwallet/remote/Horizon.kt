@@ -8,6 +8,7 @@ import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.interfaces.OnLoadAccount
 import com.blockeq.stellarwallet.interfaces.OnLoadEffects
 import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
+import com.blockeq.stellarwallet.models.AssetUtil
 import com.blockeq.stellarwallet.models.DataAsset
 import com.blockeq.stellarwallet.models.HorizonException
 import com.facebook.stetho.okhttp3.StethoInterceptor
@@ -47,6 +48,27 @@ object Horizon : HorizonTasks {
     override fun getLoadAccountTask(listener: OnLoadAccount): AsyncTask<Void, Void, AccountResponse> {
         return LoadAccountTask(listener)
     }
+
+    override fun deleteOffer(id:Long, secretSeed : CharArray, selling: Asset, buying: Asset, price: String, listener: Horizon.OnMarketOfferListener) {
+        AsyncTask.execute {
+            val server = getServer()
+            val offerOperation = ManageOfferOperation.Builder(selling, buying, "0", price).setOfferId(id).build()
+            val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
+            val sourceAccount = server.accounts().account(sourceKeyPair)
+
+            val transaction = Transaction.Builder(sourceAccount).addOperation(offerOperation).build()
+            transaction.sign(sourceKeyPair)
+            val response = server.submitTransaction(transaction)
+            Handler(Looper.getMainLooper()).post {
+                if (response.isSuccess) {
+                    listener.onExecuted()
+                } else {
+                    listener.onFailed(response.extras.resultCodes.operationsResultCodes[0].toString())
+                }
+            }
+        }
+    }
+
 
     private class LoadAccountTask(private val listener: OnLoadAccount) : AsyncTask<Void, Void, AccountResponse>() {
         override fun doInBackground(vararg params: Void?) : AccountResponse? {
@@ -298,19 +320,9 @@ object Horizon : HorizonTasks {
             Network.usePublicNetwork()
 
             val server = getServer()
-            val buying : Asset
-            if (buyingAsset.type == "native") {
-                 buying = AssetTypeNative()
-            } else {
-                 buying = Asset.create(buyingAsset.type, buyingAsset.code, buyingAsset.issuer)
-            }
+            val buying : Asset = AssetUtil.toAssetFrom(buyingAsset)
+            val selling : Asset = AssetUtil.toAssetFrom(sellingAsset)
 
-            val selling : Asset
-            if(sellingAsset.type == "native") {
-                selling = AssetTypeNative()
-            } else {
-                selling = Asset.create(sellingAsset.type, sellingAsset.code, sellingAsset.issuer)
-            }
             val response = server.orderBook().buyingAsset(buying).sellingAsset(selling).execute()
 
             Handler(Looper.getMainLooper()).post {

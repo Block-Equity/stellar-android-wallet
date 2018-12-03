@@ -68,7 +68,7 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
     }
 
     private fun loadOrderBook(buy : DataAsset, sell : DataAsset) {
-        Horizon.getOrderBook(object:Horizon.OnOrderBookListener {
+          Horizon.getOrderBook(object:Horizon.OnOrderBookListener {
             override fun onOrderBook(asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
                 orderBooks.clear()
                 val orderBooksTitle = OrderBook(type = OrderBookAdapterTypes.TITLE)

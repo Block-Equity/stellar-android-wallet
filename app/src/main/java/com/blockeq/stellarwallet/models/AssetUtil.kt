@@ -1,5 +1,6 @@
 package com.blockeq.stellarwallet.models
 
+import com.blockeq.stellarwallet.remote.Horizon
 import org.stellar.sdk.Asset
 import org.stellar.sdk.AssetTypeCreditAlphaNum12
 import org.stellar.sdk.AssetTypeCreditAlphaNum4
@@ -9,6 +10,15 @@ import org.stellar.sdk.xdr.AssetType
 class AssetUtil {
     companion object {
         val NATIVE_ASSET_CODE = "XLM"
+
+        fun toAssetFrom(dataAsset: DataAsset) : Asset {
+            val buying : Asset = if (dataAsset.type == "native") {
+                AssetTypeNative()
+            } else {
+                Asset.create(dataAsset.type, dataAsset.code, dataAsset.issuer)
+            }
+            return buying
+        }
 
         fun toDataAssetFrom(selection: SelectionModel): DataAsset? {
             val asset = selection.asset
