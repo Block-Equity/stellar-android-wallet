@@ -37,7 +37,7 @@ object LaunchPage : BasePage() {
         PinPage.onPageLoaded().proceedWithPin(pin).proceedWithPin(pin)
     }
 
-    fun clickRecoverFromSecretKey() {
+    fun clickRecoverFromSecretKey(): LaunchPage {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
         onView(ViewMatchers.withId(R.id.recoverWalletButton)).perform(ViewActions.click())
@@ -47,9 +47,10 @@ object LaunchPage : BasePage() {
                 .inRoot(RootMatchers.isDialog())
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
+        return this
     }
 
-    fun clickRecoverFromPhrase() {
+    fun clickRecoverFromPhrase(): LaunchPage {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
         onView(ViewMatchers.withId(R.id.recoverWalletButton)).perform(ViewActions.click())
@@ -59,5 +60,6 @@ object LaunchPage : BasePage() {
                 .inRoot(RootMatchers.isDialog())
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
+        return this
     }
 }
