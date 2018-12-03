@@ -27,23 +27,23 @@ class WalletCreationTest {
     @Test
     fun testCreateWalletOption12Words() {
         LaunchPage.onPageLoaded().createWallet(MnemonicType.WORD_12, pin)
-        WalletPage.onPageLoaded().pressSettings()
-        SettingsPage.onPageLoaded().clearWallet()
-        PinPage.onPageLoaded().proceedWithPin(pin)
-        //restart
-        LaunchPage.onPageLoaded()
     }
 
     @Test
     fun testCreateWalletOption24Words() {
-        LaunchPage.onPageLoaded().createWallet(MnemonicType.WORD_24, pin)
+        createWallet(MnemonicType.WORD_24, pin)
+    }
+
+    private fun createWallet(type: MnemonicType, pin: String) {
+        LaunchPage.onPageLoaded().createWallet(type, pin)
+        // create pin > re-enter
+        PinPage.onPageLoaded().proceedWithPin(pin).proceedWithPin(pin)
         WalletPage.onPageLoaded().pressSettings()
         SettingsPage.onPageLoaded().clearWallet()
         PinPage.onPageLoaded().proceedWithPin(pin)
         //restart
         LaunchPage.onPageLoaded()
     }
-
 
     @Test
     fun test_cancelling_from_recovery_flow() {

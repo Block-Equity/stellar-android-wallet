@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
+import android.view.View
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.fragments.SettingsFragment
@@ -14,13 +15,14 @@ import com.blockeq.stellarwallet.interfaces.OnLoadEffects
 import com.blockeq.stellarwallet.models.MinimumBalance
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
+import com.blockeq.stellarwallet.utils.KeyboardUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
 import java.util.*
 
-class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects {
+class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUtils.SoftKeyboardToggleListener {
     private enum class WalletFragmentType {
         WALLET,
         TRADING,
@@ -34,6 +36,7 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects {
         setContentView(R.layout.activity_wallet)
 
         setupUI()
+
     }
 
     //region Navigation
@@ -80,13 +83,28 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects {
     override fun onResume() {
         super.onResume()
         startPollingAccount()
+
+        KeyboardUtils.addKeyboardToggleListener(this, this)
     }
 
     override fun onPause() {
         super.onPause()
         endPollingAccount()
+
+        KeyboardUtils.removeKeyboardToggleListener(this)
+
     }
 
+    /**
+     * When the keyboard is opened the bottomNavigation gets pushed up.
+     */
+    override fun onToggleSoftKeyboard(isVisible: Boolean) {
+        if (isVisible) {
+            bottomNavigation.visibility = View.GONE
+        } else {
+            bottomNavigation.visibility = View.VISIBLE
+        }
+    }
 
     private var handler = Handler()
     private var runnableCode : Runnable? = null

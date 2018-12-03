@@ -16,7 +16,7 @@ object LaunchPage : BasePage() {
         return this
     }
 
-    fun createWallet(option : MnemonicType, pin : String) {
+    fun createWallet(option : MnemonicType, pin : String): LaunchPage {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
         onView(ViewMatchers.withId(R.id.createWalletButton)).perform(ViewActions.click())
@@ -33,11 +33,10 @@ object LaunchPage : BasePage() {
 
         Espresso.onView(ViewMatchers.withId(R.id.confirmButton)).perform(ViewActions.click())
 
-        // create pin > re-enter
-        PinPage.onPageLoaded().proceedWithPin(pin).proceedWithPin(pin)
+        return this
     }
 
-    fun clickRecoverFromSecretKey(): LaunchPage {
+    fun clickRecoverFromSecretKey() : LaunchPage {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
         onView(ViewMatchers.withId(R.id.recoverWalletButton)).perform(ViewActions.click())
