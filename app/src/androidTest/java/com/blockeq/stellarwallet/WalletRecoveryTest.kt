@@ -32,7 +32,7 @@ class WalletRecoveryTest {
 
     private fun checkAccountId(accountId: String) {
         WalletPage.onPageLoaded().pressReceive()
-        ReceivePage.onPageLoaded().checkAccount(accountId)
+        ReceivePage.onPageLoaded().assertAccount(accountId)
         ReceivePage.onPageLoaded().goBack()
     }
 

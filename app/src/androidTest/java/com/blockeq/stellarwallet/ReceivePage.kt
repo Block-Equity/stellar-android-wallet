@@ -12,7 +12,7 @@ object ReceivePage : BasePage() {
         return this
     }
 
-    fun checkAccount(accountId : String): ReceivePage {
+    fun assertAccount(accountId : String): ReceivePage {
         // compare with account id on page
         onView(ViewMatchers.withId(R.id.addressEditText)).check(matches(withText(accountId)))
         return this
