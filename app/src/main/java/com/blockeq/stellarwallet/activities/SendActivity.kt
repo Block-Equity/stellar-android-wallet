@@ -25,8 +25,8 @@ import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
-import com.blockeq.stellarwallet.viewmodels.ExchangeEntity
-import com.blockeq.stellarwallet.viewmodels.ExchangeViewModel
+import com.blockeq.stellarwallet.vmodels.ExchangeEntity
+import com.blockeq.stellarwallet.vmodels.ExchangeViewModel
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
 import kotlinx.android.synthetic.main.contents_send.*
 

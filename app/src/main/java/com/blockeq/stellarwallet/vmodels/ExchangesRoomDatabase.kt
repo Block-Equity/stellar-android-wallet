@@ -1,4 +1,4 @@
-package com.blockeq.stellarwallet.viewmodels
+package com.blockeq.stellarwallet.vmodels
 
 import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Database

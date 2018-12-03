@@ -54,9 +54,7 @@
                 android:layout_marginTop="@dimen/margin_padding_size_medium"
                 app:hint="@string/selling_hint"
                 app:inputType="decimal"
-                app:strokeColor="@color/sellSelectorBg">
-
-            </com.blockeq.stellarwallet.views.CustomSelector>
+                app:strokeColor="@color/sellSelectorBg"/>
 
             <TextView
                 android:id="@+id/holdings"
