@@ -1,5 +1,6 @@
 package com.blockeq.stellarwallet
 
+import android.content.Context
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.ViewAction
 import android.support.test.espresso.action.ViewActions
@@ -25,6 +26,19 @@ object RecoveryWalletPage : BasePage() {
 
     fun putPhrase(phrase : String) : RecoveryWalletPage {
         onView(ViewMatchers.withId(R.id.phraseEditText)).perform(ViewActions.typeText(phrase))
+        return this
+    }
+
+    fun clickPassphrase() : RecoveryWalletPage {
+        onView(ViewMatchers.withId(R.id.passphraseButton)).perform(ViewActions.click())
+        return this
+    }
+
+    fun proceedWithPassphrase(context : Context, phrase: String) : RecoveryWalletPage {
+        onView(ViewMatchers.withId(R.id.passphraseEditText)).perform(ViewActions.typeText(phrase))
+        onView(ViewMatchers.withText(context.getString(R.string.ok))).perform(ViewActions.click())
+        onView(ViewMatchers.withId(R.id.passphraseEditText)).perform(ViewActions.typeText(phrase))
+        onView(ViewMatchers.withText(context.getString(R.string.ok))).perform(ViewActions.click())
         return this
     }
 }
