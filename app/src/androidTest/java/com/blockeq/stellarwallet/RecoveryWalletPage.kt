@@ -29,6 +29,11 @@ object RecoveryWalletPage : BasePage() {
         return this
     }
 
+    fun putSecretKey(key : String) : RecoveryWalletPage {
+        onView(ViewMatchers.withId(R.id.secretKeyEditText)).perform(ViewActions.typeText(key))
+        return this
+    }
+
     fun clickPassphrase() : RecoveryWalletPage {
         onView(ViewMatchers.withId(R.id.passphraseButton)).perform(ViewActions.click())
         return this

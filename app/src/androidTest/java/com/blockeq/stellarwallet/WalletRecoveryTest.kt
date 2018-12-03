@@ -21,6 +21,7 @@ class WalletRecoveryTest {
 
     private val pin = "1234"
     private val passphrase = "passphrase"
+    private val secretKey = "SDLOPMAX6BPWTDVQZZAR47JCVKQM4EI52LP4XLDO75M7OA2C2XZ7Z3UZ"
 
     private val mnemonic12 = "level seminar then wrist obscure use normal soldier nephew frequent resemble return"
     private val mnemonic24 = "slender job catalog super settle stool renew stomach lonely deputy notable dice evolve snap nature tell rally fine visa donate stay have devote liquid"
@@ -75,6 +76,15 @@ class WalletRecoveryTest {
         RecoveryWalletPage.onPageLoaded().clickPassphrase()
         RecoveryWalletPage.onPageLoaded().proceedWithPassphrase(activityTestRule.activity.applicationContext, passphrase)
 
+        RecoveryWalletPage.onPageLoaded().next()
+        PinPage.onPageLoaded().proceedWithPin(pin).proceedWithPin(pin)
+        clearWallet()
+    }
+
+    @Test
+    fun testRecoverSecretSeed() {
+        LaunchPage.onPageLoaded().clickRecoverFromSecretKey()
+        RecoveryWalletPage.onPageLoaded().putSecretKey(secretKey)
         RecoveryWalletPage.onPageLoaded().next()
         PinPage.onPageLoaded().proceedWithPin(pin).proceedWithPin(pin)
         clearWallet()
