@@ -1,11 +1,9 @@
 package com.blockeq.stellarwallet
 
 import android.content.Context
-import android.support.test.espresso.Espresso
 import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.ViewAction
 import android.support.test.espresso.action.ViewActions
-import android.support.test.espresso.assertion.ViewAssertions
-import android.support.test.espresso.matcher.RootMatchers
 import android.support.test.espresso.matcher.ViewMatchers
 import android.support.test.espresso.matcher.ViewMatchers.isRoot
 
@@ -43,30 +41,9 @@ object RecoveryWalletPage : BasePage() {
 
     fun proceedWithPassphrase(context : Context, phrase: String) : RecoveryWalletPage {
         onView(ViewMatchers.withId(R.id.passphraseEditText)).perform(ViewActions.typeText(phrase))
-
-        Espresso.onView(ViewMatchers.withText(context.getString(R.string.ok)))
-                .inRoot(RootMatchers.isDialog())
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-                .perform(ViewActions.click())
-
-        val string = context.getString(R.string.ok)
-
-        Espresso.onView(ViewMatchers.withText(string))
-                .inRoot(RootMatchers.isDialog())
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-                .perform(ViewActions.click())
-
-        Thread.sleep(1000)
-
-        onView(ViewMatchers.withId(R.id.passphraseEditText)).perform(ViewActions.typeText(phrase))
-
-        Espresso.onView(ViewMatchers.withText(context.getString(R.string.ok)))
-            .inRoot(RootMatchers.isDialog())
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-            .perform(ViewActions.click())
-
         onView(ViewMatchers.withText(context.getString(R.string.ok))).perform(ViewActions.click())
-
+        onView(ViewMatchers.withId(R.id.passphraseEditText)).perform(ViewActions.typeText(phrase))
+        onView(ViewMatchers.withText(context.getString(R.string.ok))).perform(ViewActions.click())
         return this
     }
 }
