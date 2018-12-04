@@ -23,7 +23,9 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class WalletRecoveryTest {
 
-    private data class MnemonicWalletUT(val mnemonic:String, val passPhrase: String?, val expectedAccountId : String)
+    private data class MnemonicWalletUT(val mnemonic:String, val passPhrase: String?,
+                                        val expectedAccountId : String,
+                                        val expectedSecretKey : String)
 
     private val pin = "1234"
     private val passphrase = "passphrase"
@@ -44,26 +46,30 @@ class WalletRecoveryTest {
     @Test
     fun testRecoverWalletOption12Words() {
         executeMnemonicWalletTest(MnemonicWalletUT(mnemonic12, null,
-                "GCCG2BX3L4S4F6HP3MP7BECCCE5H3NNMRA6W4ROHT3WID3QEG2K2CQK4"))
+                "GCCG2BX3L4S4F6HP3MP7BECCCE5H3NNMRA6W4ROHT3WID3QEG2K2CQK4",
+                "SA4JW3ACFZIMZSYUNTH47TYRRRTANTE3ALFCHKLELFB7BF55DUY7KXWH"))
     }
 
     @Test
     fun testRecoverWalletOption24Words() {
         executeMnemonicWalletTest(MnemonicWalletUT(mnemonic24, null,
-                "GCTZMUXHQ65ZXCOLFH7MEHIWEDCPA3M4HI7G7HHXSF64WZ56PIMHEMV2"))
+                "GCTZMUXHQ65ZXCOLFH7MEHIWEDCPA3M4HI7G7HHXSF64WZ56PIMHEMV2",
+                "SDNRILYU7VO44PV6HLGS3HXUMUAHPNRPAVOVWO7L2KDXYH6QEOSTIP24"))
     }
 
 
     @Test
     fun testRecoverWalletOption12WordsWithPassphrase() {
         executeMnemonicWalletTest(MnemonicWalletUT(mnemonic12, passphrase,
-                "GDWWYBFVH5YJAZ6WSTLAWT4BGK6YDEDT772KRAGDUJRVQEJKCIMIM5HH"))
+                "GDWWYBFVH5YJAZ6WSTLAWT4BGK6YDEDT772KRAGDUJRVQEJKCIMIM5HH",
+                "SDODL2YXHYKVMZDGCJORWXRQDYKRRXYQPVQYEY7JZVBYWAAE2XGA7MCQ"))
     }
 
     @Test
     fun testRecoverWalletOption24WordsWithPassphrase() {
         executeMnemonicWalletTest(MnemonicWalletUT(mnemonic24, passphrase,
-                "GBZKPBFWSOW772JCUUS7RPNRZ5ATTWL453HUYHKN2OVFZNLDV33IU7EH"))
+                "GBZKPBFWSOW772JCUUS7RPNRZ5ATTWL453HUYHKN2OVFZNLDV33IU7EH",
+                "SBVZWWIIMOVBMJ4OAEUOCLZA6ARSONYSQ3ZDQ7OS64EFKSJRLQA7GPIX"))
     }
 
     @Test
@@ -75,7 +81,12 @@ class WalletRecoveryTest {
         RecoveryWalletPage.onPageLoaded().putSecretKey(secretKey)
         RecoveryWalletPage.onPageLoaded().next()
         PinPage.onPageLoaded().proceedWithPin(pin).proceedWithPin(pin)
-        assertAccountId(expectedAccountId)
+
+        // assert expected accountId
+        WalletPage.onPageLoaded().pressReceive()
+        ReceivePage.onPageLoaded().assertAccount(expectedAccountId).goBack()
+
+        assertSecretKeyFromWalletPage(secretKey)
     }
 
     private fun executeMnemonicWalletTest(wallet: MnemonicWalletUT){
@@ -90,13 +101,17 @@ class WalletRecoveryTest {
 
         RecoveryWalletPage.onPageLoaded().next()
         PinPage.onPageLoaded().proceedWithPin(pin).proceedWithPin(pin)
-        assertAccountId(wallet.expectedAccountId)
+
+        // assert expected accountId
+        WalletPage.onPageLoaded().pressReceive()
+        ReceivePage.onPageLoaded().assertAccount(wallet.expectedAccountId).goBack()
     }
 
-    private fun assertAccountId(accountId: String) {
-        WalletPage.onPageLoaded().pressReceive()
-        ReceivePage.onPageLoaded().assertAccount(accountId)
-        ReceivePage.onPageLoaded().goBack()
+    private fun assertSecretKeyFromWalletPage(secretKey: String) {
+        WalletPage.onPageLoaded().pressSettings()
+        SettingsPage.onPageLoaded().pressViewSecretKey()
+        PinPage.onPageLoaded().proceedWithPin(pin)
+        ViewSecretSeedPage.onPageLoaded().assertSecretSeed(secretKey).goBack()
     }
 
     private fun clearWallet() {

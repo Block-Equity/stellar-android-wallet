@@ -11,7 +11,13 @@ object SettingsPage : BasePage() {
         return this
     }
 
-    fun clearWallet() {
+    fun clearWallet() : SettingsPage {
         onView(ViewMatchers.withId(R.id.clearWalletButton)).perform(ViewActions.click())
+        return this
+    }
+
+    fun pressViewSecretKey(): SettingsPage {
+        onView(ViewMatchers.withId(R.id.viewSeedButton)).perform(ViewActions.click())
+        return this
     }
 }

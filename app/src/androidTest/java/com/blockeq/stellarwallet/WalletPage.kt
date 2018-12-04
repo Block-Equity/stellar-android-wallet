@@ -19,4 +19,5 @@ object WalletPage : BasePage() {
         onView(ViewMatchers.withId(R.id.nav_settings)).perform(ViewActions.click())
         return this
     }
+
 }
