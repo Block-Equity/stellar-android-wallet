@@ -10,8 +10,14 @@ object WalletPage : BasePage() {
         return this
     }
 
+    fun pressReceive(): WalletPage {
+        onView(ViewMatchers.withId(R.id.receiveButton)).perform(ViewActions.click())
+        return this
+    }
+
     fun pressSettings(): WalletPage {
         onView(ViewMatchers.withId(R.id.nav_settings)).perform(ViewActions.click())
         return this
     }
+
 }
