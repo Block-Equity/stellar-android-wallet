@@ -15,7 +15,7 @@ import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.interfaces.OnTradeCurrenciesChanged
 import com.blockeq.stellarwallet.models.*
-import com.blockeq.stellarwallet.remote.Horizon
+import com.blockeq.stellarwallet.networking.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.vmodels.TradingViewModel
 import kotlinx.android.synthetic.main.fragment_tab_trade.*

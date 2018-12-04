@@ -17,8 +17,8 @@ import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.InflationActivity
 import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.interfaces.ChangeTrustlineListener
-import com.blockeq.stellarwallet.models.SupportedAsset
-import com.blockeq.stellarwallet.models.SupportedAssetType
+import com.blockeq.stellarwallet.responses.SupportedAssetResponse
+import com.blockeq.stellarwallet.responses.SupportedAssetType
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.StringFormat
 import com.squareup.picasso.Picasso
@@ -53,8 +53,8 @@ class AssetsRecyclerViewAdapter(var context: Context, private var listener: Chan
 
     override fun getItemViewType(position: Int): Int {
         return when {
-            items[position] is SupportedAsset && (items[position] as SupportedAsset).type == SupportedAssetType.ADDED -> TYPE_ASSET
-            items[position] is SupportedAsset -> TYPE_SUPPORTED_ASSET
+            items[position] is SupportedAssetResponse && (items[position] as SupportedAssetResponse).type == SupportedAssetType.ADDED -> TYPE_ASSET
+            items[position] is SupportedAssetResponse -> TYPE_SUPPORTED_ASSET
             else -> TYPE_HEADER
         }
     }
@@ -107,7 +107,7 @@ class AssetsRecyclerViewAdapter(var context: Context, private var listener: Chan
     //region Bind View Holders
 
     private fun configureAssetViewHolder(viewHolder : AssetViewHolder, position : Int) {
-        val asset = items[position] as SupportedAsset
+        val asset = items[position] as SupportedAssetResponse
 
         viewHolder.assetButton.visibility = View.VISIBLE
         viewHolder.assetName.text = asset.name
@@ -165,7 +165,7 @@ class AssetsRecyclerViewAdapter(var context: Context, private var listener: Chan
     }
 
     private fun configureSupportedAssetViewHolder(viewHolder: SupportedAssetViewHolder, position: Int) {
-        val asset = items[position] as SupportedAsset
+        val asset = items[position] as SupportedAssetResponse
         val trustLineAsset = Asset.createNonNativeAsset(asset.code.toUpperCase(), KeyPair.fromAccountId(asset.issuer))
 
         viewHolder.assetName.text = String.format(context.getString(R.string.asset_template),

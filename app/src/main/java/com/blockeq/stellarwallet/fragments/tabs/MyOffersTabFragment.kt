@@ -16,7 +16,7 @@ import com.blockeq.stellarwallet.interfaces.OnDeleteRequest
 import com.blockeq.stellarwallet.models.AssetUtil
 import com.blockeq.stellarwallet.models.Currency
 import com.blockeq.stellarwallet.models.MyOffer
-import com.blockeq.stellarwallet.remote.Horizon
+import com.blockeq.stellarwallet.networking.Horizon
 import kotlinx.android.synthetic.main.fragment_tab_my_offers.*
 import org.stellar.sdk.responses.OfferResponse
 import timber.log.Timber

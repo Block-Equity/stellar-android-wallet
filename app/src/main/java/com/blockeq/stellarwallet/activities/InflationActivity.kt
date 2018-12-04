@@ -7,7 +7,7 @@ import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
 import com.blockeq.stellarwallet.models.HorizonException
-import com.blockeq.stellarwallet.remote.Horizon
+import com.blockeq.stellarwallet.networking.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import kotlinx.android.synthetic.main.activity_inflation.*

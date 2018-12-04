@@ -3,12 +3,9 @@ package com.blockeq.stellarwallet.vmodels
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
-import android.os.Handler
-import android.os.Looper
 import android.widget.Toast
 import com.blockeq.stellarwallet.models.*
-import com.blockeq.stellarwallet.remote.Horizon
-import org.stellar.sdk.requests.RequestBuilder
+import com.blockeq.stellarwallet.networking.Horizon
 import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber
 import java.util.*

@@ -15,7 +15,7 @@ import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.adapters.OrderBooksAdapter
 import com.blockeq.stellarwallet.interfaces.OnUpdateTradingCurrencies
 import com.blockeq.stellarwallet.models.*
-import com.blockeq.stellarwallet.remote.Horizon
+import com.blockeq.stellarwallet.networking.Horizon
 import kotlinx.android.synthetic.main.fragment_tab_order_book.*
 import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber

@@ -18,9 +18,9 @@ import com.blockeq.stellarwallet.interfaces.ChangeTrustlineListener
 import com.blockeq.stellarwallet.interfaces.OnLoadAccount
 import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
 import com.blockeq.stellarwallet.models.HorizonException
-import com.blockeq.stellarwallet.models.SupportedAsset
-import com.blockeq.stellarwallet.models.SupportedAssetType
-import com.blockeq.stellarwallet.remote.Horizon
+import com.blockeq.stellarwallet.responses.SupportedAssetResponse
+import com.blockeq.stellarwallet.responses.SupportedAssetType
+import com.blockeq.stellarwallet.networking.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import com.google.gson.GsonBuilder
@@ -32,7 +32,7 @@ import org.stellar.sdk.responses.AccountResponse
 
 class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
-    private var map: Map<String, SupportedAsset>? = null
+    private var map: Map<String, SupportedAssetResponse>? = null
     private var assetsList: ArrayList<Any> = ArrayList()
     private lateinit var context : Context
     private lateinit var adapter : AssetsRecyclerViewAdapter
@@ -83,13 +83,13 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
     //endregion
 
     private fun convertBalanceToSupportedAsset(balances: Array<AccountResponse.Balance>,
-                                               supportedAssetsMap: Map<String, SupportedAsset>) : List<SupportedAsset> {
+                                               supportedAssetsMap: Map<String, SupportedAssetResponse>) : List<SupportedAssetResponse> {
 
-        val lumenSupportedAsset = SupportedAsset(0, Constants.LUMENS_ASSET_CODE, Constants.LUMENS_IMAGE_URL,
+        val lumenSupportedAsset = SupportedAssetResponse(0, Constants.LUMENS_ASSET_CODE, Constants.LUMENS_IMAGE_URL,
                 "", "", Constants.LUMENS_ASSET_NAME, "", "",
                 "0", SupportedAssetType.ADDED, null)
 
-        val list = ArrayList<SupportedAsset>()
+        val list = ArrayList<SupportedAssetResponse>()
         list.add(lumenSupportedAsset)
 
        if (balances.isNotEmpty()) {
@@ -107,7 +107,7 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
                        return@map asset
                    }
                    else -> {
-                       val asset = SupportedAsset(0, it.assetCode.toLowerCase(), "",
+                       val asset = SupportedAssetResponse(0, it.assetCode.toLowerCase(), "",
                                it.assetIssuer.accountId, it.limit, it.assetCode, "",
                                "", it.balance, SupportedAssetType.ADDED, it.asset)
                        return@map asset
@@ -117,13 +117,13 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
            // This cast is guaranteed to succeed
            @Suppress("UNCHECKED_CAST")
-           list.addAll((nullableAssets.filter { it != null }) as List<SupportedAsset>)
+           list.addAll((nullableAssets.filter { it != null }) as List<SupportedAssetResponse>)
        }
 
         return list
     }
 
-    private fun getFilteredSupportedAssets(map: Map<String, SupportedAsset>): List<SupportedAsset> {
+    private fun getFilteredSupportedAssets(map: Map<String, SupportedAssetResponse>): List<SupportedAssetResponse> {
         return map.values.filter { it ->
             it.code.toUpperCase() !in WalletApplication.localStore.balances!!.map { it.assetCode }
         }
@@ -137,9 +137,9 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
                 Response.Listener { response ->
                     // display response
                     val gson = GsonBuilder().create()
-                    val token = object : TypeToken<Map<String, SupportedAsset>>(){}.type
+                    val token = object : TypeToken<Map<String, SupportedAssetResponse>>(){}.type
 
-                    map = gson.fromJson<Map<String, SupportedAsset>>(response.toString(), token)
+                    map = gson.fromJson<Map<String, SupportedAssetResponse>>(response.toString(), token)
                     updateAdapter()
                 },
                 Response.ErrorListener {
