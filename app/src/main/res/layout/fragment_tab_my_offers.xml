@@ -22,5 +22,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="17sp"
-        android:text="There are no offers at the moment" />
+        android:text="@string/my_offer_empty_list" />
 </FrameLayout>
