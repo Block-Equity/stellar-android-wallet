@@ -47,6 +47,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener {
         refreshAddedCurrencies()
         setupListeners()
 
+        Timber.d("TradeTabFragment{$this}#onViewCreated")
     }
 
     private fun setupListeners() {
