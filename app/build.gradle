@@ -128,6 +128,11 @@ dependencies {
     kapt "android.arch.persistence.room:compiler:$lifecycleVersion"
 
     // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
+    implementation('com.squareup.retrofit2:retrofit:2.5.0') {
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    }
+    implementation('com.squareup.retrofit2:converter-gson:2.5.0') {
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+        exclude group: 'com.google.code.gson', module: 'gson'
+    }
 }

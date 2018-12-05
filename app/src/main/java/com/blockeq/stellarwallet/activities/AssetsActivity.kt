@@ -21,14 +21,16 @@ import com.blockeq.stellarwallet.models.HorizonException
 import com.blockeq.stellarwallet.responses.SupportedAssetResponse
 import com.blockeq.stellarwallet.responses.SupportedAssetType
 import com.blockeq.stellarwallet.networking.Horizon
+import com.blockeq.stellarwallet.networking.RetrofitClient
+import com.blockeq.stellarwallet.networking.api.SupportedAssetAPI
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.content_assets_activity.*
 import org.stellar.sdk.Asset
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
+import retrofit2.Call
+import retrofit2.Callback
 
 class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
@@ -130,23 +132,22 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
     }
 
     private fun loadSupportedAssets() {
-        val queue = Volley.newRequestQueue(this)
+        val retrofitClient = RetrofitClient.getRetrofitClient(Constants.BLOCKEQ_BASE_URL)
+        val service = retrofitClient.create(SupportedAssetAPI::class.java)
 
-        // TODO: Use retrofit and dagger
-        val request = JsonObjectRequest(Request.Method.GET, Constants.BLOCKEQ_BASE_URL, null,
-                Response.Listener { response ->
-                    // display response
-                    val gson = GsonBuilder().create()
-                    val token = object : TypeToken<Map<String, SupportedAssetResponse>>(){}.type
+        val call = service.requestSupportedAssets()
 
-                    map = gson.fromJson<Map<String, SupportedAssetResponse>>(response.toString(), token)
-                    updateAdapter()
-                },
-                Response.ErrorListener {
-                    Toast.makeText(this, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
-                })
+        call.enqueue(object : Callback<Map<String, SupportedAssetResponse>>{
+            override fun onFailure(call: Call<Map<String, SupportedAssetResponse>>, t: Throwable) {
+                Toast.makeText(this@AssetsActivity, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
+            }
 
-        queue.add(request)
+            override fun onResponse(call: Call<Map<String, SupportedAssetResponse>>, response: retrofit2.Response<Map<String, SupportedAssetResponse>>) {
+               map = response.body()
+               updateAdapter()
+            }
+
+        })
     }
 
     //region Call backs

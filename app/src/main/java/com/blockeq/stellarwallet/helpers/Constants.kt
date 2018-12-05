@@ -20,7 +20,8 @@ class Constants {
         const val INFLATION_DESTINATION = "GCCD6AJOYZCUAQLX32ZJF2MKFFAUJ53PVCFQI3RHWKL3V47QYE2BNAUT"
 
         const val LUMENS_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/icon-stellar.png?alt=media&token=38b70165-5255-4113-a15e-3c72bd4fab9f"
-        const val BLOCKEQ_BASE_URL = "https://api.blockeq.com/directory/assets"
+        const val BLOCKEQ_BASE_URL = "https://api.blockeq.com"
+        const val BLOCKEQ_ASSETS_URL = "https://api.blockeq.com/directory/assets"
         const val BLOCKEQ_EXCHANGES_URL = "https://api.blockeq.com/directory/exchanges?asArray"
         const val BLOCKEQ_DIAGNOSTIC_URL = "https://api.blockeq.com/diagnostic"
 
