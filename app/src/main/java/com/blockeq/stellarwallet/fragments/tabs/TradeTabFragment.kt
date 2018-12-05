@@ -199,7 +199,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener {
                 val currency = if(it.assetType != "native") {
                     Currency(i, it.assetCode, it.assetCode, it.balance.toFloat(), it.asset)
                 } else {
-                    Currency(i, "LMX", "LUMEN", it.balance.toFloat(), it.asset)
+                    Currency(i, "XML", "LUMEN", it.balance.toFloat(), it.asset)
                 }
                 addedCurrencies.add(currency)
                 i++

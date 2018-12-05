@@ -10,17 +10,16 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.adapters.OrderBooksAdapter
 import com.blockeq.stellarwallet.interfaces.OnUpdateTradingCurrencies
 import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.remote.Horizon
+import com.brandongogetap.stickyheaders.StickyLayoutManager
 import kotlinx.android.synthetic.main.fragment_tab_order_book.*
 import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber
 import java.util.*
-import com.brandongogetap.stickyheaders.StickyLayoutManager
 
 class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnUpdateTradingCurrencies {
 
@@ -64,7 +63,6 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         if (buyingAsset != null && sellingAsset != null) {
             loadOrderBook(buyingAsset!!, sellingAsset!!)
         }
-
     }
 
     private fun loadOrderBook(buy : DataAsset, sell : DataAsset) {
@@ -121,8 +119,8 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
     }
 
     override fun updateTradingCurrencies(currencyCodeFrom: SelectionModel, currencyCodeTo: SelectionModel) {
-        val buying =  AssetUtil.toDataAssetFrom(currencyCodeFrom)
-        val sell =  AssetUtil.toDataAssetFrom(currencyCodeTo)
+        val sell =  AssetUtil.toDataAssetFrom(currencyCodeFrom)
+        val buying = AssetUtil.toDataAssetFrom(currencyCodeTo)
 
         buyingAsset = buying
         sellingAsset = sell
