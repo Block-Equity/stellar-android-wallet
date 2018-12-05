@@ -68,7 +68,7 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUti
 
     private fun openFragment(fragment: Fragment, type : WalletFragmentType) {
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.container, fragment, type.name)
+        transaction.replace(R.id.content_container, fragment, type.name)
         transaction.commit()
     }
 

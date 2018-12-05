@@ -49,8 +49,8 @@ class CustomSelector @JvmOverloads constructor(
     private fun setColor(color: Int) {
         val editTextSld = editText.background as StateListDrawable
         val editTextBgChildren = (editTextSld.constantState as DrawableContainer.DrawableContainerState).children
-        val editTextDisabledGd = editTextBgChildren.get(0) as GradientDrawable
-        val editTextEnabledGd = editTextBgChildren.get(1) as GradientDrawable
+        val editTextDisabledGd = editTextBgChildren[0] as GradientDrawable
+        val editTextEnabledGd = editTextBgChildren[1] as GradientDrawable
         editTextDisabledGd.setStroke(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 1f, resources.displayMetrics).toInt(), color)
         editTextEnabledGd.setStroke(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,

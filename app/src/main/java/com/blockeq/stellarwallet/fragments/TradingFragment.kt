@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.adapters.TradingPagerAdapter
-import com.blockeq.stellarwallet.fragments.tabs.OrderBookTabFragment
 import com.blockeq.stellarwallet.interfaces.OnTradeCurrenciesChanged
 import com.blockeq.stellarwallet.interfaces.OnUpdateTradingCurrencies
 import com.blockeq.stellarwallet.models.SelectionModel
@@ -46,9 +45,8 @@ class TradingFragment : Fragment(), OnTradeCurrenciesChanged {
     override fun onAttachFragment(fragment: Fragment?) {
         Timber.d("onAttachFragment %s", fragment.toString())
 
-        if (fragment is OrderBookTabFragment) {
+        if (fragment is OnUpdateTradingCurrencies) {
             listener = fragment
         }
     }
-
 }
