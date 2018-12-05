@@ -110,6 +110,7 @@
     <string name="offerPrice">%1s Price</string>
     <string name="offerAmount">%1$s Amount</string>
     <string name="offerValue">%1s Value</string>
+    <string name="no_enough_data_available">no enough data available</string>
 
     <!--PIN Screen-->
     <string name="please_enter_your_pin">Please enter your PIN code</string>
