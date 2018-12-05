@@ -54,16 +54,26 @@ object Horizon : HorizonTasks {
             val server = getServer()
             val offerOperation = ManageOfferOperation.Builder(selling, buying, "0", price).setOfferId(id).build()
             val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
-            val sourceAccount = server.accounts().account(sourceKeyPair)
 
-            val transaction = Transaction.Builder(sourceAccount).addOperation(offerOperation).build()
-            transaction.sign(sourceKeyPair)
-            val response = server.submitTransaction(transaction)
-            Handler(Looper.getMainLooper()).post {
-                if (response.isSuccess) {
-                    listener.onExecuted()
+            try {
+                val sourceAccount = server.accounts().account(sourceKeyPair)
+
+                val transaction = Transaction.Builder(sourceAccount).addOperation(offerOperation).build()
+                transaction.sign(sourceKeyPair)
+                val response = server.submitTransaction(transaction)
+
+                Handler(Looper.getMainLooper()).post {
+                    if (response.isSuccess) {
+                        listener.onExecuted()
+                    } else {
+                        listener.onFailed(response.extras.resultCodes.operationsResultCodes[0].toString())
+                    }
+                }
+            } catch (error : java.lang.Exception) {
+                if (error.message != null) {
+                    listener.onFailed(error.message as String)
                 } else {
-                    listener.onFailed(response.extras.resultCodes.operationsResultCodes[0].toString())
+                    listener.onFailed("Unknown error")
                 }
             }
         }

@@ -9,7 +9,7 @@
     tools:context="com.blockeq.stellarwallet.activities.WalletActivity">
 
     <FrameLayout
-        android:id="@+id/container"
+        android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/bottom_navigation_height"

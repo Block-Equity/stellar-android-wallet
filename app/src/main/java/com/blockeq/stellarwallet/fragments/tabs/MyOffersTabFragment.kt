@@ -3,6 +3,7 @@ package com.blockeq.stellarwallet.fragments.tabs
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
@@ -13,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.blockeq.stellarwallet.R
-import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.adapters.MyOffersAdapter
 import com.blockeq.stellarwallet.interfaces.OnDeleteRequest
 import com.blockeq.stellarwallet.models.AssetUtil
@@ -58,6 +58,11 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
     override fun onRefresh() {
         Horizon.getOffers(object: Horizon.OnOffersListener {
             override fun onOffers(offers: ArrayList<OfferResponse>) {
+                if (offers.size == 0) {
+                    empty_view.visibility = View.VISIBLE
+                } else {
+                    empty_view.visibility = View.GONE
+                }
                 var id = 1
                 offerResponses = offers
                 myOffers.clear()
@@ -108,6 +113,10 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
         myOffers.removeAt(index)
         myOffersAdapter.notifyItemRemoved(index)
 
+        if (myOffers.size == 0) {
+            empty_view.visibility = View.VISIBLE
+        }
+
         val offer = offerResponses.find {
             it -> it.id.toInt() == offerId
         }
@@ -116,11 +125,18 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
         if (offer != null) {
             Horizon.deleteOffer(offer.id, secretSeed, offer.selling, offer.buying, offer.price, object: Horizon.OnMarketOfferListener {
                 override fun onExecuted() {
-                    Toast.makeText(appContext, "Offer Deleted", Toast.LENGTH_SHORT).show()
+                    Timber.d("offer has been deleted")
                 }
 
                 override fun onFailed(errorMessage: String) {
                     Toast.makeText(appContext, "Failed to delete offer: $errorMessage", Toast.LENGTH_SHORT).show()
+
+                    val mySnackbar = Snackbar.make(activity!!.findViewById(R.id.content_container),
+                            "failed to delete the offer", Snackbar.LENGTH_INDEFINITE)
+                    mySnackbar.setAction("retry") {
+                        deleteOffer(offerId)
+                    }
+                    mySnackbar.show()
                 }
             })
         }

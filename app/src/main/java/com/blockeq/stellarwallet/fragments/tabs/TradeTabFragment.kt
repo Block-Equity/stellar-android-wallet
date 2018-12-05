@@ -86,7 +86,6 @@ class TradeTabFragment : Fragment(), View.OnClickListener {
                 holdings.text = getString(R.string.holdings_amount,
                         holdingsAmount,
                         selectedSellingCurrency!!.label)
-//                mockupData(false)
                 resetBuyingCurrencies()
                 buyingCurrencies.removeAt(position)
                 buyingCustomSelector.setSelectionValues(buyingCurrencies)
@@ -141,15 +140,20 @@ class TradeTabFragment : Fragment(), View.OnClickListener {
                 sellingCustomSelector.editText.setText(holdingsAmount.toString())
             }
             R.id.submitTrade -> {
+                progressBar.visibility = View.VISIBLE
+                submitTrade.isEnabled = false
                 WalletApplication.userSession.getAvailableBalance()
                 Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
                     override fun onExecuted() {
                        Toast.makeText(context,"Order executed", Toast.LENGTH_LONG).show()
+                       submitTrade.isEnabled = true
+                       progressBar.visibility = View.GONE
                     }
 
                     override fun onFailed(errorMessage : String) {
                         Toast.makeText(context, "Order failed: $errorMessage", Toast.LENGTH_LONG).show()
-
+                        submitTrade.isEnabled = true
+                        progressBar.visibility = View.GONE
                     }
 
                 }, AccountUtils.getSecretSeed(appContext), selectedSellingCurrency!!.asset!!, selectedBuyingCurrency!!.asset!!,
