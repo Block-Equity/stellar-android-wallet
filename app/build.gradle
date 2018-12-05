@@ -126,4 +126,8 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$lifecycleVersion"
     annotationProcessor  "android.arch.persistence.room:compiler:$lifecycleVersion"
     kapt "android.arch.persistence.room:compiler:$lifecycleVersion"
+
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
 }
