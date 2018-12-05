@@ -20,7 +20,6 @@
     <string name="deleteDialogText">Are you sure you want to delete this %1s?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="refreshed">List Refreshed!</string>
     <string name="no_network">There was a problem connecting to the network. Attempting to reconnect.</string>
     <string name="available_balance_template">Available: %1$s %2$s</string>
     <string name="balance_template">%1$s %2$s</string>

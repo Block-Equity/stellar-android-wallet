@@ -84,6 +84,11 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
                     orderBooks.add(item)
                     id++
                 }
+
+                if (bids.isEmpty()) {
+                   orderBooks.add(OrderBook(type = OrderBookAdapterTypes.EMPTY))
+                }
+
                 orderBooks.add(sellOffer)
                 orderBooks.add(subheader)
                 asks.forEach {
@@ -92,6 +97,11 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
                     id++
 
                 }
+
+                if (asks.isEmpty()) {
+                    orderBooks.add(OrderBook(type = OrderBookAdapterTypes.EMPTY))
+                }
+
                 Timber.d("loading order book complete items %s", orderBooks.size)
 
                 Handler(Looper.getMainLooper()).post {
@@ -107,7 +117,6 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
 
         if (swipeRefresh != null) {
             swipeRefresh.isRefreshing = false
-            Toast.makeText(context, getText(R.string.refreshed), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -129,10 +138,7 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
             orderBookRv.adapter = orderBooksAdapter
 
             val layout = StickyLayoutManager(context, orderBooksAdapter)
-            // this will solve the compilation issue Type Mismatch
-            if (layout is LinearLayoutManager) {
-                orderBookRv.layoutManager = layout
-            }
+            orderBookRv.layoutManager = layout
         }
 
         Timber.d("updateTradingCurrencies %s %s", codeFrom, codeTo)
