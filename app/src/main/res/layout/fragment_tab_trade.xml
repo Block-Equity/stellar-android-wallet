@@ -58,7 +58,7 @@
                 android:layout_marginTop="@dimen/margin_padding_size_medium"
                 app:hint="@string/selling_hint"
                 app:inputType="decimal"
-                app:strokeColor="@color/sellSelectorBg"/>
+                app:customStrokeColor="@color/sellSelectorBg"/>
 
             <TextView
                 android:id="@+id/holdings"
@@ -145,7 +145,7 @@
                 android:layout_marginTop="@dimen/margin_padding_size_medium"
                 app:hint="@string/buying_hint"
                 app:inputType="decimal"
-                app:strokeColor="@color/buySelectorBg"/>
+                app:customStrokeColor="@color/buySelectorBg"/>
 
             <Button
                 android:id="@+id/submitTrade"

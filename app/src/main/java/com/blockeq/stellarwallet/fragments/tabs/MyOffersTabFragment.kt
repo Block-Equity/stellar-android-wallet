@@ -88,7 +88,6 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
             override fun onFailed(errorMessage: String) {
                 Timber.e(errorMessage)
             }
-
         })
     }
 

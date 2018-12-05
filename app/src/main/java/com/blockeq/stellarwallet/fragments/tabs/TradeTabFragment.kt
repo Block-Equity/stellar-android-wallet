@@ -59,6 +59,8 @@ class TradeTabFragment : Fragment(), View.OnClickListener {
         threeQuarters.setOnClickListener(this)
         all.setOnClickListener(this)
         submitTrade.setOnClickListener(this)
+        sellingCustomSelector.isEnabled = true
+        buyingCustomSelector.isEnabled = true
 
         sellingCustomSelector.editText.addTextChangedListener(object : TextWatcher {
 
@@ -143,24 +145,33 @@ class TradeTabFragment : Fragment(), View.OnClickListener {
             R.id.submitTrade -> {
                 progressBar.visibility = View.VISIBLE
                 submitTrade.isEnabled = false
+                setSelectorsEnabled(false)
                 WalletApplication.userSession.getAvailableBalance()
                 Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
                     override fun onExecuted() {
                        Toast.makeText(context,"Order executed", Toast.LENGTH_LONG).show()
                        submitTrade.isEnabled = true
                        progressBar.visibility = View.GONE
+                       sellingCustomSelector.editText.text.clear()
+                       setSelectorsEnabled(true)
                     }
 
                     override fun onFailed(errorMessage : String) {
                         Toast.makeText(context, "Order failed: $errorMessage", Toast.LENGTH_LONG).show()
                         submitTrade.isEnabled = true
                         progressBar.visibility = View.GONE
+                        setSelectorsEnabled(true)
                     }
 
                 }, AccountUtils.getSecretSeed(appContext), selectedSellingCurrency!!.asset!!, selectedBuyingCurrency!!.asset!!,
                         sellingCustomSelector.editText.text.toString(), buyingCustomSelector.editText.text.toString())
             }
         }
+    }
+
+    private fun setSelectorsEnabled(isEnabled : Boolean) {
+        sellingCustomSelector.isEnabled = isEnabled
+        buyingCustomSelector.isEnabled = isEnabled
     }
 
     override fun onAttach(context: Context?) {
