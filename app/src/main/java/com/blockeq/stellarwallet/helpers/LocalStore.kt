@@ -36,11 +36,6 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         get() = getBoolean(KEY_PIN_SETTINGS_SEND)
         set(showPinOnSend) = set(KEY_PIN_SETTINGS_SEND, showPinOnSend)
 
-    @Deprecated("TODO: Remove this method in new app")
-    var isPassphraseUsed : Boolean
-        get() = getBoolean(KEY_IS_PASSPHRASE_USED)
-        set(isPassphraseUsed) = set(KEY_IS_PASSPHRASE_USED, isPassphraseUsed)
-
     init {
         balances = arrayOf()
         availableBalance = Constants.DEFAULT_ACCOUNT_BALANCE
