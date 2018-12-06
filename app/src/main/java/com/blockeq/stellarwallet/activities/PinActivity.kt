@@ -77,7 +77,6 @@ class PinActivity : BaseActivity(), PinLockListener {
 
                             WalletApplication.localStore.stellarAccountId = stellarKeyPair.accountId
                             WalletApplication.userSession.pin = pin
-                            WalletApplication.localStore.isPassphraseUsed = pinViewState.passphrase != null
 
                             launchWallet()
                         }
@@ -89,18 +88,10 @@ class PinActivity : BaseActivity(), PinLockListener {
                     val masterKey = AccountUtils.getPinMasterKey(context, pin)
 
                     if (masterKey != null) {
-                        var decryptedPhrase = AccountUtils.getDecryptedString(encryptedPhrase, masterKey)
+                        val decryptedPhrase = AccountUtils.getDecryptedString(encryptedPhrase, masterKey)
                         var decryptedPassphrase : String? = null
                         if (encryptedPassphrase != null) {
                             decryptedPassphrase = AccountUtils.getDecryptedString(encryptedPassphrase, masterKey)
-                        }
-
-                        // TODO: Remove for new app, this is purely passphrase migration code
-                        // backwards compatible for wallets 1.0.3 or older
-                        if (AccountUtils.isOldWalletWithPassphrase()) {
-                            val decryptedPair = AccountUtils.getOldDecryptedPair(encryptedPhrase, masterKey.private)
-                            decryptedPhrase = decryptedPair.first
-                            decryptedPassphrase = decryptedPair.second
                         }
 
                         when {
