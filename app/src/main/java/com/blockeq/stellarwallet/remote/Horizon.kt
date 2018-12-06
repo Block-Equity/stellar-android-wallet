@@ -11,8 +11,6 @@ import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
 import com.blockeq.stellarwallet.models.AssetUtil
 import com.blockeq.stellarwallet.models.DataAsset
 import com.blockeq.stellarwallet.models.HorizonException
-import com.facebook.stetho.okhttp3.StethoInterceptor
-import okhttp3.OkHttpClient
 import org.stellar.sdk.*
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.requests.RequestBuilder
@@ -21,6 +19,7 @@ import org.stellar.sdk.responses.OfferResponse
 import org.stellar.sdk.responses.OrderBookResponse
 import org.stellar.sdk.responses.Page
 import org.stellar.sdk.responses.effects.EffectResponse
+import shadow.okhttp3.OkHttpClient
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -380,14 +379,14 @@ object Horizon : HorizonTasks {
                 .connectTimeout(10L, TimeUnit.SECONDS)
                 .readTimeout(30L, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
-                .addNetworkInterceptor(StethoInterceptor())
+//                .addNetworkInterceptor(StethoInterceptor())
                 .build()
 
         val submitHttpClient = OkHttpClient.Builder()
                 .connectTimeout(10L, TimeUnit.SECONDS)
                 .readTimeout(65L, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
-                .addNetworkInterceptor(StethoInterceptor())
+//                .addNetworkInterceptor(StethoInterceptor())
                 .build()
 
         server.httpClient = httpClient

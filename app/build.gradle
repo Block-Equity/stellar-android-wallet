@@ -111,9 +111,7 @@ dependencies {
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
 
-    implementation("com.github.stellar:java-stellar-sdk:$stellarVersion") {
-        transitive = false
-    }
+    implementation("com.github.stellar:java-stellar-sdk:$stellarVersion")
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
@@ -126,4 +124,8 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$lifecycleVersion"
     annotationProcessor  "android.arch.persistence.room:compiler:$lifecycleVersion"
     kapt "android.arch.persistence.room:compiler:$lifecycleVersion"
+
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    implementation  'com.squareup.okhttp3:okhttp:3.12.0'
 }
