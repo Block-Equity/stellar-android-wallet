@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.row_order_books.view.*
 import kotlinx.android.synthetic.main.row_order_books_header.view.*
 import kotlinx.android.synthetic.main.row_order_books_subheader.view.*
 import kotlinx.android.synthetic.main.row_order_books_title.view.*
+import java.lang.IllegalStateException
 
 class OrderBooksAdapter(private val orderBooksList: MutableList<OrderBook>,
                         private var currencyCodeFrom: String?, private var currencyCodeTo: String?,
@@ -22,8 +23,8 @@ class OrderBooksAdapter(private val orderBooksList: MutableList<OrderBook>,
     : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyHeaderHandler {
 
     fun setCurrencies(currencyCodeFrom: String?, currencyCodeTo: String?) {
-        this.currencyCodeTo = currencyCodeTo
         this.currencyCodeFrom = currencyCodeFrom
+        this.currencyCodeTo = currencyCodeTo
     }
 
     override fun getAdapterData(): MutableList<*> {
@@ -43,27 +44,32 @@ class OrderBooksAdapter(private val orderBooksList: MutableList<OrderBook>,
             OrderBookAdapterTypes.TITLE.value ->
                 TitleViewHolder(LayoutInflater.from(context).inflate(R.layout.row_order_books_title, parent, false))
             OrderBookAdapterTypes.BUY_HEADER.value, OrderBookAdapterTypes.SELL_HEADER.value -> {
-                val vh = HeaderViewHolder(LayoutInflater.from(context).inflate(R.layout.row_order_books_header, parent, false))
+                val viewHolder = HeaderViewHolder(LayoutInflater.from(context).inflate(R.layout.row_order_books_header, parent, false))
                 if (viewType == OrderBookAdapterTypes.BUY_HEADER.value) {
                     if (context != null) {
-                        vh.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.buySelectorBg))
+                        viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.buySelectorBg))
                     }
                 } else {
                     if (context != null) {
-                        vh.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.sellSelectorBg))
+                        viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.sellSelectorBg))
                     }
                 }
-                vh
+                viewHolder
             }
             OrderBookAdapterTypes.SUBHEADER.value ->
                 SubheaderViewHolder(LayoutInflater.from(context).inflate(R.layout.row_order_books_subheader, parent, false))
-            else ->
+            OrderBookAdapterTypes.ITEM.value ->
                 ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.row_order_books, parent, false))
+            OrderBookAdapterTypes.EMPTY.value ->
+                EmptyViewHolder(LayoutInflater.from(context).inflate(R.layout.row_order_books_empty, parent, false))
+            else -> {
+                throw IllegalStateException("unknown view type {$viewType}")
+            }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val orderBook = orderBooksList.get(position)
+        val orderBook = orderBooksList[position]
         if (holder is TitleViewHolder) {
             holder.title.text = context?.getString(R.string.orderBooksTitle, currencyCodeTo, currencyCodeFrom)
         } else if (holder is HeaderViewHolder) {
@@ -80,6 +86,8 @@ class OrderBooksAdapter(private val orderBooksList: MutableList<OrderBook>,
             holder.fromPrice.text = orderBook.fromPrice.toString()
             holder.toAmount.text = orderBook.toAmount.toString()
             holder.fromValue.text = orderBook.fromValue.toString()
+        } else if (holder is EmptyViewHolder) {
+            //nothing
         }
     }
 
@@ -102,4 +110,7 @@ class OrderBooksAdapter(private val orderBooksList: MutableList<OrderBook>,
         val toAmount: TextView = view.toAmount
         val fromValue: TextView = view.fromValue
     }
+
+    class EmptyViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
 }

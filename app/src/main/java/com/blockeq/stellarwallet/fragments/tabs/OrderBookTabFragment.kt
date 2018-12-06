@@ -10,17 +10,15 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.adapters.OrderBooksAdapter
 import com.blockeq.stellarwallet.interfaces.OnUpdateTradingCurrencies
 import com.blockeq.stellarwallet.models.*
-import com.blockeq.stellarwallet.networking.Horizon
+import com.blockeq.stellarwallet.remote.Horizon
 import kotlinx.android.synthetic.main.fragment_tab_order_book.*
 import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber
 import java.util.*
-import com.brandongogetap.stickyheaders.StickyLayoutManager
 
 class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnUpdateTradingCurrencies {
 
@@ -64,11 +62,10 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         if (buyingAsset != null && sellingAsset != null) {
             loadOrderBook(buyingAsset!!, sellingAsset!!)
         }
-
     }
 
     private fun loadOrderBook(buy : DataAsset, sell : DataAsset) {
-        Horizon.getOrderBook(object:Horizon.OnOrderBookListener {
+          Horizon.getOrderBook(object:Horizon.OnOrderBookListener {
             override fun onOrderBook(asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
                 orderBooks.clear()
                 val orderBooksTitle = OrderBook(type = OrderBookAdapterTypes.TITLE)
@@ -84,6 +81,11 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
                     orderBooks.add(item)
                     id++
                 }
+
+                if (bids.isEmpty()) {
+                   orderBooks.add(OrderBook(type = OrderBookAdapterTypes.EMPTY))
+                }
+
                 orderBooks.add(sellOffer)
                 orderBooks.add(subheader)
                 asks.forEach {
@@ -92,6 +94,11 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
                     id++
 
                 }
+
+                if (asks.isEmpty()) {
+                    orderBooks.add(OrderBook(type = OrderBookAdapterTypes.EMPTY))
+                }
+
                 Timber.d("loading order book complete items %s", orderBooks.size)
 
                 Handler(Looper.getMainLooper()).post {
@@ -107,13 +114,12 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
 
         if (swipeRefresh != null) {
             swipeRefresh.isRefreshing = false
-            Toast.makeText(context, getText(R.string.refreshed), Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun updateTradingCurrencies(currencyCodeFrom: SelectionModel, currencyCodeTo: SelectionModel) {
-        val buying =  AssetUtil.toDataAssetFrom(currencyCodeFrom)
-        val sell =  AssetUtil.toDataAssetFrom(currencyCodeTo)
+        val sell =  AssetUtil.toDataAssetFrom(currencyCodeFrom)
+        val buying = AssetUtil.toDataAssetFrom(currencyCodeTo)
 
         buyingAsset = buying
         sellingAsset = sell
@@ -129,10 +135,7 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
             orderBookRv.adapter = orderBooksAdapter
 
             val layout = StickyLayoutManager(context, orderBooksAdapter)
-            // this will solve the compilation issue Type Mismatch
-            if (layout is LinearLayoutManager) {
-                orderBookRv.layoutManager = layout
-            }
+            orderBookRv.layoutManager = layout
         }
 
         Timber.d("updateTradingCurrencies %s %s", codeFrom, codeTo)

@@ -11,7 +11,7 @@ abstract class BasePopupActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_base_popup)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        View.inflate(this, setContent(), container)
+        View.inflate(this, setContent(), content_container)
         cancelButton.setOnClickListener {
             finish()
             overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
