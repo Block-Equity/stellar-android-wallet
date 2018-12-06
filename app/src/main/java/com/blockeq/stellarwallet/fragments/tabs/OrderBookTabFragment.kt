@@ -12,7 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.adapters.OrderBooksAdapter
-import com.blockeq.stellarwallet.interfaces.OnUpdateTradingCurrencies
+import com.blockeq.stellarwallet.interfaces.OnUpdateOrderBook
 import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.remote.Horizon
 import com.brandongogetap.stickyheaders.StickyLayoutManager
@@ -21,7 +21,10 @@ import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber
 import java.util.*
 
-class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnUpdateTradingCurrencies {
+class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnUpdateOrderBook {
+    override fun updateOrderBook(codeFrom: String, codeTo: String, asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
+        loadOrderBook(codeFrom, codeTo, asks, bids)
+    }
 
     private var orderBooks = mutableListOf<OrderBook>()
     private lateinit var orderBooksAdapter: OrderBooksAdapter
@@ -61,57 +64,50 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         Timber.d("buyingAsset %s sellingAsset %s", buyingAsset, sellingAsset)
 
         if (buyingAsset != null && sellingAsset != null) {
-            loadOrderBook(buyingAsset!!, sellingAsset!!)
+//            loadOrderBook(buyingAsset!!, sellingAsset!!)
         }
     }
 
-    private fun loadOrderBook(buy : DataAsset, sell : DataAsset) {
-          Horizon.getOrderBook(object:Horizon.OnOrderBookListener {
-            override fun onOrderBook(asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
-                orderBooks.clear()
-                val orderBooksTitle = OrderBook(type = OrderBookAdapterTypes.TITLE)
-                val buyOffer = OrderBookStickyHeader(type = OrderBookAdapterTypes.BUY_HEADER)
-                val sellOffer = OrderBookStickyHeader(type = OrderBookAdapterTypes.SELL_HEADER)
-                val subheader = OrderBook(type = OrderBookAdapterTypes.SUBHEADER)
-                orderBooks.add(orderBooksTitle)
-                orderBooks.add(buyOffer)
-                orderBooks.add(subheader)
-                var id = 1
-                bids.forEach {
-                    val item = OrderBook(id, Date(), it.price.toFloat(), it.amount.toFloat() / it.price.toFloat() , it.amount.toFloat(), OrderBookAdapterTypes.ITEM)
-                    orderBooks.add(item)
-                    id++
-                }
+    private fun loadOrderBook(codeFrom: String, codeTo: String, asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
+        orderBooks.clear()
+        val orderBooksTitle = OrderBook(type = OrderBookAdapterTypes.TITLE)
+        val buyOffer = OrderBookStickyHeader(type = OrderBookAdapterTypes.BUY_HEADER)
+        val sellOffer = OrderBookStickyHeader(type = OrderBookAdapterTypes.SELL_HEADER)
+        val subheader = OrderBook(type = OrderBookAdapterTypes.SUBHEADER)
+        orderBooks.add(orderBooksTitle)
+        orderBooks.add(buyOffer)
+        orderBooks.add(subheader)
+        var id = 1
+        bids.forEach {
+            val item = OrderBook(id, Date(), it.price.toFloat(), it.amount.toFloat() / it.price.toFloat() , it.amount.toFloat(), OrderBookAdapterTypes.ITEM)
+            orderBooks.add(item)
+            id++
+        }
 
-                if (bids.isEmpty()) {
-                   orderBooks.add(OrderBook(type = OrderBookAdapterTypes.EMPTY))
-                }
+        if (bids.isEmpty()) {
+           orderBooks.add(OrderBook(type = OrderBookAdapterTypes.EMPTY))
+        }
 
-                orderBooks.add(sellOffer)
-                orderBooks.add(subheader)
-                asks.forEach {
-                    val item = OrderBook(id, Date(), it.price.toFloat(),  it.amount.toFloat(), it.price.toFloat() * it.amount.toFloat(), OrderBookAdapterTypes.ITEM)
-                    orderBooks.add(item)
-                    id++
+        orderBooks.add(sellOffer)
+        orderBooks.add(subheader)
+        asks.forEach {
+            val item = OrderBook(id, Date(), it.price.toFloat(),  it.amount.toFloat(), it.price.toFloat() * it.amount.toFloat(), OrderBookAdapterTypes.ITEM)
+            orderBooks.add(item)
+            id++
 
-                }
+        }
 
-                if (asks.isEmpty()) {
-                    orderBooks.add(OrderBook(type = OrderBookAdapterTypes.EMPTY))
-                }
+        if (asks.isEmpty()) {
+            orderBooks.add(OrderBook(type = OrderBookAdapterTypes.EMPTY))
+        }
 
-                Timber.d("loading order book complete items %s", orderBooks.size)
+        Timber.d("loading order book complete items %s", orderBooks.size)
 
-                Handler(Looper.getMainLooper()).post {
-                    orderBooksAdapter.notifyDataSetChanged()
-                }
-            }
-
-            override fun onFailed(errorMessage: String) {
-                Timber.d("failed to load the order book %s", errorMessage)
-            }
-
-        }, buy, sell)
+        Handler(Looper.getMainLooper()).post {
+            initializeAdapterIfNeeded(codeFrom, codeTo)
+            orderBooksAdapter.setCurrencies(codeFrom, codeTo)
+            orderBooksAdapter.notifyDataSetChanged()
+        }
 
         if (swipeRefresh != null) {
             swipeRefresh.isRefreshing = false
@@ -130,18 +126,25 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         }
     }
 
-    private fun updateList(codeFrom: String, codeTo: String) {
+    private fun initializeAdapterIfNeeded(codeFrom: String, codeTo: String) : Boolean {
         if (!::orderBooksAdapter.isInitialized) {
             orderBooksAdapter = OrderBooksAdapter(orderBooks, codeFrom, codeTo, context)
             orderBookRv.adapter = orderBooksAdapter
 
             val layout = StickyLayoutManager(context, orderBooksAdapter)
             orderBookRv.layoutManager = layout
+            return true
         }
+        return false
+    }
+    private fun updateList(codeFrom: String, codeTo: String) {
+        initializeAdapterIfNeeded(codeFrom, codeTo)
 
         Timber.d("updateTradingCurrencies %s %s", codeFrom, codeTo)
         orderBooksAdapter.setCurrencies(codeFrom, codeTo)
         orderBooksAdapter.notifyDataSetChanged()
 
     }
+
+
 }
