@@ -19,8 +19,6 @@ import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber
 
 class TradingFragment : Fragment(), OnTradeCurrenciesChanged {
-    private var assetFrom: SelectionModel? = null
-    private var assetTo: SelectionModel? = null
     private var orderBookListener : OnUpdateOrderBook? = null
     private var tradeTabListener : OnUpdateTradeTab? = null
 
@@ -28,15 +26,11 @@ class TradingFragment : Fragment(), OnTradeCurrenciesChanged {
         fun newInstance(): TradingFragment = TradingFragment()
     }
 
-    override fun onCurrencyChange(currencyCodeFrom: SelectionModel, currencyCodeTo: SelectionModel) {
-        assetFrom = currencyCodeFrom
-        assetTo = currencyCodeTo
-//        orderBookListener?.updateTradingCurrencies(currencyCodeFrom, currencyCodeTo)
-
-        val sell =  AssetUtil.toDataAssetFrom(currencyCodeFrom)
-        val buying = AssetUtil.toDataAssetFrom(currencyCodeTo)
-        if (sell != null && buying != null) {
-            loadOrderBook(currencyCodeFrom.label, currencyCodeTo.label, buying, sell)
+    override fun onCurrencyChange(selling: SelectionModel, buying: SelectionModel) {
+        val sellAsset =  AssetUtil.toDataAssetFrom(selling)
+        val buyingAsset = AssetUtil.toDataAssetFrom(buying)
+        if (sellAsset != null && buyingAsset != null) {
+            loadOrderBook(selling.label, buying.label, sellAsset, buyingAsset)
         }
     }
 
@@ -73,20 +67,21 @@ class TradingFragment : Fragment(), OnTradeCurrenciesChanged {
     }
 
 
-    private fun loadOrderBook(codeFrom:String, codeTo:String, buy : DataAsset, sell : DataAsset) {
+    private fun loadOrderBook(sellingCode:String, buyingCode:String, sell : DataAsset, buy : DataAsset) {
+        Timber.d("Loading order book %s %s", sellingCode, buyingCode)
         Horizon.getOrderBook(object: Horizon.OnOrderBookListener {
             override fun onOrderBook(asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
                 if (asks.isNotEmpty() && bids.isNotEmpty()) {
                     tradeTabListener?.onLastOrderBookUpdated(asks, bids)
                 }
 
-                orderBookListener?.updateOrderBook(codeFrom, codeTo, asks, bids)
+                orderBookListener?.updateOrderBook(sellingCode, buyingCode, asks, bids)
             }
 
             override fun onFailed(errorMessage: String) {
                 Timber.d("failed to load the order book %s", errorMessage)
             }
 
-        }, buy, sell)
+        }, sell, buy)
     }
 }
