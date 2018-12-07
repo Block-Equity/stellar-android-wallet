@@ -20,7 +20,6 @@ import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.vmodels.TradingViewModel
 import kotlinx.android.synthetic.main.fragment_tab_trade.*
-import kotlinx.android.synthetic.main.notification_template_lines_media.view.*
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
 import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber
@@ -38,7 +37,9 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
     private lateinit var tradingViewModel: TradingViewModel
     private var addedCurrencies : ArrayList<Currency> = ArrayList()
     private var latestBid: OrderBookResponse.Row? = null
-    private var ordertype : OrderType = OrderType.MARKET
+    private var orderType : OrderType = OrderType.MARKET
+    private var dataAvailable = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_tab_trade, container, false)
     }
@@ -123,12 +124,12 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
             return
         }
 
-        if (ordertype == OrderType.MARKET && latestBid != null) {
+        if (orderType == OrderType.MARKET && latestBid != null) {
             val value = sellingCustomSelector.editText.text.toString().toFloatOrNull()
             val priceR = latestBid?.priceR
             if (value != null && priceR != null) {
                 val intValue : Float = value.toFloat()
-                val stringValue = String.format("%.4f", priceR.numerator*intValue/priceR.denominator)
+                val stringValue = String.format("%.4f", priceR.numerator*intValue/priceR.denominator*0.9999)
                 buyingCustomSelector.editText.setText(stringValue)
             }
 
@@ -149,13 +150,13 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         val context = view.context.applicationContext
         when (view.id) {
             R.id.toggleMarket -> {
-                ordertype = OrderType.MARKET
+                orderType = OrderType.MARKET
                 toggleMarket.setBackgroundResource(R.drawable.left_toggle_selected)
                 toggleLimit.setBackgroundResource(R.drawable.right_toggle)
                 buyingCustomSelector.editText.isEnabled = false
             }
             R.id.toggleLimit -> {
-                ordertype = OrderType.LIMIT
+                orderType = OrderType.LIMIT
                 toggleLimit.setBackgroundResource(R.drawable.right_toggle_selected)
                 toggleMarket.setBackgroundResource(R.drawable.left_toggle)
                 buyingCustomSelector.editText.isEnabled = true
@@ -178,26 +179,32 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
             R.id.submitTrade -> {
                 progressBar.visibility = View.VISIBLE
                 submitTrade.isEnabled = false
-                setSelectorsEnabled(false)
-                WalletApplication.userSession.getAvailableBalance()
-                Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
-                    override fun onExecuted() {
-                       Toast.makeText(context,"Order executed", Toast.LENGTH_LONG).show()
-                       submitTrade.isEnabled = true
-                       progressBar.visibility = View.GONE
-                       sellingCustomSelector.editText.text.clear()
-                       setSelectorsEnabled(true)
-                    }
 
-                    override fun onFailed(errorMessage : String) {
-                        Toast.makeText(context, "Order failed: $errorMessage", Toast.LENGTH_LONG).show()
-                        submitTrade.isEnabled = true
-                        progressBar.visibility = View.GONE
-                        setSelectorsEnabled(true)
-                    }
+                if (orderType == OrderType.MARKET && !dataAvailable) {
+                    // buyingedittext should be empty at this moment
+                    Toast.makeText(context,"not enough data to submit a market order, try a limit order", Toast.LENGTH_LONG).show()
+                } else {
+                    setSelectorsEnabled(false)
+                    WalletApplication.userSession.getAvailableBalance()
+                    Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
+                        override fun onExecuted() {
+                            Toast.makeText(context,"Order executed", Toast.LENGTH_LONG).show()
+                            submitTrade.isEnabled = true
+                            progressBar.visibility = View.GONE
+                            sellingCustomSelector.editText.text.clear()
+                            setSelectorsEnabled(true)
+                        }
 
-                }, AccountUtils.getSecretSeed(appContext), selectedSellingCurrency!!.asset!!, selectedBuyingCurrency!!.asset!!,
-                        sellingCustomSelector.editText.text.toString(), buyingCustomSelector.editText.text.toString())
+                        override fun onFailed(errorMessage : String) {
+                            Toast.makeText(context, "Order failed: $errorMessage", Toast.LENGTH_LONG).show()
+                            submitTrade.isEnabled = true
+                            progressBar.visibility = View.GONE
+                            setSelectorsEnabled(true)
+                        }
+
+                    }, AccountUtils.getSecretSeed(appContext), selectedSellingCurrency!!.asset!!, selectedBuyingCurrency!!.asset!!,
+                            sellingCustomSelector.editText.text.toString(), buyingCustomSelector.editText.text.toString())
+                }
             }
         }
     }
@@ -258,6 +265,9 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         if (bids.isNotEmpty()) {
            latestBid = bids[0]
            updateBuyingValueIfNeeded()
+           dataAvailable = true
+        } else {
+            dataAvailable = false
         }
     }
 
