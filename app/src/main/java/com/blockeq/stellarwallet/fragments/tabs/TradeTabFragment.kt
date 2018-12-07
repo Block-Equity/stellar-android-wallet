@@ -94,7 +94,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectedSellingCurrency = sellingCurrencies[position]
                 holdingsAmount = selectedSellingCurrency!!.holdings
-                holdings.text = getString(R.string.holdings_amount,
+                holdings.text = String.format(getString(R.string.holdings_amount),
                         holdingsAmount,
                         selectedSellingCurrency!!.label)
                 resetBuyingCurrencies()
@@ -146,6 +146,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         LIMIT,
         MARKET
     }
+
     override fun onClick(view: View) {
         val context = view.context.applicationContext
         when (view.id) {
@@ -181,7 +182,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 submitTrade.isEnabled = false
 
                 if (orderType == OrderType.MARKET && !dataAvailable) {
-                    // buyingedittext should be empty at this moment
+                    // buyingEditText should be empty at this moment
                     Toast.makeText(context,"not enough data to submit a market order, try a limit order", Toast.LENGTH_LONG).show()
                 } else {
                     setSelectorsEnabled(false)
@@ -201,7 +202,6 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                             progressBar.visibility = View.GONE
                             setSelectorsEnabled(true)
                         }
-
                     }, AccountUtils.getSecretSeed(appContext), selectedSellingCurrency!!.asset!!, selectedBuyingCurrency!!.asset!!,
                             sellingCustomSelector.editText.text.toString(), buyingCustomSelector.editText.text.toString())
                 }
