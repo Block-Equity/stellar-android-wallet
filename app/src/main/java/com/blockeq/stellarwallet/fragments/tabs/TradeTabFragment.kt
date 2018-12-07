@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +12,13 @@ import android.widget.AdapterView
 import android.widget.Toast
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
+import com.blockeq.stellarwallet.interfaces.AfterTextChanged
+import com.blockeq.stellarwallet.interfaces.OnItemSelected
 import com.blockeq.stellarwallet.interfaces.OnTradeCurrenciesChanged
 import com.blockeq.stellarwallet.interfaces.OnUpdateTradeTab
-import com.blockeq.stellarwallet.models.*
+import com.blockeq.stellarwallet.models.AssetUtil
+import com.blockeq.stellarwallet.models.Currency
+import com.blockeq.stellarwallet.models.SelectionModel
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.vmodels.TradingViewModel
@@ -68,8 +71,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         sellingCustomSelector.isEnabled = true
         buyingCustomSelector.isEnabled = true
 
-        sellingCustomSelector.editText.addTextChangedListener(object : TextWatcher {
-
+        sellingCustomSelector.editText.addTextChangedListener(object : AfterTextChanged() {
             override fun afterTextChanged(amount: Editable) {
                 if (selectedSellingCurrency != null) {
                     if (amount.toString().isNotEmpty()) {
@@ -81,16 +83,10 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
                 updateBuyingValueIfNeeded()
             }
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         })
 
         sellingCustomSelector.setSelectionValues(sellingCurrencies)
-        sellingCustomSelector.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-
+        sellingCustomSelector.spinner.onItemSelectedListener = object : OnItemSelected() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectedSellingCurrency = sellingCurrencies[position]
                 holdingsAmount = selectedSellingCurrency!!.holdings
@@ -102,14 +98,11 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 buyingCustomSelector.setSelectionValues(buyingCurrencies)
 
                 notifyParent(selectedSellingCurrency, selectedBuyingCurrency)
-
             }
         }
 
         buyingCustomSelector.setSelectionValues(buyingCurrencies)
-        buyingCustomSelector.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-
+        buyingCustomSelector.spinner.onItemSelectedListener = object : OnItemSelected(){
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectedBuyingCurrency = buyingCurrencies[position]
                 notifyParent(selectedSellingCurrency, selectedBuyingCurrency)
@@ -117,7 +110,8 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         }
     }
 
-    private fun updateBuyingValueIfNeeded(){
+    private fun updateBuyingValueIfNeeded() {
+        if (sellingCustomSelector == null) return
         val stringText = sellingCustomSelector.editText.text.toString()
         if (stringText.isEmpty()) {
             buyingCustomSelector.editText.text.clear()
@@ -150,6 +144,11 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
     override fun onClick(view: View) {
         val context = view.context.applicationContext
         when (view.id) {
+            R.id.tenth -> sellingCustomSelector.editText.setText((0.1 * holdingsAmount).toString())
+            R.id.quarter -> sellingCustomSelector.editText.setText((0.25 * holdingsAmount).toString())
+            R.id.half -> sellingCustomSelector.editText.setText((0.5 * holdingsAmount).toString())
+            R.id.threeQuarters -> sellingCustomSelector.editText.setText((0.75 * holdingsAmount).toString())
+            R.id.all -> sellingCustomSelector.editText.setText(holdingsAmount.toString())
             R.id.toggleMarket -> {
                 orderType = OrderType.MARKET
                 toggleMarket.setBackgroundResource(R.drawable.left_toggle_selected)
@@ -161,21 +160,6 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 toggleLimit.setBackgroundResource(R.drawable.right_toggle_selected)
                 toggleMarket.setBackgroundResource(R.drawable.left_toggle)
                 buyingCustomSelector.editText.isEnabled = true
-            }
-            R.id.tenth -> {
-                sellingCustomSelector.editText.setText((0.1 * holdingsAmount).toString())
-            }
-            R.id.quarter -> {
-                sellingCustomSelector.editText.setText((0.25 * holdingsAmount).toString())
-            }
-            R.id.half -> {
-                sellingCustomSelector.editText.setText((0.5 * holdingsAmount).toString())
-            }
-            R.id.threeQuarters -> {
-                sellingCustomSelector.editText.setText((0.75 * holdingsAmount).toString())
-            }
-            R.id.all -> {
-                sellingCustomSelector.editText.setText(holdingsAmount.toString())
             }
             R.id.submitTrade -> {
                 progressBar.visibility = View.VISIBLE

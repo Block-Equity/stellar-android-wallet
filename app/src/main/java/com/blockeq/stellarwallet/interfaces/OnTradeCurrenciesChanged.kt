@@ -3,5 +3,5 @@ package com.blockeq.stellarwallet.interfaces
 import com.blockeq.stellarwallet.models.SelectionModel
 
 interface OnTradeCurrenciesChanged {
-    fun onCurrencyChange(currencyCodeFrom: SelectionModel, currencyCodeTo: SelectionModel)
+    fun onCurrencyChange(selling: SelectionModel, buying: SelectionModel)
 }

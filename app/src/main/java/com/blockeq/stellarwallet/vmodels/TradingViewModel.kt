@@ -35,7 +35,7 @@ class TradingViewModel(application: Application) : AndroidViewModel(application)
 //        }
     }
 
-    private fun loadOrderBook(buying: DataAsset, selling: DataAsset) {
+    private fun loadOrderBook(selling: DataAsset, buying: DataAsset) {
         Horizon.getOrderBook(object : Horizon.OnOrderBookListener {
             override fun onOrderBook(asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
                 val orderBooks = ArrayList<OrderBook>()
@@ -71,6 +71,6 @@ class TradingViewModel(application: Application) : AndroidViewModel(application)
                 Toast.makeText(getApplication(), "Failed" + errorMessage, Toast.LENGTH_SHORT).show()
             }
 
-        }, buying, selling)
+        },selling, buying)
     }
 }
