@@ -7,6 +7,8 @@
 
         <item name="android:textViewStyle">@font/lato_regular</item>
         <item name="android:buttonStyle">@font/lato_regular</item>
+
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
     <style name="PinActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">

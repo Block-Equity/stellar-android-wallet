@@ -79,6 +79,8 @@
     <string name="terms_of_service">Terms of Service</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="about">About</string>
+    <string name="debug_preferences">Debug</string>
+
 
     <!--Trading Fragment-->
     <string name="tab_trade">Trade</string>

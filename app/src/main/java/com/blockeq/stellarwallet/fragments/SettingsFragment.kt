@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
+import com.blockeq.stellarwallet.activities.DebugPreferenceActivity
 import com.blockeq.stellarwallet.activities.DiagnosticActivity
 import com.blockeq.stellarwallet.activities.WebViewActivity
 import com.blockeq.stellarwallet.models.PinType
@@ -68,6 +69,11 @@ class SettingsFragment : BaseFragment() {
         termsOfServiceButton.setOnClickListener {
             startActivity(WebViewActivity.newIntent(appContext, getString(R.string.terms_of_service), "https://www.blockeq.com/terms.html"))
         }
+
+        debug.setOnClickListener {
+            startActivity(Intent(it.context, DebugPreferenceActivity::class.java))
+        }
+
 
         val appVersion = DiagnosticUtils.getAppVersion()
 

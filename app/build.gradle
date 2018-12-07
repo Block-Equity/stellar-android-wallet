@@ -126,4 +126,6 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$lifecycleVersion"
     annotationProcessor  "android.arch.persistence.room:compiler:$lifecycleVersion"
     kapt "android.arch.persistence.room:compiler:$lifecycleVersion"
+
+    implementation "com.android.support:preference-v7:$supportLibraryVersion"
 }

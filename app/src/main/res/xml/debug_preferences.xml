@@ -1,0 +1,21 @@
+<android.support.v7.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <android.support.v7.preference.PreferenceCategory
+        android:title="Code Analysis">
+
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:key="key1"
+            android:title="LeakCanary"
+            android:summary="A memory leak detection library for Android and Java"
+            android:defaultValue="false" />
+
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:key="key2"
+            android:title="Disable PIN"
+            android:summary="Disable PIN where app is coming from the background to the foreground"
+            android:defaultValue="false" />
+
+    </android.support.v7.preference.PreferenceCategory>
+
+</android.support.v7.preference.PreferenceScreen>
