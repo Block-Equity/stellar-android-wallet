@@ -1,4 +1,4 @@
-package com.blockeq.stellarwallet.vmodels.exchange
+package com.blockeq.stellarwallet.mvvm.exchange
 
 import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Database

@@ -1,4 +1,4 @@
-package com.blockeq.stellarwallet.vmodels.trading
+package com.blockeq.stellarwallet.mvvm.trading
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
