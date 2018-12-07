@@ -1,4 +1,4 @@
-package com.blockeq.stellarwallet.vmodels
+package com.blockeq.stellarwallet.vmodels.exchange
 
 import android.app.Application
 import android.arch.lifecycle.LiveData

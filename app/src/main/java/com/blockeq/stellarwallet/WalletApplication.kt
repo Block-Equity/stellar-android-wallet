@@ -6,7 +6,7 @@ import com.blockeq.stellarwallet.encryption.PRNGFixes
 import com.blockeq.stellarwallet.helpers.LocalStore
 import com.blockeq.stellarwallet.helpers.WalletLifecycleListener
 import com.blockeq.stellarwallet.models.UserSession
-import com.blockeq.stellarwallet.vmodels.ExchangeRepository
+import com.blockeq.stellarwallet.vmodels.exchange.ExchangeRepository
 import com.facebook.stetho.Stetho
 import com.google.gson.Gson
 import com.squareup.leakcanary.LeakCanary
