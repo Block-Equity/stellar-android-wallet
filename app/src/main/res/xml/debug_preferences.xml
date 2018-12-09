@@ -5,15 +5,15 @@
         android:title="Code Analysis">
 
         <android.support.v7.preference.SwitchPreferenceCompat
-            android:key="key1"
-            android:title="LeakCanary"
-            android:summary="A memory leak detection library for Android and Java"
+            android:key="@string/preference_debug_leak_canary"
+            android:title="@string/debug_leak_canary_title"
+            android:summary="@string/debug_leak_canary_summary"
             android:defaultValue="false" />
 
         <android.support.v7.preference.SwitchPreferenceCompat
-            android:key="key2"
-            android:title="Disable PIN"
-            android:summary="Disable PIN where app is coming from the background to the foreground"
+            android:key="@string/preference_debug_pin_disabled"
+            android:title="@string/debug_disable_pin_title"
+            android:summary="@string/debug_disable_pin_summary"
             android:defaultValue="false" />
 
     </android.support.v7.preference.PreferenceCategory>

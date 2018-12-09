@@ -12,5 +12,4 @@ public class DebugFragment extends PreferenceFragmentCompat {
         // Load the Preferences from the XML file
         addPreferencesFromResource(R.xml.debug_preferences);
     }
-
 }
