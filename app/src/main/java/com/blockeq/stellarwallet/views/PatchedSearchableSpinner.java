@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
+import android.support.v7.widget.AppCompatSpinner;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 import com.blockeq.stellarwallet.R;
@@ -18,7 +18,7 @@ import com.blockeq.stellarwallet.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatchedSearchableSpinner extends Spinner implements View.OnTouchListener,
+public class PatchedSearchableSpinner extends AppCompatSpinner implements View.OnTouchListener,
         PatchedSearchableListDialog.SearchableItem {
 
     public static final int NO_ITEM_SELECTED = -1;
