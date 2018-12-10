@@ -45,15 +45,17 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         super.onViewCreated(view, savedInstanceState)
 
         receiveButton.setOnClickListener {
-            val context = activity
-            startActivity(Intent(context, ReceiveActivity::class.java))
-            activity!!.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+            activity?.let { activityContext ->
+                startActivity(Intent(activityContext, ReceiveActivity::class.java))
+                activityContext.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+            }
         }
 
         sendButton.setOnClickListener {
-            val context = activity
-            startActivity(Intent(context, EnterAddressActivity::class.java))
-            activity!!.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+            activity?.let { activityContext ->
+                startActivity(Intent(activityContext, EnterAddressActivity::class.java))
+                activityContext.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+            }
         }
     }
 
