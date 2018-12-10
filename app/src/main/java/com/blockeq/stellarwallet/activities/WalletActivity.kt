@@ -11,7 +11,7 @@ import com.blockeq.stellarwallet.fragments.SettingsFragment
 import com.blockeq.stellarwallet.fragments.TradingFragment
 import com.blockeq.stellarwallet.fragments.WalletFragment
 import com.blockeq.stellarwallet.interfaces.OnLoadAccount
-import com.blockeq.stellarwallet.interfaces.OnLoadEffects
+import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import com.blockeq.stellarwallet.models.MinimumBalance
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils

@@ -17,7 +17,7 @@ import com.blockeq.stellarwallet.activities.ReceiveActivity
 import com.blockeq.stellarwallet.adapters.WalletRecyclerViewAdapter
 import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.interfaces.OnLoadAccount
-import com.blockeq.stellarwallet.interfaces.OnLoadEffects
+import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import com.blockeq.stellarwallet.models.AvailableBalance
 import com.blockeq.stellarwallet.models.TotalBalance
 import com.blockeq.stellarwallet.models.WalletHeterogeneousArray

@@ -2,7 +2,7 @@ package com.blockeq.stellarwallet.remote
 
 import android.os.AsyncTask
 import com.blockeq.stellarwallet.interfaces.OnLoadAccount
-import com.blockeq.stellarwallet.interfaces.OnLoadEffects
+import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
 import com.blockeq.stellarwallet.models.DataAsset
 import com.blockeq.stellarwallet.models.HorizonException

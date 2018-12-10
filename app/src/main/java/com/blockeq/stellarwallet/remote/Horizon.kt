@@ -6,7 +6,7 @@ import android.os.Looper
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.interfaces.OnLoadAccount
-import com.blockeq.stellarwallet.interfaces.OnLoadEffects
+import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
 import com.blockeq.stellarwallet.models.AssetUtil
 import com.blockeq.stellarwallet.models.DataAsset
