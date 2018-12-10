@@ -72,15 +72,8 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         buyingCustomSelector.isEnabled = true
 
         sellingCustomSelector.editText.addTextChangedListener(object : AfterTextChanged() {
-            override fun afterTextChanged(amount: Editable) {
-                if (selectedSellingCurrency != null) {
-                    if (amount.toString().isNotEmpty()) {
-                        submitTrade.isEnabled = amount.toString().toFloat() <= selectedSellingCurrency!!.holdings
-                    } else {
-                        submitTrade.isEnabled = false
-                    }
-                }
-
+            override fun afterTextChanged(editable: Editable) {
+                refreshSubmitTradeButton()
                 updateBuyingValueIfNeeded()
             }
         })
@@ -98,6 +91,8 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 buyingCustomSelector.setSelectionValues(buyingCurrencies)
 
                 notifyParent(selectedSellingCurrency, selectedBuyingCurrency)
+
+                refreshSubmitTradeButton()
             }
         }
 
@@ -106,7 +101,17 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectedBuyingCurrency = buyingCurrencies[position]
                 notifyParent(selectedSellingCurrency, selectedBuyingCurrency)
+
+                refreshSubmitTradeButton()
             }
+        }
+    }
+
+    private fun refreshSubmitTradeButton() {
+        if (sellingCustomSelector.editText.text.isEmpty() || buyingCustomSelector.editText.text.isEmpty()) {
+           submitTrade.isEnabled = false
+        } else {
+            submitTrade.isEnabled = sellingCustomSelector.editText.text.toString().toFloat() <= selectedSellingCurrency!!.holdings
         }
     }
 
@@ -187,7 +192,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                             setSelectorsEnabled(true)
                         }
                     }, AccountUtils.getSecretSeed(appContext), selectedSellingCurrency!!.asset!!, selectedBuyingCurrency!!.asset!!,
-                            sellingCustomSelector.editText.text.toString(), buyingCustomSelector.editText.text.toString())
+                            sellingCustomSelector.editText.text.toString(), (buyingCustomSelector.editText.text.toString().toFloat() / sellingCustomSelector.editText.text.toString().toFloat()).toString())
                 }
             }
         }
