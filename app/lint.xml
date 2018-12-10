@@ -13,4 +13,7 @@
     <issue id="Overdraw">
         <ignore path="res/layout/item_asset.xml" />
     </issue>
+    <issue id="CustomViewStyleable">
+        <ignore regexp="PatchedSearchableSpinner.java" />
+    </issue>
 </lint>
