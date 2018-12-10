@@ -7,7 +7,7 @@ import com.blockeq.stellarwallet.R
 
 class DebugFragment : PreferenceFragmentCompat() {
 
-    override fun onCreatePreferences(bundle: Bundle, s: String) {
+    override fun onCreatePreferences(bundle: Bundle?, s: String?) {
         // Load the Preferences from the XML file
         addPreferencesFromResource(R.xml.debug_preferences)
     }
