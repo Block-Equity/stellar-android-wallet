@@ -1,5 +1,6 @@
 package com.blockeq.stellarwallet.activities
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.BottomNavigationView
@@ -13,6 +14,7 @@ import com.blockeq.stellarwallet.fragments.WalletFragment
 import com.blockeq.stellarwallet.interfaces.OnLoadAccount
 import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import com.blockeq.stellarwallet.models.MinimumBalance
+import com.blockeq.stellarwallet.mvvm.effects.EffectsViewModel
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.KeyboardUtils
@@ -21,8 +23,11 @@ import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
 import java.util.*
+import android.arch.lifecycle.ViewModelProviders
 
-class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUtils.SoftKeyboardToggleListener {
+
+
+class WalletActivity : BaseActivity(), OnLoadAccount, KeyboardUtils.SoftKeyboardToggleListener {
     private enum class WalletFragmentType {
         WALLET,
         TRADING,
@@ -30,13 +35,14 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUti
     }
 
     private lateinit var bottomNavigation : BottomNavigationView
+    private lateinit var viewModel : EffectsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wallet)
 
         setupUI()
-
+        initViewModels()
     }
 
     //region Navigation
@@ -76,6 +82,11 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUti
         bottomNavigation = findViewById(R.id.navigationView)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         bottomNavigation.selectedItemId = R.id.nav_wallet
+    }
+
+    private fun initViewModels() {
+        viewModel = ViewModelProviders.of(this).get(EffectsViewModel::class.java)
+        subscribeDataStreams(viewModel)
     }
 
     //endregion
@@ -119,8 +130,8 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUti
                     Horizon.getLoadAccountTask(this@WalletActivity)
                             .execute()
 
-                    Horizon.getLoadEffectsTask(this@WalletActivity)
-                            .execute()
+//                    Horizon.getLoadEffectsTask(this@WalletActivity)
+//                            .execute()
                 } else {
                     NetworkUtils(applicationContext).displayNoNetwork()
                 }
@@ -158,10 +169,19 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUti
         }
     }
 
-    override fun onLoadEffects(result: ArrayList<EffectResponse>?) {
-        val fragment = supportFragmentManager.findFragmentByTag(WalletFragmentType.WALLET.name)
-        if (fragment != null) {
-            (fragment as WalletFragment).onLoadEffects(result)
-        }
+//    override fun onLoadEffects(result: ArrayList<EffectResponse>?) {
+//        val fragment = supportFragmentManager.findFragmentByTag(WalletFragmentType.WALLET.name)
+//        if (fragment != null) {
+//            (fragment as WalletFragment).onLoadEffects(result)
+//        }
+//    }
+
+    private fun subscribeDataStreams(viewModel : EffectsViewModel) {
+        viewModel.getEffectsList().observe(this, Observer {
+            val fragment = supportFragmentManager.findFragmentByTag(WalletFragmentType.WALLET.name)
+            if (fragment != null) {
+                (fragment as WalletFragment).onLoadEffects(it)
+            }
+        })
     }
 }

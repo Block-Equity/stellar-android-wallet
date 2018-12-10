@@ -1,26 +1,19 @@
 package com.blockeq.stellarwallet.mvvm.effects
 
+import android.app.Application
+import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import com.blockeq.stellarwallet.mvvm.effects.remote.RemoteRepository
 import org.stellar.sdk.responses.effects.EffectResponse
 import java.util.*
 
 
-class EffectsViewModel @JvmOverloads constructor(effectsRepository: EffectsRepository? = null) : ViewModel() {
+class EffectsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var effectsRepository: EffectsRepository? = null
+    private val effectsRepository : EffectsRepository = EffectsRepository.getInstance(RemoteRepository.instance)
+
     private var effectsList: LiveData<ArrayList<EffectResponse>?>? = null
-
-    init {
-        if (this.effectsRepository == null) {
-            // ViewModel is created per Activity, so instantiate once
-            // we know the userId won't change
-            if (effectsRepository != null) {
-                this.effectsRepository = effectsRepository
-            }
-        }
-    }
 
     fun getEffectsList(): LiveData<ArrayList<EffectResponse>?> {
         if (effectsList == null) {
@@ -32,6 +25,6 @@ class EffectsViewModel @JvmOverloads constructor(effectsRepository: EffectsRepos
 
     private fun loadEffects() {
         // Observe if/when database is created.
-        effectsList = effectsRepository!!.loadList()
+        effectsList = effectsRepository.loadList()
     }
 }
