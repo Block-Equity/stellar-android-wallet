@@ -3,11 +3,10 @@ package com.blockeq.stellarwallet.fragments.tabs
 import android.app.AlertDialog
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
-import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -25,8 +24,10 @@ import com.blockeq.stellarwallet.models.Currency
 import com.blockeq.stellarwallet.models.SelectionModel
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
+import com.blockeq.stellarwallet.utils.MixedTypes
 import com.blockeq.stellarwallet.vmodels.TradingViewModel
 import kotlinx.android.synthetic.main.fragment_tab_trade.*
+import kotlinx.android.synthetic.main.notification_template_lines_media.view.*
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
 import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber
@@ -47,6 +48,8 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
     private var latestBid: OrderBookResponse.Row? = null
     private var orderType : OrderType = OrderType.MARKET
     private var dataAvailable = false
+
+    private val ZERO_VALUE = "0.0"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_tab_trade, container, false)
@@ -114,6 +117,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         dataAvailable = false
         notifyParent(selectedSellingCurrency, selectedBuyingCurrency)
         refreshSubmitTradeButton()
+        updateBuyingValueIfNeeded()
     }
 
     private fun refreshSubmitTradeButton() {
@@ -142,7 +146,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                     buyingCustomSelector.editText.setText(stringValue)
                 }
             } else {
-                buyingCustomSelector.editText.setText("0.00")
+                buyingCustomSelector.editText.setText(ZERO_VALUE)
             }
         }
     }
@@ -159,7 +163,6 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
     }
 
     override fun onClick(view: View) {
-        val context = view.context.applicationContext
         when (view.id) {
             R.id.tenth -> sellingCustomSelector.editText.setText((0.1 * holdingsAmount).toString())
             R.id.quarter -> sellingCustomSelector.editText.setText((0.25 * holdingsAmount).toString())
@@ -168,18 +171,23 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
             R.id.all -> sellingCustomSelector.editText.setText(holdingsAmount.toString())
             R.id.toggleMarket -> {
                 orderType = OrderType.MARKET
+                toggleMarket.setTextColor(ContextCompat.getColor(view.context, R.color.white))
                 toggleMarket.setBackgroundResource(R.drawable.left_toggle_selected)
                 toggleLimit.setBackgroundResource(R.drawable.right_toggle)
+                toggleLimit.setTextColor(ContextCompat.getColor(view.context, R.color.black))
+
                 buyingCustomSelector.editText.isEnabled = false
             }
             R.id.toggleLimit -> {
                 orderType = OrderType.LIMIT
                 toggleLimit.setBackgroundResource(R.drawable.right_toggle_selected)
+                toggleLimit.setTextColor(ContextCompat.getColor(view.context, R.color.white))
                 toggleMarket.setBackgroundResource(R.drawable.left_toggle)
+                toggleMarket.setTextColor(ContextCompat.getColor(view.context, R.color.black))
                 buyingCustomSelector.editText.isEnabled = true
             }
             R.id.submitTrade -> {
-                if (orderType == OrderType.MARKET && !dataAvailable) {
+                if ((orderType == OrderType.MARKET && !dataAvailable) || buyingCustomSelector.editText.toString() == ZERO_VALUE) {
                     // buyingEditText should be empty at this moment
 
                     Snackbar.make(activity!!.findViewById(R.id.content_container),
@@ -190,14 +198,14 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                     val dialogBuilder = AlertDialog.Builder(view.context)
                     dialogBuilder.setTitle("Confirm Trade")
 
-                   val sellingText = sellingCustomSelector.editText.text.toString()
+                    val sellingText = sellingCustomSelector.editText.text.toString()
                     val sellingCode = selectedSellingCurrency!!.label
                     val buyingText = buyingCustomSelector.editText.text.toString()
                     val buyingCode = selectedBuyingCurrency!!.label
 
                     dialogBuilder.setMessage("You are about to submit a trade of $sellingText $sellingCode for $buyingText $buyingCode.")
                     dialogBuilder.setPositiveButton("Submit") { _, _ ->
-                        proccedWithTrade()
+                        proceedWithTrade()
                     }
 
                     dialogBuilder.setNegativeButton("Cancel") { dialog, _ ->
@@ -210,7 +218,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         }
     }
 
-    private fun proccedWithTrade(){
+    private fun proceedWithTrade() {
         val snackbar = Snackbar.make(activity!!.findViewById(R.id.content_container),
                 "Submiting order", Snackbar.LENGTH_INDEFINITE)
         val snackView = snackbar.view as Snackbar.SnackbarLayout
@@ -229,25 +237,34 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
         setSelectorsEnabled(false)
         WalletApplication.userSession.getAvailableBalance()
-        Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
-            override fun onExecuted() {
-                snackbar.dismiss()
-                Snackbar.make(activity!!.findViewById(R.id.content_container),
-                        "Order executed", Snackbar.LENGTH_SHORT).show()
+
+        MixedTypes.let(selectedSellingCurrency, selectedBuyingCurrency) { selling, buying -> {
+                MixedTypes.let(selling.asset, buying.asset) { sellingAsset, buyingAsset -> {
+                    Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
+                        override fun onExecuted() {
+                            snackbar.dismiss()
+                            Snackbar.make(activity!!.findViewById(R.id.content_container),
+                                    "Order executed", Snackbar.LENGTH_SHORT).show()
+                        }
+
+                        override fun onFailed(errorMessage : String) {
+                            snackbar.dismiss()
+
+                            Snackbar.make(activity!!.findViewById(R.id.coordinator),
+                                    "Order failed: $errorMessage", Snackbar.LENGTH_SHORT).show()
+
+                            submitTrade.isEnabled = true
+                            progressBar.visibility = View.GONE
+                            setSelectorsEnabled(true)
+                        }
+                    }, AccountUtils.getSecretSeed(appContext), sellingAsset, buyingAsset,
+                            sellingCustomSelector.editText.text.toString(), (buyingCustomSelector.editText.text.toString().toFloat() / sellingCustomSelector.editText.text.toString().toFloat()).toString())
+                    }
+                }
             }
+        }
 
-            override fun onFailed(errorMessage : String) {
-                snackbar.dismiss()
 
-                Snackbar.make(activity!!.findViewById(R.id.coordinator),
-                        "Order failed: $errorMessage", Snackbar.LENGTH_SHORT).show()
-
-                submitTrade.isEnabled = true
-                progressBar.visibility = View.GONE
-                setSelectorsEnabled(true)
-            }
-        }, AccountUtils.getSecretSeed(appContext), selectedSellingCurrency!!.asset!!, selectedBuyingCurrency!!.asset!!,
-                sellingCustomSelector.editText.text.toString(), (buyingCustomSelector.editText.text.toString().toFloat() / sellingCustomSelector.editText.text.toString().toFloat()).toString())
     }
 
     private fun setSelectorsEnabled(isEnabled : Boolean) {
@@ -305,8 +322,8 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
     override fun onLastOrderBookUpdated(asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
         if (bids.isNotEmpty()) {
            latestBid = bids[0]
-           updateBuyingValueIfNeeded()
            dataAvailable = true
+           updateBuyingValueIfNeeded()
         } else {
            dataAvailable = false
         }

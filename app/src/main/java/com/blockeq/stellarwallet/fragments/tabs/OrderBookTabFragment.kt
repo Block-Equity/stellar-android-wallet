@@ -15,6 +15,7 @@ import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.adapters.OrderBooksAdapter
 import com.blockeq.stellarwallet.interfaces.OnUpdateOrderBook
 import com.blockeq.stellarwallet.models.*
+import com.blockeq.stellarwallet.utils.MixedTypes
 import com.brandongogetap.stickyheaders.StickyLayoutManager
 import kotlinx.android.synthetic.main.fragment_tab_order_book.*
 import org.stellar.sdk.responses.OrderBookResponse
@@ -115,14 +116,14 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
     }
 
     override fun updateTradingCurrencies(sellingModel: SelectionModel, buyingModel: SelectionModel) {
-        val sell =  AssetUtil.toDataAssetFrom(sellingModel)
+        val selling =  AssetUtil.toDataAssetFrom(sellingModel)
         val buying = AssetUtil.toDataAssetFrom(buyingModel)
 
         buyingAsset = buying
-        sellingAsset = sell
+        sellingAsset = selling
 
-        if (orderBookRv != null) {
-            updateList(sellingAsset!!.code, buyingAsset!!.code)
+        MixedTypes.let(sellingAsset, buyingAsset) { sellingAsset, buyingAsset ->
+            updateList(sellingAsset.code, buyingAsset.code)
         }
     }
 
