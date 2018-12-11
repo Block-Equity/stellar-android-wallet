@@ -237,8 +237,12 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         setSelectorsEnabled(false)
         WalletApplication.userSession.getAvailableBalance()
 
+        Timber.d("proceedWithTrade")
+
         MixedTypes.let(selectedSellingCurrency, selectedBuyingCurrency) { selling, buying -> {
+            Timber.d("selected objects are not null")
                 MixedTypes.let(selling.asset, buying.asset) { sellingAsset, buyingAsset -> {
+                    Timber.d("assets objects are not null")
                     Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
                         override fun onExecuted() {
                             snackbar.dismiss()
@@ -262,8 +266,6 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 }
             }
         }
-
-
     }
 
     private fun setSelectorsEnabled(isEnabled : Boolean) {

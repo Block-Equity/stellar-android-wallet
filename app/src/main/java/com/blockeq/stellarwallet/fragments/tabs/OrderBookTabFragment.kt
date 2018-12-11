@@ -123,6 +123,7 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         sellingAsset = selling
 
         MixedTypes.let(sellingAsset, buyingAsset) { sellingAsset, buyingAsset ->
+            Timber.d("Updating objects in order book")
             updateList(sellingAsset.code, buyingAsset.code)
         }
     }
