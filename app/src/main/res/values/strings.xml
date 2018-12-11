@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BlockEQ Stellar Wallet</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -79,6 +80,8 @@
     <string name="terms_of_service">Terms of Service</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="about">About</string>
+    <string name="debug_preferences">Debug</string>
+
 
     <!--Trading Fragment-->
     <string name="tab_trade">Trade</string>

@@ -16,15 +16,17 @@ import kotlinx.android.synthetic.main.row_order_books_header.view.*
 import kotlinx.android.synthetic.main.row_order_books_subheader.view.*
 import kotlinx.android.synthetic.main.row_order_books_title.view.*
 import java.lang.IllegalStateException
+import java.text.DecimalFormat
 
 class OrderBooksAdapter(private val orderBooksList: MutableList<OrderBook>,
-                        private var currencyCodeFrom: String?, private var currencyCodeTo: String?,
-                        private val context: Context?)
+                        private var currencyCodeTo: String?,
+                        private var currencyCodeFrom: String?,
+                        private val context: Context)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyHeaderHandler {
 
-    fun setCurrencies(currencyCodeFrom: String?, currencyCodeTo: String?) {
-        this.currencyCodeFrom = currencyCodeFrom
+    fun setCurrencies(currencyCodeTo: String, currencyCodeFrom: String) {
         this.currencyCodeTo = currencyCodeTo
+        this.currencyCodeFrom = currencyCodeFrom
     }
 
     override fun getAdapterData(): MutableList<*> {
@@ -46,18 +48,14 @@ class OrderBooksAdapter(private val orderBooksList: MutableList<OrderBook>,
             OrderBookAdapterTypes.BUY_HEADER.value, OrderBookAdapterTypes.SELL_HEADER.value -> {
                 val viewHolder = HeaderViewHolder(LayoutInflater.from(context).inflate(R.layout.row_order_books_header, parent, false))
                 if (viewType == OrderBookAdapterTypes.BUY_HEADER.value) {
-                    if (context != null) {
-                        viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.buySelectorBg))
-                    }
+                    viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.buySelectorBg))
                 } else {
-                    if (context != null) {
-                        viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.sellSelectorBg))
-                    }
+                     viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.sellSelectorBg))
                 }
                 viewHolder
             }
             OrderBookAdapterTypes.SUBHEADER.value ->
-                SubheaderViewHolder(LayoutInflater.from(context).inflate(R.layout.row_order_books_subheader, parent, false))
+                SubHeaderViewHolder(LayoutInflater.from(context).inflate(R.layout.row_order_books_subheader, parent, false))
             OrderBookAdapterTypes.ITEM.value ->
                 ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.row_order_books, parent, false))
             OrderBookAdapterTypes.EMPTY.value ->
@@ -70,24 +68,29 @@ class OrderBooksAdapter(private val orderBooksList: MutableList<OrderBook>,
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val orderBook = orderBooksList[position]
-        if (holder is TitleViewHolder) {
-            holder.title.text = context?.getString(R.string.orderBooksTitle, currencyCodeTo, currencyCodeFrom)
-        } else if (holder is HeaderViewHolder) {
-            if (orderBook.type == OrderBookAdapterTypes.BUY_HEADER) {
-                holder.header.text = context?.getText(R.string.buyOffers)
-            } else if (orderBook.type == OrderBookAdapterTypes.SELL_HEADER) {
-                holder.header.text = context?.getText(R.string.sellOffers)
-            }
-        } else if (holder is SubheaderViewHolder) {
-            holder.currencyFrom.text = context?.getString(R.string.offerPrice, currencyCodeFrom)
-            holder.amountTo.text = context?.getString(R.string.offerAmount, currencyCodeTo)
-            holder.amountFrom.text = context?.getString(R.string.offerValue, currencyCodeFrom)
-        } else if (holder is ItemViewHolder) {
-            holder.fromPrice.text = orderBook.fromPrice.toString()
-            holder.toAmount.text = orderBook.toAmount.toString()
-            holder.fromValue.text = orderBook.fromValue.toString()
-        } else if (holder is EmptyViewHolder) {
-            //nothing
+        when(holder){
+           is TitleViewHolder -> holder.title.text = context.getString(R.string.orderBooksTitle, currencyCodeTo, currencyCodeFrom)
+           is HeaderViewHolder -> {
+               if (orderBook.type == OrderBookAdapterTypes.BUY_HEADER) {
+                   holder.header.text = context.getText(R.string.buyOffers)
+               } else if (orderBook.type == OrderBookAdapterTypes.SELL_HEADER) {
+                   holder.header.text = context.getText(R.string.sellOffers)
+               }
+           }
+           is SubHeaderViewHolder -> {
+               holder.currencyFrom.text = context.getString(R.string.offerPrice, currencyCodeFrom)
+               holder.amountTo.text = context.getString(R.string.offerAmount, currencyCodeTo)
+               holder.amountFrom.text = context.getString(R.string.offerValue, currencyCodeFrom)
+           }
+           is ItemViewHolder -> {
+               val format = DecimalFormat("0.########")
+               holder.fromPrice.text = format.format(orderBook.fromPrice)
+               holder.toAmount.text =format.format(orderBook.toAmount)
+               holder.fromValue.text = format.format(orderBook.fromValue)
+           }
+           is EmptyViewHolder -> {
+               // nothing
+           }
         }
     }
 
@@ -99,7 +102,7 @@ class OrderBooksAdapter(private val orderBooksList: MutableList<OrderBook>,
         val header: TextView = view.header
     }
 
-    class SubheaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class SubHeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val currencyFrom: TextView = view.currencyFrom
         val amountTo: TextView = view.amountTo
         val amountFrom: TextView = view.amountFrom

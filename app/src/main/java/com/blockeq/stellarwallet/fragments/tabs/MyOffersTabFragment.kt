@@ -58,6 +58,8 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
     override fun onRefresh() {
         Horizon.getOffers(object: Horizon.OnOffersListener {
             override fun onOffers(offers: ArrayList<OfferResponse>) {
+                if (empty_view == null) return
+
                 if (offers.size == 0) {
                     empty_view.visibility = View.VISIBLE
                 } else {

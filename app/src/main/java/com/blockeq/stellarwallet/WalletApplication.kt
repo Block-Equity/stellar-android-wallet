@@ -6,6 +6,7 @@ import com.blockeq.stellarwallet.encryption.PRNGFixes
 import com.blockeq.stellarwallet.helpers.LocalStore
 import com.blockeq.stellarwallet.helpers.WalletLifecycleListener
 import com.blockeq.stellarwallet.models.UserSession
+import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 import com.blockeq.stellarwallet.mvvm.exchange.ExchangeRepository
 import com.facebook.stetho.Stetho
 import com.google.gson.Gson
@@ -50,13 +51,18 @@ class WalletApplication : MultiDexApplication() {
             Stetho.initializeWithDefaults(this)
             Timber.plant(Timber.DebugTree())
 
-            if (LeakCanary.isInAnalyzerProcess(this)) {
-                // This process is dedicated to LeakCanary for heap analysis.
-                // You should not init your app in this process.
-                return
+            if (DebugPreferencesHelper(applicationContext).isLeakCanaryEnabled) {
+                Timber.d("Enabling leak canary")
+                if (LeakCanary.isInAnalyzerProcess(this)) {
+                    // This process is dedicated to LeakCanary for heap analysis.
+                    // You should not init your app in this process.
+                    return
+                }
+                LeakCanary.install(this)
+                // Normal app init code...
+            } else {
+                Timber.d("Leak canary is disabled")
             }
-            LeakCanary.install(this)
-            // Normal app init code...
         }
 
         // exchange providers addresses are not very likely to change but let's refresh them during application startup

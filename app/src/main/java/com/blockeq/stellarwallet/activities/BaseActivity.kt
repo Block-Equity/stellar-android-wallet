@@ -7,15 +7,18 @@ import com.blockeq.stellarwallet.flowcontrollers.PinFlowController
 import com.blockeq.stellarwallet.models.PinType
 import com.blockeq.stellarwallet.models.PinViewState
 import com.blockeq.stellarwallet.utils.AccountUtils
+import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 
 abstract class BaseActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        if (WalletApplication.appReturnedFromBackground) {
+        val pinDisabled = this !is LaunchActivity && DebugPreferencesHelper(applicationContext).isPinDisabled
+        if (WalletApplication.appReturnedFromBackground && !pinDisabled) {
             WalletApplication.appReturnedFromBackground =  false
 
-            if (!WalletApplication.localStore.encryptedPhrase.isNullOrEmpty() && !WalletApplication.localStore.stellarAccountId.isNullOrEmpty()) {
+            if (!WalletApplication.localStore.encryptedPhrase.isNullOrEmpty()
+                    && !WalletApplication.localStore.stellarAccountId.isNullOrEmpty()) {
                 launchPINView(PinType.LOGIN, "", "", null, true)
             } else {
                 AccountUtils.wipe(this)
