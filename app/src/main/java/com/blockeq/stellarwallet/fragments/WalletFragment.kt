@@ -25,6 +25,8 @@ import com.blockeq.stellarwallet.models.WalletHeterogeneousArray
 import com.blockeq.stellarwallet.mvvm.effects.EffectsViewModel
 import com.blockeq.stellarwallet.utils.AccountUtils
 import kotlinx.android.synthetic.main.fragment_wallet.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
@@ -34,12 +36,16 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
 
     private var adapter : WalletRecyclerViewAdapter? = null
     private var effectsList : java.util.ArrayList<EffectResponse>? = null
-    private var recyclerViewArrayList: WalletHeterogeneousArray? = null
+    private lateinit var recyclerViewArrayList: WalletHeterogeneousArray
     private lateinit var viewModel : EffectsViewModel
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_wallet, container, false)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders.of(this).get(EffectsViewModel::class.java)
+    }
 
     companion object {
         fun newInstance(): WalletFragment = WalletFragment()
@@ -48,7 +54,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initViewModels()
+        bindAdapter()
 
         receiveButton.setOnClickListener {
             val context = activity
@@ -65,22 +71,30 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
 
     override fun onResume() {
         super.onResume()
-        bindAdapter()
+        updateAdapter()
+        initViewModels()
     }
 
     //region User Interface
 
     private fun initViewModels() {
-        viewModel = ViewModelProviders.of(this).get(EffectsViewModel::class.java)
-        viewModel.liveData.observe(viewLifecycleOwner, Observer {
+        viewModel.liveData.observe(viewLifecycleOwner, Observer { it ->
             if (it != null && walletProgressBar != null) {
                 noTransactionsTextView.visibility = View.GONE
                 walletProgressBar.visibility = View.VISIBLE
 
                 effectsList = it
-                recyclerViewArrayList!!.updateEffectsList(effectsList!!)
-                adapter!!.notifyDataSetChanged()
-                walletProgressBar.visibility = View.GONE
+
+                doAsync {
+
+                    recyclerViewArrayList.updateEffectsList(effectsList!!)
+                    uiThread {
+                        if (walletProgressBar != null) {
+                            adapter!!.notifyDataSetChanged()
+                            walletProgressBar.visibility = View.GONE
+                        }
+                    }
+                }
             }
         })
     }
@@ -89,41 +103,45 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
     private fun bindAdapter() {
         val currAsset = WalletApplication.userSession.currAssetCode
 
-        if (recyclerViewArrayList == null) {
-            walletProgressBar.visibility = View.VISIBLE
 
-            recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(AccountUtils.getTotalBalance(currAsset)),
-                    AvailableBalance(WalletApplication.localStore.availableBalance!!), Pair("Activity", "Amount"), effectsList)
+        walletProgressBar.visibility = View.VISIBLE
 
-            adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList!!.array)
-            adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
-                override fun onAssetDropdownClicked(view: View, position: Int) {
-                    val context = view.context
-                    startActivity(Intent(context, AssetsActivity::class.java))
-                    (context as Activity).overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
-                }
-            })
-            adapter!!.setOnLearnMoreButtonListener(object : WalletRecyclerViewAdapter.OnLearnMoreButtonListener {
-                override fun onLearnMoreButtonClicked(view: View, position: Int) {
-                    val context = view.context
-                    startActivity(Intent(context, BalanceSummaryActivity::class.java))
-                    (context as Activity).overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
-                }
-            })
-            walletRecyclerView.adapter = adapter
-            walletRecyclerView.layoutManager = LinearLayoutManager(activity)
-        } else {
-            if (currAsset != Constants.LUMENS_ASSET_TYPE) {
-                recyclerViewArrayList!!.hideAvailableBalance()
-            } else {
-                recyclerViewArrayList!!.showAvailableBalance(AvailableBalance(WalletApplication.localStore.availableBalance!!))
+        recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(AccountUtils.getTotalBalance(currAsset)),
+                AvailableBalance(WalletApplication.localStore.availableBalance!!), Pair("Activity", "Amount"), effectsList)
+
+        adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList.array)
+
+        adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
+            override fun onAssetDropdownClicked(view: View, position: Int) {
+                val context = view.context
+                startActivity(Intent(context, AssetsActivity::class.java))
+                (context as Activity).overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
             }
+        })
+        adapter!!.setOnLearnMoreButtonListener(object : WalletRecyclerViewAdapter.OnLearnMoreButtonListener {
+            override fun onLearnMoreButtonClicked(view: View, position: Int) {
+                val context = view.context
+                startActivity(Intent(context, BalanceSummaryActivity::class.java))
+                (context as Activity).overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+            }
+        })
+        walletRecyclerView.adapter = adapter
+        walletRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-            recyclerViewArrayList!!.updateTotalBalance(TotalBalance(AccountUtils.getTotalBalance(currAsset)))
-            recyclerViewArrayList!!.updateEffectsList(effectsList)
+    }
 
-            adapter!!.notifyDataSetChanged()
+    private fun updateAdapter() {
+        val currAsset = WalletApplication.userSession.currAssetCode
+        if (currAsset != Constants.LUMENS_ASSET_TYPE) {
+            recyclerViewArrayList.hideAvailableBalance()
+        } else {
+            recyclerViewArrayList.showAvailableBalance(AvailableBalance(WalletApplication.localStore.availableBalance!!))
         }
+
+        recyclerViewArrayList.updateTotalBalance(TotalBalance(AccountUtils.getTotalBalance(currAsset)))
+        recyclerViewArrayList.updateEffectsList(effectsList)
+
+        adapter!!.notifyDataSetChanged()
     }
 
     //endregion
@@ -131,9 +149,9 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
     //region Call backs
 
     override fun onLoadAccount(result: AccountResponse?) {
-        recyclerViewArrayList!!.updateTotalBalance(
+        recyclerViewArrayList.updateTotalBalance(
                 TotalBalance(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode)))
-        recyclerViewArrayList!!.updateAvailableBalance(
+        recyclerViewArrayList.updateAvailableBalance(
                 AvailableBalance(WalletApplication.localStore.availableBalance!!))
     }
 

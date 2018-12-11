@@ -101,6 +101,8 @@ dependencies {
     }
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+    implementation "org.jetbrains.anko:anko:$anko_version"
+    implementation "org.jetbrains.anko:anko-coroutines:$anko_version"
 
     //TODO this should be used only in debug builds
     implementation('com.facebook.stetho:stetho:1.5.0') {

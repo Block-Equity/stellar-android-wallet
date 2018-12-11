@@ -13,17 +13,6 @@ class EffectsViewModel(application: Application) : AndroidViewModel(application)
 
     private val effectsRepository : EffectsRepository = EffectsRepository.getInstance(RemoteRepository.instance)
 
-    var liveData: LiveData<ArrayList<EffectResponse>> = MutableLiveData()
+    var liveData: LiveData<ArrayList<EffectResponse>> = effectsRepository.loadList()
 
-    fun getEffectsList(): LiveData<ArrayList<EffectResponse>> {
-            liveData = MutableLiveData()
-            loadEffects()
-
-        return liveData
-    }
-
-    private fun loadEffects() {
-        // Observe if/when database is created.
-        liveData = effectsRepository.loadList()
-    }
 }

@@ -42,4 +42,5 @@ ext {
     flexboxVersion = '1.0.0'
     lifecycleVersion = '1.1.1'
     stellarVersion = '0.3.3'
+    anko_version='0.10.8'
 }
