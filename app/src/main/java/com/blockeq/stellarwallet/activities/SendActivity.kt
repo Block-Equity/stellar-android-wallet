@@ -82,7 +82,7 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
         }
 
         val viewModel = ViewModelProviders.of(this).get(ExchangeViewModel::class.java)
-        viewModel.exchangeMatching(address).observe(this, Observer<ExchangeEntity> {
+        viewModel.exchangeMatching(address).observe(this, Observer {
            updateExchangeProviderText(it)
         })
     }
