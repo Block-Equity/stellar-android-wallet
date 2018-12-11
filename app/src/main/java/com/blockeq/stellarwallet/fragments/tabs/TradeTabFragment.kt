@@ -219,7 +219,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
     private fun proceedWithTrade() {
         val snackbar = Snackbar.make(activity!!.findViewById(R.id.content_container),
-                "Submiting order", Snackbar.LENGTH_INDEFINITE)
+                "Submitting order", Snackbar.LENGTH_INDEFINITE)
         val snackView = snackbar.view as Snackbar.SnackbarLayout
         val progress = ProgressBar(context)
         val height = resources.getDimensionPixelOffset(R.dimen.progress_snackbar_height)
