@@ -1,6 +1,8 @@
 package com.blockeq.stellarwallet.fragments
 
 import android.app.Activity
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -17,10 +19,10 @@ import com.blockeq.stellarwallet.activities.ReceiveActivity
 import com.blockeq.stellarwallet.adapters.WalletRecyclerViewAdapter
 import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.interfaces.OnLoadAccount
-import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import com.blockeq.stellarwallet.models.AvailableBalance
 import com.blockeq.stellarwallet.models.TotalBalance
 import com.blockeq.stellarwallet.models.WalletHeterogeneousArray
+import com.blockeq.stellarwallet.mvvm.effects.EffectsViewModel
 import com.blockeq.stellarwallet.utils.AccountUtils
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.stellar.sdk.requests.ErrorResponse
@@ -28,11 +30,13 @@ import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
 
 
-class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
+class WalletFragment : BaseFragment(), OnLoadAccount {
 
     private var adapter : WalletRecyclerViewAdapter? = null
     private var effectsList : java.util.ArrayList<EffectResponse>? = null
     private var recyclerViewArrayList: WalletHeterogeneousArray? = null
+    private lateinit var viewModel : EffectsViewModel
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_wallet, container, false)
@@ -43,6 +47,8 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initViewModels()
 
         receiveButton.setOnClickListener {
             val context = activity
@@ -63,6 +69,21 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
     }
 
     //region User Interface
+
+    private fun initViewModels() {
+        viewModel = ViewModelProviders.of(this).get(EffectsViewModel::class.java)
+        viewModel.liveData.observe(viewLifecycleOwner, Observer {
+            if (it != null && walletProgressBar != null) {
+                noTransactionsTextView.visibility = View.GONE
+                walletProgressBar.visibility = View.VISIBLE
+
+                effectsList = it
+                recyclerViewArrayList!!.updateEffectsList(effectsList!!)
+                adapter!!.notifyDataSetChanged()
+                walletProgressBar.visibility = View.GONE
+            }
+        })
+    }
 
 
     private fun bindAdapter() {
@@ -124,18 +145,6 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
                 noTransactionsTextView.visibility = View.VISIBLE
                 walletProgressBar.visibility = View.GONE
             }
-        }
-    }
-
-    override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
-        if (result != null && walletProgressBar != null) {
-            noTransactionsTextView.visibility = View.GONE
-            walletProgressBar.visibility = View.VISIBLE
-
-            effectsList = result
-            recyclerViewArrayList!!.updateEffectsList(effectsList!!)
-            adapter!!.notifyDataSetChanged()
-            walletProgressBar.visibility = View.GONE
         }
     }
 

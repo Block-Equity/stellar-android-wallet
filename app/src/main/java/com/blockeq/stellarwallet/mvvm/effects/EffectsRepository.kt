@@ -21,7 +21,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
     /**
      * Returns an observable for ALL the effects table changes
      */
-    fun loadList(): LiveData<ArrayList<EffectResponse>?> {
+    fun loadList(): LiveData<ArrayList<EffectResponse>> {
         fetchEffectsList(object : OnLoadEffects {
             override fun onLoadEffects(result: ArrayList<EffectResponse>?) {
                 effectsList = result
