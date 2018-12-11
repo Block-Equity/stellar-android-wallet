@@ -27,7 +27,6 @@ import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.MixedTypes
 import com.blockeq.stellarwallet.vmodels.TradingViewModel
 import kotlinx.android.synthetic.main.fragment_tab_trade.*
-import kotlinx.android.synthetic.main.notification_template_lines_media.view.*
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
 import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber
