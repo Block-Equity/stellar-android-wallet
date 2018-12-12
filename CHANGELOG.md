@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Internal-2.0.0 com.blockeq.stellarwallet] - 2018-12-12
 ## Added
+- GH-78 show exchange address in sending page
 - Full support of Android App Bundle.
 - Trade Feature: Trade, OrderBook and MyOffers
 - GH-126 Trading asset selection logic in tradingTabFragment
