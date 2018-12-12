@@ -120,10 +120,13 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
     }
 
     private fun refreshSubmitTradeButton() {
-        if (sellingCustomSelector.editText.text.isEmpty() || buyingCustomSelector.editText.text.isEmpty()) {
+        val sellingValue = sellingCustomSelector.editText.text.toString()
+        val buyingValue = sellingCustomSelector.editText.text.toString()
+
+        if (sellingValue.isEmpty() || buyingValue.isEmpty() || sellingValue.toFloat() == 0f) {
            submitTrade.isEnabled = false
         } else {
-            submitTrade.isEnabled = sellingCustomSelector.editText.text.toString().toFloat() <= selectedSellingCurrency!!.holdings
+            submitTrade.isEnabled = sellingValue.toFloat() <= selectedSellingCurrency!!.holdings
         }
     }
 
@@ -247,7 +250,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
             override fun onFailed(errorMessage : String) {
                 snackbar.dismiss()
 
-                Snackbar.make(activity!!.findViewById(R.id.coordinator),
+                Snackbar.make(activity!!.findViewById(R.id.content_container),
                         "Order failed: $errorMessage", Snackbar.LENGTH_SHORT).show()
 
                 submitTrade.isEnabled = true
