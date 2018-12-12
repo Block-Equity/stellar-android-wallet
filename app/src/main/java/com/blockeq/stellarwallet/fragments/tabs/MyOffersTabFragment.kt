@@ -132,12 +132,12 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
                 override fun onFailed(errorMessage: String) {
                     Toast.makeText(appContext, "Failed to delete offer: $errorMessage", Toast.LENGTH_SHORT).show()
 
-                    val mySnackbar = Snackbar.make(activity!!.findViewById(R.id.content_container),
+                    val snackbar = Snackbar.make(activity!!.findViewById(R.id.content_container),
                             "failed to delete the offer", Snackbar.LENGTH_INDEFINITE)
-                    mySnackbar.setAction("retry") {
+                    snackbar.setAction("retry") {
                         deleteOffer(offerId)
                     }
-                    mySnackbar.show()
+                    snackbar.show()
                 }
             })
         }
