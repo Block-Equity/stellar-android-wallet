@@ -23,7 +23,11 @@ import java.util.*
 
 class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnUpdateOrderBook {
     override fun updateOrderBook(sellingCode: String, buyingCode: String, asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
-        loadOrderBook(sellingCode, buyingCode, asks, bids)
+        activity?.let {
+            if (!it.isFinishing) {
+               loadOrderBook(sellingCode, buyingCode, asks, bids)
+            }
+        }
     }
 
     private var orderBooks = mutableListOf<OrderBook>()
