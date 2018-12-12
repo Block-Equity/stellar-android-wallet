@@ -17,7 +17,8 @@
         android:paddingStart="@dimen/activity_vertical_margin"
         android:paddingEnd="@dimen/activity_vertical_margin"
         android:layout_gravity="start"
-        tool:text="1,000,000,000 XLM" />
+        tool:text="1,000,000,000 XLM"
+        android:background="@color/white" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -92,7 +93,9 @@
         android:padding="8dp"
         android:layout_marginTop="2dp"
         android:background="@color/white"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true" >
 
         <TextView
             android:id="@+id/amountTextView"
