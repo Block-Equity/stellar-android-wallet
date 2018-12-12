@@ -38,6 +38,7 @@
                     android:layout_width="0dp"
                     android:layout_height="@dimen/button_height"
                     android:layout_weight=".5"
+                    android:textColor="@color/white"
                     android:background="@drawable/left_toggle_selected"
                     android:text="@string/market" />
 

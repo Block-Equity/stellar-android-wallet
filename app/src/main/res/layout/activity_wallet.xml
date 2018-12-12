@@ -12,8 +12,7 @@
         android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/bottom_navigation_height"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:paddingBottom="@dimen/bottom_navigation_height" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigationView"

@@ -73,10 +73,10 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         val orderBooksTitle = OrderBook(type = OrderBookAdapterTypes.TITLE)
         val buyOffer = OrderBookStickyHeader(type = OrderBookAdapterTypes.BUY_HEADER)
         val sellOffer = OrderBookStickyHeader(type = OrderBookAdapterTypes.SELL_HEADER)
-        val subheader = OrderBook(type = OrderBookAdapterTypes.SUBHEADER)
+        val subHeader = OrderBook(type = OrderBookAdapterTypes.SUBHEADER)
         orderBooks.add(orderBooksTitle)
         orderBooks.add(buyOffer)
-        orderBooks.add(subheader)
+        orderBooks.add(subHeader)
         var id = 1
         bids.forEach {
             val item = OrderBook(id, Date(), it.price.toFloat(), it.amount.toFloat() / it.price.toFloat() , it.amount.toFloat(), OrderBookAdapterTypes.ITEM)
@@ -89,7 +89,7 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         }
 
         orderBooks.add(sellOffer)
-        orderBooks.add(subheader)
+        orderBooks.add(subHeader)
         asks.forEach {
             val item = OrderBook(id, Date(), it.price.toFloat(),  it.amount.toFloat(), it.price.toFloat() * it.amount.toFloat(), OrderBookAdapterTypes.ITEM)
             orderBooks.add(item)
@@ -115,15 +115,14 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
     }
 
     override fun updateTradingCurrencies(sellingModel: SelectionModel, buyingModel: SelectionModel) {
-        val sell =  AssetUtil.toDataAssetFrom(sellingModel)
+        val selling =  AssetUtil.toDataAssetFrom(sellingModel)
         val buying = AssetUtil.toDataAssetFrom(buyingModel)
 
         buyingAsset = buying
-        sellingAsset = sell
+        sellingAsset = selling
 
-        if (orderBookRv != null) {
-            updateList(sellingAsset!!.code, buyingAsset!!.code)
-        }
+        Timber.d("Updating objects in order book")
+        updateList(sellingAsset!!.code, buyingAsset!!.code)
     }
 
     private fun initializeAdapterIfNeeded(sellingCode: String, buyingCode: String) : Boolean {
