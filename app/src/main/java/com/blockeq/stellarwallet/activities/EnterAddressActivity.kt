@@ -13,8 +13,6 @@ import kotlinx.android.synthetic.main.content_enter_address.*
 
 class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
 
-    val ADDRESS_DATA = "ADDRESS"
-
     override fun setContent(): Int {
         return R.layout.content_enter_address
     }

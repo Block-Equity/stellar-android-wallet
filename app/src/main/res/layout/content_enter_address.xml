@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="?attr/actionBarSize"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white" >
 
     <TextView
         android:id="@+id/titleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TitleText"
+        style="@style/RegularText"
+        android:textSize="@dimen/text_size_xlarge"
         android:paddingStart="@dimen/activity_vertical_margin"
-        android:layout_gravity="left"  />
+        android:paddingEnd="@dimen/activity_vertical_margin"
+        android:layout_gravity="start"
+        android:background="@color/white"
+        tool:text="1,000,000,000 XLM" />
 
     <LinearLayout
         android:layout_below="@id/titleText"
