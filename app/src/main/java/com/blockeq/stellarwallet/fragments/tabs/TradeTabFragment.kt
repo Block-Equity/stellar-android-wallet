@@ -220,8 +220,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
     }
 
     private fun createSnackBar(text : CharSequence, duration: Int) : Snackbar {
-        return Snackbar.make(activity!!.findViewById(R.id.content_container),
-                text, duration)
+        return Snackbar.make(activity!!.findViewById(R.id.content_container), text, duration)
     }
 
     private fun proceedWithTrade(buyingAmount :String, sellingAmount :String, sellingAsset : Asset, buyingAsset: Asset) {
