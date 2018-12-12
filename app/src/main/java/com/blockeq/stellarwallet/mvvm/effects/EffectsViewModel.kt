@@ -11,7 +11,7 @@ import java.util.*
 
 class EffectsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val effectsRepository : EffectsRepository = EffectsRepository.getInstance(RemoteRepository.instance)
+    private val effectsRepository : EffectsRepository = EffectsRepository.getInstance(RemoteRepository())
 
     var liveData: LiveData<ArrayList<EffectResponse>> = effectsRepository.loadList()
 

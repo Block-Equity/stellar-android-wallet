@@ -9,16 +9,4 @@ class RemoteRepository {
         Horizon.getLoadEffectsTask(listener).execute()
     }
 
-    companion object {
-
-        private var sInstance: RemoteRepository? = null
-
-        val instance: RemoteRepository
-            get() {
-                if (sInstance == null) {
-                    sInstance = RemoteRepository()
-                }
-                return sInstance!!
-            }
-    }
 }
