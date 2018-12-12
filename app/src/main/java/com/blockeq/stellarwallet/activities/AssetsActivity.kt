@@ -57,7 +57,11 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
             startActivity(Intent(this@AssetsActivity, AddAssetActivity::class.java))
         }
     }
-    //endregion
+
+    override fun onResume() {
+        super.onResume()
+        reloadDataForAdapter()
+    }
 
     //region User Interface
 
