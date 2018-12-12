@@ -15,7 +15,6 @@ import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.adapters.OrderBooksAdapter
 import com.blockeq.stellarwallet.interfaces.OnUpdateOrderBook
 import com.blockeq.stellarwallet.models.*
-import com.blockeq.stellarwallet.utils.MixedTypes
 import com.brandongogetap.stickyheaders.StickyLayoutManager
 import kotlinx.android.synthetic.main.fragment_tab_order_book.*
 import org.stellar.sdk.responses.OrderBookResponse
@@ -122,10 +121,8 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         buyingAsset = buying
         sellingAsset = selling
 
-        MixedTypes.let(sellingAsset, buyingAsset) { sellingAsset, buyingAsset ->
-            Timber.d("Updating objects in order book")
-            updateList(sellingAsset.code, buyingAsset.code)
-        }
+        Timber.d("Updating objects in order book")
+        updateList(sellingAsset!!.code, buyingAsset!!.code)
     }
 
     private fun initializeAdapterIfNeeded(sellingCode: String, buyingCode: String) : Boolean {

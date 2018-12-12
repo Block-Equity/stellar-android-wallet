@@ -24,10 +24,10 @@ import com.blockeq.stellarwallet.models.Currency
 import com.blockeq.stellarwallet.models.SelectionModel
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
-import com.blockeq.stellarwallet.utils.MixedTypes
 import com.blockeq.stellarwallet.vmodels.TradingViewModel
 import kotlinx.android.synthetic.main.fragment_tab_trade.*
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
+import org.stellar.sdk.Asset
 import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber
 
@@ -80,8 +80,8 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
         sellingCustomSelector.editText.addTextChangedListener(object : AfterTextChanged() {
             override fun afterTextChanged(editable: Editable) {
-                refreshSubmitTradeButton()
                 updateBuyingValueIfNeeded()
+                refreshSubmitTradeButton()
             }
         })
 
@@ -204,7 +204,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
                     dialogBuilder.setMessage("You are about to submit a trade of $sellingText $sellingCode for $buyingText $buyingCode.")
                     dialogBuilder.setPositiveButton("Submit") { _, _ ->
-                        proceedWithTrade()
+                        proceedWithTrade(buyingText, sellingText, selectedSellingCurrency!!.asset!!, selectedBuyingCurrency!!.asset!!)
                     }
 
                     dialogBuilder.setNegativeButton("Cancel") { dialog, _ ->
@@ -217,7 +217,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         }
     }
 
-    private fun proceedWithTrade() {
+    private fun proceedWithTrade(buyingAmount :String, sellingAmount :String, sellingAsset : Asset, buyingAsset: Asset) {
         val snackbar = Snackbar.make(activity!!.findViewById(R.id.content_container),
                 "Submitting order", Snackbar.LENGTH_INDEFINITE)
         val snackView = snackbar.view as Snackbar.SnackbarLayout
@@ -237,35 +237,25 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         setSelectorsEnabled(false)
         WalletApplication.userSession.getAvailableBalance()
 
-        Timber.d("proceedWithTrade")
-
-        MixedTypes.let(selectedSellingCurrency, selectedBuyingCurrency) { selling, buying -> {
-            Timber.d("selected objects are not null")
-                MixedTypes.let(selling.asset, buying.asset) { sellingAsset, buyingAsset -> {
-                    Timber.d("assets objects are not null")
-                    Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
-                        override fun onExecuted() {
-                            snackbar.dismiss()
-                            Snackbar.make(activity!!.findViewById(R.id.content_container),
-                                    "Order executed", Snackbar.LENGTH_SHORT).show()
-                        }
-
-                        override fun onFailed(errorMessage : String) {
-                            snackbar.dismiss()
-
-                            Snackbar.make(activity!!.findViewById(R.id.coordinator),
-                                    "Order failed: $errorMessage", Snackbar.LENGTH_SHORT).show()
-
-                            submitTrade.isEnabled = true
-                            progressBar.visibility = View.GONE
-                            setSelectorsEnabled(true)
-                        }
-                    }, AccountUtils.getSecretSeed(appContext), sellingAsset, buyingAsset,
-                            sellingCustomSelector.editText.text.toString(), (buyingCustomSelector.editText.text.toString().toFloat() / sellingCustomSelector.editText.text.toString().toFloat()).toString())
-                    }
-                }
+        Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
+            override fun onExecuted() {
+                snackbar.dismiss()
+                Snackbar.make(activity!!.findViewById(R.id.content_container),
+                        "Order executed", Snackbar.LENGTH_SHORT).show()
             }
-        }
+
+            override fun onFailed(errorMessage : String) {
+                snackbar.dismiss()
+
+                Snackbar.make(activity!!.findViewById(R.id.coordinator),
+                        "Order failed: $errorMessage", Snackbar.LENGTH_SHORT).show()
+
+                submitTrade.isEnabled = true
+                progressBar.visibility = View.GONE
+                setSelectorsEnabled(true)
+            }
+        }, AccountUtils.getSecretSeed(appContext), sellingAsset, buyingAsset,
+                sellingAmount, (buyingAmount.toFloat() / sellingAmount.toFloat()).toString())
     }
 
     private fun setSelectorsEnabled(isEnabled : Boolean) {
