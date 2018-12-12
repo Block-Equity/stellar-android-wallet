@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Internal-2.0.0 com.blockeq.stellarwallet] - 2018-12-12
 ## Added
+- Full support of Android App Bundle.
 - Trade Feature: Trade, OrderBook and MyOffers
 - GH-126 Trading asset selection logic in tradingTabFragment
 - GH-142 Wallet List, setting trade row dot color to gray
