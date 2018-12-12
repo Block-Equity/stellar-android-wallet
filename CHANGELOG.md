@@ -4,9 +4,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-- Trade support.
-## [1.0.5] - 2018-11-21
+## [Internal-1.0.6]
+## Added
+- Trade Feature: Trade, OrderBook and MyOffers
+- GH-126 Trading asset selection logic in tradingTabFragment
+- GH-142 Wallet List, setting trade row dot color to gray
+- GH-127 Diagnostics for Android (v2.1)
+- GH-123 create espresso tests for creation wallet flow, WalletManagement
+- GH-114 About (Policies, ToS, Info)
+- GH-109 Recovery with 15 or 18, 21 words
+- GH-108 Add QR for mnemonic phrase
+- Added a debug preferences to disable / enable leakCanary and the pin
+- BIP30 mnemonic spell-check
+
+## Changed
+- GH-133 Remove backwards compatibility support for old wallets
+
+## Fixed
+- GH-117 [java.lang.ClassCastException] getting the `getOldDecryptedPair()`
+- GH-138 [IllegalStateException] Fragment already added: SearchableListDialog
+
+## Security
+- GH-103 [Security] check for pin when user changes `request pin when sending payments`
+
+## [Internal-1.0.5] - 2018-11-21
 ## Changed
 - GH-105 Email diagnostic tool
 - New app icon with a beta ribbon on it
