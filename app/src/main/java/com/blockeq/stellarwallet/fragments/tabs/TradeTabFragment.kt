@@ -192,8 +192,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 if ((orderType == OrderType.MARKET && !dataAvailable) || buyingCustomSelector.editText.toString() == ZERO_VALUE) {
                     // buyingEditText should be empty at this moment
 
-                    Snackbar.make(activity!!.findViewById(R.id.content_container),
-                            "Trade price cannot be 0. Please override limit order.", Snackbar.LENGTH_SHORT).show()
+                    createSnackBar("Trade price cannot be 0. Please override limit order.", Snackbar.LENGTH_SHORT).show()
 
                 } else {
 
@@ -220,9 +219,13 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         }
     }
 
+    private fun createSnackBar(text : CharSequence, duration: Int) : Snackbar {
+        return Snackbar.make(activity!!.findViewById(R.id.content_container),
+                text, duration)
+    }
+
     private fun proceedWithTrade(buyingAmount :String, sellingAmount :String, sellingAsset : Asset, buyingAsset: Asset) {
-        val snackbar = Snackbar.make(activity!!.findViewById(R.id.content_container),
-                "Submitting order", Snackbar.LENGTH_INDEFINITE)
+        val snackbar =  createSnackBar("Submitting order",  Snackbar.LENGTH_INDEFINITE)
         val snackView = snackbar.view as Snackbar.SnackbarLayout
         val progress = ProgressBar(context)
         val height = resources.getDimensionPixelOffset(R.dimen.progress_snackbar_height)
@@ -243,15 +246,13 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
             override fun onExecuted() {
                 snackbar.dismiss()
-                Snackbar.make(activity!!.findViewById(R.id.content_container),
-                        "Order executed", Snackbar.LENGTH_SHORT).show()
+                createSnackBar("Order executed", Snackbar.LENGTH_SHORT).show()
             }
 
             override fun onFailed(errorMessage : String) {
                 snackbar.dismiss()
 
-                Snackbar.make(activity!!.findViewById(R.id.content_container),
-                        "Order failed: $errorMessage", Snackbar.LENGTH_SHORT).show()
+                createSnackBar("Order failed: $errorMessage", Snackbar.LENGTH_SHORT).show()
 
                 submitTrade.isEnabled = true
                 progressBar.visibility = View.GONE
