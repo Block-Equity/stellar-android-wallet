@@ -98,7 +98,7 @@ class DiagnosticActivity : BaseActivity() {
 
     private fun callEmailClient(emailBody: String, issueId : String) {
         val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = Uri.parse("mailto:support@com.blockeq")
+        intent.data = Uri.parse("mailto:support@blockeq.com")
         intent.putExtra(Intent.EXTRA_SUBJECT, "Issue report [$issueId]")
         intent.putExtra(Intent.EXTRA_TEXT, emailBody)
 
