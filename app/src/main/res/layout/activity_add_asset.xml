@@ -13,7 +13,7 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         tools:ignore="UnusedAttribute"
-        app:title="Add Asset"
+        app:title="@string/add_asset_title"
         app:titleTextColor="@color/colorPrimaryDark"
         android:theme="@style/ToolbarTheme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
