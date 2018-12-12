@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@color/white"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:padding="16dp">
 
         <TextView
