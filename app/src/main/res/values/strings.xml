@@ -22,7 +22,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="no_network">There was a problem connecting to the network. Attempting to reconnect.</string>
-    <string name="available_balance_template">Available: %1$s %2$s</string>
+    <string name="available_balance_template">%1$s %2$s</string>
     <string name="balance_template">%1$s %2$s</string>
     <string name="asset_template">%1$s (%2$s)</string>
     <string name="bracket_template">(%1$s)</string>
@@ -223,5 +223,6 @@
     <string name="empty_fields">You have one or more empty fields</string>
     <string name="add_custom_asset">Add custom asset</string>
     <string name="my_offer_empty_list">There are no offers at the moment</string>
+    <string name="add_asset_title">Add Asset</string>
 
 </resources>

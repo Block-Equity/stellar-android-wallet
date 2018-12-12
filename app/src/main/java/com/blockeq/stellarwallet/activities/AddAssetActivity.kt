@@ -1,6 +1,7 @@
 package com.blockeq.stellarwallet.activities
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.blockeq.stellarwallet.R
@@ -23,6 +24,9 @@ class AddAssetActivity : BaseActivity() {
     }
 
     fun setupUI() {
+        setSupportActionBar(toolBar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
         addAssetButton.setOnClickListener {
             if (assetCodeEditText.text.isNotEmpty() && addressEditText.text.isNotEmpty()) {
                 val secretSeed = AccountUtils.getSecretSeed(this)
@@ -62,5 +66,15 @@ class AddAssetActivity : BaseActivity() {
             NetworkUtils(this).displayNoNetwork()
             progressBar.visibility = View.GONE
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item != null) {
+            if (item.itemId == android.R.id.home) {
+                finish()
+                return true
+            }
+        }
+        return false
     }
 }

@@ -22,6 +22,7 @@ import com.blockeq.stellarwallet.models.AvailableBalance
 import com.blockeq.stellarwallet.models.TotalBalance
 import com.blockeq.stellarwallet.models.WalletHeterogeneousArray
 import com.blockeq.stellarwallet.utils.AccountUtils
+import com.blockeq.stellarwallet.utils.StringFormat
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
@@ -73,7 +74,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         if (recyclerViewArrayList == null) {
             walletProgressBar.visibility = View.VISIBLE
 
-            recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(AccountUtils.getTotalBalance(currAsset)),
+            recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))),
                     AvailableBalance(WalletApplication.localStore.availableBalance!!), Pair("Activity", "Amount"), effectsList)
 
             adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList!!.array)
@@ -100,7 +101,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
                 recyclerViewArrayList!!.showAvailableBalance(AvailableBalance(WalletApplication.localStore.availableBalance!!))
             }
 
-            recyclerViewArrayList!!.updateTotalBalance(TotalBalance(AccountUtils.getTotalBalance(currAsset)))
+            recyclerViewArrayList!!.updateTotalBalance(TotalBalance(StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))))
             recyclerViewArrayList!!.updateEffectsList(effectsList)
 
             adapter!!.notifyDataSetChanged()
@@ -113,7 +114,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     override fun onLoadAccount(result: AccountResponse?) {
         recyclerViewArrayList!!.updateTotalBalance(
-                TotalBalance(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode)))
+                TotalBalance(StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode))))
         recyclerViewArrayList!!.updateAvailableBalance(
                 AvailableBalance(WalletApplication.localStore.availableBalance!!))
     }

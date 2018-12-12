@@ -8,7 +8,7 @@
         errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/styles.xml"
-            line="86"
+            line="88"
             column="15"/>
     </issue>
 
@@ -97,17 +97,6 @@
         <location
             file="src/main/res/layout/fragment_wallet.xml"
             line="7"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/white` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
-        errorLine1="    android:background=&quot;@color/white&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_asset.xml"
-            line="4"
             column="5"/>
     </issue>
 
@@ -428,17 +417,6 @@
 
     <issue
         id="UnusedResources"
-        message="The resource `R.dimen.text_size_xlarge` appears to be unused"
-        errorLine1="    &lt;dimen name=&quot;text_size_xlarge&quot;>34sp&lt;/dimen>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/material_dimens.xml"
-            line="64"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
         message="The resource `R.dimen.text_size_xxlarge` appears to be unused"
         errorLine1="    &lt;dimen name=&quot;text_size_xxlarge&quot;>45sp&lt;/dimen>"
         errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
@@ -499,7 +477,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="3"
+            line="4"
             column="13"/>
     </issue>
 
@@ -510,7 +488,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="4"
+            line="5"
             column="13"/>
     </issue>
 
@@ -521,7 +499,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="5"
+            line="6"
             column="13"/>
     </issue>
 
@@ -532,7 +510,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="6"
+            line="7"
             column="13"/>
     </issue>
 
@@ -543,7 +521,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="7"
+            line="8"
             column="13"/>
     </issue>
 
@@ -554,7 +532,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="8"
+            line="9"
             column="13"/>
     </issue>
 
@@ -565,7 +543,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="15"
+            line="16"
             column="13"/>
     </issue>
 
@@ -587,7 +565,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="85"
+            line="87"
             column="13"/>
     </issue>
 
@@ -598,7 +576,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="88"
+            line="90"
             column="13"/>
     </issue>
 
@@ -609,7 +587,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="89"
+            line="91"
             column="13"/>
     </issue>
 
@@ -620,7 +598,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="119"
+            line="122"
             column="13"/>
     </issue>
 
@@ -631,7 +609,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="120"
+            line="123"
             column="13"/>
     </issue>
 
@@ -642,7 +620,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="121"
+            line="124"
             column="13"/>
     </issue>
 
@@ -653,7 +631,7 @@
         errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/styles.xml"
-            line="110"
+            line="112"
             column="12"/>
     </issue>
 
@@ -675,7 +653,7 @@
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/res/layout/activity_inflation.xml"
-            line="28"
+            line="30"
             column="10"/>
     </issue>
 
@@ -697,7 +675,7 @@
         errorLine2="     ~~~~~~~~">
         <location
             file="src/main/res/layout/activity_recover_wallet.xml"
-            line="44"
+            line="45"
             column="6"/>
     </issue>
 
@@ -708,7 +686,7 @@
         errorLine2="             ~~~~~~~~">
         <location
             file="src/main/res/layout/content_enter_address.xml"
-            line="39"
+            line="46"
             column="14"/>
     </issue>
 
@@ -719,7 +697,7 @@
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/res/layout/contents_send.xml"
-            line="72"
+            line="76"
             column="10"/>
     </issue>
 
@@ -763,7 +741,7 @@
         errorLine2="         ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/activity_inflation.xml"
-            line="41"
+            line="43"
             column="10"/>
     </issue>
 
@@ -796,7 +774,7 @@
         errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/content_enter_address.xml"
-            line="52"
+            line="59"
             column="14"/>
     </issue>
 
@@ -818,7 +796,7 @@
         errorLine2="                 ~~~~~~~~~">
         <location
             file="src/main/res/layout/fragment_tab_trade.xml"
-            line="132"
+            line="135"
             column="18"/>
     </issue>
 
@@ -884,7 +862,7 @@
         errorLine2="     ~~~~~~~~">
         <location
             file="src/main/res/layout/activity_recover_wallet.xml"
-            line="44"
+            line="45"
             column="6"/>
     </issue>
 
@@ -906,7 +884,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/contents_send.xml"
-            line="101"
+            line="107"
             column="13"/>
     </issue>
 
@@ -950,7 +928,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/item_asset.xml"
-            line="52"
+            line="64"
             column="9"/>
     </issue>
 
@@ -1051,17 +1029,6 @@
             file="src/main/res/layout/fragment_wallet.xml"
             line="45"
             column="18"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`LinearLayout-3` can overlap `@id/assetButton` if LinearLayout-3 grows due to localized text expansion"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_asset.xml"
-            line="14"
-            column="6"/>
     </issue>
 
     <issue

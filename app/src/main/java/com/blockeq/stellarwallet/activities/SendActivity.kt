@@ -33,7 +33,7 @@ import kotlinx.android.synthetic.main.contents_send.*
 class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCallback {
 
     companion object {
-        private const val MAX_ALLOWED_DECIMALS = 4
+        private const val MAX_ALLOWED_DECIMALS = 7
         private const val ARG_ADDRESS_DATA = "ARG_ADDRESS_DATA"
 
         fun newIntent(context: Context, address: String): Intent {

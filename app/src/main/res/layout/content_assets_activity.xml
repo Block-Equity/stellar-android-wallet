@@ -39,7 +39,6 @@
         android:layout_alignParentBottom="true"
         android:text="@string/add_custom_asset"
         style="@style/PrimaryButtonStyle"
-        android:background="@color/blue2"
         android:layout_margin="@dimen/activity_vertical_margin"/>
 
 </RelativeLayout>

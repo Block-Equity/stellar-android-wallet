@@ -12,6 +12,7 @@
     <!--Overdraw of the ripple background on the actual background-->
     <issue id="Overdraw">
         <ignore path="res/layout/item_asset.xml" />
+        <ignore path="res/layout/content_enter_address.xml" />
     </issue>
     <issue id="CustomViewStyleable">
         <ignore regexp="PatchedSearchableSpinner.java" />

@@ -1,6 +1,7 @@
 package com.blockeq.stellarwallet.activities
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.blockeq.stellarwallet.R
@@ -12,19 +13,18 @@ import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import kotlinx.android.synthetic.main.activity_inflation.*
 
-class InflationActivity : BasePopupActivity() {
+class InflationActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_inflation)
 
         setupUI()
     }
 
-    override fun setContent(): Int {
-        return R.layout.activity_inflation
-    }
-
     private fun setupUI() {
+        setSupportActionBar(toolBar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         addressEditText.setText(Constants.INFLATION_DESTINATION)
 
@@ -50,5 +50,15 @@ class InflationActivity : BasePopupActivity() {
                 NetworkUtils(this).displayNoNetwork()
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item != null) {
+            if (item.itemId == android.R.id.home) {
+                finish()
+                return true
+            }
+        }
+        return false
     }
 }
