@@ -179,6 +179,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 toggleLimit.setTextColor(ContextCompat.getColor(view.context, R.color.black))
 
                 buyingCustomSelector.editText.isEnabled = false
+                updateBuyingValueIfNeeded()
             }
             R.id.toggleLimit -> {
                 orderType = OrderType.LIMIT
