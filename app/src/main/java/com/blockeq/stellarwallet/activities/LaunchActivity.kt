@@ -16,13 +16,6 @@ class LaunchActivity : BaseActivity() {
         setupUI()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PinActivity.PIN_REQUEST_CODE) {
-            finish()
-        }
-    }
-
     //region User Interface
     private fun setupUI() {
 

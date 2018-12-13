@@ -31,7 +31,7 @@ class PinActivity : BaseActivity(), PinLockListener {
         const val KEY_SECRET_SEED = "kSecretSeed"
         const val KEY_PIN = "kPin"
 
-        const val PIN_REQUEST_CODE = 0
+        const val PIN_REQUEST_CODE = 1
         const val MAX_ATTEMPTS = 3
     }
 
@@ -113,7 +113,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                                 val intent = Intent()
                                 intent.putExtra(KEY_SECRET_SEED, keyPair.secretSeed)
                                 setResult(Activity.RESULT_OK, intent)
-                                finishActivity()
+                                finishPinActivity()
                             }
                             pinViewState.type == PinType.CLEAR_WALLET -> wipeAndRestart()
 
@@ -171,9 +171,9 @@ class PinActivity : BaseActivity(), PinLockListener {
         wrongPinDots.startAnimation(shakeAnimation)
     }
 
-    private fun finishActivity() {
-        finish()
+    private fun finishPinActivity() {
         overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
+        finish()
     }
 
     private fun showWrongPinDots(show: Boolean) {
@@ -220,28 +220,28 @@ class PinActivity : BaseActivity(), PinLockListener {
 
     private fun finishResultVoid() {
         setResult(PinActivity.SUCCESS_VOID)
-        finishActivity()
+        finishPinActivity()
     }
 
     private fun finishResultDecryptedMnemonic(phrase : String) {
         val intent = Intent()
         intent.putExtra(KEY_DECRYPTED_MNEMONIC, phrase)
         setResult(PinActivity.SUCCESS_DECRYPTED_MNEMONIC, intent)
-        finishActivity()
+        finishPinActivity()
     }
 
     private fun setResultSecretSeed(seed : CharArray) {
         val intent = Intent()
         intent.putExtra(KEY_SECRET_SEED, seed)
         setResult(PinActivity.SUCCESS_SECRET_SEED, intent)
-        finishActivity()
+        finishPinActivity()
     }
 
     private fun finishResultPin(pin : String) {
         val intent = Intent()
         intent.putExtra(KEY_PIN, pin)
         setResult(PinActivity.SUCCESS_PIN, intent)
-        finishActivity()
+        finishPinActivity()
     }
 
     //endregion

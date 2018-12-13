@@ -26,12 +26,11 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-
     //region Helper Functions
 
     open fun launchPINView(pinType: PinType, message: String, mnemonic: String, passphrase: String?, isLogin: Boolean) {
         val pinViewState = PinViewState(pinType, message, "", mnemonic, passphrase)
-        PinFlowController.launchPinActivity(this, pinViewState, isLogin)
+        PinFlowController.launchPinActivity(this, pinViewState)
     }
 
     fun launchWallet() {
