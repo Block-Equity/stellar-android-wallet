@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.android.volley.Request
@@ -30,19 +31,16 @@ import org.stellar.sdk.Asset
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 
-class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
+class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
 
     private var map: Map<String, SupportedAsset>? = null
     private var assetsList: ArrayList<Any> = ArrayList()
     private lateinit var context : Context
     private lateinit var adapter : AssetsRecyclerViewAdapter
 
-    override fun setContent(): Int {
-        return R.layout.content_assets_activity
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.content_assets_activity)
 
         setupUI()
         loadSupportedAssets()
@@ -50,9 +48,11 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
     }
 
     private fun setupUI() {
+        setSupportActionBar(toolBar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
         progressBar.visibility = View.VISIBLE
         bindAdapter()
-        titleText.text = getString(R.string.asset_title_text)
         manuallyAddAssetButton.setOnClickListener {
             startActivity(Intent(this@AssetsActivity, AddAssetActivity::class.java))
         }
@@ -77,6 +77,16 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
 
         adapter.notifyDataSetChanged()
         progressBar.visibility = View.GONE
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item != null) {
+            if (item.itemId == android.R.id.home) {
+                finish()
+                return true
+            }
+        }
+        return false
     }
 
     //endregion
