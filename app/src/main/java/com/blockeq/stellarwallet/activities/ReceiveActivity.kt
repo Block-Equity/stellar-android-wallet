@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.Toast
 import com.blockeq.stellarwallet.R
@@ -12,15 +13,14 @@ import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.android.synthetic.main.content_receive.*
 
-class ReceiveActivity : BasePopupActivity() {
-
-    override fun setContent(): Int {
-        return R.layout.content_receive
-    }
+class ReceiveActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        titleText.text = getString(R.string.receive_title)
+        setContentView(R.layout.content_receive)
+
+        setSupportActionBar(toolBar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         val pubAddress = WalletApplication.localStore.stellarAccountId
 
@@ -41,5 +41,15 @@ class ReceiveActivity : BasePopupActivity() {
         clipboard.primaryClip = clip
 
         Toast.makeText(this, getString(R.string.address_copied_message), Toast.LENGTH_LONG).show()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item != null) {
+            if (item.itemId == android.R.id.home) {
+                finish()
+                return true
+            }
+        }
+        return false
     }
 }

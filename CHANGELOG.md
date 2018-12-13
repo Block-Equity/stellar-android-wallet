@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GH-117 [java.lang.ClassCastException] getting the `getOldDecryptedPair()`
 - GH-138 [IllegalStateException] Fragment already added: SearchableListDialog
 
+- GH-160 Make all buttons and toolbars look beautiful and consistent
+- GH-154 Fixed all low priority issues in Android Bug Bash
 ## Security
 - GH-103 [Security] check for pin when user changes `request pin when sending payments`
 
