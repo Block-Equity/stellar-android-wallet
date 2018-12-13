@@ -89,6 +89,11 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
         return false
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        reloadDataForAdapter()
+    }
+
     //endregion
 
     private fun convertBalanceToSupportedAsset(balances: Array<AccountResponse.Balance>,
@@ -171,7 +176,11 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
             Horizon.getChangeTrust(object : SuccessErrorCallback {
                 override fun onSuccess() {
                     reloadDataForAdapter()
-                    Toast.makeText(this@AssetsActivity, getString(R.string.success_trustline_changed), Toast.LENGTH_SHORT).show()
+                    if (isRemove) {
+                        Toast.makeText(this@AssetsActivity, getString(R.string.asset_removed), Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this@AssetsActivity, getString(R.string.success_trustline_changed), Toast.LENGTH_SHORT).show()
+                    }
                     progressBar.visibility = View.GONE
                     if (isRemove) {
                         WalletApplication.userSession.currAssetCode = Constants.LUMENS_ASSET_TYPE
