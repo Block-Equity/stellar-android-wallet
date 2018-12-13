@@ -55,7 +55,7 @@ class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
             R.id.nextButton -> {
                 val address = addressEditText.text.toString()
 
-                if (address.length == STELLAR_ADDRESS_LENGTH) {
+                if (address.length == STELLAR_ADDRESS_LENGTH && address != WalletApplication.localStore.stellarAccountId) {
                     startActivity(SendActivity.newIntent(this, address))
 
                     this.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
