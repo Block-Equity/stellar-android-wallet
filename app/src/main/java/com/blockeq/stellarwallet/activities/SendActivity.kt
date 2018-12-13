@@ -11,6 +11,7 @@ import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.text.Html
 import android.text.Spanned
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -30,7 +31,7 @@ import com.blockeq.stellarwallet.vmodels.ExchangeViewModel
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
 import kotlinx.android.synthetic.main.contents_send.*
 
-class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCallback {
+class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallback {
 
     companion object {
         private const val MAX_ALLOWED_DECIMALS = 7
@@ -48,12 +49,19 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     private var address: String = ""
     private var exchange : ExchangeApiModel? = null
 
-    override fun setContent(): Int {
-        return R.layout.contents_send
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.contents_send)
+
+        setupUI()
+    }
+
+    //region User Interface
+
+    private fun setupUI() {
+        setSupportActionBar(toolBar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
         titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance(applicationContext)
         assetCodeTextView.text = WalletApplication.userSession.getFormattedCurrentAssetCode()
 
@@ -83,11 +91,19 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
 
         val viewModel = ViewModelProviders.of(this).get(ExchangeViewModel::class.java)
         viewModel.exchangeMatching(address).observe(this, Observer {
-           updateExchangeProviderText(it)
+            updateExchangeProviderText(it)
         })
     }
 
-    //region User Interface
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item != null) {
+            if (item.itemId == android.R.id.home) {
+                finish()
+                return true
+            }
+        }
+        return false
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
