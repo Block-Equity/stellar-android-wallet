@@ -39,10 +39,17 @@
     <color name="fragmentBg">@color/alabaster</color>
     <color name="toggleSelected">@color/royalBlue</color>
     <color name="toggleUnselected">@color/white</color>
-    <color name="primaryButtonBg">@color/funBlue</color>
+
+    <color name="primaryButtonBg">@color/blue2</color>
     <color name="primaryButtonPressedBg">@color/royalBlue</color>
     <color name="primaryButtonDisabled">@color/silverChalice</color>
     <color name="primaryButtonText">@color/white</color>
+
+    <color name="secondaryButtonBg">@color/blue4</color>
+    <color name="secondaryButtonPressedBg">@color/lightBlue</color>
+    <color name="secondaryButtonDisabled">@color/silverChalice</color>
+    <color name="secondaryButtonText">@color/white</color>
+
     <color name="container">@color/white</color>
     <color name="divider">@color/alto</color>
     <color name="regularTextColor">@color/black</color>
