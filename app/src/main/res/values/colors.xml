@@ -23,7 +23,6 @@
     <color name="black">#000000</color>
     <color name="gallery">#ececec</color>
     <color name="mantis">#71CD5C</color>
-    <color name="funBlue">#1b53b0</color>
     <color name="apricot">#ee7a70</color>
     <color name="paleSky">#6f7785</color>
 
@@ -47,7 +46,6 @@
 
     <color name="secondaryButtonBg">@color/blue4</color>
     <color name="secondaryButtonPressedBg">@color/lightBlue</color>
-    <color name="secondaryButtonDisabled">@color/silverChalice</color>
     <color name="secondaryButtonText">@color/white</color>
 
     <color name="container">@color/white</color>
