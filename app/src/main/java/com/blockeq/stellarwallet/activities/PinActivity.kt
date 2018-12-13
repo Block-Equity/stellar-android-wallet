@@ -24,10 +24,12 @@ class PinActivity : BaseActivity(), PinLockListener {
         const val SUCCESS_VOID = 0
         const val SUCCESS_DECRYPTED_MNEMONIC = 1
         const val SUCCESS_SECRET_SEED = 2
+        const val SUCCESS_PIN = 3
 
         /* Return intent keys */
         const val KEY_DECRYPTED_MNEMONIC = "kDecryptedMnemonic"
         const val KEY_SECRET_SEED = "kSecretSeed"
+        const val KEY_PIN = "kPin"
 
         const val PIN_REQUEST_CODE = 0
         const val MAX_ATTEMPTS = 3
@@ -103,10 +105,8 @@ class PinActivity : BaseActivity(), PinLockListener {
                         }
 
                         when {
-                            pinViewState.type == PinType.LOGIN -> {
-                                WalletApplication.userSession.pin = pin
-                                finishResultVoid()
-                            }
+                            pinViewState.type == PinType.LOGIN -> finishResultPin(pin)
+
                             pinViewState.type == PinType.CHECK -> {
                                 val keyPair = AccountUtils.getStellarKeyPair(decryptedPhrase, decryptedPassphrase)
 //                                setResultSecretSeed(keyPair.secretSeed)
@@ -234,6 +234,13 @@ class PinActivity : BaseActivity(), PinLockListener {
         val intent = Intent()
         intent.putExtra(KEY_SECRET_SEED, seed)
         setResult(PinActivity.SUCCESS_SECRET_SEED, intent)
+        finishActivity()
+    }
+
+    private fun finishResultPin(pin : String) {
+        val intent = Intent()
+        intent.putExtra(KEY_PIN, pin)
+        setResult(PinActivity.SUCCESS_PIN, intent)
         finishActivity()
     }
 

@@ -42,8 +42,11 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == PinActivity.PIN_REQUEST_CODE) {
-            if (resultCode == PinActivity.SUCCESS_VOID) {
-               launchWallet()
+            if (resultCode == PinActivity.SUCCESS_PIN && data != null) {
+                val pin = data.getStringExtra(PinActivity.KEY_PIN)
+
+                WalletApplication.userSession.pin = pin
+                launchWallet()
             }
         }
     }
