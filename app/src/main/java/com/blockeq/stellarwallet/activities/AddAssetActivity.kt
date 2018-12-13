@@ -25,7 +25,7 @@ class AddAssetActivity : BaseActivity() {
 
     fun setupUI() {
         setSupportActionBar(toolBar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayHomeAsUpEnabled (true)
 
         addAssetButton.setOnClickListener {
             if (assetCodeEditText.text.isNotEmpty() && addressEditText.text.isNotEmpty()) {
@@ -48,11 +48,12 @@ class AddAssetActivity : BaseActivity() {
         }
     }
 
+
     private fun changeTrustLine(secretSeed: CharArray, assetToChange: Asset) {
         if (NetworkUtils(this).isNetworkAvailable()) {
             Horizon.getChangeTrust(object : SuccessErrorCallback {
                 override fun onSuccess() {
-                    Toast.makeText(this@AddAssetActivity, getString(R.string.success_trustline_changed), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AddAssetActivity, getString(R.string.asset_added), Toast.LENGTH_SHORT).show()
                     progressBar.visibility = View.GONE
                     finish()
                 }

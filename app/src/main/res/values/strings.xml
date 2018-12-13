@@ -154,6 +154,8 @@
     <string name="no_balance_text_message">You must have more than 1 Lumen (XLM) to perform this action.</string>
     <string name="add_asset">Add asset</string>
     <string name="success_trustline_changed">Trust line changed!</string>
+    <string name="asset_removed">Asset removed successfully</string>
+    <string name="asset_added">Asset added successfully</string>
     <string name="error_trustline_changed">There was an error changing trust lines.</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
@@ -221,7 +223,6 @@
     <string name="asset_code_hint">BTC</string>
     <string name="issuer_address">Issuer Address</string>
     <string name="empty_fields">You have one or more empty fields</string>
-    <string name="add_custom_asset">Add custom asset</string>
     <string name="my_offer_empty_list">There are no offers at the moment</string>
     <string name="add_asset_title">Add Asset</string>
 
