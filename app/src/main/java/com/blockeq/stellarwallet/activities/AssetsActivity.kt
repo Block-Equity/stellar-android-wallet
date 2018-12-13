@@ -58,11 +58,6 @@ class AssetsActivity : BasePopupActivity(), ChangeTrustlineListener {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        reloadDataForAdapter()
-    }
-
     //region User Interface
 
     private fun bindAdapter() {
