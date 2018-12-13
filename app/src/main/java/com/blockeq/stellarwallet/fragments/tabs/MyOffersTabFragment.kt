@@ -70,9 +70,9 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
                 myOffers.clear()
                 offers.forEach {
                     val buyingCode : String = AssetUtil.getCode(it.buying)!!
-                    val currencyBuy = Currency(1, buyingCode, "$buyingCode COIN", 0.0f, null)
+                    val currencyBuy = Currency(1, buyingCode, "$buyingCode COIN", 0.0, null)
                     val sellingCode : String = AssetUtil.getCode(it.selling)!!
-                    val currencySelling = Currency(2, sellingCode, "$sellingCode COIN", 0.0f, null)
+                    val currencySelling = Currency(2, sellingCode, "$sellingCode COIN", 0.0, null)
                     myOffers.add(MyOffer(it.id.toInt(), Date(), currencySelling, currencyBuy, it.amount.toFloat(), it.price.toFloat()))
                     id++
                 }

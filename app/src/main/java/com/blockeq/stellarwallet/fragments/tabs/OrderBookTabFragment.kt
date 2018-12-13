@@ -44,7 +44,7 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         val dividerItemDecoration = DividerItemDecoration(context,
                 LinearLayoutManager(context).orientation)
         orderBookRv.addItemDecoration(dividerItemDecoration)
-        swipeRefresh.setOnRefreshListener(this)
+//        swipeRefresh.setOnRefreshListener(this)
 
     }
 

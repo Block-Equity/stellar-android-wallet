@@ -91,7 +91,7 @@
     <string name="tab_my_offers">My Offers</string>
     <string name="selling_hint">I have</string>
     <string name="buying_hint">I want</string>
-    <string name="holdings_amount">%1$f %2$s</string>
+    <string name="holdings_amount">%1$s %2$s</string>
     <string name="tenth">10%</string>
     <string name="quarter">25%</string>
     <string name="half">50%</string>
