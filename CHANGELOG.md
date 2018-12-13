@@ -4,7 +4,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Internal-2.0.0 com.blockeq.stellarwallet] - 2018-12-12
+## [Internal-2.0.1]
+## Fixed
+- GH-160 Make all buttons and toolbars look beautiful and consistent
+- GH-154 Fixed all low priority issues in Android Bug Bash
+- GH-152 Trading 100% should not do any math and grab 7 decimals
+- GH-147 Update market price once user is back from limit
+- GH-155 Creating asset does not refresh the list
+- GH-151 Sending coins to yourself should be blocked
+- GH-145 [UninitializedPropertyAccessException] crash switching fast form settings to trading
+
+Other bug bash issues fixed in this version:
+- Add asset is missing a back arrow on Action Bar
+- 100% trade left a residual balance
+- Market trade amount in second text field is not a dark enough font color
+- Add asset: Font size too small
+- Inflation destination: button colours are not the same as everywhere else in the app (Megha)
+- Inflation destination: title can go into the action bar (right now it's in the main part of the screen)
+- Send amount: Cant send amounts less than 4 decimal places
+- Send amount: Cursor on memo shouldn't be selected
+- Diagnostic Email address incorrect support@com.blockeq
+- Update market price once user is back from limit
+- Buttons across the app are inconsistent in terms of font, size, format and color. This has to be consistent.
+- Some titles are inconsistent (i.e. some action bar, some below, some have 'X', some have back arrow). Needs clean up.
+
+## [Internal-2.0.0] - 2018-12-12
 ## Added
 - GH-78 show exchange address in sending page
 - Full support of Android App Bundle.
@@ -21,13 +45,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 - GH-133 Remove backwards compatibility support for old wallets
-
+- app id has changed from `blockeq.com.stellarwallet` to `com.blockeq.stellarwallet`
 ## Fixed
 - GH-117 [java.lang.ClassCastException] getting the `getOldDecryptedPair()`
 - GH-138 [IllegalStateException] Fragment already added: SearchableListDialog
 
-- GH-160 Make all buttons and toolbars look beautiful and consistent
-- GH-154 Fixed all low priority issues in Android Bug Bash
 ## Security
 - GH-103 [Security] check for pin when user changes `request pin when sending payments`
 
