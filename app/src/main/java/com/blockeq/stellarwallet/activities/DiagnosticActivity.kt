@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.Response
@@ -33,6 +34,9 @@ class DiagnosticActivity : BaseActivity() {
     }
 
     fun setupUI() {
+        setSupportActionBar(toolBar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
         val isPassphrase = WalletApplication.localStore.encryptedPassphrase != null
         recoveryType = getRecoveryType()
 
@@ -110,5 +114,15 @@ class DiagnosticActivity : BaseActivity() {
         } else {
             Toast.makeText(applicationContext, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item != null) {
+            if (item.itemId == android.R.id.home) {
+                finish()
+                return true
+            }
+        }
+        return false
     }
 }
