@@ -10,7 +10,7 @@ class HorizonException(private val transactionResultCode: String,
 
     enum class HorizonExceptionType(val value: Int) {
         SEND(R.string.send_error_message),
-        CHANGE_TRUSTLINE(R.string.error_trustline_changed),
+        CHANGE_TRUST_LINE(R.string.error_trustline_changed),
         INFLATION(R.string.inflation_set_error),
         LOAD_ACCOUNT(R.string.load_account_error),
         LOAD_EFFECTS(R.string.load_effects_error)

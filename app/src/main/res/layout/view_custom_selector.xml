@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:weightSum="1">
 
@@ -17,7 +18,7 @@
         android:paddingEnd="@dimen/margin_padding_size_medium"
         android:paddingRight="@dimen/margin_padding_size_medium"
         android:textColorHint="@color/selectorHint"
-        android:textSize="@dimen/text_size_medium" />
+        android:textSize="@dimen/text_size_medium"/>
 
     <RelativeLayout
         android:id="@+id/spinnerContainer"

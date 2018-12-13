@@ -175,13 +175,13 @@ object Horizon : HorizonTasks {
                 if (!response.isSuccess) {
                     return HorizonException(response.extras.resultCodes.transactionResultCode,
                             response.extras.resultCodes.operationsResultCodes,
-                            HorizonException.HorizonExceptionType.INFLATION)
+                            HorizonException.HorizonExceptionType.SEND)
                 }
             } catch (error : Exception) {
                 Timber.d(error.message.toString())
                 return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
                         arrayListOf(error.message.toString()),
-                        HorizonException.HorizonExceptionType.INFLATION)
+                        HorizonException.HorizonExceptionType.SEND)
             }
             return null
         }
@@ -267,14 +267,14 @@ object Horizon : HorizonTasks {
                 if (!response.isSuccess) {
                     return HorizonException(response.extras.resultCodes.transactionResultCode,
                             response.extras.resultCodes.operationsResultCodes,
-                            HorizonException.HorizonExceptionType.CHANGE_TRUSTLINE)
+                            HorizonException.HorizonExceptionType.CHANGE_TRUST_LINE)
                 }
 
             } catch (error : ErrorResponse) {
                 Timber.e(error.body.toString())
                 return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
                         arrayListOf(error.body.toString()),
-                        HorizonException.HorizonExceptionType.CHANGE_TRUSTLINE)
+                        HorizonException.HorizonExceptionType.CHANGE_TRUST_LINE)
             }
             return null
         }

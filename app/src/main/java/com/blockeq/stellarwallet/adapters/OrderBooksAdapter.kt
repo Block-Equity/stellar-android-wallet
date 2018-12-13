@@ -21,8 +21,7 @@ import java.text.DecimalFormat
 class OrderBooksAdapter(private val orderBooksList: MutableList<OrderBook>,
                         private var currencyCodeTo: String?,
                         private var currencyCodeFrom: String?,
-                        private val context: Context)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyHeaderHandler {
+                        private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyHeaderHandler {
 
     fun setCurrencies(currencyCodeTo: String, currencyCodeFrom: String) {
         this.currencyCodeTo = currencyCodeTo
@@ -83,7 +82,7 @@ class OrderBooksAdapter(private val orderBooksList: MutableList<OrderBook>,
                holder.amountFrom.text = context.getString(R.string.offerValue, currencyCodeFrom)
            }
            is ItemViewHolder -> {
-               val format = DecimalFormat("0.########")
+               val format = DecimalFormat("0.#######")
                holder.fromPrice.text = format.format(orderBook.fromPrice)
                holder.toAmount.text =format.format(orderBook.toAmount)
                holder.fromValue.text = format.format(orderBook.fromValue)
