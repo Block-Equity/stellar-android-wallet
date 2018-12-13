@@ -71,10 +71,10 @@
     <Button
         android:id="@+id/nextButton"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/sendButtonColor"
+        android:layout_height="wrap_content"
         android:text="@string/next_button_text"
-        android:textColor="@color/white" />
+        style="@style/PrimaryButtonStyle"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

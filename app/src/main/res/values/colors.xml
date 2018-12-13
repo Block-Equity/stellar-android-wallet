@@ -71,7 +71,7 @@
     <color name="wrongDotColor">@color/puce</color>
 
     <!--Receive-->
-    <color name="qrCodeLayoutBackGroundColor">@color/toryBlue</color>
+    <color name="qrCodeLayoutBackGroundColor">@color/primaryButtonBg</color>
     <color name="qrCodeBackGroundColor">@color/white</color>
     <color name="addressBackGroundColor">@color/alabaster</color>
     <color name="addressTextColor">@color/silverChalice</color>
@@ -79,7 +79,7 @@
 
     <!--Send-->
     <color name="sendToTextColor">@color/silverChalice</color>
-    <color name="sendButtonColor">@color/toryBlue</color>
+    <color name="sendButtonColor">@color/primaryButtonBg</color>
     <color name="currencyTextColor">@color/lightGray</color>
 
     <!--Trade-->
