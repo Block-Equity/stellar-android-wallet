@@ -40,5 +40,13 @@ abstract class BaseActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == PinActivity.PIN_REQUEST_CODE) {
+            if (resultCode == PinActivity.SUCCESS_VOID) {
+               launchWallet()
+            }
+        }
+    }
+
     //endregion
 }

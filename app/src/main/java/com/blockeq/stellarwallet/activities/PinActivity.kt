@@ -20,9 +20,17 @@ import kotlinx.android.synthetic.main.activity_pin.*
 class PinActivity : BaseActivity(), PinLockListener {
 
     companion object {
+        /* Three return types of PinActivity */
+        const val SUCCESS_VOID = 0
+        const val SUCCESS_DECRYPTED_MNEMONIC = 1
+        const val SUCCESS_SECRET_SEED = 2
+
+        /* Return intent keys */
+        const val KEY_DECRYPTED_MNEMONIC = "kDecryptedMnemonic"
+        const val KEY_SECRET_SEED = "kSecretSeed"
+
         const val PIN_REQUEST_CODE = 0
         const val MAX_ATTEMPTS = 3
-        const val KEY_SECRET_SEED = "kDecryptedPhrase"
     }
 
     private var needConfirm = true
@@ -97,10 +105,11 @@ class PinActivity : BaseActivity(), PinLockListener {
                         when {
                             pinViewState.type == PinType.LOGIN -> {
                                 WalletApplication.userSession.pin = pin
-                                launchWallet()
+                                finishResultVoid()
                             }
                             pinViewState.type == PinType.CHECK -> {
                                 val keyPair = AccountUtils.getStellarKeyPair(decryptedPhrase, decryptedPassphrase)
+//                                setResultSecretSeed(keyPair.secretSeed)
                                 val intent = Intent()
                                 intent.putExtra(KEY_SECRET_SEED, keyPair.secretSeed)
                                 setResult(Activity.RESULT_OK, intent)
@@ -204,4 +213,29 @@ class PinActivity : BaseActivity(), PinLockListener {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
     }
+
+    //endregion
+
+    //region ActivityResult Helpers
+
+    private fun finishResultVoid() {
+        setResult(PinActivity.SUCCESS_VOID)
+        finishActivity()
+    }
+
+    private fun finishResultDecryptedMnemonic(phrase : String) {
+        val intent = Intent()
+        intent.putExtra(KEY_DECRYPTED_MNEMONIC, phrase)
+        setResult(PinActivity.SUCCESS_DECRYPTED_MNEMONIC, intent)
+        finishActivity()
+    }
+
+    private fun setResultSecretSeed(seed : CharArray) {
+        val intent = Intent()
+        intent.putExtra(KEY_SECRET_SEED, seed)
+        setResult(PinActivity.SUCCESS_SECRET_SEED, intent)
+        finishActivity()
+    }
+
+    //endregion
 }
