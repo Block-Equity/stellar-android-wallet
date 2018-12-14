@@ -78,18 +78,7 @@ class PinActivity : BaseActivity(), PinLockListener {
                             needConfirm = false
                         }
                         pin != PIN -> onIncorrectPin()
-                        else -> {
-                            setResult(Activity.RESULT_OK)
-
-                            AccountUtils.encryptAndStoreWallet(applicationContext, pinViewState.mnemonic, pinViewState.passphrase, pin)
-
-                            val stellarKeyPair = AccountUtils.getStellarKeyPair(pinViewState.mnemonic, pinViewState.passphrase)
-
-                            WalletApplication.localStore.stellarAccountId = stellarKeyPair.accountId
-                            WalletApplication.userSession.pin = pin
-
-                            launchWallet()
-                        }
+                        else -> finishResultPin(pin)
                     }
                 }
                 else -> {
@@ -109,7 +98,7 @@ class PinActivity : BaseActivity(), PinLockListener {
 
                             pinViewState.type == PinType.CHECK -> {
                                 val keyPair = AccountUtils.getStellarKeyPair(decryptedPhrase, decryptedPassphrase)
-//                                setResultSecretSeed(keyPair.secretSeed)
+//                                finishResultSecretSeed(keyPair.secretSeed)
                                 val intent = Intent()
                                 intent.putExtra(KEY_SECRET_SEED, keyPair.secretSeed)
                                 setResult(Activity.RESULT_OK, intent)
@@ -230,7 +219,7 @@ class PinActivity : BaseActivity(), PinLockListener {
         finishPinActivity()
     }
 
-    private fun setResultSecretSeed(seed : CharArray) {
+    private fun finishResultSecretSeed(seed : CharArray) {
         val intent = Intent()
         intent.putExtra(KEY_SECRET_SEED, seed)
         setResult(PinActivity.SUCCESS_SECRET_SEED, intent)

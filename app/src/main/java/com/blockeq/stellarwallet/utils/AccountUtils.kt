@@ -13,6 +13,15 @@ class AccountUtils {
     companion object {
         private const val CIPHER_TRANSFORMATION : String = "RSA/ECB/PKCS1Padding"
 
+        fun generateWallet (context: Context, mnemonic: String, passphrase: String?, pin : String) {
+            AccountUtils.encryptAndStoreWallet(context, mnemonic, passphrase, pin)
+
+            val stellarKeyPair = AccountUtils.getStellarKeyPair(mnemonic, passphrase)
+
+            WalletApplication.localStore.stellarAccountId = stellarKeyPair.accountId
+            WalletApplication.userSession.pin = pin
+        }
+
         fun getSecretSeed(context : Context) : CharArray {
             val encryptedPhrase = WalletApplication.localStore.encryptedPhrase!!
             val encryptedPassphrase = WalletApplication.localStore.encryptedPassphrase

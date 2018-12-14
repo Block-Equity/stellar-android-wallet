@@ -12,6 +12,7 @@ import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
 import com.blockeq.stellarwallet.helpers.*
 import com.blockeq.stellarwallet.models.PinType
+import com.blockeq.stellarwallet.utils.AccountUtils
 import com.soneso.stellarmnemonics.mnemonic.WordList
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
 
@@ -20,6 +21,7 @@ class RecoverWalletActivity : BaseActivity() {
 
     private var isRecoveryPhrase = true
     private var passphrase : String? = null
+    private lateinit var recoveryString : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +34,13 @@ class RecoverWalletActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PIN_REQUEST_CODE) {
-            finish()
+            if (resultCode == PinActivity.SUCCESS_PIN && data != null) {
+                val pin = data.getStringExtra(PinActivity.KEY_PIN)
+
+                AccountUtils.generateWallet(applicationContext, recoveryString, passphrase, pin)
+
+                launchWallet()
+            }
         }
     }
 
@@ -65,7 +73,7 @@ class RecoverWalletActivity : BaseActivity() {
             try {
                 WalletApplication.localStore.isRecoveryPhrase = isRecoveryPhrase
 
-                val recoveryString = StellarRecoveryString(getMnemonicString(), isRecoveryPhrase, passphrase).getString()
+                recoveryString = StellarRecoveryString(getMnemonicString(), isRecoveryPhrase, passphrase).getString()
 
                 launchPINView(PinType.CREATE,
                         getString(R.string.please_create_a_pin),

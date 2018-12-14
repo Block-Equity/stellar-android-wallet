@@ -12,11 +12,11 @@ import com.blockeq.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CO
 import com.blockeq.stellarwallet.helpers.PassphraseDialogHelper
 import com.blockeq.stellarwallet.models.MnemonicType
 import com.blockeq.stellarwallet.models.PinType
+import com.blockeq.stellarwallet.utils.AccountUtils
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_mnemonic.*
-import java.lang.IllegalStateException
 
 class MnemonicActivity : BaseActivity(), View.OnClickListener {
 
@@ -53,7 +53,13 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PIN_REQUEST_CODE) {
-            finish()
+            if (resultCode == PinActivity.SUCCESS_PIN && data != null) {
+                val pin = data.getStringExtra(PinActivity.KEY_PIN)
+
+                AccountUtils.generateWallet(applicationContext, mnemonicString, passphrase, pin)
+
+                launchWallet()
+            }
         }
     }
 
