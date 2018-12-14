@@ -144,7 +144,7 @@ object Horizon : HorizonTasks {
                     server.accounts().account(destKeyPair)
                 } catch (error : Exception) {
                     Timber.e(error.message.toString())
-                    if (error.message == SERVER_ERROR_MESSAGE) {
+                    if (error is ErrorResponse && error.code == 404) {
                         isCreateAccount = true
                     } else {
                         return HorizonException(Constants.DEFAULT_TRANSACTION_FAILED_CODE,
@@ -155,20 +155,18 @@ object Horizon : HorizonTasks {
 
                 val sourceAccount = server.accounts().account(sourceKeyPair)
 
-                val transaction = if (isCreateAccount) {
-                    Transaction.Builder(sourceAccount)
-                            .addOperation(CreateAccountOperation.Builder(destKeyPair, amount).build())
-                            // A memo allows you to add your own metadata to a transaction. It's
-                            // optional and does not affect how Stellar treats the transaction.
-                            .addMemo(Memo.text(memo))
-                            .build()
+                val transactionBuilder = Transaction.Builder(sourceAccount)
+                if (isCreateAccount) {
+                    transactionBuilder.addOperation(CreateAccountOperation.Builder(destKeyPair, amount).build())
                 } else {
-                    Transaction.Builder(sourceAccount)
-                            .addOperation(PaymentOperation.Builder(destKeyPair, getCurrentAsset(), amount).build())
-                            .addMemo(Memo.text(memo))
-                            .build()
+                    transactionBuilder.addOperation(PaymentOperation.Builder(destKeyPair, getCurrentAsset(), amount).build())
                 }
 
+                if (memo.isNotEmpty()) {
+                    transactionBuilder.addMemo(Memo.text(memo))
+                }
+
+                val transaction = transactionBuilder.build()
                 transaction.sign(sourceKeyPair)
 
                 val response = server.submitTransaction(transaction)

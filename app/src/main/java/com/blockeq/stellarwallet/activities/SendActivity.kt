@@ -23,6 +23,7 @@ import com.blockeq.stellarwallet.models.HorizonException
 import com.blockeq.stellarwallet.models.PinType
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
+import com.blockeq.stellarwallet.utils.ErrorWrapper
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
@@ -48,11 +49,9 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
     private var amount: Double = 0.0
     private var address: String = ""
     private var exchange : ExchangeApiModel? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.contents_send)
-
         setupUI()
     }
 
@@ -207,7 +206,10 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
 
     override fun onError(error: HorizonException) {
         progressBar.visibility = View.GONE
-        Toast.makeText(this, error.message(this), Toast.LENGTH_LONG).show()
+        // Showing op_low_reserve message when is confusing to the user,
+        // specially when the other account was not created and the funds sent are lower than 1 XML.
+        // Let's add a generic message for now for any error sending funds.
+        Toast.makeText(applicationContext, getString(HorizonException.HorizonExceptionType.SEND.value), Toast.LENGTH_LONG).show()
     }
     //endregion
 
