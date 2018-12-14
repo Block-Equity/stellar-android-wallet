@@ -65,9 +65,9 @@ class AccountUtils {
         fun getTotalBalance(type : String) : String {
             WalletApplication.localStore.balances!!.forEach {
                 if (it.assetType == type) {
-                    return StringFormat.truncateDecimalPlaces(it.balance)
+                    return it.balance
                 } else if (it.assetCode == type) {
-                    return StringFormat.truncateDecimalPlaces(it.balance)
+                    return it.balance
                 }
             }
             return Constants.DEFAULT_ACCOUNT_BALANCE
@@ -89,8 +89,7 @@ class AccountUtils {
 
         fun calculateAvailableBalance(): String {
             val minimumBalance = WalletApplication.userSession.minimumBalance!!
-            return StringFormat.truncateDecimalPlaces(
-                    (getTotalBalance(Constants.LUMENS_ASSET_TYPE).toDouble() - minimumBalance.totalAmount).toString())
+            return (getTotalBalance(Constants.LUMENS_ASSET_TYPE).toDouble() - minimumBalance.totalAmount).toString()
         }
 
         fun wipe(context: Context) : Boolean {

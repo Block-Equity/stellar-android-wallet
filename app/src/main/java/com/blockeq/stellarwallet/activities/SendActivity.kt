@@ -11,6 +11,7 @@ import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.text.Html
 import android.text.Spanned
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -22,6 +23,7 @@ import com.blockeq.stellarwallet.models.HorizonException
 import com.blockeq.stellarwallet.models.PinType
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
+import com.blockeq.stellarwallet.utils.ErrorWrapper
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
@@ -30,10 +32,10 @@ import com.blockeq.stellarwallet.vmodels.ExchangeViewModel
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
 import kotlinx.android.synthetic.main.contents_send.*
 
-class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCallback {
+class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallback {
 
     companion object {
-        private const val MAX_ALLOWED_DECIMALS = 4
+        private const val MAX_ALLOWED_DECIMALS = 7
         private const val ARG_ADDRESS_DATA = "ARG_ADDRESS_DATA"
 
         fun newIntent(context: Context, address: String): Intent {
@@ -47,13 +49,18 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
     private var amount: Double = 0.0
     private var address: String = ""
     private var exchange : ExchangeApiModel? = null
-
-    override fun setContent(): Int {
-        return R.layout.contents_send
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.contents_send)
+        setupUI()
+    }
+
+    //region User Interface
+
+    private fun setupUI() {
+        setSupportActionBar(toolBar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
         titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance(applicationContext)
         assetCodeTextView.text = WalletApplication.userSession.getFormattedCurrentAssetCode()
 
@@ -82,12 +89,20 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
         }
 
         val viewModel = ViewModelProviders.of(this).get(ExchangeViewModel::class.java)
-        viewModel.exchangeMatching(address).observe(this, Observer<ExchangeEntity> {
-           updateExchangeProviderText(it)
+        viewModel.exchangeMatching(address).observe(this, Observer {
+            updateExchangeProviderText(it)
         })
     }
 
-    //region User Interface
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item != null) {
+            if (item.itemId == android.R.id.home) {
+                finish()
+                return true
+            }
+        }
+        return false
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -191,7 +206,10 @@ class SendActivity : BasePopupActivity(), NumberKeyboardListener, SuccessErrorCa
 
     override fun onError(error: HorizonException) {
         progressBar.visibility = View.GONE
-        Toast.makeText(this, error.message(this), Toast.LENGTH_LONG).show()
+        // Showing op_low_reserve message when is confusing to the user,
+        // specially when the other account was not created and the funds sent are lower than 1 XML.
+        // Let's add a generic message for now for any error sending funds.
+        Toast.makeText(applicationContext, getString(HorizonException.HorizonExceptionType.SEND.value), Toast.LENGTH_LONG).show()
     }
     //endregion
 

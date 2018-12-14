@@ -17,7 +17,8 @@
         android:paddingEnd="@dimen/margin_padding_size_medium"
         android:paddingRight="@dimen/margin_padding_size_medium"
         android:textColorHint="@color/selectorHint"
-        android:textSize="@dimen/text_size_medium" />
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_medium"/>
 
     <RelativeLayout
         android:id="@+id/spinnerContainer"

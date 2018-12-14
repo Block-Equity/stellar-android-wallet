@@ -70,9 +70,9 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
                 myOffers.clear()
                 offers.forEach {
                     val buyingCode : String = AssetUtil.getCode(it.buying)!!
-                    val currencyBuy = Currency(1, buyingCode, "$buyingCode COIN", 0.0f, null)
+                    val currencyBuy = Currency(1, buyingCode, "$buyingCode COIN", 0.0, null)
                     val sellingCode : String = AssetUtil.getCode(it.selling)!!
-                    val currencySelling = Currency(2, sellingCode, "$sellingCode COIN", 0.0f, null)
+                    val currencySelling = Currency(2, sellingCode, "$sellingCode COIN", 0.0, null)
                     myOffers.add(MyOffer(it.id.toInt(), Date(), currencySelling, currencyBuy, it.amount.toFloat(), it.price.toFloat()))
                     id++
                 }
@@ -132,12 +132,12 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
                 override fun onFailed(errorMessage: String) {
                     Toast.makeText(appContext, "Failed to delete offer: $errorMessage", Toast.LENGTH_SHORT).show()
 
-                    val mySnackbar = Snackbar.make(activity!!.findViewById(R.id.content_container),
+                    val snackbar = Snackbar.make(activity!!.findViewById(R.id.content_container),
                             "failed to delete the offer", Snackbar.LENGTH_INDEFINITE)
-                    mySnackbar.setAction("retry") {
+                    snackbar.setAction("retry") {
                         deleteOffer(offerId)
                     }
-                    mySnackbar.show()
+                    snackbar.show()
                 }
             })
         }

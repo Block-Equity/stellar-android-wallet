@@ -5,6 +5,7 @@ import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.utils.AccountUtils
+import com.blockeq.stellarwallet.utils.StringFormat
 import kotlinx.android.synthetic.main.activity_balance_summary.*
 
 class BalanceSummaryActivity : BasePopupActivity() {
@@ -27,8 +28,8 @@ class BalanceSummaryActivity : BasePopupActivity() {
 
         if (minimumBalance != null) {
 
-            totalBalanceTextView.text = AccountUtils.getTotalBalance(Constants.LUMENS_ASSET_TYPE)
-            availableBalanceTextView.text = WalletApplication.localStore.availableBalance
+            totalBalanceTextView.text = StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(Constants.LUMENS_ASSET_TYPE))
+            availableBalanceTextView.text = StringFormat.truncateDecimalPlaces(WalletApplication.localStore.availableBalance)
 
             baseReserveAmountTextView.text = BASE_RESERVE_AMOUNT
             baseReserveXLMTextView.text = Constants.BASE_RESERVE.toString()

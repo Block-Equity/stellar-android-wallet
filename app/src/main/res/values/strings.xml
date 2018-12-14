@@ -22,7 +22,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="no_network">There was a problem connecting to the network. Attempting to reconnect.</string>
-    <string name="available_balance_template">Available: %1$s %2$s</string>
+    <string name="available_balance_template">%1$s %2$s</string>
     <string name="balance_template">%1$s %2$s</string>
     <string name="asset_template">%1$s (%2$s)</string>
     <string name="bracket_template">(%1$s)</string>
@@ -91,7 +91,7 @@
     <string name="tab_my_offers">My Offers</string>
     <string name="selling_hint">I have</string>
     <string name="buying_hint">I want</string>
-    <string name="holdings_amount">%1$f %2$s</string>
+    <string name="holdings_amount">%1$s %2$s</string>
     <string name="tenth">10%</string>
     <string name="quarter">25%</string>
     <string name="half">50%</string>
@@ -154,6 +154,8 @@
     <string name="no_balance_text_message">You must have more than 1 Lumen (XLM) to perform this action.</string>
     <string name="add_asset">Add asset</string>
     <string name="success_trustline_changed">Trust line changed!</string>
+    <string name="asset_removed">Asset removed successfully</string>
+    <string name="asset_added">Asset added successfully</string>
     <string name="error_trustline_changed">There was an error changing trust lines.</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
@@ -221,7 +223,7 @@
     <string name="asset_code_hint">BTC</string>
     <string name="issuer_address">Issuer Address</string>
     <string name="empty_fields">You have one or more empty fields</string>
-    <string name="add_custom_asset">Add custom asset</string>
     <string name="my_offer_empty_list">There are no offers at the moment</string>
+    <string name="add_asset_title">Add Asset</string>
 
 </resources>

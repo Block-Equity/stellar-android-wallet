@@ -1,6 +1,7 @@
 package com.blockeq.stellarwallet.activities
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.blockeq.stellarwallet.R
@@ -23,6 +24,9 @@ class AddAssetActivity : BaseActivity() {
     }
 
     fun setupUI() {
+        setSupportActionBar(toolBar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled (true)
+
         addAssetButton.setOnClickListener {
             if (assetCodeEditText.text.isNotEmpty() && addressEditText.text.isNotEmpty()) {
                 val secretSeed = AccountUtils.getSecretSeed(this)
@@ -44,11 +48,12 @@ class AddAssetActivity : BaseActivity() {
         }
     }
 
+
     private fun changeTrustLine(secretSeed: CharArray, assetToChange: Asset) {
         if (NetworkUtils(this).isNetworkAvailable()) {
             Horizon.getChangeTrust(object : SuccessErrorCallback {
                 override fun onSuccess() {
-                    Toast.makeText(this@AddAssetActivity, getString(R.string.success_trustline_changed), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AddAssetActivity, getString(R.string.asset_added), Toast.LENGTH_SHORT).show()
                     progressBar.visibility = View.GONE
                     finish()
                 }
@@ -62,5 +67,15 @@ class AddAssetActivity : BaseActivity() {
             NetworkUtils(this).displayNoNetwork()
             progressBar.visibility = View.GONE
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item != null) {
+            if (item.itemId == android.R.id.home) {
+                finish()
+                return true
+            }
+        }
+        return false
     }
 }
