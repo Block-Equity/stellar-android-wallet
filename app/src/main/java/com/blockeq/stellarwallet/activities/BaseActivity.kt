@@ -19,7 +19,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
             if (!WalletApplication.localStore.encryptedPhrase.isNullOrEmpty()
                     && !WalletApplication.localStore.stellarAccountId.isNullOrEmpty()) {
-                launchPINView(PinType.LOGIN, "", "", null, true)
+                launchPINView(PinType.LOGIN, "", "", null)
             } else {
                 AccountUtils.wipe(this)
             }
@@ -28,7 +28,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     //region Helper Functions
 
-    open fun launchPINView(pinType: PinType, message: String, mnemonic: String, passphrase: String?, isLogin: Boolean) {
+    open fun launchPINView(pinType: PinType, message: String, mnemonic: String, passphrase: String?) {
         val pinViewState = PinViewState(pinType, message, "", mnemonic, passphrase)
         PinFlowController.launchPinActivity(this, pinViewState)
     }

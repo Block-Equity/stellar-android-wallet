@@ -70,8 +70,7 @@ class RecoverWalletActivity : BaseActivity() {
                 launchPINView(PinType.CREATE,
                         getString(R.string.please_create_a_pin),
                         recoveryString,
-                        passphrase,
-                        false)
+                        passphrase)
             } catch (e: Exception) {
                 showErrorMessage(e.message)
             }

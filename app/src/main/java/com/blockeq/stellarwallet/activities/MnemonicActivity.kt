@@ -61,7 +61,7 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
     override fun onClick(v: View) {
         val itemId = v.id
         when (itemId) {
-            R.id.confirmButton -> launchPINView(PinType.CREATE, getString(R.string.please_create_a_pin), mnemonicString, passphrase, false)
+            R.id.confirmButton -> launchPINView(PinType.CREATE, getString(R.string.please_create_a_pin), mnemonicString, passphrase)
             R.id.passphraseButton -> {
                 val builder = PassphraseDialogHelper(this, object: PassphraseDialogHelper.PassphraseDialogListener {
                     override fun onOK(phrase: String) {
