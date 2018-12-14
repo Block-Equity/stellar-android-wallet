@@ -8,7 +8,7 @@ import com.blockeq.stellarwallet.models.PinViewState
 abstract class BaseFragment : Fragment() {
     //region Helper Functions
 
-    open fun launchPINView(pinType: PinType, message: String, mnemonic: String, isLogin: Boolean) {
+    open fun launchPINView(pinType: PinType, message: String, mnemonic: String) {
         val pinViewState = PinViewState(pinType, message, "", mnemonic, null)
         PinFlowController.launchPinActivity(activity!!, pinViewState)
     }

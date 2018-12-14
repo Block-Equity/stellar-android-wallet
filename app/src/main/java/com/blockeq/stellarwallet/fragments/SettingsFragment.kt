@@ -44,19 +44,19 @@ class SettingsFragment : BaseFragment() {
         val phrase = WalletApplication.localStore.encryptedPhrase!!
         
         viewPhraseButton.setOnClickListener {
-            launchPINView(PinType.VIEW_PHRASE, "", phrase, false)
+            launchPINView(PinType.VIEW_PHRASE, "", phrase)
         }
 
         viewSeedButton.setOnClickListener {
-            launchPINView(PinType.VIEW_SEED, "", phrase, false)
+            launchPINView(PinType.VIEW_SEED, "", phrase)
         }
 
         clearWalletButton.setOnClickListener {
-            launchPINView(PinType.CLEAR_WALLET, "", phrase, false)
+            launchPINView(PinType.CLEAR_WALLET, "", phrase)
         }
 
         pinOnSendPaymentsButton.setOnClickListener {
-            launchPINView(PinType.TOGGLE_PIN_ON_SENDING, "", phrase, false)
+            launchPINView(PinType.TOGGLE_PIN_ON_SENDING, "", phrase)
         }
 
         diagnosticButton.setOnClickListener {
