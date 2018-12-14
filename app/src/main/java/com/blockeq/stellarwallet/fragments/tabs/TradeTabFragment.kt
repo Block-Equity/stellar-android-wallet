@@ -123,10 +123,21 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         val sellingValue = sellingCustomSelector.editText.text.toString()
         val buyingValue = sellingCustomSelector.editText.text.toString()
 
-        if (sellingValue.isEmpty() || buyingValue.isEmpty() || sellingValue.toFloat() == 0f) {
+        var numberFormatValid = true
+        var sellingValueDouble = 0.toDouble()
+        try {
+            sellingValueDouble = sellingValue.toDouble()
+            buyingValue.toDouble()
+        } catch (e : NumberFormatException) {
+            Timber.d("selling or buying value have not a valid format")
+            numberFormatValid = false
+        }
+
+        if (sellingValue.isEmpty() || buyingValue.isEmpty() ||
+                !numberFormatValid || sellingValueDouble.compareTo(0) == 0 ) {
            submitTrade.isEnabled = false
         } else {
-            submitTrade.isEnabled = sellingValue.toFloat() <= selectedSellingCurrency.holdings
+            submitTrade.isEnabled = sellingValue.toDouble() <= selectedSellingCurrency.holdings
         }
     }
 
@@ -259,7 +270,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 setSelectorsEnabled(true)
             }
         }, AccountUtils.getSecretSeed(appContext), sellingAsset, buyingAsset,
-                sellingAmount, (buyingAmount.toFloat() / sellingAmount.toFloat()).toString())
+                sellingAmount, (buyingAmount.toDouble() / sellingAmount.toDouble()).toString())
     }
 
     private fun setSelectorsEnabled(isEnabled : Boolean) {
