@@ -4,7 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Internal-2.0.1]
+## [Internal-2.0.2] 2018-12-14
+## Fixed
+- Re-fix: Market trade amount in second text field is not a dark enough font color
+- Added generic error for all horizon exceptions sending funds on SendActivity.kt  
+
+## [Internal-2.0.1] 2018-12-14
 ## Fixed
 - GH-160 Make all buttons and toolbars look beautiful and consistent
 - GH-154 Fixed all low priority issues in Android Bug Bash
@@ -21,8 +26,8 @@ Other bug bash issues fixed in this version:
 - Add asset: Font size too small
 - Inflation destination: button colours are not the same as everywhere else in the app (Megha)
 - Inflation destination: title can go into the action bar (right now it's in the main part of the screen)
-- Send amount: Cant send amounts less than 4 decimal places
-- Send amount: Cursor on memo shouldn't be selected
+- Send amount: Can not send amounts less than 4 decimal places
+- Send amount: Cursor on memo should not be selected
 - Diagnostic Email address incorrect support@com.blockeq
 - Update market price once user is back from limit
 - Buttons across the app are inconsistent in terms of font, size, format and color. This has to be consistent.
