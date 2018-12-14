@@ -23,7 +23,6 @@ import com.blockeq.stellarwallet.models.HorizonException
 import com.blockeq.stellarwallet.models.PinType
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
-import com.blockeq.stellarwallet.utils.ErrorWrapper
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
@@ -108,9 +107,7 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PinActivity.PIN_REQUEST_CODE) {
             when (resultCode) {
-                Activity.RESULT_OK -> {
-                    sendPayment()
-                }
+                PinActivity.SUCCESS_VOID -> sendPayment()
                 Activity.RESULT_CANCELED -> {}
                 else -> finish()
             }

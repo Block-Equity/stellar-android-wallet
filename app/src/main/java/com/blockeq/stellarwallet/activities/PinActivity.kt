@@ -1,6 +1,5 @@
 package com.blockeq.stellarwallet.activities
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -20,11 +19,14 @@ import kotlinx.android.synthetic.main.activity_pin.*
 class PinActivity : BaseActivity(), PinLockListener {
 
     companion object {
-        /* Three return types of PinActivity */
-        const val SUCCESS_VOID = 0
-        const val SUCCESS_DECRYPTED_MNEMONIC = 1
-        const val SUCCESS_SECRET_SEED = 2
-        const val SUCCESS_PIN = 3
+        /*
+        Three return types of PinActivity
+        Starts at 2 to avoid number conflicts with existing Activity constants
+        */
+        const val SUCCESS_VOID = 2
+        const val SUCCESS_DECRYPTED_MNEMONIC = 3
+        const val SUCCESS_SECRET_SEED = 4
+        const val SUCCESS_PIN = 5
 
         /* Return intent keys */
         const val KEY_DECRYPTED_MNEMONIC = "kDecryptedMnemonic"
@@ -96,14 +98,8 @@ class PinActivity : BaseActivity(), PinLockListener {
                         when {
                             pinViewState.type == PinType.LOGIN -> finishResultPin(pin)
 
-                            pinViewState.type == PinType.CHECK -> {
-                                val keyPair = AccountUtils.getStellarKeyPair(decryptedPhrase, decryptedPassphrase)
-//                                finishResultSecretSeed(keyPair.secretSeed)
-                                val intent = Intent()
-                                intent.putExtra(KEY_SECRET_SEED, keyPair.secretSeed)
-                                setResult(Activity.RESULT_OK, intent)
-                                finishPinActivity()
-                            }
+                            pinViewState.type == PinType.CHECK -> finishResultVoid()
+                            
                             pinViewState.type == PinType.CLEAR_WALLET -> wipeAndRestart()
 
                             pinViewState.type == PinType.TOGGLE_PIN_ON_SENDING -> {
