@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.4] 2018-12-14
+## Fixed
+- formatting with 4 decimals the amounts under myOffers list
+- adding -- for walletAdapter that are an inflation set
+- using the availableBalance in the TradeTabFragment when the selling coin is LMX
+- setting a maximum of 7 decimals amount in the SendActivity and AddressCtivity
+
 ## [Internal-2.0.3] 2018-12-14
 ## Fixed
 - fixing the submit order button which was disabled during 100% trade.
