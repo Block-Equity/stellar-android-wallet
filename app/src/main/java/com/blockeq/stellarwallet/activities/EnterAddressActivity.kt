@@ -2,6 +2,7 @@ package com.blockeq.stellarwallet.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -11,16 +12,10 @@ import com.blockeq.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LEN
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.content_enter_address.*
 
-class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
-
-    val ADDRESS_DATA = "ADDRESS"
-
-    override fun setContent(): Int {
-        return R.layout.content_enter_address
-    }
-
+class EnterAddressActivity : BaseActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.content_enter_address)
 
         setupUI()
     }
@@ -45,6 +40,8 @@ class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
 
     //region User Interface
     private fun setupUI() {
+        setSupportActionBar(toolBar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance(applicationContext)
 
@@ -57,7 +54,7 @@ class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
             R.id.nextButton -> {
                 val address = addressEditText.text.toString()
 
-                if (address.length == STELLAR_ADDRESS_LENGTH) {
+                if (address.length == STELLAR_ADDRESS_LENGTH && address != WalletApplication.localStore.stellarAccountId) {
                     startActivity(SendActivity.newIntent(this, address))
 
                     this.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
@@ -71,6 +68,16 @@ class EnterAddressActivity : BasePopupActivity(), View.OnClickListener {
                 initiateScan()
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item != null) {
+            if (item.itemId == android.R.id.home) {
+                finish()
+                return true
+            }
+        }
+        return false
     }
 
     //endregion

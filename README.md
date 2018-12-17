@@ -21,7 +21,7 @@
 BlockEQ is a private Stellar wallet that allows you to easily create or access an account with a recovery phrase. With BlockEQ you can send, receive, and trade XLM and Stellar tokens on the SDEX, Stellar’s decentralized exchange.
 
 <p align="center">
-  <img src ="https://com.blockeq/01d2b4822d66a99ac60aebf2f046b459.png" width=350>
+  <img src ="https://blockeq.com/01d2b4822d66a99ac60aebf2f046b459.png" width=350>
 </p>
 
 ## Features

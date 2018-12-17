@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.blockeq.stellarwallet.BuildConfig
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.DebugPreferenceActivity
@@ -70,10 +71,15 @@ class SettingsFragment : BaseFragment() {
             startActivity(WebViewActivity.newIntent(appContext, getString(R.string.terms_of_service), "https://www.blockeq.com/terms.html"))
         }
 
-        debug.setOnClickListener {
-            startActivity(Intent(it.context, DebugPreferenceActivity::class.java))
-        }
+        if (BuildConfig.DEBUG) {
+            debug.visibility = View.VISIBLE
+            debug.setOnClickListener {
+                startActivity(Intent(it.context, DebugPreferenceActivity::class.java))
+            }
 
+        } else {
+            debug.visibility = View.GONE
+        }
 
         val appVersion = DiagnosticUtils.getAppVersion()
 

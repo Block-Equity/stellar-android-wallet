@@ -24,6 +24,7 @@ import com.blockeq.stellarwallet.models.TotalBalance
 import com.blockeq.stellarwallet.models.WalletHeterogeneousArray
 import com.blockeq.stellarwallet.mvvm.effects.WalletViewModel
 import com.blockeq.stellarwallet.utils.AccountUtils
+import com.blockeq.stellarwallet.utils.StringFormat
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -114,10 +115,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
     private fun bindAdapter() {
         val currAsset = WalletApplication.userSession.currAssetCode
 
-
-        walletProgressBar.visibility = View.VISIBLE
-
-        recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(AccountUtils.getTotalBalance(currAsset)),
+        recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))),
                 AvailableBalance(WalletApplication.localStore.availableBalance!!), Pair("Activity", "Amount"), effectsList)
 
         adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList.array)
@@ -138,8 +136,10 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
         })
         walletRecyclerView.adapter = adapter
         walletRecyclerView.layoutManager = LinearLayoutManager(activity)
-
-    }
+      
+        recyclerViewArrayList!!.updateTotalBalance(TotalBalance(StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))))
+        recyclerViewArrayList!!.updateEffectsList(effectsList)
+   }
 
     private fun updateAdapter() {
         val currAsset = WalletApplication.userSession.currAssetCode
@@ -160,10 +160,9 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
     //region Call backs
 
     override fun onLoadAccount(result: AccountResponse?) {
-        recyclerViewArrayList.updateTotalBalance(
-                TotalBalance(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode)))
-        recyclerViewArrayList.updateAvailableBalance(
-                AvailableBalance(WalletApplication.localStore.availableBalance!!))
+      recyclerViewArrayList!!.updateTotalBalance(
+                TotalBalance(StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode))))
+        recyclerViewArrayList!!.updateAvailableBalance(AvailableBalance(WalletApplication.localStore.availableBalance!!))
     }
 
     override fun onError(error: ErrorResponse) {
