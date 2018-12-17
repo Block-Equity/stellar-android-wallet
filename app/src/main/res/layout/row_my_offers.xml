@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
@@ -17,11 +18,12 @@
         style="@style/RegularText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.8" />
+        android:layout_weight="0.8"
+        tools:text = "Sell 1234.1234567 XLM for 3234.345345 CAD at price of 1.234 XLM/CAD"/>
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="0.2"
         android:gravity="end|center_vertical">
 

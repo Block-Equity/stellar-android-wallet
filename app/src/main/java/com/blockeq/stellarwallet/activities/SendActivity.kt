@@ -23,7 +23,6 @@ import com.blockeq.stellarwallet.models.HorizonException
 import com.blockeq.stellarwallet.models.PinType
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
-import com.blockeq.stellarwallet.utils.ErrorWrapper
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
@@ -59,7 +58,7 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
 
     private fun setupUI() {
         setSupportActionBar(toolBar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance(applicationContext)
         assetCodeTextView.text = WalletApplication.userSession.getFormattedCurrentAssetCode()
