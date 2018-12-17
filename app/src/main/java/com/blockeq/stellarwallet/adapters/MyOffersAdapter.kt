@@ -29,8 +29,7 @@ class MyOffersAdapter(private val myOffersList: MutableList<MyOffer>, private va
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val myOffer = myOffersList[position]
 
-        myOffer.amountFrom
-        holder.description.text = context?.getString(R.string.rowDescription, myOffer.amountFrom,
+        holder.description.text = context?.getString(R.string.rowDescription, decimalFormat.format(myOffer.amountFrom),
                 myOffer.currencyFrom.code, decimalFormat.format(myOffer.amountTo), myOffer.currencyTo.code,
                 decimalFormat.format(myOffer.amountTo / myOffer.amountFrom))
         holder.delete.setOnClickListener {
