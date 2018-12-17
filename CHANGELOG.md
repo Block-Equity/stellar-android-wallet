@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.4] 2018-12-14
+## [2.0.4] 2018-12-17
 ## Fixed
 - formatting with 4 decimals the amounts under myOffers list
 - adding -- for walletAdapter that are an inflation set
