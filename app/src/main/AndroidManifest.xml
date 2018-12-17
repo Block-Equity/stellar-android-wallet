@@ -96,7 +96,6 @@
             android:theme="@style/AppTheme"/>
 
         <activity android:name=".activities.AboutAnimationActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/TransparentTheme"/>
 
     </application>
