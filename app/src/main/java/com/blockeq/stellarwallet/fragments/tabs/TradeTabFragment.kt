@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.*
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
-import com.blockeq.stellarwallet.fragments.WalletFragment
 import com.blockeq.stellarwallet.interfaces.AfterTextChanged
 import com.blockeq.stellarwallet.interfaces.OnItemSelected
 import com.blockeq.stellarwallet.interfaces.OnTradeCurrenciesChanged
@@ -187,10 +186,10 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.tenth -> sellingCustomSelector.editText.setText((0.1 * holdingsAmount).toString())
-            R.id.quarter -> sellingCustomSelector.editText.setText((0.25 * holdingsAmount).toString())
-            R.id.half -> sellingCustomSelector.editText.setText((0.5 * holdingsAmount).toString())
-            R.id.threeQuarters -> sellingCustomSelector.editText.setText((0.75 * holdingsAmount).toString())
+            R.id.tenth -> sellingCustomSelector.editText.setText(decimalFormat.format(0.1 * holdingsAmount).toString())
+            R.id.quarter -> sellingCustomSelector.editText.setText(decimalFormat.format(0.25 * holdingsAmount).toString())
+            R.id.half -> sellingCustomSelector.editText.setText(decimalFormat.format(0.5 * holdingsAmount).toString())
+            R.id.threeQuarters -> sellingCustomSelector.editText.setText(decimalFormat.format(0.75 * holdingsAmount).toString())
             R.id.all -> sellingCustomSelector.editText.setText(decimalFormat.format(holdingsAmount))
             R.id.toggleMarket -> {
                 orderType = OrderType.MARKET
@@ -264,6 +263,9 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         setSelectorsEnabled(false)
         WalletApplication.userSession.getAvailableBalance()
 
+        val sellingAmountFormatted = decimalFormat.format(sellingAmount.toDouble())
+        val priceFormatted = decimalFormat.format(buyingAmount.toDouble() / sellingAmount.toDouble())
+
         Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
             override fun onExecuted() {
                 snackbar.dismiss()
@@ -280,7 +282,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 setSelectorsEnabled(true)
             }
         }, AccountUtils.getSecretSeed(appContext), sellingAsset, buyingAsset,
-                sellingAmount, (buyingAmount.toDouble() / sellingAmount.toDouble()).toString())
+                sellingAmountFormatted, priceFormatted)
     }
 
     private fun setSelectorsEnabled(isEnabled : Boolean) {
