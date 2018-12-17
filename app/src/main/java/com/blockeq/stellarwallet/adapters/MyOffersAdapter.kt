@@ -11,9 +11,12 @@ import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.interfaces.OnDeleteRequest
 import com.blockeq.stellarwallet.models.MyOffer
 import kotlinx.android.synthetic.main.row_my_offers.view.*
+import java.text.DecimalFormat
+import java.text.NumberFormat
 
 class MyOffersAdapter(private val myOffersList: MutableList<MyOffer>, private val context: Context?, private val onDeleteRequest: OnDeleteRequest)
     : RecyclerView.Adapter<MyOffersAdapter.ViewHolder>() {
+    private val decimalFormat : NumberFormat = DecimalFormat("0.#######")
 
     override fun getItemCount(): Int {
         return myOffersList.size
@@ -24,10 +27,12 @@ class MyOffersAdapter(private val myOffersList: MutableList<MyOffer>, private va
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val myOffer = myOffersList.get(position)
+        val myOffer = myOffersList[position]
+
+        myOffer.amountFrom
         holder.description.text = context?.getString(R.string.rowDescription, myOffer.amountFrom,
-                myOffer.currencyFrom.code, myOffer.amountTo, myOffer.currencyTo.code,
-                (myOffer.amountTo / myOffer.amountFrom))
+                myOffer.currencyFrom.code, decimalFormat.format(myOffer.amountTo), myOffer.currencyTo.code,
+                decimalFormat.format(myOffer.amountTo / myOffer.amountFrom))
         holder.delete.setOnClickListener {
             onDeleteRequest.onDialogOpen(myOffer.id)
         }

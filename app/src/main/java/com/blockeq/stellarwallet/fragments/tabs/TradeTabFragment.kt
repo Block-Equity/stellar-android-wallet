@@ -270,6 +270,9 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
             override fun onExecuted() {
                 snackbar.dismiss()
                 createSnackBar("Order executed", Snackbar.LENGTH_SHORT).show()
+
+                submitTrade.isEnabled = true
+                setSelectorsEnabled(true)
             }
 
             override fun onFailed(errorMessage : String) {
@@ -278,7 +281,6 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 createSnackBar("Order failed: $errorMessage", Snackbar.LENGTH_SHORT).show()
 
                 submitTrade.isEnabled = true
-                progressBar.visibility = View.GONE
                 setSelectorsEnabled(true)
             }
         }, AccountUtils.getSecretSeed(appContext), sellingAsset, buyingAsset,
