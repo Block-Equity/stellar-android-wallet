@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.*
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
+import com.blockeq.stellarwallet.fragments.WalletFragment
 import com.blockeq.stellarwallet.interfaces.AfterTextChanged
 import com.blockeq.stellarwallet.interfaces.OnItemSelected
 import com.blockeq.stellarwallet.interfaces.OnTradeCurrenciesChanged
@@ -89,9 +90,18 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectedSellingCurrency = sellingCurrencies[position]
                 holdingsAmount = selectedSellingCurrency.holdings
-                holdings.text = String.format(getString(R.string.holdings_amount),
-                        decimalFormat.format(holdingsAmount),
-                        selectedSellingCurrency.label)
+
+                if (selectedSellingCurrency.label == AssetUtil.NATIVE_ASSET_CODE) {
+                    holdings.text = String.format(getString(R.string.holdings_amount),
+                            decimalFormat.format(WalletApplication.localStore.availableBalance!!.toDouble()),
+                            selectedSellingCurrency.label)
+
+                } else {
+                    holdings.text = String.format(getString(R.string.holdings_amount),
+                            decimalFormat.format(holdingsAmount),
+                            selectedSellingCurrency.label)
+                }
+
                 resetBuyingCurrencies()
                 buyingCurrencies.removeAt(position)
 
