@@ -102,7 +102,7 @@
         Any amount larger than this will be posed as an offer.</string>
 
     <!--My Offers Fragment-->
-    <string name="rowDescription">Sell %1$s %2$s for %3$s %4$s at the price of %5$s</string>
+    <string name="rowDescription">Sell %1$s %2$s for %3$s %4$s at the price of %5$s %6$s/%7$s </string>
     <string name="offer">offer</string>
 
     <!--Order Books-->

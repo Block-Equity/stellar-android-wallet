@@ -16,7 +16,7 @@ import java.text.NumberFormat
 
 class MyOffersAdapter(private val myOffersList: MutableList<MyOffer>, private val context: Context?, private val onDeleteRequest: OnDeleteRequest)
     : RecyclerView.Adapter<MyOffersAdapter.ViewHolder>() {
-    private val decimalFormat : NumberFormat = DecimalFormat("0.#######")
+    private val decimalFormat : NumberFormat = DecimalFormat("0.####")
 
     override fun getItemCount(): Int {
         return myOffersList.size
@@ -30,8 +30,8 @@ class MyOffersAdapter(private val myOffersList: MutableList<MyOffer>, private va
         val myOffer = myOffersList[position]
 
         holder.description.text = context?.getString(R.string.rowDescription, decimalFormat.format(myOffer.amountFrom),
-                myOffer.currencyFrom.code, decimalFormat.format(myOffer.amountTo), myOffer.currencyTo.code,
-                decimalFormat.format(myOffer.amountTo / myOffer.amountFrom))
+                myOffer.currencyFrom.code, decimalFormat.format(myOffer.amountTo), myOffer.currencyTo.code, decimalFormat.format(myOffer.amountTo / myOffer.amountFrom),
+                myOffer.currencyFrom.code , myOffer.currencyTo.code )
         holder.delete.setOnClickListener {
             onDeleteRequest.onDialogOpen(myOffer.id)
         }
