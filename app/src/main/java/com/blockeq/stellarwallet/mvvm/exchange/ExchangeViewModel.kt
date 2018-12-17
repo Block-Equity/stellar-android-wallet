@@ -20,7 +20,7 @@ class ExchangeViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    //TODO: multi-address liveData support or move view model to only one address support now is hybrid
+    //TODO: multi-address effectsList support or move view model to only one address support now is hybrid
     fun exchangeMatching(address: String): LiveData<ExchangeEntity> {
         observedAddress = address
         notifyIfNeeded(address)

@@ -22,7 +22,7 @@ import com.blockeq.stellarwallet.interfaces.OnLoadAccount
 import com.blockeq.stellarwallet.models.AvailableBalance
 import com.blockeq.stellarwallet.models.TotalBalance
 import com.blockeq.stellarwallet.models.WalletHeterogeneousArray
-import com.blockeq.stellarwallet.mvvm.effects.EffectsViewModel
+import com.blockeq.stellarwallet.mvvm.effects.WalletViewModel
 import com.blockeq.stellarwallet.utils.AccountUtils
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.jetbrains.anko.doAsync
@@ -37,14 +37,16 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
     private var adapter : WalletRecyclerViewAdapter? = null
     private var effectsList : java.util.ArrayList<EffectResponse>? = null
     private lateinit var recyclerViewArrayList: WalletHeterogeneousArray
-    private lateinit var viewModel : EffectsViewModel
+    private lateinit var viewModel : WalletViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_wallet, container, false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(EffectsViewModel::class.java)
+        activity?.let {
+            viewModel = ViewModelProviders.of(it).get(WalletViewModel::class.java)
+        }
     }
 
     companion object {
@@ -69,18 +71,19 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
                 activityContext.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
             }
         }
+
+        initViewModels()
     }
 
     override fun onResume() {
         super.onResume()
         updateAdapter()
-        initViewModels()
     }
 
     //region User Interface
 
     private fun initViewModels() {
-        viewModel.liveData.observe(viewLifecycleOwner, Observer { it ->
+        viewModel.effectsList.observe(viewLifecycleOwner, Observer { it ->
             if (it != null && walletProgressBar != null) {
                 noTransactionsTextView.visibility = View.GONE
                 walletProgressBar.visibility = View.VISIBLE
@@ -97,6 +100,12 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
                         }
                     }
                 }
+            }
+        })
+
+        viewModel.account.observe(viewLifecycleOwner, Observer {it ->
+            if (it != null) {
+                onLoadAccount(it)
             }
         })
     }

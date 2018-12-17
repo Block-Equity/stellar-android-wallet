@@ -12,23 +12,21 @@ import java.util.*
  * While at the same time only using remote, and not local or Room db
  */
 
-
 class EffectsRepository private constructor(private val remoteRepository: RemoteRepository) {
 
-    private var effectsList : ArrayList<EffectResponse>? = null
-    private var liveData = MutableLiveData<ArrayList<EffectResponse>>()
-
+    private var effectList = MutableLiveData<ArrayList<EffectResponse>>()
     /**
      * Returns an observable for ALL the effects table changes
      */
     fun loadList(): LiveData<ArrayList<EffectResponse>> {
         fetchEffectsList(object : OnLoadEffects {
             override fun onLoadEffects(result: ArrayList<EffectResponse>?) {
-                effectsList = result
-                liveData.postValue(effectsList)
+                if (result != null) {
+                    effectList.postValue(result)
+                }
             }
         })
-        return liveData
+        return effectList
     }
 
     /**

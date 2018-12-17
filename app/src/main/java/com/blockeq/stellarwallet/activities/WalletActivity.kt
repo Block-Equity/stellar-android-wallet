@@ -1,5 +1,7 @@
 package com.blockeq.stellarwallet.activities
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.BottomNavigationView
@@ -12,6 +14,7 @@ import com.blockeq.stellarwallet.fragments.TradingFragment
 import com.blockeq.stellarwallet.fragments.WalletFragment
 import com.blockeq.stellarwallet.interfaces.OnLoadAccount
 import com.blockeq.stellarwallet.models.MinimumBalance
+import com.blockeq.stellarwallet.mvvm.effects.WalletViewModel
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.KeyboardUtils
@@ -19,8 +22,7 @@ import com.blockeq.stellarwallet.utils.NetworkUtils
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 
-
-class WalletActivity : BaseActivity(), OnLoadAccount, KeyboardUtils.SoftKeyboardToggleListener {
+class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener {
     private enum class WalletFragmentType {
         WALLET,
         TRADING,
@@ -73,6 +75,13 @@ class WalletActivity : BaseActivity(), OnLoadAccount, KeyboardUtils.SoftKeyboard
         bottomNavigation = findViewById(R.id.navigationView)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         bottomNavigation.selectedItemId = R.id.nav_wallet
+
+        ViewModelProviders.of(this).get(WalletViewModel::class.java)
+                .account.observe(this, Observer<AccountResponse> {
+                    if (it != null) {
+                        bottomNavigation.menu.getItem(WalletFragmentType.TRADING.ordinal).isEnabled = true
+                    }
+                })
     }
 
 
@@ -80,17 +89,12 @@ class WalletActivity : BaseActivity(), OnLoadAccount, KeyboardUtils.SoftKeyboard
 
     override fun onResume() {
         super.onResume()
-        startPollingAccount()
-
         KeyboardUtils.addKeyboardToggleListener(this, this)
     }
 
     override fun onPause() {
         super.onPause()
-        endPollingAccount()
-
         KeyboardUtils.removeKeyboardToggleListener(this)
-
     }
 
     /**
@@ -104,53 +108,11 @@ class WalletActivity : BaseActivity(), OnLoadAccount, KeyboardUtils.SoftKeyboard
         }
     }
 
-    private var handler = Handler()
-    private var runnableCode : Runnable? = null
-
-    //TODO polling for only non-created accounts on Stellar.
-    private fun startPollingAccount() {
-        runnableCode = object : Runnable {
-            override fun run() {
-
-                if (NetworkUtils(applicationContext).isNetworkAvailable()) {
-
-                    Horizon.getLoadAccountTask(this@WalletActivity)
-                            .execute()
-
-                } else {
-                    NetworkUtils(applicationContext).displayNoNetwork()
-                }
-
-                handler.postDelayed(this, 5000)
-            }
-        }
-
-        handler.post(runnableCode)
-    }
-
-    private fun endPollingAccount() {
-        handler.removeCallbacks(runnableCode)
-    }
-
-    override fun onLoadAccount(result: AccountResponse?) {
-        if (result != null) {
-            WalletApplication.localStore.balances = result.balances
-            WalletApplication.userSession.minimumBalance = MinimumBalance(result)
-            WalletApplication.localStore.availableBalance = AccountUtils.calculateAvailableBalance()
-
-            bottomNavigation.menu.getItem(WalletFragmentType.TRADING.ordinal).isEnabled = true
-        }
-
-        val fragment = supportFragmentManager.findFragmentByTag(WalletFragmentType.WALLET.name)
-        if (fragment != null) {
-            (fragment as WalletFragment).onLoadAccount(result)
-        }
-    }
-
-    override fun onError(error: ErrorResponse) {
-        val fragment = supportFragmentManager.findFragmentByTag(WalletFragmentType.WALLET.name)
-        if (fragment != null) {
-            (fragment as WalletFragment).onError(error)
-        }
-    }
+    //TODO: move onError to viewModel
+//    override fun onError(error: ErrorResponse) {
+//        val fragment = supportFragmentManager.findFragmentByTag(WalletFragmentType.WALLET.name)
+//        if (fragment != null) {
+//            (fragment as WalletFragment).onError(error)
+//        }
+//    }
 }
