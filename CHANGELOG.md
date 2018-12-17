@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - formatting with 4 decimals the amounts under myOffers list
 - adding -- for walletAdapter that are an inflation set
 - using the availableBalance in the TradeTabFragment when the selling coin is LMX
-- setting a maximum of 7 decimals amount in the SendActivity and AddressCtivity
+- setting a maximum of 7 decimals amount in the SendActivity and AddressActivity
 
 ## [Internal-2.0.3] 2018-12-14
 ## Fixed
