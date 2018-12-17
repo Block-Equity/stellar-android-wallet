@@ -91,9 +91,13 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 holdingsAmount = selectedSellingCurrency.holdings
 
                 if (selectedSellingCurrency.label == AssetUtil.NATIVE_ASSET_CODE) {
+                    val available = WalletApplication.localStore.availableBalance!!.toDouble()
+
                     holdings.text = String.format(getString(R.string.holdings_amount),
-                            decimalFormat.format(WalletApplication.localStore.availableBalance!!.toDouble()),
+                            decimalFormat.format(available),
                             selectedSellingCurrency.label)
+
+                    holdingsAmount = available
 
                 } else {
                     holdings.text = String.format(getString(R.string.holdings_amount),
