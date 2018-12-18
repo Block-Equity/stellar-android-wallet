@@ -94,6 +94,10 @@
         <activity android:name=".activities.DebugPreferenceActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
+
+        <activity android:name=".activities.AboutAnimationActivity"
+            android:theme="@style/TransparentTheme"/>
+
     </application>
 
 </manifest>

@@ -128,4 +128,6 @@ dependencies {
     kapt "android.arch.persistence.room:compiler:$lifecycleVersion"
 
     implementation "com.android.support:preference-v7:$supportLibraryVersion"
+
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
 }
