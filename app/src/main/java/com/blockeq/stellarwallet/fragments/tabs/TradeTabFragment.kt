@@ -214,7 +214,9 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 buyingCustomSelector.editText.isEnabled = true
             }
             R.id.submitTrade -> {
-                if ((orderType == OrderType.MARKET && !dataAvailable) || buyingCustomSelector.editText.toString() == ZERO_VALUE) {
+                if (buyingCustomSelector.editText.text.toString().isEmpty()) {
+                    createSnackBar("Buying price can not be empty.", Snackbar.LENGTH_SHORT).show()
+                } else if ((orderType == OrderType.MARKET && !dataAvailable) || buyingCustomSelector.editText.text.toString() == ZERO_VALUE) {
                     // buyingEditText should be empty at this moment
 
                     createSnackBar("Trade price cannot be 0. Please override limit order.", Snackbar.LENGTH_SHORT).show()
