@@ -12,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.adapters.MyOffersAdapter
 import com.blockeq.stellarwallet.interfaces.OnDeleteRequest
@@ -31,7 +30,8 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
     private lateinit var appContext : Context
     private var myOffers = mutableListOf<MyOffer>()
     private var offerResponses = mutableListOf<OfferResponse>()
-
+    private var intentOfferDeletion : MyOffer? = null
+    private var intentDeletionIndex : Int? = null
     private lateinit var myOffersAdapter: MyOffersAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -109,10 +109,15 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
         }
     }
 
-    private fun deleteOffer(offerId: Int) {
+    private fun deleteOffer(offerId: Int, isRetry : Boolean = false) {
         val index = myOffers.indexOf(myOffers.find { offer -> offer.id == offerId })
-        myOffers.removeAt(index)
-        myOffersAdapter.notifyItemRemoved(index)
+        // if it is retry the view was already deleted
+        if (!isRetry) {
+            intentOfferDeletion = myOffers[index]
+            intentDeletionIndex = index
+            myOffers.removeAt(index)
+            myOffersAdapter.notifyItemRemoved(index)
+        }
 
         if (myOffers.size == 0) {
             empty_view.visibility = View.VISIBLE
@@ -126,16 +131,19 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
         if (offer != null) {
             Horizon.deleteOffer(offer.id, secretSeed, offer.selling, offer.buying, offer.price, object: Horizon.OnMarketOfferListener {
                 override fun onExecuted() {
-                    Timber.d("offer has been deleted")
+                    val snackbar = Snackbar.make(activity!!.findViewById(R.id.content_container),
+                            "the offer has been deleted", Snackbar.LENGTH_SHORT)
+                    snackbar.show()
                 }
 
                 override fun onFailed(errorMessage: String) {
-                    Toast.makeText(appContext, "Failed to delete offer: $errorMessage", Toast.LENGTH_SHORT).show()
+                    myOffers.add(intentDeletionIndex!!, intentOfferDeletion!!)
+                    myOffersAdapter.notifyItemInserted(intentDeletionIndex!!)
 
                     val snackbar = Snackbar.make(activity!!.findViewById(R.id.content_container),
                             "failed to delete the offer", Snackbar.LENGTH_INDEFINITE)
                     snackbar.setAction("retry") {
-                        deleteOffer(offerId)
+                        deleteOffer(offerId, true)
                     }
                     snackbar.show()
                 }

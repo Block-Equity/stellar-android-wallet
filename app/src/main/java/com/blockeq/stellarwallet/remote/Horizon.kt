@@ -66,7 +66,13 @@ object Horizon : HorizonTasks {
                     if (response.isSuccess) {
                         listener.onExecuted()
                     } else {
-                        listener.onFailed(response.extras.resultCodes.operationsResultCodes[0].toString())
+                        if(response.extras.resultCodes.operationsResultCodes != null) {
+                            listener.onFailed(response.extras.resultCodes.operationsResultCodes[0].toString())
+                        } else if(response.extras.resultCodes.transactionResultCode != null) {
+                            listener.onFailed(response.extras.resultCodes.transactionResultCode.toString())
+                        } else {
+                            listener.onFailed("Unknown error")
+                        }
                     }
                 }
             } catch (error : java.lang.Exception) {
