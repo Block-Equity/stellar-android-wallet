@@ -149,7 +149,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         if (sellingValue.isEmpty() || buyingValue.isEmpty() ||
                 !numberFormatValid || sellingValueDouble.compareTo(0) == 0 ) {
            submitTrade.isEnabled = false
-        } else {
+        } else if(::selectedSellingCurrency.isInitialized){
             submitTrade.isEnabled = sellingValue.toDouble() <= selectedSellingCurrency.holdings
         }
     }
