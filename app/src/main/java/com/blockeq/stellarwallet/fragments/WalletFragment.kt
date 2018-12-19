@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -121,11 +122,11 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
     override fun onError(error: ErrorResponse) {
         if (error.code == Constants.SERVER_ERROR_NOT_FOUND && walletProgressBar != null) {
-            val mainHandler = Handler(context!!.mainLooper)
-
-            mainHandler.post {
-                noTransactionsTextView.visibility = View.VISIBLE
-                walletProgressBar.visibility = View.GONE
+            Handler(Looper.getMainLooper()).post {
+                if (noTransactionsTextView != null) {
+                    noTransactionsTextView.visibility = View.VISIBLE
+                    walletProgressBar.visibility = View.GONE
+                }
             }
         }
     }
