@@ -6,14 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/fragmentBg"
-    tools:context="blockeq.com.stellarwallet.activities.WalletActivity">
+    tools:context="com.blockeq.stellarwallet.activities.WalletActivity">
 
     <FrameLayout
-        android:id="@+id/container"
+        android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/bottom_navigation_height"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:paddingBottom="@dimen/bottom_navigation_height" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigationView"

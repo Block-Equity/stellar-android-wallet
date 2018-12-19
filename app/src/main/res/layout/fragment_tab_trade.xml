@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -34,6 +35,7 @@
                     android:layout_width="0dp"
                     android:layout_height="@dimen/button_height"
                     android:layout_weight=".5"
+                    android:textColor="@color/white"
                     android:background="@drawable/left_toggle_selected"
                     android:text="@string/market" />
 
@@ -47,23 +49,22 @@
                     android:text="@string/limit" />
             </LinearLayout>
 
-            <blockeq.com.stellarwallet.reusables.views.CustomSelector
+            <com.blockeq.stellarwallet.views.CustomSelector
                 android:id="@+id/sellingCustomSelector"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_padding_size_medium"
                 app:hint="@string/selling_hint"
                 app:inputType="decimal"
-                app:strokeColor="@color/sellSelectorBg">
-
-            </blockeq.com.stellarwallet.reusables.views.CustomSelector>
+                app:customStrokeColor="@color/sellSelectorBg"/>
 
             <TextView
                 android:id="@+id/holdings"
                 style="@style/RegularText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_padding_size_medium" />
+                android:layout_marginTop="@dimen/margin_padding_size_medium"
+                tools:text="1,000,000,000.1234567 PTS"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -136,16 +137,14 @@
                     android:tint="@color/downArrow" />
             </LinearLayout>
 
-            <blockeq.com.stellarwallet.reusables.views.CustomSelector
+            <com.blockeq.stellarwallet.views.CustomSelector
                 android:id="@+id/buyingCustomSelector"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_padding_size_medium"
                 app:hint="@string/buying_hint"
                 app:inputType="decimal"
-                app:strokeColor="@color/buySelectorBg">
-
-            </blockeq.com.stellarwallet.reusables.views.CustomSelector>
+                app:customStrokeColor="@color/buySelectorBg"/>
 
             <Button
                 android:id="@+id/submitTrade"

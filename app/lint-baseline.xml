@@ -2,164 +2,13 @@
 <issues format="4" by="lint 3.2.1" client="gradle" variant="all" version="3.2.1">
 
     <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.naming.directory`. Referenced from `org.bouncycastle.jce.provider.X509LDAPCertStoreSpi`.">
-        <location
-            file="libs/bcprov-jdk15on-160.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.naming`. Referenced from `org.bouncycastle.jce.provider.X509LDAPCertStoreSpi`.">
-        <location
-            file="libs/bcprov-jdk15on-160.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `java.applet`. Referenced from `javassist.tools.rmi.ObjectImporter`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `java.awt.image`. Referenced from `org.glassfish.jersey.message.internal.RenderedImageProvider`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `java.lang.instrument`. Referenced from `net.bytebuddy.agent.ByteBuddyAgent`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `java.lang.management`. Referenced from `net.bytebuddy.agent.ByteBuddyAgent.ProcessProvider.ForCurrentVm.ForLegacyVm`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.activation`. Referenced from `org.glassfish.jersey.message.internal.DataSourceProvider`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.imageio.spi`. Referenced from `org.glassfish.jersey.message.internal.RenderedImageProvider`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.imageio.stream`. Referenced from `org.glassfish.jersey.message.internal.RenderedImageProvider`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.imageio`. Referenced from `org.glassfish.jersey.message.internal.RenderedImageProvider`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.inject`. Referenced from `org.glassfish.hk2.internal.ActiveDescriptorBuilderImpl`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.management`. Referenced from `org.glassfish.jersey.server.internal.monitoring.jmx.ExecutionStatisticsDynamicBean`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.ws.rs.container`. Referenced from `org.glassfish.jersey.server.ApplicationHandler`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.ws.rs.core`. Referenced from `org.glassfish.jersey.server.model.AnnotatedMethod`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.ws.rs.ext`. Referenced from `org.glassfish.jersey.server.internal.scanning.AnnotationAcceptingListener`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.ws.rs`. Referenced from `org.glassfish.jersey.internal.ContextResolverFactory`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.xml.bind.annotation.adapters`. Referenced from `javax.ws.rs.core.Link.JaxbAdapter`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.xml.bind.annotation`. Referenced from `org.glassfish.jersey.jaxb.internal.AbstractCollectionJaxbProvider`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.xml.bind`. Referenced from `org.glassfish.jersey.jaxb.internal.AbstractCollectionJaxbProvider`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="InvalidPackage"
-        message="Invalid package reference in library; not included in Android: `javax.xml.stream`. Referenced from `org.glassfish.jersey.jaxb.internal.AbstractCollectionJaxbProvider`.">
-        <location
-            file="libs/stellar-sdk.jar"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Call requires API level 21 (current min is 19): new android.widget.LinearLayout"
-        errorLine1=") : LinearLayout(context, attrs, defStyle, defStyleRes) {"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/blockeq/com/stellarwallet/reusables/views/CustomSelector.kt"
-            line="25"
-            column="5"/>
-    </issue>
-
-    <issue
         id="NewApi"
         message="`android:elevation` requires API level 21 (current min is 19)"
         errorLine1="        &lt;item name=&quot;android:elevation&quot;>@dimen/actionbar_elevation&lt;/item>"
         errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/styles.xml"
-            line="86"
+            line="88"
             column="15"/>
     </issue>
 
@@ -170,17 +19,6 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/activity_recover_wallet.xml"
-            line="14"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="UnusedAttribute"
-        message="Attribute `elevation` is only used in API level 21 and higher (current min is 19)"
-        errorLine1="        android:elevation=&quot;4dp&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_show_mnemonic.xml"
             line="14"
             column="9"/>
     </issue>
@@ -216,83 +54,6 @@
             file="src/main/res/layout/view_custom_selector.xml"
             line="34"
             column="13"/>
-    </issue>
-
-    <issue
-        id="InflateParams"
-        message="Avoid passing `null` as the view root (needed to resolve layout parameters on the inflated layout&apos;s root element)"
-        errorLine1="                val item_view = (context as Activity).layoutInflater.inflate(R.layout.item_view_phrase_word, null)"
-        errorLine2="                                                                                                             ~~~~">
-        <location
-            file="src/main/java/blockeq/com/stellarwallet/reusables/views/MnemonicView.kt"
-            line="26"
-            column="110"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of com.android.support.test.espresso:espresso-contrib than 2.0 is available: 3.0.2"
-        errorLine1="    androidTestImplementation(&apos;com.android.support.test.espresso:espresso-contrib:2.0&apos;) {"
-        errorLine2="    ^">
-        <location
-            file="build.gradle"
-            line="76"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="AllowBackup"
-        message="On SDK version 23 and up, your app data will be automatically backed up and restored on app install. Consider adding the attribute `android:fullBackupContent` to specify an `@xml` resource which configures which files to backup. More info: https://developer.android.com/training/backup/autosyncapi.html"
-        errorLine1="    &lt;application"
-        errorLine2="     ~~~~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="10"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="Recycle"
-        message="This `TypedArray` should be recycled after use with `#recycle()`"
-        errorLine1="            val typedArray = context.obtainStyledAttributes(it,"
-        errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/blockeq/com/stellarwallet/reusables/views/CustomSelector.kt"
-            line="37"
-            column="38"/>
-    </issue>
-
-    <issue
-        id="ObsoleteLayoutParam"
-        message="Invalid layout param in a `LinearLayout`: `layout_below`"
-        errorLine1="            android:layout_below=&quot;@+id/address_title&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/content_enter_address.xml"
-            line="36"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="ObsoleteLayoutParam"
-        message="Invalid layout param in a `LinearLayout`: `layout_alignParentStart`"
-        errorLine1="        android:layout_alignParentStart=&quot;true&quot;/>"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_asset_header.xml"
-            line="14"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="DisableBaselineAlignment"
-        message="Set `android:baselineAligned=&quot;false&quot;` on this element for better performance"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_balance_summary.xml"
-            line="18"
-            column="6"/>
     </issue>
 
     <issue
@@ -336,17 +97,6 @@
         <location
             file="src/main/res/layout/fragment_wallet.xml"
             line="7"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/white` with a theme that also paints a background (inferred theme is `@style/AppTheme`)"
-        errorLine1="    android:background=&quot;@color/white&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_asset.xml"
-            line="4"
             column="5"/>
     </issue>
 
@@ -667,17 +417,6 @@
 
     <issue
         id="UnusedResources"
-        message="The resource `R.dimen.text_size_xlarge` appears to be unused"
-        errorLine1="    &lt;dimen name=&quot;text_size_xlarge&quot;>34sp&lt;/dimen>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/material_dimens.xml"
-            line="64"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
         message="The resource `R.dimen.text_size_xxlarge` appears to be unused"
         errorLine1="    &lt;dimen name=&quot;text_size_xxlarge&quot;>45sp&lt;/dimen>"
         errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
@@ -738,7 +477,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="3"
+            line="4"
             column="13"/>
     </issue>
 
@@ -749,7 +488,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="4"
+            line="5"
             column="13"/>
     </issue>
 
@@ -760,7 +499,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="5"
+            line="6"
             column="13"/>
     </issue>
 
@@ -771,7 +510,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="6"
+            line="7"
             column="13"/>
     </issue>
 
@@ -782,7 +521,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="7"
+            line="8"
             column="13"/>
     </issue>
 
@@ -793,7 +532,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="8"
+            line="9"
             column="13"/>
     </issue>
 
@@ -804,7 +543,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="15"
+            line="16"
             column="13"/>
     </issue>
 
@@ -826,7 +565,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="76"
+            line="87"
             column="13"/>
     </issue>
 
@@ -837,7 +576,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="79"
+            line="90"
             column="13"/>
     </issue>
 
@@ -848,7 +587,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="80"
+            line="91"
             column="13"/>
     </issue>
 
@@ -859,7 +598,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="110"
+            line="122"
             column="13"/>
     </issue>
 
@@ -870,7 +609,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="111"
+            line="123"
             column="13"/>
     </issue>
 
@@ -881,7 +620,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="112"
+            line="124"
             column="13"/>
     </issue>
 
@@ -892,7 +631,7 @@
         errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/styles.xml"
-            line="110"
+            line="112"
             column="12"/>
     </issue>
 
@@ -914,7 +653,7 @@
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/res/layout/activity_inflation.xml"
-            line="28"
+            line="30"
             column="10"/>
     </issue>
 
@@ -936,7 +675,7 @@
         errorLine2="     ~~~~~~~~">
         <location
             file="src/main/res/layout/activity_recover_wallet.xml"
-            line="44"
+            line="45"
             column="6"/>
     </issue>
 
@@ -947,7 +686,7 @@
         errorLine2="             ~~~~~~~~">
         <location
             file="src/main/res/layout/content_enter_address.xml"
-            line="40"
+            line="46"
             column="14"/>
     </issue>
 
@@ -958,7 +697,7 @@
         errorLine2="         ~~~~~~~~">
         <location
             file="src/main/res/layout/contents_send.xml"
-            line="56"
+            line="76"
             column="10"/>
     </issue>
 
@@ -1002,7 +741,7 @@
         errorLine2="         ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/activity_inflation.xml"
-            line="41"
+            line="43"
             column="10"/>
     </issue>
 
@@ -1035,7 +774,7 @@
         errorLine2="             ~~~~~~~~~~~">
         <location
             file="src/main/res/layout/content_enter_address.xml"
-            line="53"
+            line="59"
             column="14"/>
     </issue>
 
@@ -1057,7 +796,7 @@
         errorLine2="                 ~~~~~~~~~">
         <location
             file="src/main/res/layout/fragment_tab_trade.xml"
-            line="132"
+            line="135"
             column="18"/>
     </issue>
 
@@ -1123,7 +862,7 @@
         errorLine2="     ~~~~~~~~">
         <location
             file="src/main/res/layout/activity_recover_wallet.xml"
-            line="44"
+            line="45"
             column="6"/>
     </issue>
 
@@ -1145,7 +884,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/contents_send.xml"
-            line="86"
+            line="107"
             column="13"/>
     </issue>
 
@@ -1189,7 +928,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/item_asset.xml"
-            line="52"
+            line="64"
             column="9"/>
     </issue>
 
@@ -1294,17 +1033,6 @@
 
     <issue
         id="RelativeOverlap"
-        message="`LinearLayout-3` can overlap `@id/assetButton` if LinearLayout-3 grows due to localized text expansion"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_asset.xml"
-            line="14"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
         message="`@id/amountHeaderTextView` can overlap `@id/activityHeaderTextView` if @string/activity, @string/amount grow due to localized text expansion"
         errorLine1="    &lt;TextView"
         errorLine2="     ~~~~~~~~">
@@ -1312,94 +1040,6 @@
             file="src/main/res/layout/item_header_transaction_list.xml"
             line="16"
             column="6"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
-        errorLine1="        android:paddingStart=&quot;@dimen/activity_vertical_margin&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/content_assets_activity.xml"
-            line="13"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
-        errorLine1="        android:paddingStart=&quot;@dimen/activity_vertical_margin&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/content_enter_address.xml"
-            line="13"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
-        errorLine1="        android:paddingStart=&quot;@dimen/activity_vertical_margin&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/content_receive.xml"
-            line="13"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlSymmetry"
-        message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
-        errorLine1="        android:paddingStart=&quot;@dimen/activity_vertical_margin&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/contents_send.xml"
-            line="15"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`start`&quot; instead of &quot;`left`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="        android:layout_gravity=&quot;left&quot;  />"
-        errorLine2="                                ~~~~">
-        <location
-            file="src/main/res/layout/content_enter_address.xml"
-            line="14"
-            column="33"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider replacing `android:layout_alignParentRight` with `android:layout_alignParentEnd=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="        android:layout_alignParentRight=&quot;true&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_total_balance.xml"
-            line="29"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider replacing `android:layout_toRightOf` with `android:layout_toEndOf=&quot;@id/numberItem&quot;` to better support right-to-left layouts"
-        errorLine1="        android:layout_toRightOf=&quot;@id/numberItem&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_view_phrase_word.xml"
-            line="22"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider replacing `android:layout_marginLeft` with `android:layout_marginStart=&quot;8dp&quot;` to better support right-to-left layouts"
-        errorLine1="        android:layout_marginLeft=&quot;8dp&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_view_phrase_word.xml"
-            line="23"
-            column="9"/>
     </issue>
 
 </issues>

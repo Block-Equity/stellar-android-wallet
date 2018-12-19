@@ -101,6 +101,50 @@
                 android:text="@string/bug_report"
                 style="@style/SettingsButton" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about"
+                style="@style/SettingsTitle"
+                android:layout_margin="@dimen/activity_vertical_margin" />
+
+            <TextView
+                android:id="@+id/privacyPolicyButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/privacy_policy"
+                style="@style/SettingsButton" />
+
+            <TextView
+                android:id="@+id/termsOfServiceButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/terms_of_service"
+                style="@style/SettingsButton" />
+
+            <TextView
+                android:id="@+id/appVersionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/app_information"
+                style="@style/SettingsButton" />
+
+            <TextView
+                android:id="@+id/appVersionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/RegularText"
+                android:textColor="@color/paleSky"
+                android:layout_marginStart="@dimen/activity_vertical_margin"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+            <TextView
+                android:id="@+id/debug"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/debug_preferences"
+                style="@style/SettingsButton" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

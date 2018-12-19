@@ -110,60 +110,32 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/recovery_type"
-                style="@style/SettingsButton"
-                android:layout_marginTop="@dimen/activity_vertical_margin"/>
+                android:text="@string/advanced_security_passphrase"
+                style="@style/SettingsButton"/>
 
-            <RadioGroup
-                android:id="@+id/phraseRadioGroup"
+            <TextView
+                android:id="@+id/passphraseUsedTextView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mnemonic_phrase_12_words"
-                    android:layout_margin="@dimen/activity_vertical_margin" />
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mnemonic_phrase_24_words"
-                    android:layout_margin="@dimen/activity_vertical_margin" />
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/secret_seed"
-                    android:layout_margin="@dimen/activity_vertical_margin" />
-
-            </RadioGroup>
+                android:layout_height="wrap_content"
+                style="@style/RegularText"
+                android:textColor="@color/paleSky"
+                android:layout_marginStart="@dimen/activity_vertical_margin"
+                android:layout_marginEnd="@dimen/activity_vertical_margin"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/advanced_security_passphrase"
-                style="@style/SettingsButton"
-                android:layout_marginTop="@dimen/activity_vertical_margin"/>
+                android:text="@string/recovery_type"
+                style="@style/SettingsButton"/>
 
-            <RadioGroup
-                android:id="@+id/passphraseRadioGroup"
+            <TextView
+                android:id="@+id/recoveryTypeTextView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/yes"
-                    android:layout_margin="@dimen/activity_vertical_margin" />
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/no"
-                    android:layout_margin="@dimen/activity_vertical_margin" />
-
-            </RadioGroup>
+                android:layout_height="wrap_content"
+                style="@style/RegularText"
+                android:textColor="@color/paleSky"
+                android:layout_marginStart="@dimen/activity_vertical_margin"
+                android:layout_marginEnd="@dimen/activity_vertical_margin"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -181,9 +153,11 @@
                 android:gravity="top|start"
                 android:background="@drawable/bg_edit_text"
                 android:padding="@dimen/activity_vertical_margin"
+                android:importantForAutofill="no"
                 android:hint="@string/explanation_hint"
                 android:layout_margin="@dimen/activity_vertical_margin"
-                android:inputType="textMultiLine" />
+                android:inputType="textMultiLine"
+                tools:ignore="UnusedAttribute" />
 
             <Button
                 android:id="@+id/sendReportButton"
@@ -191,7 +165,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/send_report"
                 style="@style/PrimaryButtonStyle"
-                android:background="@color/blue2"
                 android:layout_margin="@dimen/activity_vertical_margin"/>
 
         </LinearLayout>

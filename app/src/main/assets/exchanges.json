@@ -1,0 +1,252 @@
+[
+  {
+    id: 1,
+    address: "GA5XIGA5C7QTPTWXQHY6MCJRMTRZDOSHR6EFIBNDQTCQHG262N4GGKTM",
+    name: "Kraken",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2Fkraken-logo.png?alt=media&token=6255bb3e-e384-4ec6-8ab3-8c3106a1c765",
+    memo: "memoId",
+    website: "https://www.kraken.com",
+    createdAt: "2018-11-26T22:12:05.180Z",
+    updatedAt: "2018-11-26T22:12:05.180Z"
+  },
+  {
+    id: 2,
+    address: "GAHK7EEG2WWHVKDNT4CEQFZGKF2LGDSW2IVM4S5DP42RBW3K6BTODB4A",
+    name: "Binance",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FBinance%20Logo.png?alt=media&token=93df0ac8-b62e-4984-a3de-712787cb297b",
+    memo: "memoId",
+    website: "https://www.binance.com/",
+    createdAt: "2018-11-26T22:12:05.183Z",
+    updatedAt: "2018-11-26T22:12:05.183Z"
+  },
+  {
+    id: 3,
+    address: "GAWPTHY6233GRWZZ7JXDMVXDUDCVQVVQ2SXCSTG3R3CNP5LQPDAHNBKL",
+    name: "Bitfinex",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FBitfinex%20Logo.png?alt=media&token=fc97fcdd-c8fd-4eaa-b8a2-8f17e415d016",
+    memo: "memoText",
+    website: "https://www.bitfinex.com",
+    createdAt: "2018-11-26T22:12:05.184Z",
+    updatedAt: "2018-11-26T22:12:05.184Z"
+  },
+  {
+    id: 4,
+    address: "GB3RMPTL47E4ULVANHBNCXSXM2ZA5JFY5ISDRERPCXNJUDEO73QFZUNK",
+    name: "CEX.io",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FCEX%20LOGO.png?alt=media&token=39f68359-1b7a-42f1-84ac-4f5b9a08fff2",
+    memo: "memoId",
+    website: "cex.io",
+    createdAt: "2018-11-26T22:12:05.186Z",
+    updatedAt: "2018-11-26T22:12:05.186Z"
+  },
+  {
+    id: 5,
+    address: "GB6YPGW5JFMMP2QB2USQ33EUWTXVL4ZT5ITUNCY3YKVWOJPP57CANOF3",
+    name: "Bittrex",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FBittrex%20Logo.png?alt=media&token=c04413f8-4813-4d29-a6a8-e2ed3d593a4f",
+    memo: "memoText",
+    website: "https://bittrex.com/",
+    createdAt: "2018-11-26T22:12:05.188Z",
+    updatedAt: "2018-11-26T22:12:05.188Z"
+  },
+  {
+    id: 6,
+    address: "GB7GRJ5DTE3AA2TCVHQS2LAD3D7NFG7YLTOEWEBVRNUUI2Q3TJ5UQIFM",
+    name: "BTC38",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2Fbtc38-logo.png?alt=media&token=fba75d7c-eadd-4597-9c71-9549ba6a437a",
+    memo: "memoId",
+    website: "http://www.btc38.com/trade_en.html",
+    createdAt: "2018-11-26T22:12:05.189Z",
+    updatedAt: "2018-11-26T22:12:05.189Z"
+  },
+  {
+    id: 7,
+    address: "GBBQSMIG5HLLBLXKPSQ4IJFYWLKBYUB5AQTKBJQFVF5CEJZTY7KYVWQI",
+    name: "Upbit",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FUpbit%20exchange%20logo.png?alt=media&token=b6b3a66b-e9a3-44f9-9f9c-04516f11bacd",
+    memo: "memoText",
+    website: "https://upbit.com/",
+    createdAt: "2018-11-26T22:12:05.191Z",
+    updatedAt: "2018-11-26T22:12:05.191Z"
+  },
+  {
+    id: 8,
+    address: "GD3MBO3MC3FMAJ63ZLJBKXZ7M6UZAABLJQTSVFJIXZKQPNC3JEX2IU6M",
+    name: "Upbit",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FUpbit%20exchange%20logo.png?alt=media&token=b6b3a66b-e9a3-44f9-9f9c-04516f11bacd",
+    memo: "memoText",
+    website: "https://upbit.com/",
+    createdAt: "2018-11-26T22:12:05.192Z",
+    updatedAt: "2018-11-26T22:12:05.192Z"
+  },
+  {
+    id: 9,
+    address: "GBGII2C7M4TOEC2MVAZYG3TRFM3ATCCEWANSN4Q3AHEX3NRKXJCVZDEV",
+    name: "OKEx",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FOkex%20logo.png?alt=media&token=9afc8057-f8d9-4757-9adc-05a5792e28f4",
+    memo: "memoText",
+    website: "https://www.okex.com",
+    createdAt: "2018-11-26T22:12:05.193Z",
+    updatedAt: "2018-11-26T22:12:05.193Z"
+  },
+  {
+    id: 10,
+    address: "GBGVRE5DH6HGNYNLWQITKRQYGR4PWQEH6MOE5ELPY3I4XJPTZ7CVT4YW",
+    name: "PapayaSwap",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2Fpapaybot%20image.png?alt=media&token=cab1e141-6b66-4201-979c-dc57e64a5a3d",
+    memo: "memoText",
+    website: "",
+    createdAt: "2018-11-26T22:12:05.195Z",
+    updatedAt: "2018-11-26T22:12:05.195Z"
+  },
+  {
+    id: 11,
+    address: "GBKTJSNUSR6OCXA5WDWGT33MNSCNQHOBQUBYC7TVS7BOXDKWFNHI4QNH",
+    name: "Exrates",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FEXRATES%20logo.png?alt=media&token=ccae87fe-8eac-4cc1-a114-c0e2f8d45f6d",
+    memo: "memoText",
+    website: "https://exrates.me/",
+    createdAt: "2018-11-26T22:12:05.198Z",
+    updatedAt: "2018-11-26T22:12:05.198Z"
+  },
+  {
+    id: 12,
+    address: "GBOEEVARKVASOQSSXCAHNTGJTVALJE2QM3AQQ2K3VXACQ6JJREQRJZKB",
+    name: "OKEx",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FOkex%20logo.png?alt=media&token=9afc8057-f8d9-4757-9adc-05a5792e28f4",
+    memo: "memoId",
+    website: "https://www.okex.com",
+    createdAt: "2018-11-26T22:12:05.201Z",
+    updatedAt: "2018-11-26T22:12:05.201Z"
+  },
+  {
+    id: 13,
+    address: "GBQWA6DU6OXHH4AVTFCONQ76LHEWQVZAW7SFSW4PPCAI2NX4MJDZUYDW",
+    name: "Piiko",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2Fpiiko%20exchange.png?alt=media&token=44dd908b-6095-4b14-8d27-9c24a1b13361",
+    memo: "memoText",
+    website: "https://www.piiko.co/",
+    createdAt: "2018-11-26T22:12:05.202Z",
+    updatedAt: "2018-11-26T22:12:05.202Z"
+  },
+  {
+    id: 14,
+    address: "GBR3RS2Z277FER476OFHFXQJRKYSQX4Z7XNWO65AN3QPRUANUASANG3L",
+    name: "PapayaBot",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2Fpapaybot%20image.png?alt=media&token=cab1e141-6b66-4201-979c-dc57e64a5a3d",
+    memo: "memoText",
+    website: "",
+    createdAt: "2018-11-26T22:12:05.202Z",
+    updatedAt: "2018-11-26T22:12:05.202Z"
+  },
+  {
+    id: 15,
+    address: "GC4KAS6W2YCGJGLP633A6F6AKTCV4WSLMTMIQRSEQE5QRRVKSX7THV6S",
+    name: "Indodax",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FIndodax%20logo.png?alt=media&token=525abd3a-79a2-4b33-a107-414e5b283b37",
+    memo: "memoText",
+    website: "https://indodax.com/",
+    createdAt: "2018-11-26T22:12:05.204Z",
+    updatedAt: "2018-11-26T22:12:05.204Z"
+  },
+  {
+    id: 16,
+    address: "GCEGERI7COJYNNID6CYSKS5DPPLGCCLPTOSCDD2LG5SJIVWM5ISUPERI",
+    name: "Superlumen Issuer",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2Fsuperlumen.png?alt=media&token=0fbc888b-9598-4e74-98cb-01a62feb9559",
+    memo: "memoId",
+    website: "",
+    createdAt: "2018-11-26T22:12:05.204Z",
+    updatedAt: "2018-11-26T22:12:05.204Z"
+  },
+  {
+    id: 17,
+    address: "GBTBVILDGCOIK26EPEHYCMKM7J5MTQ4FD5DO37GVTTBP45TVGRAROQHP",
+    name: "Koinex",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FKoinex%20Logo.png?alt=media&token=aebe3413-bc95-43f7-9c90-4aeb11146be6",
+    memo: "memoId",
+    website: "https://koinex.in/",
+    createdAt: "2018-11-26T22:12:05.204Z",
+    updatedAt: "2018-11-26T22:12:05.204Z"
+  },
+  {
+    id: 18,
+    address: "GBV4ZDEPNQ2FKSPKGJP2YKDAIZWQ2XKRQD4V4ACH3TCTFY6KPY3OAVS7",
+    name: "Changelly",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FChangelly%20logo.png?alt=media&token=3111d207-64af-41e3-962c-7240f08f17bc",
+    memo: "memoId",
+    website: "https://changelly.com/",
+    createdAt: "2018-11-26T22:12:05.205Z",
+    updatedAt: "2018-11-26T22:12:05.205Z"
+  },
+  {
+    id: 19,
+    address: "GCKMUBVVU4VWUTIWJ3VHGGUTE2EVRIHW4HD5XMTTN5X2DVT5SAZ7MA4T",
+    name: "CoinEgg",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FCoinEgg.png?alt=media&token=b4f9b908-9e1c-4645-938f-52a53ecd431d",
+    memo: "memoId",
+    website: "https://www.coinegg.com/",
+    createdAt: "2018-11-26T22:12:05.206Z",
+    updatedAt: "2018-11-26T22:12:05.206Z"
+  },
+  {
+    id: 20,
+    address: "GCGNWKCJ3KHRLPM3TM6N7D3W5YKDJFL6A2YCXFXNMRTZ4Q66MEMZ6FI2",
+    name: "Poloniex",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FPoloniex-Logo-800px.png?alt=media&token=8d45eb05-69d8-4108-92ff-953a8686bc8c",
+    memo: "memoId",
+    website: "https://poloniex.com",
+    createdAt: "2018-11-26T22:12:05.206Z",
+    updatedAt: "2018-11-26T22:12:05.206Z"
+  },
+  {
+    id: 21,
+    address: "GCLDH6L6FBLTD3H3B23D6TIFVVTFBLZMNBC3ZOI6FGI5GPQROL4FOXIN",
+    name: "RippleFox",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FRippleFox%20Logo.png?alt=media&token=f5c7c22e-b64e-491a-ba30-206d09c94569",
+    memo: "memoId",
+    website: "https://ripplefox.com/",
+    createdAt: "2018-11-26T22:12:05.207Z",
+    updatedAt: "2018-11-26T22:12:05.207Z"
+  },
+  {
+    id: 22,
+    address: "GCXDR4QZ4OTVX6433DPTXELCSEWQ4E5BIPVRRJMUR6M3NT4JCVIDALZO",
+    name: "GOPAX",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FGoPax%20Logo.png?alt=media&token=3c0923a4-eb2b-4ec2-88a8-c888c4383237",
+    memo: "memoText",
+    website: "https://www.gopax.co.kr",
+    createdAt: "2018-11-26T22:12:05.209Z",
+    updatedAt: "2018-11-26T22:12:05.209Z"
+  },
+  {
+    id: 23,
+    address: "GDRSWSKJCIB6Z65UA7W5RG62A7M5K3A5IHMED6DYHLPLWLVQCOOGDQ7S",
+    name: "Gate.io",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2Fgateio%20logo.png?alt=media&token=d09e4ed7-3e8e-4a2f-a031-119423504878",
+    memo: "memoId",
+    website: "https://gate.io/",
+    createdAt: "2018-11-26T22:12:05.209Z",
+    updatedAt: "2018-11-26T22:12:05.209Z"
+  },
+  {
+    id: 24,
+    address: "GCO2IP3MJNUOKS4PUDI4C7LGGMQDJGXG3COYX3WSB4HHNAHKYV5YL3VC",
+    name: "Binance",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2FBinance%20Logo.png?alt=media&token=93df0ac8-b62e-4984-a3de-712787cb297b",
+    memo: "memoId",
+    website: "https://www.binance.com/",
+    createdAt: "2018-11-26T22:12:05.208Z",
+    updatedAt: "2018-11-26T22:12:05.208Z"
+  },
+  {
+    id: 25,
+    address: "GDZCEWJ5TVXUTFH6V5CVDQDE43KRXYUFRHKI7X64EWMVOVYYZJFWIFQ2",
+    name: "AEX",
+    logo: "https://firebasestorage.googleapis.com/v0/b/blockeq-wallet.appspot.com/o/exchanges%2Faex%20Logo.png?alt=media&token=18f003ee-6a8a-4069-85b2-11bce124fa56",
+    memo: "memoId",
+    website: "https://www.aex.com/",
+    createdAt: "2018-11-26T22:12:05.209Z",
+    updatedAt: "2018-11-26T22:12:05.209Z"
+  }
+]

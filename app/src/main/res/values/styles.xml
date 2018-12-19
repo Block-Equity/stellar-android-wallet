@@ -7,10 +7,22 @@
 
         <item name="android:textViewStyle">@font/lato_regular</item>
         <item name="android:buttonStyle">@font/lato_regular</item>
+
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
     <style name="PinActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    </style>
+
+
+    <style name="TransparentTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
     </style>
 
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
@@ -99,6 +111,14 @@
         <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:textColor">@color/primaryButtonText</item>
         <item name="android:background">@drawable/primary_button</item>
+    </style>
+
+    <style name="SecondaryButtonStyle" parent="ButtonStyle">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">@font/lato_regular</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textColor">@color/secondaryButtonText</item>
+        <item name="android:background">@drawable/secondary_button</item>
     </style>
 
     <style name="HorizontalDivider">

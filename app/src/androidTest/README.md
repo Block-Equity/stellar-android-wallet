@@ -1,7 +1,29 @@
 # Android Test
+## The activity tests written in Espresso
+The test must use the Page Object Pattern (POM). This will keep the test simple and the outer layer will be agnostic to the framework / platform. 
+
+Basic rules in blockEQ's POM
+
+- Each view controller will have his own ViewControllerPage.
+- All controllers must extend `com.blockeq.stellarwallet.BasePage` and implement `onPageLoaded()`
+- Every action has to return the whole object to be able to write multiple actions in the same line.
+- A page will never interact with another page, you can not do an action and wait for another page to load.
+
+```
+  // waiting until wallet page is loaded and then press settings
+  WalletPage.onPageLoaded().pressSettings()
+  // let's press clear the wallet
+  SettingsPage.onPageLoaded().clearWallet()
+  // let's confirm the pin
+  PinPage.onPageLoaded().proceedWithPin(pin)
+
+```
+
+Do you want to know more about of POM?
+https://blog.testproject.io/2017/02/09/page-object-pattern-advantages-implementation/
 
 ## Trouble shooting
-- Test running failed: Unable to find instrumentation target package: blockeq.com.stellarwallet. onError: commandError=true message=INSTRUMENTATION_FAILED: blockeq.com.stellarwallet.test/android.support.test.runner.AndroidJUnitRunner
+- Test running failed: Unable to find instrumentation target package: com.blockeq.stellarwallet. onError: commandError=true message=INSTRUMENTATION_FAILED: com.blockeq.stellarwallet.test/android.support.test.runner.AndroidJUnitRunner
 Empty test suite.
 
 Make sure you uninstall the app and any other previous test
