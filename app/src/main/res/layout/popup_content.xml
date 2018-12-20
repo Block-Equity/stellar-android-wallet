@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="  Override limit order "
+        android:text="@string/override_limit_order_text"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#ffffff" />
 </RelativeLayout>

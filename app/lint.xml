@@ -13,6 +13,11 @@
     <issue id="Overdraw">
         <ignore path="res/layout/item_asset.xml" />
         <ignore path="res/layout/content_enter_address.xml" />
+        <ignore path="res/layout/popup_content.xml" />
+    </issue>
+
+    <issue id="IconDensities">
+        <ignore regexp="popup_bg.9.png" />
     </issue>
     <issue id="CustomViewStyleable">
         <ignore regexp="PatchedSearchableSpinner.java" />

@@ -1,5 +1,6 @@
 package com.blockeq.stellarwallet.fragments.tabs
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
@@ -382,6 +383,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
     private fun displayPopupWindow(anchorView: View) {
         if (!toolTip.isShowing) {
+            @SuppressLint("InflateParams")
             val layout = layoutInflater.inflate(R.layout.popup_content, null)
             toolTip.contentView = layout
             // Set content width and height

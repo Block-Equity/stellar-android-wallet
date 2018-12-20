@@ -224,5 +224,6 @@
     <string name="empty_fields">You have one or more empty fields</string>
     <string name="my_offer_empty_list">There are no offers at the moment</string>
     <string name="add_asset_title">Add Asset</string>
+    <string name="override_limit_order_text">Override limit order</string>
 
 </resources>
