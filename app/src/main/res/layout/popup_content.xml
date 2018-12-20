@@ -5,6 +5,7 @@
     android:paddingRight="10dp"
     android:paddingLeft="10dp"
     android:background="@drawable/popup_bg">
+
     <TextView
         android:id="@+id/tvCaption"
         android:layout_width="wrap_content"

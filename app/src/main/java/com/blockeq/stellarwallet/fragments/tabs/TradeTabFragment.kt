@@ -2,6 +2,7 @@ package com.blockeq.stellarwallet.fragments.tabs
 
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -58,7 +59,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         super.onViewCreated(view, savedInstanceState)
         appContext = view.context.applicationContext
         toolTip = PopupWindow(view.context)
-//        setBuyingSelectorEnabled(false)
+        setBuyingSelectorEnabled(false)
         refreshAddedCurrencies()
         setupListeners()
 
