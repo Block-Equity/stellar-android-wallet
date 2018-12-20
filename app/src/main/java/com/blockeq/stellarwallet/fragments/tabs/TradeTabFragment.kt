@@ -2,6 +2,7 @@ package com.blockeq.stellarwallet.fragments.tabs
 
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -30,7 +31,9 @@ import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.NumberFormat
-
+import android.graphics.drawable.ColorDrawable
+import android.view.WindowManager
+import android.widget.PopupWindow
 
 class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
@@ -49,6 +52,8 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
     private val ZERO_VALUE = "0.0"
     private val decimalFormat : NumberFormat = DecimalFormat("0.#######")
+    private lateinit var toolTip : PopupWindow
+    private var isToolTipShowing = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_tab_trade, container, false)
@@ -58,14 +63,15 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         super.onViewCreated(view, savedInstanceState)
         appContext = view.context.applicationContext
 
-        buyingCustomSelector.editText.isEnabled = false
         refreshAddedCurrencies()
-        setupListeners()
+        setupUi(view)
 
         Timber.d("TradeTabFragment{$this}#onViewCreated")
     }
 
-    private fun setupListeners() {
+    private fun setupUi(view: View) {
+        toolTip = PopupWindow(view)
+
         toggleMarket.setOnClickListener(this)
         toggleLimit.setOnClickListener(this)
         tenth.setOnClickListener(this)
@@ -75,7 +81,6 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         all.setOnClickListener(this)
         submitTrade.setOnClickListener(this)
         sellingCustomSelector.isEnabled = true
-        buyingCustomSelector.isEnabled = true
 
         sellingCustomSelector.editText.addTextChangedListener(object : AfterTextChanged() {
             override fun afterTextChanged(editable: Editable) {
@@ -83,6 +88,9 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 refreshSubmitTradeButton()
             }
         })
+
+        buyingCustomSelector.editText.isClickable = false
+        buyingCustomSelector.editText.isFocusable = false
 
         sellingCustomSelector.setSelectionValues(sellingCurrencies)
         sellingCustomSelector.spinner.onItemSelectedListener = object : OnItemSelected() {
@@ -111,6 +119,13 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 buyingCustomSelector.setSelectionValues(buyingCurrencies)
 
                 onSelectorChanged()
+            }
+        }
+
+        buyingCustomSelector.editText.setOnClickListener {
+            Timber.d("is showing:%s", toolTip.isShowing)
+            if (orderType == OrderType.MARKET && !isToolTipShowing) {
+                displayPopupWindow(toggleLimit)
             }
         }
 
@@ -188,6 +203,28 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         MARKET
     }
 
+    private fun displayPopupWindow(anchorView: View) {
+        if (!toolTip.isShowing) {
+            val layout = layoutInflater.inflate(R.layout.popup_content, null)
+            toolTip.contentView = layout
+            // Set content width and height
+            toolTip.height = WindowManager.LayoutParams.WRAP_CONTENT
+            toolTip.width = WindowManager.LayoutParams.WRAP_CONTENT
+            // Show anchored to button
+            toolTip.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            toolTip.showAsDropDown(anchorView)
+            toolTip.setOnDismissListener {
+                isToolTipShowing = false
+            }
+            isToolTipShowing = true
+            anchorView.postDelayed({
+                if (toolTip.isShowing) {
+                    toolTip.dismiss()
+                }
+            }, 800)
+        }
+    }
+
     override fun onClick(view: View) {
         when (view.id) {
             R.id.tenth -> sellingCustomSelector.editText.setText(decimalFormat.format(0.1 * holdingsAmount).toString())
@@ -202,7 +239,10 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 toggleLimit.setBackgroundResource(R.drawable.right_toggle)
                 toggleLimit.setTextColor(ContextCompat.getColor(view.context, R.color.black))
 
-                buyingCustomSelector.editText.isEnabled = false
+                buyingCustomSelector.editText.isClickable = true
+                buyingCustomSelector.editText.isFocusable = false
+                buyingCustomSelector.editText.isActivated = false
+
                 updateBuyingValueIfNeeded()
             }
             R.id.toggleLimit -> {
@@ -211,7 +251,8 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 toggleLimit.setTextColor(ContextCompat.getColor(view.context, R.color.white))
                 toggleMarket.setBackgroundResource(R.drawable.left_toggle)
                 toggleMarket.setTextColor(ContextCompat.getColor(view.context, R.color.black))
-                buyingCustomSelector.editText.isEnabled = true
+                buyingCustomSelector.editText.isFocusable = true
+                buyingCustomSelector.editText.isActivated = true
             }
             R.id.submitTrade -> {
                 if ((orderType == OrderType.MARKET && !dataAvailable) || buyingCustomSelector.editText.toString() == ZERO_VALUE) {
@@ -241,6 +282,13 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                     dialogBuilder.show()
                 }
             }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (toolTip.isShowing) {
+            toolTip.dismiss()
         }
     }
 
@@ -293,7 +341,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
     private fun setSelectorsEnabled(isEnabled : Boolean) {
         sellingCustomSelector.isEnabled = isEnabled
-        buyingCustomSelector.isEnabled = isEnabled
+//        buyingCustomSelector.isEnabled = isEnabled
     }
 
     override fun onAttach(context: Context?) {
