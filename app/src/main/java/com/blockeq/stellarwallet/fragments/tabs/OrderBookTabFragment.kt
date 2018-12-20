@@ -107,10 +107,12 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
 
         Timber.d("loading order book complete items %s", orderBooks.size)
 
-        Handler(Looper.getMainLooper()).post {
-            initializeAdapterIfNeeded(sellingCode, buyingCode)
-            orderBooksAdapter.setCurrencies(sellingCode, buyingCode)
-            orderBooksAdapter.notifyDataSetChanged()
+        if (::orderBooksAdapter.isInitialized) {
+            Handler(Looper.getMainLooper()).post {
+                initializeAdapterIfNeeded(sellingCode, buyingCode)
+                orderBooksAdapter.setCurrencies(sellingCode, buyingCode)
+                orderBooksAdapter.notifyDataSetChanged()
+            }
         }
 
         if (swipeRefresh != null) {
