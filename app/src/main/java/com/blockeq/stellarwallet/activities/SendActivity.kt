@@ -20,7 +20,6 @@ import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
 import com.blockeq.stellarwallet.models.ExchangeApiModel
 import com.blockeq.stellarwallet.models.HorizonException
-import com.blockeq.stellarwallet.models.PinType
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
@@ -36,6 +35,7 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
     companion object {
         private const val MAX_ALLOWED_DECIMALS = 7
         private const val ARG_ADDRESS_DATA = "ARG_ADDRESS_DATA"
+        private const val REQUEST_PIN = 0x0
 
         fun newIntent(context: Context, address: String): Intent {
             val intent = Intent(context, SendActivity::class.java)
@@ -77,7 +77,7 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
         send_button.setOnClickListener {
             if (isAmountValid()) {
                 if (WalletApplication.localStore.showPinOnSend) {
-                    launchPINView(PinType.CHECK, "", "", null)
+                   startActivityForResult(SimplePinActivity.newInstance(it.context), REQUEST_PIN)
                 } else {
                     sendPayment()
                 }
@@ -105,11 +105,11 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PinActivity.PIN_REQUEST_CODE) {
-            when (resultCode) {
-                PinActivity.SUCCESS_VOID -> sendPayment()
-                Activity.RESULT_CANCELED -> {}
-                else -> finish()
+        if (requestCode == REQUEST_PIN) {
+            if (resultCode == Activity.RESULT_OK) {
+                sendPayment()
+            } else {
+                finish()
             }
         }
     }

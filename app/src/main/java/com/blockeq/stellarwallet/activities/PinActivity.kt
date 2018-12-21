@@ -29,13 +29,27 @@ class PinActivity : BaseActivity(), PinLockListener {
         const val SUCCESS_PIN = 5
 
         /* Return intent keys */
-        const val KEY_DECRYPTED_MNEMONIC = "kDecryptedMnemonic"
-        const val KEY_SECRET_SEED = "kSecretSeed"
+        private const val KEY_DECRYPTED_MNEMONIC = "kDecryptedMnemonic"
+        private const val KEY_SECRET_SEED = "kSecretSeed"
         const val KEY_PIN = "kPin"
 
         const val PIN_REQUEST_CODE = 1
         const val MAX_ATTEMPTS = 3
+
+        fun getPin(intent: Intent) : String? {
+            return intent.getStringExtra(PinActivity.KEY_PIN)
+        }
+
+        fun getSecretSeed(intent: Intent) : String? {
+            return intent.getStringExtra(PinActivity.KEY_SECRET_SEED)
+        }
+
+        fun getDecryptedMnemonic(intent : Intent) : String? {
+            return intent.getStringExtra(PinActivity.KEY_DECRYPTED_MNEMONIC)
+
+        }
     }
+
 
     private var needConfirm = true
     private lateinit var PIN : String
@@ -84,40 +98,37 @@ class PinActivity : BaseActivity(), PinLockListener {
                 else -> {
                     val encryptedPhrase = getEncryptedPhrase(pinViewState.type)
                     val encryptedPassphrase = WalletApplication.localStore.encryptedPassphrase
-                    val masterKey = AccountUtils.getPinMasterKey(context, pin)
+                    val foundMasterKey = AccountUtils.getPinMasterKey(context, pin)
 
-                    if (masterKey != null) {
-                        val decryptedPhrase = AccountUtils.getDecryptedString(encryptedPhrase, masterKey)
+                    if (foundMasterKey != null) {
+                        val decryptedPhrase = AccountUtils.getDecryptedString(encryptedPhrase, foundMasterKey)
                         var decryptedPassphrase : String? = null
                         if (encryptedPassphrase != null) {
-                            decryptedPassphrase = AccountUtils.getDecryptedString(encryptedPassphrase, masterKey)
+                            decryptedPassphrase = AccountUtils.getDecryptedString(encryptedPassphrase, foundMasterKey)
                         }
 
                         when {
-                            pinViewState.type == PinType.LOGIN -> finishResultPin(pin)
 
                             pinViewState.type == PinType.CHECK -> finishResultVoid()
                             
-                            pinViewState.type == PinType.CLEAR_WALLET -> wipeAndRestart()
+//                            pinViewState.type == PinType.CLEAR_WALLET -> finishResultVoid()
+//
+//                            pinViewState.type == PinType.TOGGLE_PIN_ON_SENDING -> {
+//                                finishResultVoid()
+//                            }
 
-                            pinViewState.type == PinType.TOGGLE_PIN_ON_SENDING -> {
-                                WalletApplication.localStore.showPinOnSend = !WalletApplication.localStore.showPinOnSend
-                                finish()
-                            }
+                            pinViewState.type == PinType.LOGIN -> finishResultPin(pin)
 
                             pinViewState.type == PinType.VIEW_PHRASE -> {
-                                startActivity(MnemonicActivity.newDisplayMnemonicIntent(this, decryptedPhrase))
-                                finish()
+                                decryptedPassphrase?.let {
+                                    finishResultSecretSeed(decryptedPassphrase.toCharArray())
+                                }
                             }
 
                             pinViewState.type == PinType.VIEW_SEED -> {
                                 val keyPair = AccountUtils.getStellarKeyPair(decryptedPhrase, decryptedPassphrase)
                                 val secretSeed = keyPair.secretSeed.joinToString("")
-                                val intent = Intent(this, ViewSecretSeedActivity::class.java)
-
-                                intent.putExtra(ViewSecretSeedActivity.SECRET_SEED, secretSeed)
-                                startActivity(intent)
-                                finish()
+                                finishResultDecryptedMnemonic(secretSeed)
                             }
                         }
                     } else {

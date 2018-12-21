@@ -94,6 +94,13 @@
         <activity android:name=".activities.DebugPreferenceActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
+
+        <activity android:name=".activities.WalletManagerActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".activities.SimplePinActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>
