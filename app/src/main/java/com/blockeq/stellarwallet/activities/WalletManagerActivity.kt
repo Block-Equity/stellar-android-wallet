@@ -29,25 +29,17 @@ class WalletManagerActivity : AppCompatActivity() {
 
     companion object {
         private const val INTENT_ARG_TYPE: String = "INTENT_ARG_TYPE"
-
-        private const val INTENT_MNEMONIC_TYPE: String = "INTENT_MNEMONIC_TYPE"
+        private const val INTENT_PHRASE: String = "INTENT_PHRASE"
         private const val INTENT_PASSPHRASE: String = "INTENT_PASSPHRASE"
-        private const val INTENT_RECOVERY: String = "INTENT_RECOVERY"
+
+        fun restore(context: Context, recoveryString: String, passphrase: String?): Intent {
+          return createWallet(context, recoveryString, passphrase)
+        }
 
         fun createWallet(context: Context, mnemonicString: String, passphrase: String?): Intent {
             val intent = Intent(context, WalletManagerActivity::class.java)
             intent.putExtra(INTENT_ARG_TYPE, ActionType.NEW_WALLET)
-            intent.putExtra(INTENT_MNEMONIC_TYPE, mnemonicString)
-            if (passphrase != null) {
-                intent.putExtra(INTENT_PASSPHRASE, passphrase)
-            }
-            return intent
-        }
-
-        fun restore(context: Context, recoveryString: String, passphrase: String?): Intent {
-            val intent = Intent(context, WalletManagerActivity::class.java)
-            intent.putExtra(INTENT_ARG_TYPE, ActionType.RESTORE_WALLET)
-            intent.putExtra(INTENT_RECOVERY, recoveryString)
+            intent.putExtra(INTENT_PHRASE, mnemonicString)
             if (passphrase != null) {
                 intent.putExtra(INTENT_PASSPHRASE, passphrase)
             }
@@ -108,24 +100,13 @@ class WalletManagerActivity : AppCompatActivity() {
                 return
             }
             ActionType.REENTER_PIN.ordinal -> {
-                when(actionType) {
-                    ActionType.NEW_WALLET -> {
-                        val mnemonicString = intent.getStringExtra(INTENT_MNEMONIC_TYPE)
-                        if (generateWallet(data, mnemonicString)) {
-                            setResult(Activity.RESULT_OK)
-                            finish()
-                            return
-                        }
+                if (actionType == ActionType.NEW_WALLET || actionType ==  ActionType.RESTORE_WALLET) {
+                    val phrase = intent.getStringExtra(INTENT_PHRASE)
+                    if (generateWallet(data, phrase)) {
+                        setResult(Activity.RESULT_OK)
+                        finish()
+                        return
                     }
-                    ActionType.RESTORE_WALLET -> {
-                        val recovery = intent.getStringExtra(INTENT_RECOVERY)
-                        if (generateWallet(data, recovery)) {
-                            setResult(Activity.RESULT_OK)
-                            finish()
-                            return
-                        }
-                    }
-                    else -> {}
                 }
             }
             ActionType.VERIFY_PIN.ordinal -> {
