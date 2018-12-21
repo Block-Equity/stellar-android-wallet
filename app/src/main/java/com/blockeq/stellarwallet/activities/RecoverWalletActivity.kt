@@ -11,10 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
-import com.blockeq.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
 import com.blockeq.stellarwallet.helpers.*
-import com.blockeq.stellarwallet.models.PinType
-import com.blockeq.stellarwallet.utils.AccountUtils
 import com.soneso.stellarmnemonics.mnemonic.WordList
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
 
