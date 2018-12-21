@@ -1,5 +1,6 @@
 package com.blockeq.stellarwallet.activities
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,17 +9,15 @@ import android.view.View
 import android.widget.ImageView
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
-import com.blockeq.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
 import com.blockeq.stellarwallet.helpers.PassphraseDialogHelper
 import com.blockeq.stellarwallet.models.MnemonicType
-import com.blockeq.stellarwallet.models.PinType
-import com.blockeq.stellarwallet.utils.AccountUtils
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_mnemonic.*
 
 class MnemonicActivity : BaseActivity(), View.OnClickListener {
+    private val CREATE_WALLET_REQUEST = 0x01
 
     companion object {
         private const val MNEMONIC_PHRASE = "MNEMONIC_PHRASE"
@@ -52,12 +51,8 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PIN_REQUEST_CODE) {
-            if (resultCode == PinActivity.SUCCESS_PIN && data != null) {
-                val pin = data.getStringExtra(PinActivity.KEY_PIN)
-
-                AccountUtils.generateWallet(applicationContext, mnemonicString, passphrase, pin)
-
+        if (requestCode == CREATE_WALLET_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
                 launchWallet()
             }
         }
@@ -67,7 +62,7 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
     override fun onClick(v: View) {
         val itemId = v.id
         when (itemId) {
-            R.id.confirmButton -> launchPINView(PinType.CREATE, getString(R.string.please_create_a_pin), mnemonicString, passphrase)
+            R.id.confirmButton -> startActivityForResult(WalletManagerActivity.createWallet(v.context, mnemonicString, passphrase), CREATE_WALLET_REQUEST)
             R.id.passphraseButton -> {
                 val builder = PassphraseDialogHelper(this, object: PassphraseDialogHelper.PassphraseDialogListener {
                     override fun onOK(phrase: String) {

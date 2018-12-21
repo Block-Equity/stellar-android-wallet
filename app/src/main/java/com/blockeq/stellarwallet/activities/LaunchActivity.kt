@@ -1,6 +1,5 @@
 package com.blockeq.stellarwallet.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.blockeq.stellarwallet.R
@@ -58,9 +57,7 @@ class LaunchActivity : BaseActivity() {
 
                     val isPhraseRecovery = (which == 0)
 
-                    val intent = Intent(this, RecoverWalletActivity::class.java)
-                    intent.putExtra("isPhraseRecovery", isPhraseRecovery)
-                    startActivity(intent)
+                    startActivity(RecoverWalletActivity.newInstance(this, isPhraseRecovery))
                 }
         val dialog = builder.create()
         dialog.show()

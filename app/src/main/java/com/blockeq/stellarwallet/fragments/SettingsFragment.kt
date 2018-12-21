@@ -44,8 +44,6 @@ class SettingsFragment : BaseFragment() {
     }
 
     private fun setupUI() {
-        val phrase = WalletApplication.localStore.encryptedPhrase!!
-        
         viewPhraseButton.setOnClickListener {
             startActivity(WalletManagerActivity.showMnemonic(it.context))
         }
