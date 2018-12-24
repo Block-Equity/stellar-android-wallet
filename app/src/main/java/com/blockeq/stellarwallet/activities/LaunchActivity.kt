@@ -1,6 +1,5 @@
 package com.blockeq.stellarwallet.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.blockeq.stellarwallet.R
@@ -14,13 +13,6 @@ class LaunchActivity : BaseActivity() {
         setContentView(R.layout.activity_login)
 
         setupUI()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PinActivity.PIN_REQUEST_CODE) {
-            finish()
-        }
     }
 
     //region User Interface
@@ -65,9 +57,7 @@ class LaunchActivity : BaseActivity() {
 
                     val isPhraseRecovery = (which == 0)
 
-                    val intent = Intent(this, RecoverWalletActivity::class.java)
-                    intent.putExtra("isPhraseRecovery", isPhraseRecovery)
-                    startActivity(intent)
+                    startActivity(RecoverWalletActivity.newInstance(this, isPhraseRecovery))
                 }
         val dialog = builder.create()
         dialog.show()

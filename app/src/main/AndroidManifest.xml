@@ -95,6 +95,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
 
+        <activity android:name=".activities.WalletManagerActivity"
+            android:theme="@style/TransparentTheme"/>
+
         <activity android:name=".activities.AboutAnimationActivity"
             android:theme="@style/TransparentTheme"/>
 

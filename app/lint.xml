@@ -14,6 +14,7 @@
         <ignore path="res/layout/item_asset.xml" />
         <ignore path="res/layout/content_enter_address.xml" />
         <ignore path="res/layout/popup_content.xml" />
+        <ignore path="res/layout/activity_pin.xml"/>
     </issue>
 
     <issue id="IconDensities">

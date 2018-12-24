@@ -20,6 +20,7 @@ class UserSession(var currAssetCode: String = Constants.LUMENS_ASSET_TYPE,
         return StringFormat.formatAssetCode(currAssetCode)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun getFormattedCurrentAvailableBalance(context: Context): String {
         return decimalFormat.format(getAvailableBalance().toDouble()) + " " + getFormattedCurrentAssetCode()
     }
