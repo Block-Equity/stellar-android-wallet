@@ -230,7 +230,7 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
             transaction.type == EffectType.RECEIVED.value -> viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.mantis), PorterDuff.Mode.SRC_IN)
             transaction.type == EffectType.SENT.value -> {
                 viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.apricot), PorterDuff.Mode.SRC_IN)
-                viewHolder.amount.text = String.format(context.getString(R.string.bracket_template), formatNumber4Decimals(viewHolder.amount.text.toString()))
+                viewHolder.amount.text = String.format(context.getString(R.string.bracket_template), viewHolder.amount.text.toString())
             }
             else -> viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.paleSky), PorterDuff.Mode.SRC_IN)
         }
