@@ -1,5 +1,7 @@
 package com.blockeq.stellarwallet.activities
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -9,36 +11,37 @@ import android.view.MenuItem
 import android.view.View
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
-import com.blockeq.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
 import com.blockeq.stellarwallet.helpers.*
-import com.blockeq.stellarwallet.models.PinType
-import com.blockeq.stellarwallet.utils.AccountUtils
 import com.soneso.stellarmnemonics.mnemonic.WordList
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
 
-
 class RecoverWalletActivity : BaseActivity() {
-
     private var isRecoveryPhrase = true
     private var passphrase : String? = null
     private lateinit var recoveryString : String
+    private val RESTORE_REQUEST = 0x01
+
+    companion object {
+        private var INTENT_ARG_RECOVERY = "INTENT_ARG_RECOVERY"
+        fun newInstance(context: Context, isRecovery: Boolean) : Intent {
+            val intent = Intent(context, RecoverWalletActivity::class.java)
+            intent.putExtra(INTENT_ARG_RECOVERY, isRecovery)
+            return intent
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recover_wallet)
 
-        isRecoveryPhrase = intent.getBooleanExtra("isPhraseRecovery", true)
+        isRecoveryPhrase = intent.getBooleanExtra(INTENT_ARG_RECOVERY, true)
         setupUI()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PIN_REQUEST_CODE) {
-            if (resultCode == PinActivity.SUCCESS_PIN && data != null) {
-                val pin = data.getStringExtra(PinActivity.KEY_PIN)
-
-                AccountUtils.generateWallet(applicationContext, recoveryString, passphrase, pin)
-
+        if (requestCode == RESTORE_REQUEST) {
+            if (resultCode ==  Activity.RESULT_OK) {
                 launchWallet()
             }
         }
@@ -75,10 +78,7 @@ class RecoverWalletActivity : BaseActivity() {
 
                 recoveryString = StellarRecoveryString(getMnemonicString(), isRecoveryPhrase, passphrase).getString()
 
-                launchPINView(PinType.CREATE,
-                        getString(R.string.please_create_a_pin),
-                        recoveryString,
-                        passphrase)
+                startActivityForResult(WalletManagerActivity.restore(it.context, recoveryString, passphrase), RESTORE_REQUEST)
             } catch (e: Exception) {
                 showErrorMessage(e.message)
             }
@@ -109,12 +109,13 @@ class RecoverWalletActivity : BaseActivity() {
 
     private fun setupToolbar() {
         setSupportActionBar(findViewById(R.id.recoverToolbar))
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
-        supportActionBar!!.title = if (isRecoveryPhrase) {
-            getString(R.string.enter_phrase)
-        } else {
-            getString(R.string.enter_secret_key)
+        supportActionBar?.let {
+            it.setDisplayHomeAsUpEnabled(true)
+            it.title = if (isRecoveryPhrase) {
+                getString(R.string.enter_phrase)
+            } else {
+                getString(R.string.enter_secret_key)
+            }
         }
     }
 
