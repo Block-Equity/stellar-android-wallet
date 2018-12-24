@@ -2,11 +2,15 @@
 <resources>
     <string name="preference_debug_leak_canary">preference_leak_canary</string>
     <string name="preference_debug_pin_disabled">preference_pin_disabled</string>
+    <string name="preference_debug_trade_tooltip">preference_trade_tooltip</string>
 
     <string name="debug_leak_canary_title">LeakCanary</string>
     <string name="debug_leak_canary_summary">A memory leak detection library for Android and Java. A restart is required.</string>
 
     <string name="debug_disable_pin_title">Disable PIN</string>
     <string name="debug_disable_pin_summary">Disable PIN where app is coming from the background to the foreground</string>
+
+    <string name="debug_enable_trade_tooltips_title">Trade Tooltips</string>
+    <string name="debug_enable_trade_tooltips_summary">Enable the tooltips in the trade feature</string>
 
 </resources>

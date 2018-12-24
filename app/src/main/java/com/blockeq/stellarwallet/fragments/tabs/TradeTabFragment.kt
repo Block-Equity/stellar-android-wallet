@@ -23,6 +23,7 @@ import com.blockeq.stellarwallet.models.Currency
 import com.blockeq.stellarwallet.models.SelectionModel
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
+import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 import kotlinx.android.synthetic.main.fragment_tab_trade.*
 import kotlinx.android.synthetic.main.preference_dialog_edittext.view.*
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
@@ -317,9 +318,10 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         } else {
             buyingCustomSelector.editTextMask.visibility = View.VISIBLE
 
-//            buyingCustomSelector.editText.visibility = View.GONE
             buyingCustomSelector.editTextMask.setOnClickListener {
-               displayPopupWindow(toggleLimit)
+                if (DebugPreferencesHelper(appContext).isTradeTooltipEnabled) {
+                    displayPopupWindow(toggleLimit)
+                }
             }
         }
     }
