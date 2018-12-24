@@ -26,7 +26,7 @@ class WalletCreationTest {
 
     @Test
     fun testCreateWalletOption12Words() {
-        LaunchPage.onPageLoaded().createWallet(MnemonicType.WORD_12, pin)
+        createWallet(MnemonicType.WORD_12, pin)
     }
 
     @Test

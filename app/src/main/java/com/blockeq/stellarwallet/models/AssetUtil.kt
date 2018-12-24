@@ -64,7 +64,6 @@ class AssetUtil {
                         concreteAsset.code
                     }
                     AssetType.ASSET_TYPE_NATIVE -> {
-                        val concreteAsset = asset as AssetTypeNative
                         NATIVE_ASSET_CODE
                     }
                 }
