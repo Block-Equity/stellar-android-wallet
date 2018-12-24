@@ -13,6 +13,7 @@
     <!--Navigation Menu-->
     <string name="nav_wallet">Wallet</string>
     <string name="nav_trading">Trading</string>
+    <string name="nav_contacts">Contacts</string>
     <string name="nav_receive">Receive</string>
     <string name="nav_settings">Settings</string>
 

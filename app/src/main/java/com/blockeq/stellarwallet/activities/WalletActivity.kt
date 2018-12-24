@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.view.View
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
+import com.blockeq.stellarwallet.fragments.ContactsFragment
 import com.blockeq.stellarwallet.fragments.SettingsFragment
 import com.blockeq.stellarwallet.fragments.TradingFragment
 import com.blockeq.stellarwallet.fragments.WalletFragment
@@ -26,6 +27,7 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUti
     private enum class WalletFragmentType {
         WALLET,
         TRADING,
+        CONTACTS,
         SETTING
     }
 
@@ -56,7 +58,9 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUti
                     openFragment(tradingFragment, WalletFragmentType.TRADING)
                 }
             }
-
+            R.id.nav_contacts -> {
+                openFragment(ContactsFragment(), WalletFragmentType.CONTACTS)
+            }
             R.id.nav_settings -> {
                 val settingsFragment = SettingsFragment.newInstance()
                 openFragment(settingsFragment, WalletFragmentType.SETTING)
