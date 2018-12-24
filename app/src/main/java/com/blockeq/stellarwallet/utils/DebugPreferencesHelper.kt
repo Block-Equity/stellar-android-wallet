@@ -19,4 +19,7 @@ class DebugPreferencesHelper(context: Context) {
 
     val isPinDisabled: Boolean
         get() = sharedPreferences.getBoolean(appContext.getString(R.string.preference_debug_pin_disabled), false)
+
+    val isTradeTooltipEnabled: Boolean
+        get() = sharedPreferences.getBoolean(appContext.getString(R.string.preference_debug_trade_tooltip), false)
 }

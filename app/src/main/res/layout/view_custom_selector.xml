@@ -3,23 +3,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
+    android:baselineAligned="false"
     android:weightSum="1">
 
-    <EditText
-        android:id="@+id/editText"
+    <FrameLayout
+        android:focusable="true"
+        android:clickable="true"
         android:layout_width="0dp"
         android:layout_height="@dimen/spinner_height"
-        android:layout_weight=".75"
-        android:background="@drawable/selector_edittext"
-        android:fontFamily="@font/lato_regular"
-        android:paddingStart="@dimen/margin_padding_size_medium"
-        android:paddingLeft="@dimen/margin_padding_size_medium"
-        android:paddingEnd="@dimen/margin_padding_size_medium"
-        android:paddingRight="@dimen/margin_padding_size_medium"
-        android:textColorHint="@color/selectorHint"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_medium"/>
+        android:layout_weight=".75">
 
+        <EditText
+            android:duplicateParentState="true"
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_edittext"
+            android:fontFamily="@font/lato_regular"
+            android:paddingStart="@dimen/margin_padding_size_medium"
+            android:paddingLeft="@dimen/margin_padding_size_medium"
+            android:paddingEnd="@dimen/margin_padding_size_medium"
+            android:paddingRight="@dimen/margin_padding_size_medium"
+            android:textColorHint="@color/selectorHint"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_medium"/>
+
+        <View
+            android:layout_margin="1dp"
+            android:visibility="gone"
+            android:background="@color/transparent_alabaster"
+            android:id="@+id/editTextMask"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </FrameLayout>
     <RelativeLayout
         android:id="@+id/spinnerContainer"
         android:layout_width="0dp"
