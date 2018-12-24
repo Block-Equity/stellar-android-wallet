@@ -13,7 +13,6 @@ import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.content_enter_address.*
 
 class EnterAddressActivity : BaseActivity(), View.OnClickListener {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.content_enter_address)
@@ -42,7 +41,7 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
     //region User Interface
     private fun setupUI() {
         setSupportActionBar(toolBar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance(applicationContext)
 

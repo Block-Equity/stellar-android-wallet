@@ -9,8 +9,8 @@ android {
         applicationId "com.blockeq.stellarwallet"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 26
-        versionName "2.0.2"
+        versionCode 29
+        versionName "2.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
@@ -128,4 +128,6 @@ dependencies {
     kapt "android.arch.persistence.room:compiler:$lifecycleVersion"
 
     implementation "com.android.support:preference-v7:$supportLibraryVersion"
+
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
 }

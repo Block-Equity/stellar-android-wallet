@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/about_animation_root"
+        tools:ignore="ContentDescription"
+        tools:context=".activities.AboutAnimationActivity">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/circle"
+            android:src="#FF000000"
+            android:layout_width="290dp"
+            android:layout_height="290dp"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#FF000000"
+            android:layout_centerInParent="true"/>
+
+    <FrameLayout  android:layout_width="138dp" android:id="@+id/blocks_wrapper" android:layout_height="match_parent" android:layout_centerInParent="true">
+        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/blockeq1" android:src="@drawable/block_blockeq1"/>
+        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/blockeq2" android:src="@drawable/block_blockeq2"/>
+        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/blockeq3" android:src="@drawable/block_blockeq3"/>
+        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/blockeq4" android:src="@drawable/block_blockeq4"/>
+        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/blockeq5" android:src="@drawable/block_blockeq5"/>
+        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/blockeq6" android:src="@drawable/block_blockeq6"/>
+        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/blockeq7" android:src="@drawable/block_blockeq7"/>
+        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/blockeq8" android:src="@drawable/block_blockeq8"/>
+        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/blockeq9" android:src="@drawable/block_blockeq9"/>
+        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/blockeq10" android:src="@drawable/block_blockeq10"/>
+        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/blockeq11" android:src="@drawable/block_blockeq11"/>
+    </FrameLayout>
+
+    <ImageView
+            android:visibility="gone"
+            android:id="@+id/gradient"
+            android:layout_width="290dp"
+            android:layout_height="290dp"
+            android:src="@drawable/gradient_shine"
+            android:layout_centerInParent="true"/>
+
+</RelativeLayout>

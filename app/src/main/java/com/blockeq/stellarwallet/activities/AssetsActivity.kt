@@ -3,6 +3,8 @@ package com.blockeq.stellarwallet.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
@@ -213,7 +215,10 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
                 }
 
                 override fun onError(error: ErrorResponse) {
-                    Toast.makeText(context, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
+                    //TODO: please address GH-170 and remove the handler here
+                    Handler(Looper.getMainLooper()).post {
+                        Toast.makeText(context, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
+                    }
                 }
             }).execute()
         }

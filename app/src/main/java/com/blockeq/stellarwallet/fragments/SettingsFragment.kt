@@ -11,6 +11,11 @@ import android.view.ViewGroup
 import com.blockeq.stellarwallet.BuildConfig
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
+import com.blockeq.stellarwallet.activities.AboutAnimationActivity
+import com.blockeq.stellarwallet.activities.DebugPreferenceActivity
+import com.blockeq.stellarwallet.activities.DiagnosticActivity
+import com.blockeq.stellarwallet.activities.WebViewActivity
+import com.blockeq.stellarwallet.models.PinType
 import com.blockeq.stellarwallet.activities.*
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.DiagnosticUtils
@@ -86,6 +91,15 @@ class SettingsFragment : BaseFragment() {
 
         @SuppressLint("SetTextI18n")
         appVersionTextView.text = "Version: $appVersion"
+
+        var timesClicked = 0
+        appVersionTitle.setOnClickListener {
+            timesClicked++
+            if (timesClicked > 3) {
+                startActivity(Intent(it.context, AboutAnimationActivity::class.java))
+                timesClicked = 0
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

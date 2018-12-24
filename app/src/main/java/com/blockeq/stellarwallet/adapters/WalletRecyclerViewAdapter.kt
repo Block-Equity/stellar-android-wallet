@@ -1,5 +1,6 @@
 package com.blockeq.stellarwallet.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PorterDuff
 import android.support.v4.content.ContextCompat
@@ -15,6 +16,7 @@ import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.utils.StringFormat
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.getFormattedDate
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
+import timber.log.Timber
 
 class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -182,10 +184,20 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         viewHolder.amountTextView.text = pair.second.toString()
     }
 
+    private fun formatNumber4Decimals(amount : String?) : String? {
+        if (amount == null) return "--"
+        val displayAmount = truncateDecimalPlaces(amount)
+        if (displayAmount.toFloat() == 0f) {
+            return "< 0.0001"
+        }
+        return displayAmount
+    }
+
+    @SuppressLint("SetTextI18n")
     private fun configureAccountEffectViewHolder(viewHolder : AccountEffectViewHolder, position : Int) {
         val transaction = items[position] as AccountEffect
 
-        viewHolder.amount.text = truncateDecimalPlaces(transaction.amount)
+        viewHolder.amount.text = formatNumber4Decimals(transaction.amount)
         viewHolder.date.text = getFormattedDate(transaction.createdAt)
 
         viewHolder.transactionType.text = when(transaction.type) {
@@ -218,8 +230,7 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
             transaction.type == EffectType.RECEIVED.value -> viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.mantis), PorterDuff.Mode.SRC_IN)
             transaction.type == EffectType.SENT.value -> {
                 viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.apricot), PorterDuff.Mode.SRC_IN)
-                viewHolder.amount.text = String.format(context.getString(R.string.bracket_template),
-                        viewHolder.amount.text)
+                viewHolder.amount.text = String.format(context.getString(R.string.bracket_template), viewHolder.amount.text.toString())
             }
             else -> viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.paleSky), PorterDuff.Mode.SRC_IN)
         }

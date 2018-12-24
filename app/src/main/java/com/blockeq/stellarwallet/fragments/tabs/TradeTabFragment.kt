@@ -89,9 +89,22 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectedSellingCurrency = sellingCurrencies[position]
                 holdingsAmount = selectedSellingCurrency.holdings
-                holdings.text = String.format(getString(R.string.holdings_amount),
-                        decimalFormat.format(holdingsAmount),
-                        selectedSellingCurrency.label)
+
+                if (selectedSellingCurrency.label == AssetUtil.NATIVE_ASSET_CODE) {
+                    val available = WalletApplication.localStore.availableBalance!!.toDouble()
+
+                    holdings.text = String.format(getString(R.string.holdings_amount),
+                            decimalFormat.format(available),
+                            selectedSellingCurrency.label)
+
+                    holdingsAmount = available
+
+                } else {
+                    holdings.text = String.format(getString(R.string.holdings_amount),
+                            decimalFormat.format(holdingsAmount),
+                            selectedSellingCurrency.label)
+                }
+
                 resetBuyingCurrencies()
                 buyingCurrencies.removeAt(position)
 
@@ -123,10 +136,21 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         val sellingValue = sellingCustomSelector.editText.text.toString()
         val buyingValue = sellingCustomSelector.editText.text.toString()
 
-        if (sellingValue.isEmpty() || buyingValue.isEmpty() || sellingValue.toFloat() == 0f) {
+        var numberFormatValid = true
+        var sellingValueDouble = 0.toDouble()
+        try {
+            sellingValueDouble = sellingValue.toDouble()
+            buyingValue.toDouble()
+        } catch (e : NumberFormatException) {
+            Timber.d("selling or buying value have not a valid format")
+            numberFormatValid = false
+        }
+
+        if (sellingValue.isEmpty() || buyingValue.isEmpty() ||
+                !numberFormatValid || sellingValueDouble.compareTo(0) == 0 ) {
            submitTrade.isEnabled = false
-        } else {
-            submitTrade.isEnabled = sellingValue.toFloat() <= selectedSellingCurrency.holdings
+        } else if(::selectedSellingCurrency.isInitialized){
+            submitTrade.isEnabled = sellingValue.toDouble() <= selectedSellingCurrency.holdings
         }
     }
 
@@ -166,10 +190,10 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.tenth -> sellingCustomSelector.editText.setText((0.1 * holdingsAmount).toString())
-            R.id.quarter -> sellingCustomSelector.editText.setText((0.25 * holdingsAmount).toString())
-            R.id.half -> sellingCustomSelector.editText.setText((0.5 * holdingsAmount).toString())
-            R.id.threeQuarters -> sellingCustomSelector.editText.setText((0.75 * holdingsAmount).toString())
+            R.id.tenth -> sellingCustomSelector.editText.setText(decimalFormat.format(0.1 * holdingsAmount).toString())
+            R.id.quarter -> sellingCustomSelector.editText.setText(decimalFormat.format(0.25 * holdingsAmount).toString())
+            R.id.half -> sellingCustomSelector.editText.setText(decimalFormat.format(0.5 * holdingsAmount).toString())
+            R.id.threeQuarters -> sellingCustomSelector.editText.setText(decimalFormat.format(0.75 * holdingsAmount).toString())
             R.id.all -> sellingCustomSelector.editText.setText(decimalFormat.format(holdingsAmount))
             R.id.toggleMarket -> {
                 orderType = OrderType.MARKET
@@ -190,7 +214,9 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 buyingCustomSelector.editText.isEnabled = true
             }
             R.id.submitTrade -> {
-                if ((orderType == OrderType.MARKET && !dataAvailable) || buyingCustomSelector.editText.toString() == ZERO_VALUE) {
+                if (buyingCustomSelector.editText.text.toString().isEmpty()) {
+                    createSnackBar("Buying price can not be empty.", Snackbar.LENGTH_SHORT).show()
+                } else if ((orderType == OrderType.MARKET && !dataAvailable) || buyingCustomSelector.editText.text.toString() == ZERO_VALUE) {
                     // buyingEditText should be empty at this moment
 
                     createSnackBar("Trade price cannot be 0. Please override limit order.", Snackbar.LENGTH_SHORT).show()
@@ -243,10 +269,16 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         setSelectorsEnabled(false)
         WalletApplication.userSession.getAvailableBalance()
 
+        val sellingAmountFormatted = decimalFormat.format(sellingAmount.toDouble())
+        val priceFormatted = decimalFormat.format(buyingAmount.toDouble() / sellingAmount.toDouble())
+
         Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
             override fun onExecuted() {
                 snackbar.dismiss()
                 createSnackBar("Order executed", Snackbar.LENGTH_SHORT).show()
+
+                submitTrade.isEnabled = true
+                setSelectorsEnabled(true)
             }
 
             override fun onFailed(errorMessage : String) {
@@ -255,11 +287,10 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 createSnackBar("Order failed: $errorMessage", Snackbar.LENGTH_SHORT).show()
 
                 submitTrade.isEnabled = true
-                progressBar.visibility = View.GONE
                 setSelectorsEnabled(true)
             }
         }, AccountUtils.getSecretSeed(appContext), sellingAsset, buyingAsset,
-                sellingAmount, (buyingAmount.toFloat() / sellingAmount.toFloat()).toString())
+                sellingAmountFormatted, priceFormatted)
     }
 
     private fun setSelectorsEnabled(isEnabled : Boolean) {

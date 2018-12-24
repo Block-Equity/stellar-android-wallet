@@ -18,7 +18,7 @@ import java.security.Security
 
 class WalletApplication : MultiDexApplication() {
     private val lifecycleListener: WalletLifecycleListener by lazy {
-        WalletLifecycleListener()
+        WalletLifecycleListener(applicationContext)
     }
 
     companion object {
