@@ -76,16 +76,16 @@ class WalletManagerActivity : AppCompatActivity() {
         when(actionType) {
             ActionType.RESTORE_WALLET,
             ActionType.NEW_WALLET -> {
-                startActivityForResult(SimplePinActivity.newInstance(this, null, getString(R.string.please_create_a_pin)), ActionType.ENTER_PIN.ordinal)
+                startActivityForResult(PinActivity.newInstance(this, null, getString(R.string.please_create_a_pin)), ActionType.ENTER_PIN.ordinal)
             }
             ActionType.DECRYPT_MNEMONIC -> {
-                startActivityForResult(SimplePinActivity.newInstance(this, getPinFromKeyStore(), getString(R.string.please_enter_your_pin)), ActionType.DECRYPT_MNEMONIC.ordinal)
+                startActivityForResult(PinActivity.newInstance(this, getPinFromKeyStore(), getString(R.string.please_enter_your_pin)), ActionType.DECRYPT_MNEMONIC.ordinal)
             }
             ActionType.DECRYPT_SECRET_SEED -> {
-                startActivityForResult(SimplePinActivity.newInstance(this, getPinFromKeyStore(), getString(R.string.please_enter_your_pin)), ActionType.DECRYPT_SECRET_SEED.ordinal)
+                startActivityForResult(PinActivity.newInstance(this, getPinFromKeyStore(), getString(R.string.please_enter_your_pin)), ActionType.DECRYPT_SECRET_SEED.ordinal)
             }
             ActionType.VERIFY_PIN -> {
-                startActivityForResult(SimplePinActivity.newInstance(this, getPinFromKeyStore(), getString(R.string.please_enter_your_pin)), ActionType.VERIFY_PIN.ordinal)
+                startActivityForResult(PinActivity.newInstance(this, getPinFromKeyStore(), getString(R.string.please_enter_your_pin)), ActionType.VERIFY_PIN.ordinal)
             } else -> {
                 throw IllegalStateException("invalid action type $actionType")
             }
@@ -96,7 +96,7 @@ class WalletManagerActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             ActionType.ENTER_PIN.ordinal -> {
-                startActivityForResult(SimplePinActivity.newInstance(this, getString(R.string.please_reenter_your_pin)), ActionType.REENTER_PIN.ordinal)
+                startActivityForResult(PinActivity.newInstance(this, getString(R.string.please_reenter_your_pin)), ActionType.REENTER_PIN.ordinal)
                 return
             }
             ActionType.REENTER_PIN.ordinal -> {
@@ -118,7 +118,7 @@ class WalletManagerActivity : AppCompatActivity() {
             }
             ActionType.DECRYPT_MNEMONIC.ordinal -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val pin = SimplePinActivity.getPinFromIntent(data)
+                    val pin = PinActivity.getPinFromIntent(data)
                     if (pin != null) {
                         val masterKey = AccountUtils.getPinMasterKey(applicationContext, pin)
                         if (masterKey != null) {
@@ -133,7 +133,7 @@ class WalletManagerActivity : AppCompatActivity() {
             }
             ActionType.DECRYPT_SECRET_SEED.ordinal -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val pin = SimplePinActivity.getPinFromIntent(data)
+                    val pin = PinActivity.getPinFromIntent(data)
                     if (pin != null) {
                         val masterKey = AccountUtils.getPinMasterKey(applicationContext, pin)
                         if (masterKey != null) {
@@ -166,7 +166,7 @@ class WalletManagerActivity : AppCompatActivity() {
 
     private fun generateWallet(data:Intent?, secret: String) : Boolean {
         data?.let {
-            val pin = SimplePinActivity.getPinFromIntent(it)
+            val pin = PinActivity.getPinFromIntent(it)
             val passphrase = intent.getStringExtra(INTENT_PASSPHRASE)
 
             pin?.let { that ->

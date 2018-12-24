@@ -13,7 +13,7 @@ import com.blockeq.stellarwallet.utils.AccountUtils
 import kotlinx.android.synthetic.main.activity_pin.*
 import timber.log.Timber
 
-class SimplePinActivity : BaseActivity() {
+class PinActivity : BaseActivity() {
 
     private var numAttempts = 0
     private val MAX_ATTEMPTS = 3
@@ -26,13 +26,13 @@ class SimplePinActivity : BaseActivity() {
         private const val INTENT_ARG_PIN_RESULT: String = "INTENT_ARG_PIN_RESULT"
 
         /**
-         * New Instance of Intent to launch a {@link SimplePinActivity}
+         * New Instance of Intent to launch a {@link PinActivity}
          * @param context the activityContext of the requestor
          * @param PIN pin to verified otherwise it will simple return the inserted pin.
          * @param message message to show on the top of the pinlock.
          */
         fun newInstance(context: Context, PIN : String?, message: String = context.getString(R.string.please_enter_your_pin)): Intent {
-            val intent = Intent(context, SimplePinActivity::class.java)
+            val intent = Intent(context, PinActivity::class.java)
                 intent.putExtra(INTENT_ARG_MESSAGE, message)
             if (PIN != null) {
                 intent.putExtra(INTENT_ARG_PIN, PIN)

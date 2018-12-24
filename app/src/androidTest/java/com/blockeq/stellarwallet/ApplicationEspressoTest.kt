@@ -13,6 +13,7 @@ import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.support.v7.widget.RecyclerView
 import com.blockeq.stellarwallet.activities.LaunchActivity
+import com.blockeq.stellarwallet.activities.PinActivity
 import com.blockeq.stellarwallet.activities.WalletActivity
 import com.blockeq.stellarwallet.models.MnemonicType
 import org.junit.Before
