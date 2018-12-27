@@ -226,4 +226,7 @@
     <string name="my_offer_empty_list">There are no offers at the moment</string>
     <string name="add_asset_title">Add Asset</string>
 
+    <!--Contacts -->
+    <string name="add_contact_title">Setup Contact</string>
+
 </resources>

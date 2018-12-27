@@ -55,7 +55,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
         sendButton.setOnClickListener {
             activity?.let { activityContext ->
-                startActivity(Intent(activityContext, EnterAddressActivity::class.java))
+                startActivity(EnterAddressActivity.toSend(it.context))
                 activityContext.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
             }
         }

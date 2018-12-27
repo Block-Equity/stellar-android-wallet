@@ -31,7 +31,7 @@
     <EditText
         android:id="@+id/phraseEditText"
         android:layout_below="@id/invalidPhraseTextView"
-        android:layout_above="@id/nextButton"
+        android:layout_above="@id/bottomButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:digits="@string/mnemonic_alphabet"
@@ -61,14 +61,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/advanced_security"
-        android:layout_above="@+id/nextButton"
+        android:layout_above="@+id/bottomButton"
         android:clickable="true"
         android:focusable="true"
         android:padding="@dimen/activity_vertical_margin"
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:id="@+id/nextButton"
+        android:id="@+id/bottomButton"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
