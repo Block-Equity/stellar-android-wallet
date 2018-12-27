@@ -36,7 +36,6 @@ class ContactsFragment : Fragment() {
 
     // Defines a variable for the search string
     private lateinit var appContext : Context
-    private lateinit var contactsProvider : ContactsRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,10 +128,7 @@ class ContactsFragment : Fragment() {
     }
 
     private fun showContacts() {
-        if (!::contactsProvider.isInitialized) {
-            contactsProvider = ContactsRepository(appContext)
-        }
-        val cursor = contactsProvider.getContactsList()
+        val cursor = ContactsRepository(appContext).getContactsList()
         if (cursor != null) {
             populateList(cursor)
         }
