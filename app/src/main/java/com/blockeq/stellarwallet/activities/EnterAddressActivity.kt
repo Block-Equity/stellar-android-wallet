@@ -17,13 +17,12 @@ import android.content.ContentValues
 import android.provider.ContactsContract
 import timber.log.Timber
 
-
 class EnterAddressActivity : BaseActivity(), View.OnClickListener {
     enum class Mode {
         SEND_TO, ADD_TO_CONTACT
     }
     private lateinit var mode : Mode
-    private var contactId: Long = 0
+    private var contactID: Long = 0
 
     companion object {
         val mimetypeStellarAddress = "vnd.android.cursor.item/sellarAccount"
@@ -36,7 +35,7 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
             return intent
         }
 
-        fun addToContact(context: Context, contactId : Long): Intent {
+        fun addToContact(context: Context, contactId: Long): Intent {
             val intent = Intent(context, EnterAddressActivity::class.java)
             intent.putExtra(ARG_MODE, Mode.ADD_TO_CONTACT)
             intent.putExtra(ARG_CONTACT_ID, contactId)
@@ -93,12 +92,16 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
                 bottomButton.text = getString(R.string.next_button_text)
                 ContactNameText.visibility = View.GONE
                 ContactNameEditText.visibility = View.GONE
+                addressTitleText.text = getString(R.string.send_to_text)
             }
             Mode.ADD_TO_CONTACT -> {
                 titleBalance.visibility = View.GONE
                 bottomButton.text = getString(R.string.save_button)
-                val serializable = intent.getSerializableExtra(ARG_CONTACT_ID) ?: throw IllegalStateException("Missing intent extra {$ARG_CONTACT_ID}")
-                contactId = serializable as Long
+                ContactNameText.visibility = View.GONE
+                ContactNameEditText.visibility = View.GONE
+                addressTitleText.text = "Stellar Address"
+                val serializedValue = intent.getSerializableExtra(ARG_CONTACT_ID) ?: throw IllegalStateException("Missing intent extra {$ARG_CONTACT_ID}")
+                contactID = serializedValue as Long
             }
         }
 
@@ -125,7 +128,7 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
                         }
                     }
                     Mode.ADD_TO_CONTACT -> {
-                        updateEmployee(contactId, address)
+                        updateEmployee(contactID, address)
                     }
                 }
             }
@@ -142,27 +145,33 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
         return false
     }
 
-    private fun updateEmployee(id:Long, value:String) {
+    private fun updateEmployee(contactId:Long, value:String) {
         try {
             val values = ContentValues()
             values.put(ContactsContract.Data.DATA1, value)
             val mod = contentResolver.update(
                     ContactsContract.Data.CONTENT_URI,
                     values,
-                    ContactsContract.Data.RAW_CONTACT_ID + "=" + id + " AND "
+                    ContactsContract.Data.CONTACT_ID + "='" + contactId + "' AND "
                             + ContactsContract.Data.MIMETYPE + "= '"
                             + mimetypeStellarAddress + "'", null)
 
             if (mod == 0) {
-                values.put(ContactsContract.Data.RAW_CONTACT_ID, id)
+                values.put(ContactsContract.Data.CONTACT_ID, contactId)
                 values.put(ContactsContract.Data.MIMETYPE, mimetypeStellarAddress)
                 contentResolver.insert(ContactsContract.Data.CONTENT_URI, values)
                 Timber.v("data inserted")
+                Toast.makeText(applicationContext, "stellar address added", Toast.LENGTH_SHORT).show()
+                finish()
             } else {
                 Timber.v("data updated")
+                Toast.makeText(applicationContext, "stellar address updated", Toast.LENGTH_SHORT).show()
+                finish()
             }
         } catch (e: Exception) {
             Timber.v("failed")
+            Toast.makeText(applicationContext, "failed to setup the stellar address", Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
     //endregion

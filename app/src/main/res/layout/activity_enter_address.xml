@@ -65,11 +65,12 @@
 
 
         <TextView
+            tool:text="ADDRESS TITLE"
+            android:id="@+id/addressTitleText"
             android:layout_marginTop="15dp"
             style="@style/NavTitleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/send_to_text"
             android:textColor="@color/sendToTextColor"/>
 
         <LinearLayout
