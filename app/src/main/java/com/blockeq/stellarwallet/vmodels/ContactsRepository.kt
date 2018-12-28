@@ -5,13 +5,13 @@ import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.support.v4.app.Fragment
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
-import com.blockeq.stellarwallet.activities.EnterAddressActivity
 import com.blockeq.stellarwallet.models.Contact
 
 @SuppressLint("StaticFieldLeak")
@@ -76,46 +76,20 @@ object ContactsRepository {
         val RAW_PROJECTION = arrayOf(ContactsContract.Data.CONTACT_ID, ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY, ContactsContract.Data.MIMETYPE)
         val cursor = appContext.contentResolver.query(uri, RAW_PROJECTION,
                 null, null, null)
+
         return cursor
     }
-
-
-    fun getStellarAddress2(contactId: Long): String? {
-        val uri = ContactsContract.Data.CONTENT_URI
-
-        val RAW_PROJECTION = arrayOf(ContactsContract.Data.MIMETYPE, ContactsContract.Data.DATA1)
-        val cursor = appContext.contentResolver.query(uri, RAW_PROJECTION,
-                ContactsContract.Data.RAW_CONTACT_ID + "=?", arrayOf(contactId.toString()), null)
-        var stellarAddress : String? = null
-        if (cursor !== null) {
-            while (cursor.moveToNext()) {
-                val mime = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.MIMETYPE))
-
-                if (EnterAddressActivity.mimetypeStellarAddress == mime) {
-                    stellarAddress = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA1))
-                }
-            }
-            cursor.close()
-        }
-
-        return stellarAddress
-    }
-
 
     fun getStellarAddress(contactId: Long): String? {
         val uri = ContactsContract.Data.CONTENT_URI
 
         val RAW_PROJECTION = arrayOf(ContactsContract.Data.MIMETYPE, ContactsContract.Data.DATA1)
         val cursor = appContext.contentResolver.query(uri, RAW_PROJECTION,
-                ContactsContract.Data.RAW_CONTACT_ID + "=?", arrayOf(contactId.toString()), null)
+                ContactsContract.Data.RAW_CONTACT_ID + "=? AND " + ContactsContract.Data.MIMETYPE + "=?", arrayOf(contactId.toString(), mimetypeStellarAddress), null)
         var stellarAddress : String? = null
         if (cursor !== null) {
             while (cursor.moveToNext()) {
-                val mime = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.MIMETYPE))
-
-                if (EnterAddressActivity.mimetypeStellarAddress == mime) {
-                    stellarAddress = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA1))
-                }
+                 stellarAddress = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA1))
             }
             cursor.close()
         }
@@ -129,21 +103,21 @@ object ContactsRepository {
         FAILED
     }
 
-    fun updateContact(contactId:Long, value:String) : Status {
+    fun updateContact(contactId:Long, address:String) : Status {
         try {
             val values = ContentValues()
-            values.put(ContactsContract.Data.DATA1, value)
+            values.put(ContactsContract.Data.DATA1, address)
             val contentResolver = appContext.contentResolver
             val mod = contentResolver.update(
                     ContactsContract.Data.CONTENT_URI,
                     values,
                     ContactsContract.Data.RAW_CONTACT_ID + "='" + contactId + "' AND "
                             + ContactsContract.Data.MIMETYPE + "= '"
-                            + EnterAddressActivity.mimetypeStellarAddress + "'", null)
+                            + mimetypeStellarAddress + "'", null)
 
             return if (mod == 0) {
                 values.put(ContactsContract.Data.RAW_CONTACT_ID, contactId)
-                values.put(ContactsContract.Data.MIMETYPE, EnterAddressActivity.mimetypeStellarAddress)
+                values.put(ContactsContract.Data.MIMETYPE, mimetypeStellarAddress)
                 contentResolver.insert(ContactsContract.Data.CONTENT_URI, values)
                 Status.INSERTED
             } else {
@@ -169,5 +143,21 @@ object ContactsRepository {
         val profilePic = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId)
 
         return Contact(contactId, contactName, profilePic, stellarAddress)
+    }
+
+    /**
+     *  Create contact with stellar address
+     *  @return the long that represents the contactId otherwise -1 when the create operation has failed
+     */
+    fun createContact(name : String, stellarAddress : String) : Long
+    {
+        val values = ContentValues()
+        values.put(ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY, name)
+        values.put(ContactsContract.RawContacts.DISPLAY_NAME_ALTERNATIVE, name)
+        val contactId = ContentUris.parseId(appContext.contentResolver.insert(ContactsContract.RawContacts.CONTENT_URI, values))
+        if (contactId != -1L) {
+            updateContact(contactId, stellarAddress)
+        }
+        return contactId
     }
 }

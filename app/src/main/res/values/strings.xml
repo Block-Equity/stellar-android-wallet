@@ -228,6 +228,8 @@
     <string name="override_limit_order_text">Override limit order</string>
 
     <!--Contacts -->
-    <string name="add_contact_title">Setup Contact</string>
+    <string name="setup_contact_title">Setup Contact</string>
+    <string name="add_contact_title">Add Contact</string>
+
 
 </resources>

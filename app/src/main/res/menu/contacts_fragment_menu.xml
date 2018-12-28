@@ -6,6 +6,11 @@
         android:id="@+id/refresh"
         android:title="Refresh"
         app:showAsAction="always"
-        android:icon="@drawable/ic_trading"
-    />
+        android:icon="@drawable/ic_trading" />
+
+    <item
+        android:id="@+id/add"
+        android:title="Add"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_arrow_downward_black_36dp" />
 </menu>

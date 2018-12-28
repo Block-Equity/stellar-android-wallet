@@ -13,20 +13,17 @@ import com.blockeq.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LEN
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_enter_address.*
 import java.lang.IllegalStateException
-import android.content.ContentValues
-import android.provider.ContactsContract
 import com.blockeq.stellarwallet.vmodels.ContactsRepository
 import timber.log.Timber
 
 class EnterAddressActivity : BaseActivity(), View.OnClickListener {
     enum class Mode {
-        SEND_TO, ADD_TO_CONTACT
+        SEND_TO, UPDATE_CONTACT, CREATE_CONTACT
     }
     private lateinit var mode : Mode
     private var contactID: Long = 0
 
     companion object {
-        val mimetypeStellarAddress = "vnd.android.cursor.item/sellarAccount"
         private const val ARG_MODE = "ARG_MODE"
         private const val ARG_CONTACT_ID = "ARG_CONTACT_ID"
 
@@ -36,11 +33,16 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
             return intent
         }
 
-        fun addToContact(context: Context, contactId: Long): Intent {
+        fun updateContact(context: Context, contactId: Long): Intent {
             val intent = Intent(context, EnterAddressActivity::class.java)
-            intent.putExtra(ARG_MODE, Mode.ADD_TO_CONTACT)
+            intent.putExtra(ARG_MODE, Mode.UPDATE_CONTACT)
             intent.putExtra(ARG_CONTACT_ID, contactId)
+            return intent
+        }
 
+        fun createContact(context: Context): Intent {
+            val intent = Intent(context, EnterAddressActivity::class.java)
+            intent.putExtra(ARG_MODE, Mode.CREATE_CONTACT)
             return intent
         }
     }
@@ -83,7 +85,8 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
             it.setDisplayHomeAsUpEnabled(true)
             when(mode) {
                 Mode.SEND_TO -> it.title = getString(R.string.button_send)
-                Mode.ADD_TO_CONTACT -> it.title = getString(R.string.add_contact_title)
+                Mode.UPDATE_CONTACT -> it.title = getString(R.string.setup_contact_title)
+                Mode.CREATE_CONTACT -> it.title = getString(R.string.add_contact_title)
             }
         }
 
@@ -95,7 +98,7 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
                 ContactNameEditText.visibility = View.GONE
                 addressTitleText.text = getString(R.string.send_to_text)
             }
-            Mode.ADD_TO_CONTACT -> {
+            Mode.UPDATE_CONTACT -> {
                 titleBalance.visibility = View.GONE
                 bottomButton.text = getString(R.string.save_button)
                 ContactNameText.visibility = View.GONE
@@ -103,6 +106,12 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
                 addressTitleText.text = "Stellar Address"
                 val serializedValue = intent.getSerializableExtra(ARG_CONTACT_ID) ?: throw IllegalStateException("Missing intent extra {$ARG_CONTACT_ID}")
                 contactID = serializedValue as Long
+                addressEditText.setText(ContactsRepository(applicationContext).getStellarAddress(contactID))
+            }
+            Mode.CREATE_CONTACT -> {
+                titleBalance.visibility = View.GONE
+                bottomButton.text = "CREATE"
+                addressTitleText.text = "Stellar Address"
             }
         }
 
@@ -128,7 +137,7 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
                             addressEditText.startAnimation(shakeAnimation)
                         }
                     }
-                    Mode.ADD_TO_CONTACT -> {
+                    Mode.UPDATE_CONTACT -> {
                         val status = ContactsRepository(applicationContext).updateContact(contactID, address)
                         when(status) {
                             ContactsRepository.Status.UPDATED -> {
@@ -146,6 +155,20 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
                                 Toast.makeText(applicationContext, "stellar address failed to be added", Toast.LENGTH_SHORT).show()
                                 finish()
                             }
+                        }
+                    }
+                    Mode.CREATE_CONTACT -> {
+                        val name = ContactNameEditText.text.toString()
+                        if (name.isBlank() || address.isBlank()) {
+                            Toast.makeText(applicationContext, "one or more fields are empty", Toast.LENGTH_SHORT).show()
+                        } else {
+                            val contactId = ContactsRepository(applicationContext).createContact(name, address)
+                            if (contactId == -1L ){
+                                Toast.makeText(applicationContext, "failed to create the new contact", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(applicationContext, "contact has been created", Toast.LENGTH_SHORT).show()
+                            }
+                            finish()
                         }
                     }
                 }

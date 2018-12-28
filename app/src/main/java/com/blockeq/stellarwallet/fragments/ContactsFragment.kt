@@ -14,6 +14,7 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.blockeq.stellarwallet.R
+import com.blockeq.stellarwallet.activities.EnterAddressActivity
 import com.blockeq.stellarwallet.adapters.ContactsAdapter
 import com.blockeq.stellarwallet.vmodels.ContactsRepository
 import kotlinx.android.synthetic.main.contact_list.*
@@ -82,6 +83,12 @@ class ContactsFragment : Fragment() {
                 )
                 return true
             }
+            R.id.add -> {
+                activity?.let {
+                    startActivity(EnterAddressActivity.createContact(it))
+                }
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -128,7 +135,7 @@ class ContactsFragment : Fragment() {
 //                populateList(cursor)
 //            }
 //        })
-                val cursor = ContactsRepository(appContext).getContactsList()
+                val cursor = ContactsRepository(appContext).getStellarContactsList()
         if (cursor != null) {
             populateList(cursor)
         }

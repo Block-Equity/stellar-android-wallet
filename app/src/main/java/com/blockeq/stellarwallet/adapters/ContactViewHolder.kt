@@ -1,15 +1,12 @@
 package com.blockeq.stellarwallet.adapters
 
-import android.provider.ContactsContract
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.activities.EnterAddressActivity
-import com.blockeq.stellarwallet.activities.EnterAddressActivity.Companion.addToContact
 import com.blockeq.stellarwallet.activities.SendActivity
 import com.blockeq.stellarwallet.models.Contact
 import com.squareup.picasso.Picasso
@@ -24,23 +21,6 @@ class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private var mBoundContact: Contact? = null // Can be null
 
-    init {
-        itemView.setOnClickListener {
-            if (mBoundContact != null) {
-                val RAW_PROJECTION = arrayOf(ContactsContract.Contacts._ID, ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME)
-                val cursor = itemView.context.contentResolver.query(ContactsContract.Data.CONTENT_URI, RAW_PROJECTION,
-                        ContactsContract.Data.CONTACT_ID + " = ?",
-                        arrayOf(mBoundContact!!.id.toString()), null)
-
-                Toast.makeText(
-                        itemView.context,
-                        "Hi, I'm " + mBoundContact!!.name,
-                        Toast.LENGTH_SHORT).show()
-                cursor.close()
-            }
-        }
-    }
-
     fun bind(contact: Contact) {
         mBoundContact = contact
         label.text = contact.name + " " + contact.id
@@ -51,11 +31,18 @@ class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             button.setText("ADD ADDRESS")
         }
 
+        itemView.setOnClickListener {
+            val context = it.context
+            if (mBoundContact != null) {
+                context.startActivity(EnterAddressActivity.updateContact(context, contact.id))
+            }
+        }
+
         button.setOnClickListener {
             val context = it.context
             //TODO refactor this with types
             if (button.text == "ADD ADDRESS") {
-                context.startActivity(EnterAddressActivity.addToContact(context, contact.id))
+                context.startActivity(EnterAddressActivity.updateContact(context, contact.id))
             } else {
                 context.startActivity(SendActivity.newIntent(context, contact.stellarAddress!!))
             }
