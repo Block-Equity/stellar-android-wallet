@@ -18,7 +18,7 @@ import com.blockeq.stellarwallet.models.Contact
 @SuppressLint("StaticFieldLeak")
 object ContactsRepository {
     private lateinit var appContext : Context
-    private val mimetypeStellarAddress = "vnd.android.cursor.item/sellarAccount"
+    private const val mimetypeStellarAddress = "vnd.android.cursor.item/sellarAccount"
 
     operator fun invoke(): ContactsRepository {
         throw IllegalStateException("not valid constructor, use " + ContactsRepository::class.java.canonicalName + "(context)")
@@ -152,16 +152,6 @@ object ContactsRepository {
      */
     fun createContact(name : String, stellarAddress : String) : Long
     {
-//        val values = ContentValues()
-//        values.put(ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY, name)
-//        values.put(ContactsContract.RawContacts.DISPLAY_NAME_ALTERNATIVE, name)
-//        values.put(ContactsContract.Data.RAW_CONTACT_ID, name)
-//        val contactId = ContentUris.parseId(appContext.contentResolver.insert(ContactsContract.Data.CONTENT_URI, values))
-//        if (contactId != -1L) {
-//            updateContact(contactId, stellarAddress)
-//        }
-//        return contactId
-
         val ops = ArrayList<ContentProviderOperation>()
         ops.add(ContentProviderOperation.newInsert(RawContacts.CONTENT_URI)
                 .withValue(RawContacts.ACCOUNT_TYPE, null)
@@ -185,7 +175,7 @@ object ContactsRepository {
         val res = appContext.contentResolver.applyBatch(
                 ContactsContract.AUTHORITY, ops)
         if (res.size > 1) {
-            return ContentUris.parseId(res.get(0).uri)
+            return ContentUris.parseId(res[0].uri)
         }
         return -1
     }
