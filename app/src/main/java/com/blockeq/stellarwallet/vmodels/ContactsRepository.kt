@@ -13,6 +13,13 @@ import android.support.v4.app.LoaderManager
 import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import com.blockeq.stellarwallet.models.Contact
+import android.provider.ContactsContract.RawContacts
+import android.content.ContentProviderOperation
+import android.content.ContentProviderResult
+
+
+
+
 
 @SuppressLint("StaticFieldLeak")
 object ContactsRepository {
@@ -151,13 +158,42 @@ object ContactsRepository {
      */
     fun createContact(name : String, stellarAddress : String) : Long
     {
-        val values = ContentValues()
-        values.put(ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY, name)
-        values.put(ContactsContract.RawContacts.DISPLAY_NAME_ALTERNATIVE, name)
-        val contactId = ContentUris.parseId(appContext.contentResolver.insert(ContactsContract.RawContacts.CONTENT_URI, values))
-        if (contactId != -1L) {
-            updateContact(contactId, stellarAddress)
+//        val values = ContentValues()
+//        values.put(ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY, name)
+//        values.put(ContactsContract.RawContacts.DISPLAY_NAME_ALTERNATIVE, name)
+//        values.put(ContactsContract.Data.RAW_CONTACT_ID, name)
+//        val contactId = ContentUris.parseId(appContext.contentResolver.insert(ContactsContract.Data.CONTENT_URI, values))
+//        if (contactId != -1L) {
+//            updateContact(contactId, stellarAddress)
+//        }
+//        return contactId
+
+        val ops = ArrayList<ContentProviderOperation>()
+        ops.add(ContentProviderOperation.newInsert(RawContacts.CONTENT_URI)
+                .withValue(RawContacts.ACCOUNT_TYPE, null)
+                .withValue(RawContacts.ACCOUNT_NAME, null).build())
+
+        ops.add(ContentProviderOperation
+                .newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID,
+                        0)
+                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, name)
+                .build())
+
+        //Email details
+        ops.add(ContentProviderOperation
+                .newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID,
+                        0)
+                .withValue(ContactsContract.Data.MIMETYPE, mimetypeStellarAddress)
+                .withValue(ContactsContract.Data.DATA1, stellarAddress).build())
+
+        val res = appContext.contentResolver.applyBatch(
+                ContactsContract.AUTHORITY, ops)
+        if (res.size > 1) {
+            return ContentUris.parseId(res.get(0).uri)
         }
-        return contactId
+        return -1
     }
 }
