@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_enter_address.*
 import java.lang.IllegalStateException
 import android.content.ContentValues
 import android.provider.ContactsContract
+import com.blockeq.stellarwallet.vmodels.ContactsRepository
 import timber.log.Timber
 
 class EnterAddressActivity : BaseActivity(), View.OnClickListener {
@@ -128,7 +129,24 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
                         }
                     }
                     Mode.ADD_TO_CONTACT -> {
-                        updateEmployee(contactID, address)
+                        val status = ContactsRepository(applicationContext).updateContact(contactID, address)
+                        when(status) {
+                            ContactsRepository.Status.UPDATED -> {
+                                Timber.v("data updated")
+                                Toast.makeText(applicationContext, "stellar address updated", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                            ContactsRepository.Status.INSERTED -> {
+                                Timber.v("data inserted")
+                                Toast.makeText(applicationContext, "stellar address inserted", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                            ContactsRepository.Status.FAILED -> {
+                                Timber.v("failed to update contact")
+                                Toast.makeText(applicationContext, "stellar address failed to be added", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                        }
                     }
                 }
             }
@@ -145,34 +163,6 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
         return false
     }
 
-    private fun updateEmployee(contactId:Long, value:String) {
-        try {
-            val values = ContentValues()
-            values.put(ContactsContract.Data.DATA1, value)
-            val mod = contentResolver.update(
-                    ContactsContract.Data.CONTENT_URI,
-                    values,
-                    ContactsContract.Data.CONTACT_ID + "='" + contactId + "' AND "
-                            + ContactsContract.Data.MIMETYPE + "= '"
-                            + mimetypeStellarAddress + "'", null)
 
-            if (mod == 0) {
-                values.put(ContactsContract.Data.CONTACT_ID, contactId)
-                values.put(ContactsContract.Data.MIMETYPE, mimetypeStellarAddress)
-                contentResolver.insert(ContactsContract.Data.CONTENT_URI, values)
-                Timber.v("data inserted")
-                Toast.makeText(applicationContext, "stellar address added", Toast.LENGTH_SHORT).show()
-                finish()
-            } else {
-                Timber.v("data updated")
-                Toast.makeText(applicationContext, "stellar address updated", Toast.LENGTH_SHORT).show()
-                finish()
-            }
-        } catch (e: Exception) {
-            Timber.v("failed")
-            Toast.makeText(applicationContext, "failed to setup the stellar address", Toast.LENGTH_SHORT).show()
-            finish()
-        }
-    }
     //endregion
 }

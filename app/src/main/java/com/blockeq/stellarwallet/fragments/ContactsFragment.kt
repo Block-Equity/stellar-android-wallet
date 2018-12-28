@@ -77,11 +77,6 @@ class ContactsFragment : Fragment() {
                 rv_contact_list.postDelayed(
                         {
                             showContacts()
-//                            appContext.contentResolver.query(
-//                                    ContactsContract.Data.CONTENT_URI, PROJECTION,
-//                                    ContactsContract.Data.RAW_CONTACT_ID + "=" + id + " AND "
-//                                            + ContactsContract.Data.MIMETYPE + "= '"
-//                                            + EnterAddressActivity.mimetypeStellarAddress + "'", null)
                         },
                         300
                 )
@@ -128,60 +123,16 @@ class ContactsFragment : Fragment() {
     }
 
     private fun showContacts() {
-        val cursor = ContactsRepository(appContext).getContactsList()
+//        ContactsRepository(appContext).getContactListAsync(this, object : ContactsRepository.OnContactListLoaded {
+//            override fun onLoaded(cursor: Cursor) {
+//                populateList(cursor)
+//            }
+//        })
+                val cursor = ContactsRepository(appContext).getContactsList()
         if (cursor != null) {
             populateList(cursor)
         }
     }
-//        var RAW_PROJECTION = arrayOf(ContactsContract.Contacts._ID, ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY, ContactsContract.Data.MIMETYPE, ContactsContract.Data.DATA1)
-//        val cursor = context!!.contentResolver.query(ContactsContract.Contacts.CONTENT_URI, RAW_PROJECTION, null, null, null)
-//        populateList(cursor)
-//
-        // to be able to use raw projection with mime type the query has to filter by mimetype otherwise
-        // a `IllegalArgumentException: Invalid column mimetype` will be thrown
-//TODO RETURNS 2 manuel y ewen
-//        val uri = ContactsContract.Data.CONTENT_URI
-//        val RAW_PROJECTION = arrayOf(ContactsContract.Contacts._ID, ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY, ContactsContract.Data.MIMETYPE)
-//        val cursor = context!!.contentResolver.query(uri, RAW_PROJECTION,
-//                ContactsContract.Data.MIMETYPE + " = ?",
-//                arrayOf(EnterAddressActivity.mimetypeStellarAddress), null)
-//                populateList(cursor!!)
-
-//                val uri = ContactsContract.Data.CONTENT_URI
-//        val RAW_PROJECTION = arrayOf(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY, ContactsContract.Contacts._ID, ContactsContract.Contacts.LOOKUP_KEY)
-//        val cursor = context!!.contentResolver.query(uri, RAW_PROJECTION,
-//                null, null, null)
-//        populateList(cursor!!)
-
-//        // Initializes a loader for loading the contacts
-//        LoaderManager.getInstance<Fragment>(this).initLoader(0,
-//                null, object : LoaderManager.LoaderCallbacks<Cursor> {
-//            override fun onCreateLoader(i: Int, bundle: Bundle?): Loader<Cursor> {
-//                val cursorLoader = CursorLoader(appContext)
-//                cursorLoader.projection
-//                // Starts the query
-//                return CursorLoader(
-//                        appContext,
-//                        ContactsContract.Contacts.CONTENT_URI,
-//                        PROJECTION, null, null, null)
-//            }
-//
-//            override fun onLoadFinished(objectLoader: Loader<Cursor>, c: Cursor) {
-//                // Put the result Cursor in the adapter for the ListView
-//                rv_contact_list.adapter = ContactsAdapter(c)
-//                progress_view.visibility = View.GONE
-//                if (c.count == 0) {
-//                    empty_view.visibility = View.VISIBLE
-//                    rv_contact_list.visibility = View.GONE
-//                } else {
-//                    empty_view.visibility = View.GONE
-//                    rv_contact_list.visibility = View.VISIBLE
-//                }
-//            }
-//
-//            override fun onLoaderReset(cursorLoader: Loader<Cursor>) { }
-//        })
-//    }
 
     fun populateList(cursor : Cursor){
         rv_contact_list.adapter = ContactsAdapter(cursor)
