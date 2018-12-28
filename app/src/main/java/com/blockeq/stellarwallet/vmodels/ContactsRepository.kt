@@ -1,25 +1,19 @@
 package com.blockeq.stellarwallet.vmodels
 
 import android.annotation.SuppressLint
+import android.content.ContentProviderOperation
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.provider.ContactsContract.RawContacts
 import android.support.v4.app.Fragment
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import com.blockeq.stellarwallet.models.Contact
-import android.provider.ContactsContract.RawContacts
-import android.content.ContentProviderOperation
-import android.content.ContentProviderResult
-
-
-
-
 
 @SuppressLint("StaticFieldLeak")
 object ContactsRepository {
@@ -40,7 +34,7 @@ object ContactsRepository {
      */
     fun getStellarContactsList() : Cursor? {
         val uri = ContactsContract.Data.CONTENT_URI
-        val RAW_PROJECTION = arrayOf(ContactsContract.Data.CONTACT_ID, ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY, ContactsContract.Data.MIMETYPE)
+        val RAW_PROJECTION = arrayOf(ContactsContract.Data.CONTACT_ID, ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY, ContactsContract.Data.MIMETYPE, ContactsContract.Data.DATA1)
         val cursor = appContext.contentResolver.query(uri, RAW_PROJECTION,
                 ContactsContract.Data.MIMETYPE + " = ?",
                 arrayOf(mimetypeStellarAddress), null)
@@ -92,7 +86,7 @@ object ContactsRepository {
 
         val RAW_PROJECTION = arrayOf(ContactsContract.Data.MIMETYPE, ContactsContract.Data.DATA1)
         val cursor = appContext.contentResolver.query(uri, RAW_PROJECTION,
-                ContactsContract.Data.RAW_CONTACT_ID + "=? AND " + ContactsContract.Data.MIMETYPE + "=?", arrayOf(contactId.toString(), mimetypeStellarAddress), null)
+                ContactsContract.Data.CONTACT_ID + "=? AND " + ContactsContract.Data.MIMETYPE + "=?", arrayOf(contactId.toString(), mimetypeStellarAddress), null)
         var stellarAddress : String? = null
         if (cursor !== null) {
             while (cursor.moveToNext()) {
@@ -181,7 +175,6 @@ object ContactsRepository {
                 .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, name)
                 .build())
 
-        //Email details
         ops.add(ContentProviderOperation
                 .newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID,
