@@ -10,10 +10,11 @@ import android.widget.Toast
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
+import com.blockeq.stellarwallet.interfaces.ContactsRepository.ContactOperationStatus
+import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_enter_address.*
 import java.lang.IllegalStateException
-import com.blockeq.stellarwallet.vmodels.ContactsRepository
 import timber.log.Timber
 
 class EnterAddressActivity : BaseActivity(), View.OnClickListener {
@@ -106,7 +107,8 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
                 addressTitleText.text = "Stellar Address"
                 val serializedValue = intent.getSerializableExtra(ARG_CONTACT_ID) ?: throw IllegalStateException("Missing intent extra {$ARG_CONTACT_ID}")
                 contactID = serializedValue as Long
-                addressEditText.setText(ContactsRepository(applicationContext).getStellarAddress(contactID))
+                //TODO: use contact objec in the bundle and remove this call
+                addressEditText.setText(ContactsRepositoryImpl(applicationContext).getStellarAddress(contactID))
             }
             Mode.CREATE_CONTACT -> {
                 titleBalance.visibility = View.GONE
@@ -138,19 +140,19 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
                         }
                     }
                     Mode.UPDATE_CONTACT -> {
-                        val status = ContactsRepository(applicationContext).updateContact(contactID, address)
+                        val status = ContactsRepositoryImpl(applicationContext).createOrUpdateContact(contactID, address)
                         when(status) {
-                            ContactsRepository.Status.UPDATED -> {
+                            ContactOperationStatus.UPDATED -> {
                                 Timber.v("data updated")
                                 Toast.makeText(applicationContext, "stellar address updated", Toast.LENGTH_SHORT).show()
                                 finish()
                             }
-                            ContactsRepository.Status.INSERTED -> {
+                            ContactOperationStatus.INSERTED -> {
                                 Timber.v("data inserted")
                                 Toast.makeText(applicationContext, "stellar address inserted", Toast.LENGTH_SHORT).show()
                                 finish()
                             }
-                            ContactsRepository.Status.FAILED -> {
+                            ContactOperationStatus.FAILED -> {
                                 Timber.v("failed to update contact")
                                 Toast.makeText(applicationContext, "stellar address failed to be added", Toast.LENGTH_SHORT).show()
                                 finish()
@@ -162,7 +164,7 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
                         if (name.isBlank() || address.isBlank()) {
                             Toast.makeText(applicationContext, "one or more fields are empty", Toast.LENGTH_SHORT).show()
                         } else {
-                            val contactId = ContactsRepository(applicationContext).createContact(name, address)
+                            val contactId = ContactsRepositoryImpl(applicationContext).createContact(name, address)
                             if (contactId == -1L ){
                                 Toast.makeText(applicationContext, "failed to create the new contact", Toast.LENGTH_SHORT).show()
                             } else {

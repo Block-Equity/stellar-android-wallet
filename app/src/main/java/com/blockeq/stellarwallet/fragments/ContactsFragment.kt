@@ -1,12 +1,11 @@
 package com.blockeq.stellarwallet.fragments
 
 import android.Manifest
+import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.os.Build
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
@@ -15,25 +14,17 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.activities.EnterAddressActivity
-import com.blockeq.stellarwallet.adapters.CursorContactsAdapter
-import com.blockeq.stellarwallet.vmodels.MvvmContactsRepository
-import kotlinx.android.synthetic.main.contact_list.*
-import timber.log.Timber
-import android.arch.lifecycle.Observer
 import com.blockeq.stellarwallet.adapters.ContactsAdapter
 import com.blockeq.stellarwallet.models.Contact
+import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
+import kotlinx.android.synthetic.main.contact_list.*
+import timber.log.Timber
 
 /**
  * Fragment that holds the RecyclerView
  */
 class ContactsFragment : Fragment() {
     companion object {
-
-        private var PROJECTION = arrayOf(ContactsContract.Contacts._ID, ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
-
-        // TODO: Implement a more advanced example that makes use of this
-        private val SELECTION = ContactsContract.Contacts.DISPLAY_NAME_PRIMARY + " LIKE ?"
-
         // Request code for READ_CONTACTS. It can be any number > 0.
         private const val PERMISSIONS_REQUEST_CONTACTS = 100
     }
@@ -123,7 +114,7 @@ class ContactsFragment : Fragment() {
     }
 
     private fun showContacts(forceRefresh: Boolean = false) {
-        MvvmContactsRepository(appContext).getContactsListLiveData(forceRefresh).observe(viewLifecycleOwner, Observer {
+        ContactsRepositoryImpl(appContext).getContactsListLiveData(forceRefresh).observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 val mergedList = it.contacts
                 mergedList.addAll(0, it.stellarContacts)
@@ -132,19 +123,7 @@ class ContactsFragment : Fragment() {
         })
     }
 
-    fun populateList(cursor : Cursor){
-        rv_contact_list.adapter = CursorContactsAdapter(cursor)
-        progress_view.visibility = View.GONE
-        if (cursor.count == 0) {
-            empty_view.visibility = View.VISIBLE
-            rv_contact_list.visibility = View.GONE
-        } else {
-            empty_view.visibility = View.GONE
-            rv_contact_list.visibility = View.VISIBLE
-        }
-    }
-
-    fun populateList(list : ArrayList<Contact>){
+    private fun populateList(list : ArrayList<Contact>){
         rv_contact_list.adapter = ContactsAdapter(list)
         progress_view.visibility = View.GONE
         if (list.size == 0) {
