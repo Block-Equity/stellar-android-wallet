@@ -1,5 +1,3 @@
 package com.blockeq.stellarwallet.models
 
-import java.util.ArrayList
-
-data class ContactsResult(val stellarContacts: ArrayList<Contact>, val contacts: ArrayList<Contact>)
+data class ContactsResult(val stellarContacts: List<Contact>, val contacts: List<Contact>)

@@ -22,7 +22,7 @@ import kotlin.concurrent.thread
 object ContactsRepositoryImpl : ContactsRepository {
     private lateinit var appContext : Context
     private const val mimeTypeStellarAddress = "vnd.android.cursor.item/stellarAccount"
-    private var allContactsLiveData : MutableLiveData<ContactsResult> = MutableLiveData()
+    private var contactsLiveData : MutableLiveData<ContactsResult> = MutableLiveData()
     private var stellarContactList : ArrayList<Contact> = ArrayList()
     private var contactsList : ArrayList<Contact> = ArrayList()
 
@@ -121,7 +121,7 @@ object ContactsRepositoryImpl : ContactsRepository {
         } else {
             refreshContacts()
         }
-        return allContactsLiveData
+        return contactsLiveData
     }
 
     //endregion Public Interface
@@ -143,21 +143,10 @@ object ContactsRepositoryImpl : ContactsRepository {
         }
     }
 
-    private fun removeDuplicates(list1: ArrayList<Contact>, list2:ArrayList<Contact>) : ArrayList<Contact> {
-        val output : ArrayList<Contact>
-        val smallerList : ArrayList<Contact>
-        val longerList : ArrayList<Contact>
-        if (list1.size > list2.size) {
-            smallerList = list2
-            longerList = list1
-        } else {
-            smallerList = list1
-            longerList = list2
-        }
-
-        output = longerList
-        smallerList.forEach {
-            if (longerList.contains(it)) {
+    private fun removeDuplicates(contacts: ArrayList<Contact>, stellarContacts:ArrayList<Contact>) : ArrayList<Contact> {
+        val output : ArrayList<Contact> = contacts
+        stellarContacts.forEach {
+            if (contacts.contains(it)) {
                 output.remove(it)
             }
         }
@@ -165,7 +154,7 @@ object ContactsRepositoryImpl : ContactsRepository {
     }
 
     private fun notifyLiveData() {
-        allContactsLiveData.postValue(ContactsResult(stellarContactList, contactsList))
+        contactsLiveData.postValue(ContactsResult(stellarContactList, contactsList))
     }
 
     private fun parseContactCursor(cursor : Cursor?, populateStellarAddress:Boolean = true) : ArrayList<Contact> {

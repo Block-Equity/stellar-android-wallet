@@ -116,7 +116,7 @@ class ContactsFragment : Fragment() {
     private fun showContacts(forceRefresh: Boolean = false) {
         ContactsRepositoryImpl(appContext).getContactsListLiveData(forceRefresh).observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                val mergedList = it.contacts
+                val mergedList : ArrayList<Contact> = ArrayList(it.contacts)
                 mergedList.addAll(0, it.stellarContacts)
                 populateList(mergedList)
             }
