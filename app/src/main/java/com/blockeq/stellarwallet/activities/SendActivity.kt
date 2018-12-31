@@ -28,7 +28,7 @@ import com.blockeq.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
 import com.blockeq.stellarwallet.vmodels.ExchangeEntity
 import com.blockeq.stellarwallet.vmodels.ExchangeViewModel
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
-import kotlinx.android.synthetic.main.contents_send.*
+import kotlinx.android.synthetic.main.activity_send_funds.*
 
 class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallback {
 
@@ -50,7 +50,7 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
     private var exchange : ExchangeApiModel? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.contents_send)
+        setContentView(R.layout.activity_send_funds)
         setupUI()
     }
 

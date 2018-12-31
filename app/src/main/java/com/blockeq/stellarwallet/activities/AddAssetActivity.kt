@@ -25,7 +25,7 @@ class AddAssetActivity : BaseActivity() {
 
     fun setupUI() {
         setSupportActionBar(toolBar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled (true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         addAssetButton.setOnClickListener {
             if (assetCodeEditText.text.isNotEmpty() && addressEditText.text.isNotEmpty()) {

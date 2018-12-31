@@ -26,6 +26,8 @@
     <color name="mantis">#71CD5C</color>
     <color name="apricot">#ee7a70</color>
     <color name="paleSky">#6f7785</color>
+    <color name="purple">#800080</color>
+    <color name="pink">#ffa5d2</color>
 
     <!--Branding Colors-->
     <color name="blue1">#0043FF</color>

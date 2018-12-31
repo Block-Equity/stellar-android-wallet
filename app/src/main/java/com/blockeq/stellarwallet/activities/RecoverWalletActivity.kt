@@ -72,7 +72,7 @@ class RecoverWalletActivity : BaseActivity() {
             passphraseButton.visibility = View.GONE
         }
 
-        nextButton.setOnClickListener {
+        bottomButton.setOnClickListener {
             try {
                 WalletApplication.localStore.isRecoveryPhrase = isRecoveryPhrase
 

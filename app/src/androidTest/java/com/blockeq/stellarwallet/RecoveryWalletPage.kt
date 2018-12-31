@@ -2,7 +2,6 @@ package com.blockeq.stellarwallet
 
 import android.content.Context
 import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.ViewAction
 import android.support.test.espresso.action.ViewActions
 import android.support.test.espresso.matcher.ViewMatchers
 import android.support.test.espresso.matcher.ViewMatchers.isRoot
@@ -10,12 +9,12 @@ import android.support.test.espresso.matcher.ViewMatchers.isRoot
 object RecoveryWalletPage : BasePage() {
 
     override fun onPageLoaded(): RecoveryWalletPage {
-        onView(ViewMatchers.withId(R.id.nextButton))
+        onView(ViewMatchers.withId(R.id.bottomButton))
         return this
     }
 
     fun next() : RecoveryWalletPage {
-        onView(ViewMatchers.withId(R.id.nextButton)).perform(ViewActions.click())
+        onView(ViewMatchers.withId(R.id.bottomButton)).perform(ViewActions.click())
         return this
     }
 

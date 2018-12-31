@@ -100,9 +100,8 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun setupActionBar() {
-        val toolBar = findViewById<Toolbar>(R.id.toolBar)
         setSupportActionBar(toolBar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolBar.setNavigationOnClickListener { onBackPressed() }
     }
 

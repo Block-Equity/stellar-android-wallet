@@ -13,7 +13,7 @@ import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.AssetsActivity
 import com.blockeq.stellarwallet.activities.BalanceSummaryActivity
-import com.blockeq.stellarwallet.activities.EnterAddressActivity
+import com.blockeq.stellarwallet.activities.StellarAddressActivity
 import com.blockeq.stellarwallet.activities.ReceiveActivity
 import com.blockeq.stellarwallet.adapters.WalletRecyclerViewAdapter
 import com.blockeq.stellarwallet.helpers.Constants
@@ -55,7 +55,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
 
         sendButton.setOnClickListener {
             activity?.let { activityContext ->
-                startActivity(Intent(activityContext, EnterAddressActivity::class.java))
+                startActivity(StellarAddressActivity.toSend(it.context))
                 activityContext.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
             }
         }

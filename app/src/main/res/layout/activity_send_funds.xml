@@ -99,7 +99,9 @@
             android:background="@android:color/transparent"
             android:hint="@string/optional"
             android:inputType="text"
-            android:layout_marginStart="@dimen/activity_vertical_margin"/>
+            android:layout_marginStart="@dimen/activity_vertical_margin"
+            android:importantForAutofill="no"
+            tool:ignore="UnusedAttribute" />
 
     </LinearLayout>
 
@@ -118,7 +120,7 @@
             android:textSize="24sp"
             android:background="@android:color/transparent"
             android:textAlignment="center"
-            android:text="0"
+            android:text="@string/default_value"
             android:textColor="@color/toryBlue"
             android:gravity="center" />
 
