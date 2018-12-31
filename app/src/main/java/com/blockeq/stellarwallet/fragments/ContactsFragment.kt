@@ -15,10 +15,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.activities.EnterAddressActivity
-import com.blockeq.stellarwallet.adapters.ContactsAdapter
-import com.blockeq.stellarwallet.vmodels.ContactsRepository
+import com.blockeq.stellarwallet.adapters.CursorContactsAdapter
+import com.blockeq.stellarwallet.vmodels.MvvmContactsRepository
 import kotlinx.android.synthetic.main.contact_list.*
 import timber.log.Timber
+import android.arch.lifecycle.Observer
+import com.blockeq.stellarwallet.adapters.ContactsAdapter
+import com.blockeq.stellarwallet.models.Contact
 
 /**
  * Fragment that holds the RecyclerView
@@ -56,12 +59,7 @@ class ContactsFragment : Fragment() {
         rv_contact_list.layoutManager =  LinearLayoutManager(activity)
         rv_contact_list.itemAnimator = DefaultItemAnimator()
         setInitialState()
-        rv_contact_list.postDelayed(
-        {
-            requestContacts()
-        },
-        300
-        )
+        requestContacts()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -75,12 +73,7 @@ class ContactsFragment : Fragment() {
         when (item.itemId) {
             R.id.refresh -> {
                 setInitialState()
-                rv_contact_list.postDelayed(
-                        {
-                            showContacts()
-                        },
-                        300
-                )
+                showContacts(true)
                 return true
             }
             R.id.add -> {
@@ -129,22 +122,32 @@ class ContactsFragment : Fragment() {
         }
     }
 
-    private fun showContacts() {
-//        ContactsRepository(appContext).getContactListAsync(this, object : ContactsRepository.OnContactListLoaded {
-//            override fun onLoaded(cursor: Cursor) {
-//                populateList(cursor)
-//            }
-//        })
-                val cursor = ContactsRepository(appContext).getStellarContactsList()
-        if (cursor != null) {
-            populateList(cursor)
-        }
+    private fun showContacts(forceRefresh: Boolean = false) {
+        MvvmContactsRepository(appContext).getContactsListLiveData(forceRefresh).observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                val mergedList = it.contacts
+                mergedList.addAll(0, it.stellarContacts)
+                populateList(mergedList)
+            }
+        })
     }
 
     fun populateList(cursor : Cursor){
-        rv_contact_list.adapter = ContactsAdapter(cursor)
+        rv_contact_list.adapter = CursorContactsAdapter(cursor)
         progress_view.visibility = View.GONE
         if (cursor.count == 0) {
+            empty_view.visibility = View.VISIBLE
+            rv_contact_list.visibility = View.GONE
+        } else {
+            empty_view.visibility = View.GONE
+            rv_contact_list.visibility = View.VISIBLE
+        }
+    }
+
+    fun populateList(list : ArrayList<Contact>){
+        rv_contact_list.adapter = ContactsAdapter(list)
+        progress_view.visibility = View.GONE
+        if (list.size == 0) {
             empty_view.visibility = View.VISIBLE
             rv_contact_list.visibility = View.GONE
         } else {

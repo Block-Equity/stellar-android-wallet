@@ -1,72 +1,108 @@
 package com.blockeq.stellarwallet.vmodels
 
 import android.annotation.SuppressLint
+import android.arch.lifecycle.MutableLiveData
 import android.content.ContentProviderOperation
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.ContactsContract
 import android.provider.ContactsContract.RawContacts
-import android.support.v4.app.Fragment
-import android.support.v4.app.LoaderManager
-import android.support.v4.content.CursorLoader
-import android.support.v4.content.Loader
 import com.blockeq.stellarwallet.models.Contact
+import com.blockeq.stellarwallet.models.ContactsResult
+import timber.log.Timber
+import kotlin.concurrent.thread
 
 @SuppressLint("StaticFieldLeak")
-object ContactsRepository {
+object MvvmContactsRepository {
     private lateinit var appContext : Context
     private const val mimetypeStellarAddress = "vnd.android.cursor.item/sellarAccount"
+    var allContactsLiveData : MutableLiveData<ContactsResult> = MutableLiveData()
+    private var stellarContactList : ArrayList<Contact> = ArrayList()
+    private var contactsList : ArrayList<Contact> = ArrayList()
 
-    operator fun invoke(): ContactsRepository {
-        throw IllegalStateException("not valid constructor, use " + ContactsRepository::class.java.canonicalName + "(context)")
+    operator fun invoke(): MvvmContactsRepository {
+        throw IllegalStateException("not valid constructor, use " + MvvmContactsRepository::class.java.canonicalName + "(context)")
     }
 
-    operator fun invoke(context: Context): ContactsRepository {
-        appContext =  context.applicationContext
+    operator fun invoke(context: Context): MvvmContactsRepository {
+        appContext = context.applicationContext
         return this
     }
+
+    private fun removeDuplicates(list1: ArrayList<Contact>, list2:ArrayList<Contact>) : ArrayList<Contact> {
+        val output : ArrayList<Contact>
+        val smallerList : ArrayList<Contact>
+        val longerList : ArrayList<Contact>
+        if (list1.size > list2.size) {
+            smallerList = list2
+            longerList = list1
+        } else {
+            smallerList = list1
+            longerList = list2
+        }
+
+        output = longerList
+        smallerList.forEach {
+            if (longerList.contains(it)) {
+               output.remove(it)
+            }
+        }
+        return output
+    }
+
+    private fun notifyLiveData(){
+        allContactsLiveData.postValue(ContactsResult(stellarContactList, contactsList))
+    }
+
+    fun getContactsListLiveData(forceRefresh:Boolean = false) : MutableLiveData<ContactsResult> {
+        Timber.d("start getContactsListLiveData")
+        if (!forceRefresh && !contactsList.isEmpty()) {
+            notifyLiveData()
+        } else {
+            thread {
+                stellarContactList = parseContactCursor(getStellarContactsList(), true)
+                val parsedList = parseContactCursor(getContactsList(), false)
+                val list = removeDuplicates(parsedList, stellarContactList)
+                if (!list.isEmpty() || !stellarContactList.isEmpty()) {
+                    Handler(Looper.getMainLooper()).run {
+                        contactsList = list
+                        Timber.d("all parsed (${list.size})")
+                        notifyLiveData()
+                    }
+                }
+            }
+        }
+        return allContactsLiveData
+    }
+
+    private fun parseContactCursor(cursor : Cursor?, populateStellarAddress:Boolean = true) : ArrayList<Contact> {
+        if (cursor != null) {
+            val list : ArrayList<Contact> = ArrayList()
+            while (cursor.moveToNext()) {
+                val contact = toContact(cursor, populateStellarAddress)
+                list.add(contact)
+            }
+            cursor.close()
+            return list
+        }
+        return ArrayList()
+    }
+
 
     /**
      * it will create and return a new cursor, the cursor will be not closed by {@link ContactsRepository}
      */
-    fun getStellarContactsList() : Cursor? {
+    private fun getStellarContactsList() : Cursor? {
         val uri = ContactsContract.Data.CONTENT_URI
         val RAW_PROJECTION = arrayOf(ContactsContract.Data.CONTACT_ID, ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY, ContactsContract.Data.MIMETYPE, ContactsContract.Data.DATA1)
         val cursor = appContext.contentResolver.query(uri, RAW_PROJECTION,
                 ContactsContract.Data.MIMETYPE + " = ?",
                 arrayOf(mimetypeStellarAddress), null)
         return cursor
-    }
-
-    interface OnContactListLoaded {
-        fun onLoaded(cursor : Cursor)
-    }
-
-
-    private var PROJECTION = arrayOf(ContactsContract.Contacts._ID, ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
-
-    fun getContactListAsync(fragment: Fragment, listener: OnContactListLoaded) {
-        LoaderManager.getInstance(fragment).initLoader(0,
-                null, object : LoaderManager.LoaderCallbacks<Cursor> {
-            override fun onCreateLoader(i: Int, bundle: Bundle?): Loader<Cursor> {
-                val cursorLoader = CursorLoader(appContext)
-                cursorLoader.projection
-                // Starts the query
-                return CursorLoader(
-                        appContext,
-                        ContactsContract.Contacts.CONTENT_URI,
-                        PROJECTION, null, null, null)
-            }
-
-            override fun onLoadFinished(objectLoader: Loader<Cursor>, c: Cursor) {
-                listener.onLoaded(c)
-            }
-
-            override fun onLoaderReset(cursorLoader: Loader<Cursor>) { }
-        })
     }
 
     /**
@@ -131,7 +167,7 @@ object ContactsRepository {
     /**
      * Move the cursor before calling this.
      */
-    fun toContact(cursor:Cursor) : Contact {
+    fun toContact(cursor:Cursor, populateStellarAddress: Boolean = true) : Contact {
         val nameColIdx: Int = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
         val idColIdx: Int = cursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)
         val contactName = cursor.getString(nameColIdx)
@@ -141,9 +177,8 @@ object ContactsRepository {
 
         val contact = Contact(contactId, contactName, profilePic)
 
-        val stellarAddress : String? = ContactsRepository(appContext).getStellarAddress(contactId)
-        if(stellarAddress != null) {
-            contact.stellarAddress = stellarAddress
+        if (populateStellarAddress) {
+            contact.stellarAddress = getStellarAddress(contactId)
         }
         return contact
     }
