@@ -2,7 +2,10 @@ package com.blockeq.stellarwallet.activities
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -13,15 +16,17 @@ import com.blockeq.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LEN
 import com.blockeq.stellarwallet.interfaces.ContactsRepository.ContactOperationStatus
 import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
 import com.google.zxing.integration.android.IntentIntegrator
-import kotlinx.android.synthetic.main.activity_enter_address.*
-import java.lang.IllegalStateException
+import kotlinx.android.synthetic.main.activity_stellar_address.*
 import timber.log.Timber
 
-class EnterAddressActivity : BaseActivity(), View.OnClickListener {
+class StellarAddressActivity : BaseActivity(), View.OnClickListener {
     enum class Mode {
         SEND_TO, UPDATE_CONTACT, CREATE_CONTACT
     }
     private lateinit var mode : Mode
+    /**
+     * it will be set only in {@link Mode.UPDATE_CONTACT}
+     */
     private var contactID: Long = 0
 
     companion object {
@@ -29,20 +34,20 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
         private const val ARG_CONTACT_ID = "ARG_CONTACT_ID"
 
         fun toSend(context: Context): Intent {
-            val intent = Intent(context, EnterAddressActivity::class.java)
+            val intent = Intent(context, StellarAddressActivity::class.java)
             intent.putExtra(ARG_MODE, Mode.SEND_TO)
             return intent
         }
 
         fun updateContact(context: Context, contactId: Long): Intent {
-            val intent = Intent(context, EnterAddressActivity::class.java)
+            val intent = Intent(context, StellarAddressActivity::class.java)
             intent.putExtra(ARG_MODE, Mode.UPDATE_CONTACT)
             intent.putExtra(ARG_CONTACT_ID, contactId)
             return intent
         }
 
         fun createContact(context: Context): Intent {
-            val intent = Intent(context, EnterAddressActivity::class.java)
+            val intent = Intent(context, StellarAddressActivity::class.java)
             intent.putExtra(ARG_MODE, Mode.CREATE_CONTACT)
             return intent
         }
@@ -50,7 +55,16 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_enter_address)
+        setContentView(R.layout.activity_stellar_address)
+
+        if (intent.hasExtra(ARG_MODE) && intent.getSerializableExtra(ARG_MODE) != null) {
+            mode = intent.getSerializableExtra(ARG_MODE) as Mode
+        } else {
+            throw IllegalStateException("Missing intent extra {$ARG_MODE}")
+        }
+
+        val serializedValue = intent.getSerializableExtra(ARG_CONTACT_ID) ?: throw IllegalStateException("Missing intent extra {$ARG_CONTACT_ID}")
+        contactID = serializedValue as Long
 
         setupUI()
     }
@@ -76,11 +90,6 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
     //region User Interface
     private fun setupUI() {
         setSupportActionBar(toolBar)
-        if (intent.hasExtra(ARG_MODE) && intent.getSerializableExtra(ARG_MODE) != null) {
-            mode = intent.getSerializableExtra(ARG_MODE) as Mode
-        } else {
-            throw IllegalStateException("Missing intent extra {$ARG_MODE}")
-        }
 
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
@@ -105,9 +114,7 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
                 ContactNameText.visibility = View.GONE
                 ContactNameEditText.visibility = View.GONE
                 addressTitleText.text = "Stellar Address"
-                val serializedValue = intent.getSerializableExtra(ARG_CONTACT_ID) ?: throw IllegalStateException("Missing intent extra {$ARG_CONTACT_ID}")
-                contactID = serializedValue as Long
-                //TODO: use contact objec in the bundle and remove this call
+                //TODO: use contact object in the bundle and remove this call
                 addressEditText.setText(ContactsRepositoryImpl(applicationContext).getStellarAddress(contactID))
             }
             Mode.CREATE_CONTACT -> {
@@ -119,6 +126,13 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
 
         cameraImageButton.setOnClickListener(this)
         bottomButton.setOnClickListener(this)
+    }
+
+    override fun onCreateOptionsMenu(menu : Menu) : Boolean {
+        if (mode == Mode.UPDATE_CONTACT) {
+            menuInflater.inflate(R.menu.contact_details, menu)
+        }
+        return true
     }
 
     override fun onClick(v: View) {
@@ -181,6 +195,14 @@ class EnterAddressActivity : BaseActivity(), View.OnClickListener {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item != null) {
             if (item.itemId == android.R.id.home) {
+                finish()
+                return true
+            }
+            if (item.itemId == R.id.nav_open_contact) {
+                val intent = Intent(Intent.ACTION_VIEW)
+                val uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactID.toString())
+                intent.data = uri
+                startActivity(intent)
                 finish()
                 return true
             }

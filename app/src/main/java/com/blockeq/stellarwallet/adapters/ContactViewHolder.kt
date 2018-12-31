@@ -6,7 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 
 import com.blockeq.stellarwallet.R
-import com.blockeq.stellarwallet.activities.EnterAddressActivity
+import com.blockeq.stellarwallet.activities.StellarAddressActivity
 import com.blockeq.stellarwallet.activities.SendActivity
 import com.blockeq.stellarwallet.models.Contact
 import com.squareup.picasso.Picasso
@@ -23,28 +23,28 @@ class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(contact: Contact) {
         mBoundContact = contact
-        label.text = contact.name + " " + contact.id
+        label.text = contact.name
         Picasso.get().load(contact.profilePic).into(image)
-        if (!contact.stellarAddress.isNullOrEmpty()) {
-           button.setText("SEND FUNDS")
+        val stellarAddress = contact.stellarAddress
+        if (stellarAddress == null) {
+            button.text = "Add Address"
         } else {
-            button.setText("ADD ADDRESS")
+            button.text = "Send Payment"
+        }
+
+        button.setOnClickListener {
+            val context = it.context
+            stellarAddress?.let { that ->
+                context.startActivity(SendActivity.newIntent(context, that))
+            } ?: run {
+                context.startActivity(StellarAddressActivity.updateContact(context, contact.id))
+            }
         }
 
         itemView.setOnClickListener {
             val context = it.context
             if (mBoundContact != null) {
-                context.startActivity(EnterAddressActivity.updateContact(context, contact.id))
-            }
-        }
-
-        button.setOnClickListener {
-            val context = it.context
-            //TODO refactor this with types
-            if (button.text == "ADD ADDRESS") {
-                context.startActivity(EnterAddressActivity.updateContact(context, contact.id))
-            } else {
-                context.startActivity(SendActivity.newIntent(context, contact.stellarAddress!!))
+                context.startActivity(StellarAddressActivity.updateContact(context, contact.id))
             }
         }
     }

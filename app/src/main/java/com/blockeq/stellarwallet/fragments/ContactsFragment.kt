@@ -13,7 +13,7 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.blockeq.stellarwallet.R
-import com.blockeq.stellarwallet.activities.EnterAddressActivity
+import com.blockeq.stellarwallet.activities.StellarAddressActivity
 import com.blockeq.stellarwallet.adapters.ContactsAdapter
 import com.blockeq.stellarwallet.models.Contact
 import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
@@ -69,7 +69,7 @@ class ContactsFragment : Fragment() {
             }
             R.id.add -> {
                 activity?.let {
-                    startActivity(EnterAddressActivity.createContact(it))
+                    startActivity(StellarAddressActivity.createContact(it))
                 }
                 return true
             }
