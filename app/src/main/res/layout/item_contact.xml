@@ -27,7 +27,7 @@
     <Button
         android:textSize="14sp"
         android:textColor="@color/white"
-        android:text="Add Address"
+        android:text="@string/add_address"
         android:textAllCaps="false"
         android:id="@+id/button_add_address"
         android:layout_width="wrap_content"

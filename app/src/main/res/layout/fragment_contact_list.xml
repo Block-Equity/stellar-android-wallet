@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -13,7 +14,8 @@
         app:title="@string/nav_contacts"
         app:titleTextColor="@color/colorPrimaryDark"
         android:theme="@style/ToolbarTheme"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        tools:targetApi="lollipop" />
 
     <android.support.v7.widget.RecyclerView
         android:layout_below="@+id/toolBar"
@@ -32,6 +34,6 @@
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="You have no contacts" />
+        android:text="@string/you_have_no_contacts" />
 
 </RelativeLayout>

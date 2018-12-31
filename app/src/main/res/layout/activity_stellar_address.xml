@@ -47,14 +47,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/ContactNameText"
-            android:text="Name"
+            android:text="@string/name"
             android:layout_marginBottom="25dp"
             android:textColor="@color/sendToTextColor"/>
 
         <EditText
+            android:importantForAutofill="no"
             android:id="@+id/ContactNameEditText"
             android:layout_marginBottom="25dp"
-            android:layout_height="60dp"
+            android:layout_height="0dp"
             android:layout_width="match_parent"
             android:layout_weight="0.8"
             android:padding="12dp"
@@ -62,7 +63,8 @@
             android:textSize="12sp"
             android:scrollHorizontally="true"
             android:inputType="textCapSentences"
-            android:hint="Enter the contact name" />
+            android:hint="@string/enter_the_contact_name"
+            tool:ignore="ContentDescription,UnusedAttribute" />
 
 
         <TextView
@@ -92,9 +94,12 @@
                 android:scrollHorizontally="true"
                 android:digits="@string/stellar_address_alphabet"
                 android:inputType="textCapCharacters"
-                android:hint="@string/send_address_hint" />
+                android:hint="@string/send_address_hint"
+                android:importantForAutofill="no"
+                tool:ignore="UnusedAttribute" />
 
             <ImageButton
+                android:contentDescription="@string/open_camera_to_scan_qr"
                 android:id="@+id/cameraImageButton"
                 android:layout_width="0dp"
                 android:layout_weight="0.15"

@@ -5,5 +5,5 @@
     <item
         app:showAsAction="never"
         android:id="@+id/nav_open_contact"
-        android:title="Open Contact"/>
+        android:title="@string/open_contact"/>
 </menu>

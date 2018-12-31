@@ -4,13 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/refresh"
-        android:title="Refresh"
-        app:showAsAction="always"
+        android:title="@string/refresh"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_trading" />
 
     <item
         android:id="@+id/add"
-        android:title="Add"
-        app:showAsAction="always"
+        android:title="@string/add"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_arrow_downward_black_36dp" />
 </menu>

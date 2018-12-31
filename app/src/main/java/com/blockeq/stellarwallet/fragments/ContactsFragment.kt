@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.blockeq.stellarwallet.R
@@ -17,7 +16,7 @@ import com.blockeq.stellarwallet.activities.StellarAddressActivity
 import com.blockeq.stellarwallet.adapters.ContactsAdapter
 import com.blockeq.stellarwallet.models.Contact
 import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
-import kotlinx.android.synthetic.main.contact_list.*
+import kotlinx.android.synthetic.main.fragment_contact_list.*
 import timber.log.Timber
 import android.support.v7.widget.DividerItemDecoration
 
@@ -43,7 +42,7 @@ class ContactsFragment : Fragment() {
     // A UI Fragment must inflate its View
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.contact_list, container, false)
+        return inflater.inflate(R.layout.fragment_contact_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

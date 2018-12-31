@@ -15,11 +15,17 @@
         <ignore path="res/layout/content_enter_address.xml" />
         <ignore path="res/layout/popup_content.xml" />
         <ignore path="res/layout/activity_pin.xml"/>
+        <ignore path="res/layout/activity_stellar_address.xml"/>
+        <ignore path="res/layout/item_contact.xml"/>
     </issue>
 
     <issue id="IconDensities">
         <ignore regexp="popup_bg.9.png" />
     </issue>
+    <issue id="IconColors">
+        <ignore regexp="ic_trading.png" />
+    </issue>
+
     <issue id="CustomViewStyleable">
         <ignore regexp="PatchedSearchableSpinner.java" />
     </issue>
