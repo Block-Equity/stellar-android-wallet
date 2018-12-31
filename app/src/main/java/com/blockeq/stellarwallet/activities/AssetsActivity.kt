@@ -51,8 +51,7 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
 
     private fun setupUI() {
         setSupportActionBar(toolBar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         progressBar.visibility = View.VISIBLE
         bindAdapter()
         manuallyAddAssetButton.setOnClickListener {

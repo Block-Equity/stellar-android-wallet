@@ -19,6 +19,9 @@ import com.blockeq.stellarwallet.models.Contact
 import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
 import kotlinx.android.synthetic.main.contact_list.*
 import timber.log.Timber
+import android.support.v7.widget.DividerItemDecoration
+
+
 
 /**
  * Fragment that holds the RecyclerView
@@ -48,7 +51,8 @@ class ContactsFragment : Fragment() {
         appContext = view.context.applicationContext
         (activity as AppCompatActivity).setSupportActionBar(toolBar)
         rv_contact_list.layoutManager =  LinearLayoutManager(activity)
-        rv_contact_list.itemAnimator = DefaultItemAnimator()
+//        rv_contact_list.itemAnimator = DefaultItemAnimator()
+        rv_contact_list.addItemDecoration(DividerItemDecoration(rv_contact_list.context, DividerItemDecoration.VERTICAL))
         setInitialState()
         requestContacts()
     }
