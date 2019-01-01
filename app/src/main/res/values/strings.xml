@@ -238,7 +238,7 @@
     <string name="refresh">Refresh</string>
     <string name="add">Add</string>
     <string name="default_value">0</string>
-    <string name="add_address">Add Address</string>
+    <string name="add_stellar_address">Add Address</string>
     <string name="you_have_no_contacts">You have no contacts</string>
 
 </resources>

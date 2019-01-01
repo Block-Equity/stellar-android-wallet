@@ -1,40 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
+    android:layout_marginStart="4dp"
     android:padding="5dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_gravity="center_vertical"
+    <com.github.abdularis.civ.CircleImageView
         android:id="@+id/rounded_iv_profile"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical" />
+
+    <TextView
+        android:id="@+id/contact_letter"
+        android:textSize="16dp"
+        android:textColor="@color/white"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        tools:text="D"
         android:layout_width="50dp"
         android:layout_height="50dp" />
 
-    <TextView
-        android:textColor="@color/black"
-        android:textSize="17sp"
-        tools:text="Name Surname"
-        android:id="@+id/tv_label"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:gravity="center_vertical" />
-
     <Button
-        android:textSize="14sp"
-        android:textColor="@color/white"
-        android:text="@string/add_address"
-        android:textAllCaps="false"
         android:id="@+id/button_add_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
+        android:layout_alignParentEnd="true"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        android:text="@string/add_stellar_address"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="14sp" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/tv_label"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/rounded_iv_profile"
+        android:layout_toLeftOf="@+id/button_add_address"
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        tools:text="Name Surname" />
+</RelativeLayout>
