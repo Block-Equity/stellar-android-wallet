@@ -25,8 +25,8 @@
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         tools:text="D"
-        android:layout_width="50dp"
-        android:layout_height="50dp" />
+        android:layout_width="@dimen/badge_width"
+        android:layout_height="@dimen/badge_height" />
 
     <Button
         android:id="@+id/button_add_address"

@@ -43,7 +43,9 @@ class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 contact.name?.let {
                     if (it.length > 1) {
                         letter.text = it[0].toString()
-                        image.setImageBitmap(createImage(50, 50, getColor(appContext, it[0])))
+                        val width = appContext.resources.getDimension(R.dimen.badge_width).toInt()
+                        val height = appContext.resources.getDimension(R.dimen.badge_height).toInt()
+                        image.setImageBitmap(createImage(width, height, getColor(appContext, it[0])))
                         image.visibility = View.VISIBLE
                     } else {
                         letter.text = null
@@ -66,14 +68,14 @@ class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             stellarAddress?.let { that ->
                 context.startActivity(SendActivity.newIntent(context, that))
             } ?: run {
-                context.startActivity(StellarAddressActivity.updateContact(context, contact.id))
+                context.startActivity(StellarAddressActivity.updateContact(context, contact))
             }
         }
 
         itemView.setOnClickListener {
             val context = it.context
             if (mBoundContact != null) {
-                context.startActivity(StellarAddressActivity.updateContact(context, contact.id))
+                context.startActivity(StellarAddressActivity.updateContact(context, contact))
             }
         }
     }
