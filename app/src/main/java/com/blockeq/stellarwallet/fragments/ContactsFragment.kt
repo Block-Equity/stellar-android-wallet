@@ -147,6 +147,7 @@ class ContactsFragment : Fragment() {
 
     private fun showContacts(forceRefresh: Boolean = false) {
         ContactsRepositoryImpl(appContext).getContactsListLiveData(forceRefresh).observe(viewLifecycleOwner, Observer {
+            Timber.d("observer triggered {${it?.stellarContacts?.size}")
             if (it != null) {
                 currentContactList = ArrayList(it.contacts)
                 currentContactList.addAll(0, it.stellarContacts)

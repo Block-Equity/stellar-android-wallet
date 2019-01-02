@@ -132,4 +132,5 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:2.2.0'
 
     implementation 'com.github.mancj:MaterialSearchBar:0.8.1'
+    implementation 'com.github.abdularis:CircularImageView:v1.2'
 }
