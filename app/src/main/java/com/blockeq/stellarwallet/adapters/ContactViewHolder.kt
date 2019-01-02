@@ -15,8 +15,6 @@ import com.blockeq.stellarwallet.models.Contact
 import com.github.abdularis.civ.CircleImageView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import timber.log.Timber
-
 
 /**
  * Contains a Contact List Item

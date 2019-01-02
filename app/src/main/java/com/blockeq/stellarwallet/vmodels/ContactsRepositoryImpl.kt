@@ -74,6 +74,7 @@ object ContactsRepositoryImpl : ContactsRepository {
     }
 
     override fun createOrUpdateContact(contactId:Long, address:String) : ContactOperationStatus {
+        var operation: ContactOperationStatus
         try {
             val values = ContentValues()
             values.put(ContactsContract.Data.DATA1, address)
@@ -81,19 +82,20 @@ object ContactsRepositoryImpl : ContactsRepository {
             val rowsUpdated = contentResolver.update(ContactsContract.Data.CONTENT_URI, values,
                     "${ContactsContract.Data.RAW_CONTACT_ID} = $contactId AND ${ContactsContract.Data.MIMETYPE} = '$mimeTypeStellarAddress'", null)
 
-            //TODO: this is too heavy, there is enough info to update the local list and notifyLiveData()
-            refreshContacts()
-            return if (rowsUpdated == 0) {
+            if (rowsUpdated == 0) {
                 values.put(ContactsContract.Data.RAW_CONTACT_ID, contactId)
                 values.put(ContactsContract.Data.MIMETYPE, mimeTypeStellarAddress)
                 contentResolver.insert(ContactsContract.Data.CONTENT_URI, values)
-                ContactOperationStatus.INSERTED
+                operation = ContactOperationStatus.INSERTED
             } else {
-                ContactOperationStatus.UPDATED
+                operation = ContactOperationStatus.UPDATED
             }
         } catch (e: Exception) {
-            return ContactOperationStatus.FAILED
+            operation = ContactOperationStatus.FAILED
         }
+        //TODO: this is too heavy, there is enough info to update the local list and notifyLiveData()
+        refreshContacts()
+        return operation
     }
 
     override fun getStellarAddress(contactId: Long): String? {
@@ -154,6 +156,7 @@ object ContactsRepositoryImpl : ContactsRepository {
     }
 
     private fun notifyLiveData() {
+        Timber.d("observer notifyLiveData ${stellarContactList.size}")
         contactsLiveData.postValue(ContactsResult(stellarContactList, contactsList))
     }
 

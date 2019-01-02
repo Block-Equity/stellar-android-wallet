@@ -118,6 +118,7 @@ class ContactsFragment : Fragment() {
 
     private fun showContacts(forceRefresh: Boolean = false) {
         ContactsRepositoryImpl(appContext).getContactsListLiveData(forceRefresh).observe(viewLifecycleOwner, Observer {
+            Timber.d("observer triggered {${it?.stellarContacts?.size}")
             if (it != null) {
                 val mergedList : ArrayList<Contact> = ArrayList(it.contacts)
                 mergedList.addAll(0, it.stellarContacts)
