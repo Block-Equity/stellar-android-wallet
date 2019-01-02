@@ -9,17 +9,20 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.activities.StellarAddressActivity
 import com.blockeq.stellarwallet.adapters.ContactsAdapter
+import com.blockeq.stellarwallet.adapters.CustomSuggestionsAdapter
+import com.blockeq.stellarwallet.helpers.OnTextChanged
 import com.blockeq.stellarwallet.models.Contact
 import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
-import kotlinx.android.synthetic.main.fragment_contact_list.*
-import timber.log.Timber
-import android.support.v7.widget.DividerItemDecoration
 import com.mancj.materialsearchbar.MaterialSearchBar
+import kotlinx.android.synthetic.main.fragment_contact_list.*
+import kotlinx.android.synthetic.main.searchable_list_dialog.*
+import timber.log.Timber
 
 
 /**
@@ -33,6 +36,8 @@ class ContactsFragment : Fragment() {
 
     // Defines a variable for the search string
     private lateinit var appContext : Context
+    private lateinit var suggestionAdapter: CustomSuggestionsAdapter
+    private var currentContactList: ArrayList<Contact> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,10 +55,14 @@ class ContactsFragment : Fragment() {
         appContext = view.context.applicationContext
         (activity as AppCompatActivity).setSupportActionBar(toolBar)
         rv_contact_list.layoutManager =  LinearLayoutManager(activity)
-//        rv_contact_list.itemAnimator = DefaultItemAnimator()
         rv_contact_list.addItemDecoration(DividerItemDecoration(rv_contact_list.context, DividerItemDecoration.VERTICAL))
         setInitialState()
         requestContacts()
+        searchBar.addTextChangeListener(object:OnTextChanged() {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+               filterResults(s.toString())
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -85,13 +94,15 @@ class ContactsFragment : Fragment() {
                     }
 
                     override fun onSearchStateChanged(enabled: Boolean) {
-                        if(enabled == false) {
+                        if(!enabled) {
                             viewFlipper.showPrevious()
                         }
                     }
 
                     override fun onSearchConfirmed(text: CharSequence?) {
-
+//                        if (!currentContactList.isEmpty()) {
+//                           filterResults(text.toString())
+//                        }
                     }
 
                 })
@@ -140,17 +151,33 @@ class ContactsFragment : Fragment() {
     private fun showContacts(forceRefresh: Boolean = false) {
         ContactsRepositoryImpl(appContext).getContactsListLiveData(forceRefresh).observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                val mergedList : ArrayList<Contact> = ArrayList(it.contacts)
-                mergedList.addAll(0, it.stellarContacts)
-                populateList(mergedList)
+                currentContactList = ArrayList(it.contacts)
+                currentContactList.addAll(0, it.stellarContacts)
+                populateList(currentContactList)
             }
         })
     }
 
-    private fun populateList(list : ArrayList<Contact>){
+    private fun filterResults(input : String){
+        val filterList : ArrayList<Contact> = ArrayList()
+        currentContactList.forEach {
+            val name = it.name?.toLowerCase()
+            if (name != null && name.contains(input.toLowerCase())) {
+                filterList.add(it)
+            }
+        }
+        populateList(filterList, true)
+    }
+
+    private fun populateList(list : ArrayList<Contact>, isFilteredList : Boolean = false) {
         rv_contact_list.adapter = ContactsAdapter(list)
         progress_view.visibility = View.GONE
         if (list.size == 0) {
+            if(isFilteredList) {
+                empty_view.setText("No results found")
+            } else {
+                empty_view.setText("No contacts found")
+            }
             empty_view.visibility = View.VISIBLE
             rv_contact_list.visibility = View.GONE
         } else {
