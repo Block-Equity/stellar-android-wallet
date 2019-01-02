@@ -55,7 +55,7 @@ class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         })
 
         val stellarAddress = contact.stellarAddress
-        if (stellarAddress == null) {
+        if (stellarAddress.isNullOrBlank()) {
             button.text = appContext.getString(R.string.add_stellar_address)
             button.setBackgroundColor(ContextCompat.getColor(appContext, R.color.blue1))
         } else {

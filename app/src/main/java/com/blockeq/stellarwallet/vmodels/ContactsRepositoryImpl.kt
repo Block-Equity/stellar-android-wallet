@@ -181,7 +181,7 @@ object ContactsRepositoryImpl : ContactsRepository {
         val uri = ContactsContract.Data.CONTENT_URI
         val projection = arrayOf(ContactsContract.Data.CONTACT_ID, ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY, ContactsContract.Data.MIMETYPE, ContactsContract.Data.DATA1)
         return  appContext.contentResolver.query(uri, projection,
-                ContactsContract.Data.MIMETYPE + " = ?",
+                ContactsContract.Data.MIMETYPE + " =? AND ${ContactsContract.Data.DATA1} != ''",
                 arrayOf(mimeTypeStellarAddress), null)
     }
 
