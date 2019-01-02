@@ -130,6 +130,7 @@ dependencies {
     implementation "com.android.support:preference-v7:$supportLibraryVersion"
 
     implementation 'de.hdodenhof:circleimageview:2.2.0'
-    implementation 'com.github.abdularis:CircularImageView:v1.2'
 
+    implementation 'com.github.mancj:MaterialSearchBar:0.8.1'
+    implementation 'com.github.abdularis:CircularImageView:v1.2'
 }
