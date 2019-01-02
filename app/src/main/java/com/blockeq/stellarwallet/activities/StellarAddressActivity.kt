@@ -14,6 +14,7 @@ import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
 import com.blockeq.stellarwallet.interfaces.ContactsRepository.ContactOperationStatus
+import com.blockeq.stellarwallet.models.Contact
 import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_stellar_address.*
@@ -27,11 +28,11 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
     /**
      * it will be set only in {@link Mode.UPDATE_CONTACT}
      */
-    private var contactID: Long = 0
+    private lateinit var contact: Contact
 
     companion object {
         private const val ARG_MODE = "ARG_MODE"
-        private const val ARG_CONTACT_ID = "ARG_CONTACT_ID"
+        private const val ARG_CONTACT = "ARG_CONTACT"
 
         fun toSend(context: Context): Intent {
             val intent = Intent(context, StellarAddressActivity::class.java)
@@ -39,10 +40,10 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
             return intent
         }
 
-        fun updateContact(context: Context, contactId: Long): Intent {
+        fun updateContact(context: Context, contactId: Contact): Intent {
             val intent = Intent(context, StellarAddressActivity::class.java)
             intent.putExtra(ARG_MODE, Mode.UPDATE_CONTACT)
-            intent.putExtra(ARG_CONTACT_ID, contactId)
+            intent.putExtra(ARG_CONTACT, contactId)
             return intent
         }
 
@@ -63,8 +64,9 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
             throw IllegalStateException("Missing intent extra {$ARG_MODE}")
         }
 
-        val serializedValue = intent.getSerializableExtra(ARG_CONTACT_ID) ?: throw IllegalStateException("Missing intent extra {$ARG_CONTACT_ID}")
-        contactID = serializedValue as Long
+        if (mode == Mode.UPDATE_CONTACT) {
+            contact = intent.getParcelableExtra(ARG_CONTACT) ?: throw IllegalStateException("Missing intent extra {$ARG_CONTACT}")
+        }
 
         setupUI()
     }
@@ -111,11 +113,12 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
             Mode.UPDATE_CONTACT -> {
                 titleBalance.visibility = View.GONE
                 bottomButton.text = getString(R.string.save_button)
-                ContactNameText.visibility = View.GONE
-                ContactNameEditText.visibility = View.GONE
+                ContactNameText.visibility = View.VISIBLE
+                ContactNameEditText.visibility = View.VISIBLE
+                ContactNameEditText.isEnabled = false
+                ContactNameEditText.setText(contact.name)
                 addressTitleText.text = "Stellar Address"
-                //TODO: use contact object in the bundle and remove this call
-                addressEditText.setText(ContactsRepositoryImpl(applicationContext).getStellarAddress(contactID))
+                addressEditText.setText(contact.stellarAddress)
             }
             Mode.CREATE_CONTACT -> {
                 titleBalance.visibility = View.GONE
@@ -154,7 +157,7 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
                         }
                     }
                     Mode.UPDATE_CONTACT -> {
-                        val status = ContactsRepositoryImpl(applicationContext).createOrUpdateContact(contactID, address)
+                        val status = ContactsRepositoryImpl(applicationContext).createOrUpdateContact(contact.id, address)
                         when(status) {
                             ContactOperationStatus.UPDATED -> {
                                 Timber.v("data updated")
@@ -200,7 +203,7 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
             }
             if (item.itemId == R.id.nav_open_contact) {
                 val intent = Intent(Intent.ACTION_VIEW)
-                val uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactID.toString())
+                val uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contact.id.toString())
                 intent.data = uri
                 startActivity(intent)
                 finish()
