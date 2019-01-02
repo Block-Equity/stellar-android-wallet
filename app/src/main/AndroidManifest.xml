@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".WalletApplication"
@@ -93,16 +94,16 @@
             android:name=".activities.AddAssetActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activities.DebugPreferenceActivity"
+        <activity
+            android:name=".activities.DebugPreferenceActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
-
-        <activity android:name=".activities.WalletManagerActivity"
-            android:theme="@style/TransparentTheme"/>
-
-        <activity android:name=".activities.AboutAnimationActivity"
-            android:theme="@style/TransparentTheme"/>
-
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.WalletManagerActivity"
+            android:theme="@style/TransparentTheme" />
+        <activity
+            android:name=".activities.AboutAnimationActivity"
+            android:theme="@style/TransparentTheme" />
     </application>
 
 </manifest>
