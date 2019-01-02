@@ -15,13 +15,11 @@ import android.view.*
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.activities.StellarAddressActivity
 import com.blockeq.stellarwallet.adapters.ContactsAdapter
-import com.blockeq.stellarwallet.adapters.CustomSuggestionsAdapter
 import com.blockeq.stellarwallet.helpers.OnTextChanged
 import com.blockeq.stellarwallet.models.Contact
 import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.fragment_contact_list.*
-import kotlinx.android.synthetic.main.searchable_list_dialog.*
 import timber.log.Timber
 
 
@@ -36,7 +34,6 @@ class ContactsFragment : Fragment() {
 
     // Defines a variable for the search string
     private lateinit var appContext : Context
-    private lateinit var suggestionAdapter: CustomSuggestionsAdapter
     private var currentContactList: ArrayList<Contact> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
