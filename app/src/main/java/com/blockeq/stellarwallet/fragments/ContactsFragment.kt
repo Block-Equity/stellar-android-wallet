@@ -19,7 +19,7 @@ import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 import timber.log.Timber
 import android.support.v7.widget.DividerItemDecoration
-
+import com.mancj.materialsearchbar.MaterialSearchBar
 
 
 /**
@@ -74,6 +74,27 @@ class ContactsFragment : Fragment() {
                 activity?.let {
                     startActivity(StellarAddressActivity.createContact(it))
                 }
+                return true
+            }
+            R.id.search -> {
+                viewFlipper.showNext()
+                searchBar.enableSearch()
+                searchBar.setOnSearchActionListener(object: MaterialSearchBar.OnSearchActionListener {
+                    override fun onButtonClicked(buttonCode: Int) {
+
+                    }
+
+                    override fun onSearchStateChanged(enabled: Boolean) {
+                        if(enabled == false) {
+                            viewFlipper.showPrevious()
+                        }
+                    }
+
+                    override fun onSearchConfirmed(text: CharSequence?) {
+
+                    }
+
+                })
                 return true
             }
         }
