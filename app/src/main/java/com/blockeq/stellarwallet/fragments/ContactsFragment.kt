@@ -35,7 +35,6 @@ class ContactsFragment : Fragment() {
     // Defines a variable for the search string
     private lateinit var appContext : Context
     private var currentContactList = ArrayList<Contact>()
-    private var stickyHeaderAdded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +53,6 @@ class ContactsFragment : Fragment() {
         activity?.let {
             (it as AppCompatActivity).setSupportActionBar(toolBar)
             rv_contact_list.layoutManager =  LinearLayoutManager(it)
-            rv_contact_list.addItemDecoration(DividerItemDecoration(rv_contact_list.context, DividerItemDecoration.VERTICAL))
         }
 
         setInitialState()
@@ -167,13 +165,12 @@ class ContactsFragment : Fragment() {
 
     private fun populateList(list : ArrayList<Contact>, isFilteredList : Boolean = false) {
         rv_contact_list.adapter = ContactsAdapter(list)
-        if (stickyHeaderAdded) {
-            // 0 position is the DividerItemDecoration
-            rv_contact_list.removeItemDecorationAt(1)
+        when(rv_contact_list.itemDecorationCount) {
+            0 -> rv_contact_list.addItemDecoration(DividerItemDecoration(rv_contact_list.context, DividerItemDecoration.VERTICAL))
+            2 -> rv_contact_list.removeItemDecorationAt(1)
         }
         val item = RecyclerSectionItemDecoration(appContext.resources.getDimension(R.dimen.contact_header).toInt(), true, getSectionCallback(list))
         rv_contact_list.addItemDecoration(item)
-        stickyHeaderAdded = true
         progress_view.visibility = View.GONE
         if (list.size == 0) {
             if(isFilteredList) {
