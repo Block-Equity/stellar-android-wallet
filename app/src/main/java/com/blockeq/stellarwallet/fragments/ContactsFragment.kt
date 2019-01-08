@@ -16,9 +16,9 @@ import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.activities.StellarAddressActivity
 import com.blockeq.stellarwallet.adapters.ContactsAdapter
 import com.blockeq.stellarwallet.helpers.OnTextChanged
+import com.blockeq.stellarwallet.interfaces.OnSearchStateListener
 import com.blockeq.stellarwallet.models.Contact
 import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
-import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 import timber.log.Timber
 
@@ -84,23 +84,12 @@ class ContactsFragment : Fragment() {
             R.id.search -> {
                 viewFlipper.showNext()
                 searchBar.enableSearch()
-                searchBar.setOnSearchActionListener(object: MaterialSearchBar.OnSearchActionListener {
-                    override fun onButtonClicked(buttonCode: Int) {
-
-                    }
-
+                searchBar.setOnSearchActionListener(object: OnSearchStateListener() {
                     override fun onSearchStateChanged(enabled: Boolean) {
-                        if(!enabled) {
+                        if (!enabled) {
                             viewFlipper.showPrevious()
                         }
                     }
-
-                    override fun onSearchConfirmed(text: CharSequence?) {
-//                        if (!currentContactList.isEmpty()) {
-//                           filterResults(text.toString())
-//                        }
-                    }
-
                 })
                 return true
             }
