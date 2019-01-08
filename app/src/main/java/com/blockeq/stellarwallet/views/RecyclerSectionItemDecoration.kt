@@ -15,6 +15,7 @@ import timber.log.Timber
  * RecyclerSectionItemDecoration that supports sticky headers
  * Inspired by the following implementation:
  * @see [recycler_view_headers by paetztm](https://github.com/paetztm/recycler_view_headers)"}
+ * TODO: make this class generic using generics and abstract class to be able to use any model and any layout
  */
 class RecyclerSectionItemDecoration(private val headerOffset: Int, private val sticky: Boolean, private val sectionCallback: SectionCallback) : RecyclerView.ItemDecoration() {
 
