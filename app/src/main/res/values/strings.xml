@@ -228,6 +228,7 @@
     <string name="override_limit_order_text">Override limit order</string>
 
     <!--Contacts -->
+    <string name="hint_search_bar">Find contact…</string>
     <string name="setup_contact_title">Setup Contact</string>
     <string name="add_contact_title">Add Contact</string>
     <string name="enter_the_contact_name">Enter the contact name</string>

@@ -26,7 +26,7 @@
         <com.mancj.materialsearchbar.MaterialSearchBar
             style="@style/MaterialSearchBarLight"
             app:mt_speechMode="false"
-            app:mt_hint="Find contact..."
+            app:mt_hint="@string/hint_search_bar"
             app:mt_maxSuggestionsCount="5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
