@@ -17,6 +17,7 @@
         <ignore path="res/layout/activity_pin.xml"/>
         <ignore path="res/layout/activity_stellar_address.xml"/>
         <ignore path="res/layout/item_contact.xml"/>
+        <ignore path="res/layout/item_sticky_header_contact.xml"/>
     </issue>
 
     <issue id="IconDensities">
