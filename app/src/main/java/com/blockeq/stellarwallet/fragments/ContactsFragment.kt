@@ -22,7 +22,6 @@ import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 import timber.log.Timber
 
-
 /**
  * Fragment that holds the RecyclerView
  */
@@ -172,9 +171,9 @@ class ContactsFragment : Fragment() {
         progress_view.visibility = View.GONE
         if (list.size == 0) {
             if(isFilteredList) {
-                empty_view.setText("No results found")
+                empty_view.text = getString(R.string.no_results_found)
             } else {
-                empty_view.setText("No contacts found")
+                empty_view.text = getString(R.string.no_contacts_found)
             }
             empty_view.visibility = View.VISIBLE
             rv_contact_list.visibility = View.GONE
