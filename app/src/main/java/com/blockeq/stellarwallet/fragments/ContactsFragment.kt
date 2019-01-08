@@ -49,14 +49,17 @@ class ContactsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         appContext = view.context.applicationContext
-        (activity as AppCompatActivity).setSupportActionBar(toolBar)
-        rv_contact_list.layoutManager =  LinearLayoutManager(activity)
-        rv_contact_list.addItemDecoration(DividerItemDecoration(rv_contact_list.context, DividerItemDecoration.VERTICAL))
+        activity?.let {
+            (it as AppCompatActivity).setSupportActionBar(toolBar)
+            rv_contact_list.layoutManager =  LinearLayoutManager(it)
+            rv_contact_list.addItemDecoration(DividerItemDecoration(rv_contact_list.context, DividerItemDecoration.VERTICAL))
+        }
+
         setInitialState()
         requestContacts()
         searchBar.addTextChangeListener(object:OnTextChanged() {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-               filterResults(s.toString())
+            override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
+                filterResults(text.toString())
             }
         })
     }
@@ -135,24 +138,28 @@ class ContactsFragment : Fragment() {
 
     private fun showContacts(forceRefresh: Boolean = false) {
         ContactsRepositoryImpl(appContext).getContactsListLiveData(forceRefresh).observe(viewLifecycleOwner, Observer {
-            Timber.d("observer triggered {${it?.stellarContacts?.size}")
-            if (it != null) {
-                currentContactList = ArrayList(it.contacts)
-                currentContactList.addAll(0, it.stellarContacts)
+            Timber.d("Observer triggered {${it?.stellarContacts?.size}")
+            it?.let { that ->
+                currentContactList = ArrayList(that.contacts)
+                currentContactList.addAll(0, that.stellarContacts)
                 populateList(currentContactList)
             }
         })
     }
 
-    private fun filterResults(input : String){
+    private fun filterResults(input : String) {
         val filterList : ArrayList<Contact> = ArrayList()
         currentContactList.forEach {
-            val name = it.name?.toLowerCase()
-            if (name != null && name.contains(input.toLowerCase())) {
-                filterList.add(it)
+            it.name?.let { name ->
+                if (name.toLowerCase().
+                        contains(input.toLowerCase())) {
+                    filterList.add(it)
+                }
             }
         }
-        populateList(filterList, true)
+        if (!filterList.isEmpty()) {
+            populateList(filterList, true)
+        }
     }
 
     private fun populateList(list : ArrayList<Contact>, isFilteredList : Boolean = false) {

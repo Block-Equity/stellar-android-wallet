@@ -95,13 +95,13 @@ class RecoverWalletActivity : BaseActivity() {
         }
 
         phraseEditText.addTextChangedListener(object : OnTextChanged() {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
                 highlightMnemonic()
             }
         })
 
         secretKeyEditText.addTextChangedListener(object : OnTextChanged() {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
                 highlightSeed()
             }
         })
