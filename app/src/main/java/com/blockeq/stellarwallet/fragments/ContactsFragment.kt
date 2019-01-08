@@ -18,6 +18,7 @@ import com.blockeq.stellarwallet.adapters.ContactsAdapter
 import com.blockeq.stellarwallet.helpers.OnTextChanged
 import com.blockeq.stellarwallet.interfaces.OnSearchStateListener
 import com.blockeq.stellarwallet.models.Contact
+import com.blockeq.stellarwallet.views.RecyclerSectionItemDecoration
 import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 import timber.log.Timber
@@ -33,7 +34,8 @@ class ContactsFragment : Fragment() {
 
     // Defines a variable for the search string
     private lateinit var appContext : Context
-    private var currentContactList: ArrayList<Contact> = ArrayList()
+    private var currentContactList = ArrayList<Contact>()
+    private var stickyHeaderAdded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -162,8 +164,16 @@ class ContactsFragment : Fragment() {
         }
     }
 
+
     private fun populateList(list : ArrayList<Contact>, isFilteredList : Boolean = false) {
         rv_contact_list.adapter = ContactsAdapter(list)
+        if (stickyHeaderAdded) {
+            // 0 position is the DividerItemDecoration
+            rv_contact_list.removeItemDecorationAt(1)
+        }
+        val item = RecyclerSectionItemDecoration(appContext.resources.getDimension(R.dimen.contact_header).toInt(), true, getSectionCallback(list))
+        rv_contact_list.addItemDecoration(item)
+        stickyHeaderAdded = true
         progress_view.visibility = View.GONE
         if (list.size == 0) {
             if(isFilteredList) {
@@ -178,4 +188,25 @@ class ContactsFragment : Fragment() {
             rv_contact_list.visibility = View.VISIBLE
         }
     }
+
+
+    private fun getSectionCallback(list: List<Contact>): RecyclerSectionItemDecoration.SectionCallback {
+        return object : RecyclerSectionItemDecoration.SectionCallback {
+            override fun isSection(position: Int): Boolean {
+                if (position == 0) return true
+                val addressIsEmpty = list[position].stellarAddress.isNullOrEmpty()
+                val previousAddressIsEmpty = list[position-1].stellarAddress.isNullOrEmpty()
+                return addressIsEmpty xor previousAddressIsEmpty
+            }
+
+            override fun getSectionHeader(position: Int): CharSequence {
+                return if (list[position].stellarAddress.isNullOrBlank()) {
+                    "ADDRESS BOOK"
+                } else {
+                    return "STELLAR CONTACT"
+                }
+            }
+        }
+    }
+
 }
