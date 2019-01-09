@@ -12,7 +12,7 @@ class MainActivity : WearableActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        generateQRCode("234234", qr_image, 200)
+        generateQRCode("GCVZE5C7GGDWSKG7V44HHXKVQSXSFC5WKTNSAX6QG2TMZNJL2UUM476D", qr_image, 200)
         // Enables Always-on
         setAmbientEnabled()
     }
