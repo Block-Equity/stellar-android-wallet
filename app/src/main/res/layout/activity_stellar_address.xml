@@ -95,7 +95,9 @@
                 android:digits="@string/stellar_address_alphabet"
                 android:inputType="textCapCharacters"
                 android:hint="@string/send_address_hint"
+                android:singleLine="true"
                 android:importantForAutofill="no"
+                tool:text="ALAJSLDJFALSKDFJ2L3K4JLSDKFJL34KJ5LKSZJGFLKSJL4"
                 tool:ignore="UnusedAttribute" />
 
             <ImageButton
