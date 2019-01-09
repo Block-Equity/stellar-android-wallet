@@ -16,12 +16,12 @@ import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.activities.StellarAddressActivity
 import com.blockeq.stellarwallet.adapters.ContactsAdapter
 import com.blockeq.stellarwallet.helpers.OnTextChanged
+import com.blockeq.stellarwallet.interfaces.OnSearchStateListener
 import com.blockeq.stellarwallet.models.Contact
+import com.blockeq.stellarwallet.views.RecyclerSectionItemDecoration
 import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
-import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 import timber.log.Timber
-
 
 /**
  * Fragment that holds the RecyclerView
@@ -34,7 +34,7 @@ class ContactsFragment : Fragment() {
 
     // Defines a variable for the search string
     private lateinit var appContext : Context
-    private var currentContactList: ArrayList<Contact> = ArrayList()
+    private var currentContactList = ArrayList<Contact>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,14 +50,16 @@ class ContactsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         appContext = view.context.applicationContext
-        (activity as AppCompatActivity).setSupportActionBar(toolBar)
-        rv_contact_list.layoutManager =  LinearLayoutManager(activity)
-        rv_contact_list.addItemDecoration(DividerItemDecoration(rv_contact_list.context, DividerItemDecoration.VERTICAL))
+        activity?.let {
+            (it as AppCompatActivity).setSupportActionBar(toolBar)
+            rv_contact_list.layoutManager =  LinearLayoutManager(it)
+        }
+
         setInitialState()
         requestContacts()
         searchBar.addTextChangeListener(object:OnTextChanged() {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-               filterResults(s.toString())
+            override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
+                filterResults(text.toString())
             }
         })
     }
@@ -85,23 +87,12 @@ class ContactsFragment : Fragment() {
             R.id.search -> {
                 viewFlipper.showNext()
                 searchBar.enableSearch()
-                searchBar.setOnSearchActionListener(object: MaterialSearchBar.OnSearchActionListener {
-                    override fun onButtonClicked(buttonCode: Int) {
-
-                    }
-
+                searchBar.setOnSearchActionListener(object: OnSearchStateListener() {
                     override fun onSearchStateChanged(enabled: Boolean) {
-                        if(!enabled) {
+                        if (!enabled) {
                             viewFlipper.showPrevious()
                         }
                     }
-
-                    override fun onSearchConfirmed(text: CharSequence?) {
-//                        if (!currentContactList.isEmpty()) {
-//                           filterResults(text.toString())
-//                        }
-                    }
-
                 })
                 return true
             }
@@ -147,34 +138,45 @@ class ContactsFragment : Fragment() {
 
     private fun showContacts(forceRefresh: Boolean = false) {
         ContactsRepositoryImpl(appContext).getContactsListLiveData(forceRefresh).observe(viewLifecycleOwner, Observer {
-            Timber.d("observer triggered {${it?.stellarContacts?.size}")
-            if (it != null) {
-                currentContactList = ArrayList(it.contacts)
-                currentContactList.addAll(0, it.stellarContacts)
+            Timber.d("Observer triggered {${it?.stellarContacts?.size}")
+            it?.let { that ->
+                currentContactList = ArrayList(that.contacts)
+                currentContactList.addAll(0, that.stellarContacts)
                 populateList(currentContactList)
             }
         })
     }
 
-    private fun filterResults(input : String){
+    private fun filterResults(input : String) {
         val filterList : ArrayList<Contact> = ArrayList()
         currentContactList.forEach {
-            val name = it.name?.toLowerCase()
-            if (name != null && name.contains(input.toLowerCase())) {
-                filterList.add(it)
+            it.name?.let { name ->
+                if (name.toLowerCase().
+                        contains(input.toLowerCase())) {
+                    filterList.add(it)
+                }
             }
         }
-        populateList(filterList, true)
+        if (!filterList.isEmpty()) {
+            populateList(filterList, true)
+        }
     }
+
 
     private fun populateList(list : ArrayList<Contact>, isFilteredList : Boolean = false) {
         rv_contact_list.adapter = ContactsAdapter(list)
+        when(rv_contact_list.itemDecorationCount) {
+            0 -> rv_contact_list.addItemDecoration(DividerItemDecoration(rv_contact_list.context, DividerItemDecoration.VERTICAL))
+            2 -> rv_contact_list.removeItemDecorationAt(1)
+        }
+        val item = RecyclerSectionItemDecoration(appContext.resources.getDimension(R.dimen.contact_header).toInt(), true, getSectionCallback(list))
+        rv_contact_list.addItemDecoration(item)
         progress_view.visibility = View.GONE
         if (list.size == 0) {
             if(isFilteredList) {
-                empty_view.setText("No results found")
+                empty_view.text = getString(R.string.no_results_found)
             } else {
-                empty_view.setText("No contacts found")
+                empty_view.text = getString(R.string.no_contacts_found)
             }
             empty_view.visibility = View.VISIBLE
             rv_contact_list.visibility = View.GONE
@@ -183,4 +185,25 @@ class ContactsFragment : Fragment() {
             rv_contact_list.visibility = View.VISIBLE
         }
     }
+
+
+    private fun getSectionCallback(list: List<Contact>): RecyclerSectionItemDecoration.SectionCallback {
+        return object : RecyclerSectionItemDecoration.SectionCallback {
+            override fun isSection(position: Int): Boolean {
+                if (position == 0) return true
+                val addressIsEmpty = list[position].stellarAddress.isNullOrEmpty()
+                val previousAddressIsEmpty = list[position-1].stellarAddress.isNullOrEmpty()
+                return addressIsEmpty xor previousAddressIsEmpty
+            }
+
+            override fun getSectionHeader(position: Int): CharSequence {
+                return if (list[position].stellarAddress.isNullOrBlank()) {
+                    "ADDRESS BOOK"
+                } else {
+                    return "STELLAR CONTACT"
+                }
+            }
+        }
+    }
+
 }
