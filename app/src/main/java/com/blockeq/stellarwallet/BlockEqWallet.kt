@@ -1,12 +1,11 @@
 package com.blockeq.stellarwallet
 
-import android.content.Context
 import com.blockeq.stellarwallet.interfaces.CloudNodeStorage
 import com.blockeq.stellarwallet.interfaces.LocalStore
 import com.blockeq.stellarwallet.models.BasicBalance
 import org.stellar.sdk.responses.AccountResponse
 
-class BlockEqWallet(context : Context, private val localStore: LocalStore, private val cloudNode : CloudNodeStorage) : LocalStore {
+class BlockEqWallet(private val localStore: LocalStore, private val cloudNode : CloudNodeStorage) : LocalStore {
     override fun getEncryptedPhrase(): String? {
        return localStore.getEncryptedPhrase()
     }

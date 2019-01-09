@@ -11,7 +11,6 @@ import com.blockeq.stellarwallet.utils.CloudNodeStorageImpl
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 import com.blockeq.stellarwallet.vmodels.ExchangeRepository
 import com.facebook.stetho.Stetho
-import com.google.gson.Gson
 import com.squareup.leakcanary.LeakCanary
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import timber.log.Timber
@@ -19,14 +18,7 @@ import java.security.Provider
 import java.security.Security
 
 class WalletApplication : MultiDexApplication() {
-    private val lifecycleListener: WalletLifecycleListener by lazy {
-        WalletLifecycleListener(applicationContext)
-    }
-
     companion object {
-        private const val PRIVATE_MODE = 0
-        private const val PREF_NAME = "com.blockeq.stellarwallet.PREFERENCE_FILE_KEY"
-
         // Use LocalStoreImpl for SharedPreferences
         lateinit var wallet: LocalStore
 
@@ -46,8 +38,7 @@ class WalletApplication : MultiDexApplication() {
 
         setupLifecycleListener()
 
-        val sharedPreferences = getSharedPreferences(PREF_NAME, PRIVATE_MODE)
-        wallet = BlockEqWallet(applicationContext, LocalStoreImpl(sharedPreferences, Gson()), CloudNodeStorageImpl(applicationContext))
+        wallet = BlockEqWallet(LocalStoreImpl(applicationContext), CloudNodeStorageImpl(applicationContext))
 
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
@@ -73,5 +64,9 @@ class WalletApplication : MultiDexApplication() {
 
     private fun setupLifecycleListener() {
         ProcessLifecycleOwner.get().lifecycle.addObserver(lifecycleListener)
+    }
+
+    private val lifecycleListener: WalletLifecycleListener by lazy {
+        WalletLifecycleListener(applicationContext)
     }
 }

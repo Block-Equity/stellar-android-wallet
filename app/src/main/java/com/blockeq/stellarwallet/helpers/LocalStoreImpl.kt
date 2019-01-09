@@ -1,13 +1,33 @@
 package com.blockeq.stellarwallet.helpers
 
+import android.content.Context
 import android.content.SharedPreferences
+import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.interfaces.LocalStore
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import org.stellar.sdk.responses.AccountResponse
 import timber.log.Timber
 
-class LocalStoreImpl(private val sharedPreferences: SharedPreferences, private val gson: Gson) : LocalStore {
+class LocalStoreImpl(context: Context) : LocalStore {
+    private companion object {
+        const val PRIVATE_MODE = 0
+        const val PREF_NAME = "com.blockeq.stellarwallet.PREFERENCE_FILE_KEY"
+
+        const val KEY_ENCRYPTED_PHRASE = "kEncryptedPhrase"
+        const val KEY_ENCRYPTED_PASSPHRASE = "kEncryptedPassphrase"
+        const val KEY_PIN_DATA = "kPinData"
+        const val KEY_STELLAR_ACCOUNT_PUBLIC_KEY = "kStellarAccountPublicKey"
+        const val KEY_STELLAR_BALANCES_KEY = "kStellarBalancesKey"
+        const val KEY_STELLAR_AVAILABLE_BALANCE_KEY = "kAvailableBalanceKey"
+        const val KEY_IS_RECOVERY_PHRASE = "kIsRecoveryPhrase"
+        const val KEY_PIN_SETTINGS_SEND = "kPinSettingsSend"
+        const val KEY_IS_PASSPHRASE_USED = "kIsPassphraseUsed"
+    }
+
+    private val sharedPreferences = context.getSharedPreferences(PREF_NAME, PRIVATE_MODE)
+    private val gson = Gson()
+
     override fun getEncryptedPhrase() : String? {
         return getString(KEY_ENCRYPTED_PHRASE)
     }
@@ -64,17 +84,6 @@ class LocalStoreImpl(private val sharedPreferences: SharedPreferences, private v
         return getBoolean(KEY_PIN_SETTINGS_SEND)
     }
 
-    private companion object {
-        const val KEY_ENCRYPTED_PHRASE = "kEncryptedPhrase"
-        const val KEY_ENCRYPTED_PASSPHRASE = "kEncryptedPassphrase"
-        const val KEY_PIN_DATA = "kPinData"
-        const val KEY_STELLAR_ACCOUNT_PUBLIC_KEY = "kStellarAccountPublicKey"
-        const val KEY_STELLAR_BALANCES_KEY = "kStellarBalancesKey"
-        const val KEY_STELLAR_AVAILABLE_BALANCE_KEY = "kAvailableBalanceKey"
-        const val KEY_IS_RECOVERY_PHRASE = "kIsRecoveryPhrase"
-        const val KEY_PIN_SETTINGS_SEND = "kPinSettingsSend"
-        const val KEY_IS_PASSPHRASE_USED = "kIsPassphraseUsed"
-    }
 
     private operator fun set(key: String, value: String?) {
         sharedPreferences.edit().putString(key, value).apply()
