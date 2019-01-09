@@ -2,21 +2,21 @@ package com.blockeq.stellarwallet.activities
 
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.view.View
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.models.MnemonicType
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_launch.*
 
 class LaunchActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_launch)
 
-        setupUI()
-    }
-
-    //region User Interface
-    private fun setupUI() {
+        if (isExistingWallet()) {
+            createWalletButton.visibility = View.GONE
+            recoverWalletButton.visibility = View.GONE
+        }
 
         createWalletButton.setOnClickListener {
             showCreateDialog()
@@ -62,6 +62,4 @@ class LaunchActivity : BaseActivity() {
         val dialog = builder.create()
         dialog.show()
     }
-
-    //endregion
 }

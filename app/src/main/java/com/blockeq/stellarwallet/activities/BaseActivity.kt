@@ -12,13 +12,11 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
-        val pinDisabled = this !is LaunchActivity && DebugPreferencesHelper(applicationContext).isPinDisabled
+        val pinDisabled = (this !is LaunchActivity) && DebugPreferencesHelper(applicationContext).isPinDisabled
         if (WalletApplication.appReturnedFromBackground && !pinDisabled) {
             WalletApplication.appReturnedFromBackground =  false
 
-            if (!WalletApplication.localStore.encryptedPhrase.isNullOrEmpty()
-                    && !WalletApplication.localStore.stellarAccountId.isNullOrEmpty()) {
+            if (isExistingWallet()) {
                 startActivityForResult(WalletManagerActivity.verifyPin(this), VERIFY_PIN_REQUEST)
             } else {
                 AccountUtils.wipe(this)
@@ -27,6 +25,11 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     //region Helper Functions
+
+    internal fun isExistingWallet() : Boolean{
+        return !WalletApplication.localStore.encryptedPhrase.isNullOrEmpty()
+                && !WalletApplication.localStore.stellarAccountId.isNullOrEmpty()
+    }
 
     fun launchWallet() {
         val intent = Intent(this, WalletActivity::class.java)
@@ -37,8 +40,9 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == VERIFY_PIN_REQUEST) {
-            if (resultCode == Activity.RESULT_OK) {
-                launchWallet()
+            when(resultCode) {
+                Activity.RESULT_OK -> launchWallet()
+                Activity.RESULT_CANCELED -> finish()
             }
         }
     }
