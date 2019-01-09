@@ -1,10 +1,12 @@
 package com.blockeq.stellarwallet
 
+import android.content.Context
+import com.blockeq.stellarwallet.interfaces.CloudNodeStorage
 import com.blockeq.stellarwallet.interfaces.LocalStore
+import com.blockeq.stellarwallet.models.BasicBalance
 import org.stellar.sdk.responses.AccountResponse
 
-class BlockEqWallet(private var localStore: LocalStore) : LocalStore {
-
+class BlockEqWallet(context : Context, private val localStore: LocalStore, private val cloudNode : CloudNodeStorage) : LocalStore {
     override fun getEncryptedPhrase(): String? {
        return localStore.getEncryptedPhrase()
     }
@@ -26,6 +28,7 @@ class BlockEqWallet(private var localStore: LocalStore) : LocalStore {
     }
 
     override fun setStellarAccountId(accountId: String) {
+        cloudNode.saveAccountId(accountId)
         localStore.setStellarAccountId(accountId)
     }
 
@@ -34,6 +37,16 @@ class BlockEqWallet(private var localStore: LocalStore) : LocalStore {
     }
 
     override fun setBalances(balances: Array<AccountResponse.Balance>?) {
+        balances?.let {
+            val simpleBalances = arrayListOf<BasicBalance>()
+            it.forEach { that ->
+                simpleBalances.add(BasicBalance(that.balance, that.assetType, that.assetCode, that.assetIssuer.accountId))
+            }
+
+            cloudNode.saveBalances(simpleBalances)
+
+
+        }
       localStore.setBalances(balances)
     }
 
@@ -59,5 +72,10 @@ class BlockEqWallet(private var localStore: LocalStore) : LocalStore {
 
     override fun getShowPinOnSend(): Boolean {
         return localStore.getShowPinOnSend()
+    }
+
+    override fun clearUserData(): Boolean {
+        cloudNode.clearNode()
+        return localStore.clearUserData()
     }
 }

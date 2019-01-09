@@ -7,6 +7,7 @@ import com.blockeq.stellarwallet.helpers.LocalStoreImpl
 import com.blockeq.stellarwallet.helpers.WalletLifecycleListener
 import com.blockeq.stellarwallet.interfaces.LocalStore
 import com.blockeq.stellarwallet.models.UserSessionImpl
+import com.blockeq.stellarwallet.utils.CloudNodeStorageImpl
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 import com.blockeq.stellarwallet.vmodels.ExchangeRepository
 import com.facebook.stetho.Stetho
@@ -46,7 +47,7 @@ class WalletApplication : MultiDexApplication() {
         setupLifecycleListener()
 
         val sharedPreferences = getSharedPreferences(PREF_NAME, PRIVATE_MODE)
-        wallet = BlockEqWallet(LocalStoreImpl(sharedPreferences, Gson()))
+        wallet = BlockEqWallet(applicationContext, LocalStoreImpl(sharedPreferences, Gson()), CloudNodeStorageImpl(applicationContext))
 
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
@@ -71,7 +72,6 @@ class WalletApplication : MultiDexApplication() {
     }
 
     private fun setupLifecycleListener() {
-        ProcessLifecycleOwner.get().lifecycle
-                .addObserver(lifecycleListener)
+        ProcessLifecycleOwner.get().lifecycle.addObserver(lifecycleListener)
     }
 }

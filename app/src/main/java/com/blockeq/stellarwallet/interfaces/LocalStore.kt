@@ -17,4 +17,5 @@ interface LocalStore {
     fun setIsRecoveryPhrase(isRecoveryPhrase: Boolean)
     fun setShowPinOnSend(showPinOnSend: Boolean)
     fun getShowPinOnSend(): Boolean
+    fun clearUserData():  Boolean
 }
