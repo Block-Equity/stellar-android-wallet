@@ -135,12 +135,10 @@ object ContactsRepositoryImpl : ContactsRepository {
             stellarContactList = parseContactCursor(getStellarContactsList(), true)
             val parsedList = parseContactCursor(getContactsList(), false)
             val list = removeDuplicates(parsedList, stellarContactList)
-            if (!list.isEmpty() || !stellarContactList.isEmpty()) {
-                Handler(Looper.getMainLooper()).run {
-                    contactsList = list
-                    Timber.d("all parsed (${list.size})")
-                    notifyLiveData()
-                }
+            Handler(Looper.getMainLooper()).run {
+                contactsList = list
+                Timber.d("all parsed (${list.size})")
+                notifyLiveData()
             }
         }
     }
