@@ -11,11 +11,6 @@ import android.view.ViewGroup
 import com.blockeq.stellarwallet.BuildConfig
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
-import com.blockeq.stellarwallet.activities.AboutAnimationActivity
-import com.blockeq.stellarwallet.activities.DebugPreferenceActivity
-import com.blockeq.stellarwallet.activities.DiagnosticActivity
-import com.blockeq.stellarwallet.activities.WebViewActivity
-import com.blockeq.stellarwallet.models.PinType
 import com.blockeq.stellarwallet.activities.*
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.DiagnosticUtils
@@ -112,14 +107,14 @@ class SettingsFragment : BaseFragment() {
 
             SettingsAction.TOGGLE_PIN_ON_SENDING.ordinal -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    WalletApplication.localStore.showPinOnSend = !WalletApplication.localStore.showPinOnSend
+                    WalletApplication.wallet.setShowPinOnSend(!WalletApplication.wallet.getShowPinOnSend())
                 }
             }
         }
     }
 
     private fun setSavedSettings() {
-        pinOnSendPaymentsButton.isChecked = WalletApplication.localStore.showPinOnSend
+        pinOnSendPaymentsButton.isChecked = WalletApplication.wallet.getShowPinOnSend()
     }
 
     private fun wipeAndRestart() {

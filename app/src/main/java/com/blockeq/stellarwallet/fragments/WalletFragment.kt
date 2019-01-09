@@ -76,7 +76,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
             walletProgressBar.visibility = View.VISIBLE
 
             recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))),
-                    AvailableBalance(WalletApplication.localStore.availableBalance!!), Pair("Activity", "Amount"), effectsList)
+                    AvailableBalance(WalletApplication.wallet.getAvailableBalance()), Pair("Activity", "Amount"), effectsList)
 
             adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList!!.array)
             adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
@@ -99,7 +99,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
             if (currAsset != Constants.LUMENS_ASSET_TYPE) {
                 recyclerViewArrayList!!.hideAvailableBalance()
             } else {
-                recyclerViewArrayList!!.showAvailableBalance(AvailableBalance(WalletApplication.localStore.availableBalance!!))
+                recyclerViewArrayList!!.showAvailableBalance(AvailableBalance(WalletApplication.wallet.getAvailableBalance()))
             }
 
             recyclerViewArrayList!!.updateTotalBalance(TotalBalance(StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))))
@@ -117,7 +117,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount, OnLoadEffects {
         recyclerViewArrayList!!.updateTotalBalance(
                 TotalBalance(StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode))))
         recyclerViewArrayList!!.updateAvailableBalance(
-                AvailableBalance(WalletApplication.localStore.availableBalance!!))
+                AvailableBalance(WalletApplication.wallet.getAvailableBalance()))
     }
 
     override fun onError(error: ErrorResponse) {

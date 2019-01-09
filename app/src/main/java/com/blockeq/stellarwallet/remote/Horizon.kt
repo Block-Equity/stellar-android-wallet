@@ -83,7 +83,7 @@ object Horizon : HorizonTasks {
     private class LoadAccountTask(private val listener: OnLoadAccount) : AsyncTask<Void, Void, AccountResponse>() {
         override fun doInBackground(vararg params: Void?) : AccountResponse? {
             val server = getServer()
-            val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.stellarAccountId)
+            val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
             var account : AccountResponse? = null
             try {
                 account = server.accounts().account(sourceKeyPair)
@@ -108,7 +108,7 @@ object Horizon : HorizonTasks {
     private class LoadEffectsTask(private val listener: OnLoadEffects) : AsyncTask<Void, Void, ArrayList<EffectResponse>?>() {
         override fun doInBackground(vararg params: Void?): ArrayList<EffectResponse>? {
             val server = getServer()
-            val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.stellarAccountId)
+            val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
             var effectResults : Page<EffectResponse>? = null
             try {
                 effectResults = server.effects().order(RequestBuilder.Order.DESC)
@@ -345,7 +345,7 @@ object Horizon : HorizonTasks {
 
             val server = getServer()
             try {
-                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.localStore.stellarAccountId)
+                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
                 val response = server.offers().forAccount(sourceKeyPair).execute()
                 Handler(Looper.getMainLooper()).post {
                     listener.onOffers(response.records)

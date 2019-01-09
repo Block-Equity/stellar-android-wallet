@@ -1,44 +1,67 @@
 package com.blockeq.stellarwallet.helpers
 
 import android.content.SharedPreferences
+import com.blockeq.stellarwallet.interfaces.LocalStore
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import org.stellar.sdk.responses.AccountResponse
 import timber.log.Timber
 
-class LocalStore(private val sharedPreferences: SharedPreferences, private val gson: Gson) {
+class LocalStoreImpl(private val sharedPreferences: SharedPreferences, private val gson: Gson) : LocalStore {
+    override fun getEncryptedPhrase() : String? {
+        return getString(KEY_ENCRYPTED_PHRASE)
+    }
 
-    var encryptedPhrase: String?
-        get() = getString(KEY_ENCRYPTED_PHRASE)
-        set(encryptedPhrase) = set(KEY_ENCRYPTED_PHRASE, encryptedPhrase)
+    override fun setEncryptedPhrase(encryptedPassphrase : String?) {
+        set(KEY_ENCRYPTED_PHRASE, encryptedPassphrase)
+    }
 
-    var encryptedPassphrase: String?
-        get() = getString(KEY_ENCRYPTED_PASSPHRASE)
-        set(encryptedPassphrase) = set(KEY_ENCRYPTED_PASSPHRASE, encryptedPassphrase)
+    override fun getEncryptedPassphrase(): String? {
+        return getString(KEY_ENCRYPTED_PASSPHRASE)
+    }
 
-    var stellarAccountId: String?
-        get() = getString(KEY_STELLAR_ACCOUNT_PUBLIC_KEY)
-        set(publicKey) = set(KEY_STELLAR_ACCOUNT_PUBLIC_KEY, publicKey)
+    override fun setEncryptedPassphrase(encryptedPassphrase : String) {
+        set(KEY_ENCRYPTED_PASSPHRASE, encryptedPassphrase)
+    }
 
-    var balances: Array<AccountResponse.Balance>?
-        get() = get(KEY_STELLAR_BALANCES_KEY, Array<AccountResponse.Balance>::class.java)
-        set(balances) = set(KEY_STELLAR_BALANCES_KEY, balances)
+    override fun getStellarAccountId() : String? {
+        return getString(KEY_STELLAR_ACCOUNT_PUBLIC_KEY)
+    }
 
-    var availableBalance: String?
-        get() = getString(KEY_STELLAR_AVAILABLE_BALANCE_KEY)
-        set(availableBalance) = set(KEY_STELLAR_AVAILABLE_BALANCE_KEY, availableBalance)
+    override fun setStellarAccountId(accountId : String) {
+        return set(KEY_STELLAR_ACCOUNT_PUBLIC_KEY, accountId)
+    }
 
-    var isRecoveryPhrase : Boolean
-        get() = getBoolean(KEY_IS_RECOVERY_PHRASE)
-        set(isRecoveryPhrase) = set(KEY_IS_RECOVERY_PHRASE, isRecoveryPhrase)
+    override fun getBalances() : Array<AccountResponse.Balance> {
+        return get(KEY_STELLAR_BALANCES_KEY, Array<AccountResponse.Balance>::class.java) ?: return arrayOf()
+    }
 
-    var showPinOnSend : Boolean
-        get() = getBoolean(KEY_PIN_SETTINGS_SEND)
-        set(showPinOnSend) = set(KEY_PIN_SETTINGS_SEND, showPinOnSend)
+    override fun setBalances(balances : Array<AccountResponse.Balance>?) {
+        set(KEY_STELLAR_BALANCES_KEY, balances)
+    }
 
-    init {
-        balances = arrayOf()
-        availableBalance = Constants.DEFAULT_ACCOUNT_BALANCE
+    override fun getAvailableBalance(): String {
+        return getString(KEY_STELLAR_AVAILABLE_BALANCE_KEY) ?: Constants.DEFAULT_ACCOUNT_BALANCE
+    }
+
+    override fun setAvailableBalance(availableBalance:String?) {
+        return set(KEY_STELLAR_AVAILABLE_BALANCE_KEY, availableBalance)
+    }
+
+    override fun getIsRecoveryPhrase() : Boolean {
+        return getBoolean(KEY_IS_RECOVERY_PHRASE)
+    }
+
+    override fun setIsRecoveryPhrase(isRecoveryPhrase : Boolean) {
+        set(KEY_IS_RECOVERY_PHRASE, isRecoveryPhrase)
+    }
+
+    override fun setShowPinOnSend(showPinOnSend: Boolean) {
+        set(KEY_PIN_SETTINGS_SEND, showPinOnSend)
+    }
+
+    override fun getShowPinOnSend() : Boolean {
+        return getBoolean(KEY_PIN_SETTINGS_SEND)
     }
 
     private companion object {
@@ -95,11 +118,6 @@ class LocalStore(private val sharedPreferences: SharedPreferences, private val g
         editor.remove(KEY_STELLAR_AVAILABLE_BALANCE_KEY)
         editor.remove(KEY_IS_RECOVERY_PHRASE)
         editor.remove(KEY_IS_PASSPHRASE_USED)
-        val result = editor.commit()
-
-        balances = arrayOf()
-        availableBalance = Constants.DEFAULT_ACCOUNT_BALANCE
-
-        return result
+        return editor.commit()
     }
 }

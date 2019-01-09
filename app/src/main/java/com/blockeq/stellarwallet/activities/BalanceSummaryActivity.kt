@@ -29,7 +29,7 @@ class BalanceSummaryActivity : BasePopupActivity() {
         if (minimumBalance != null) {
 
             totalBalanceTextView.text = StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(Constants.LUMENS_ASSET_TYPE))
-            availableBalanceTextView.text = StringFormat.truncateDecimalPlaces(WalletApplication.localStore.availableBalance)
+            availableBalanceTextView.text = StringFormat.truncateDecimalPlaces(WalletApplication.wallet.getAvailableBalance())
 
             baseReserveAmountTextView.text = BASE_RESERVE_AMOUNT
             baseReserveXLMTextView.text = Constants.BASE_RESERVE.toString()

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.ImageView
 import com.blockeq.stellarwallet.R
@@ -82,7 +81,7 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
             passphraseButton.visibility = View.GONE
             generateQRCode(mnemonicString, qrImageView, 500)
 
-            if (!WalletApplication.localStore.isRecoveryPhrase) {
+            if (!WalletApplication.wallet.getIsRecoveryPhrase()) {
                 warningPhraseTextView.text = getString(R.string.no_mnemonic_set)
                 mnemonicView.visibility = View.GONE
             }
@@ -93,7 +92,7 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
             // TODO: Problem linked to setting isRecoveryPhrase before it is confirmed in
             // RecoveryWalletActivity.kt for a secret seed, so that needs to be refactored to
             // after the account is created in PinActivity.kt
-            WalletApplication.localStore.isRecoveryPhrase = true
+            WalletApplication.wallet.getIsRecoveryPhrase()
         }
         setupActionBar()
         setupMnemonicView()

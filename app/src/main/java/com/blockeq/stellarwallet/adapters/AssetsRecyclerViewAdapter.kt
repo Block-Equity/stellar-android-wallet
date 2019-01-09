@@ -128,7 +128,7 @@ class AssetsRecyclerViewAdapter(var context: Context, private var listener: Chan
             viewHolder.assetButton.text = context.getString(R.string.set_inflation_message)
             viewHolder.assetButton.setBackgroundColor(ContextCompat.getColor(context, R.color.mantis))
             viewHolder.assetButton.setOnClickListener {
-                if (WalletApplication.localStore.balances!!.isNotEmpty() &&
+                if (WalletApplication.wallet.getBalances().isNotEmpty() &&
                         AccountUtils.getTotalBalance(Constants.LUMENS_ASSET_TYPE).toDouble() > 1.0) {
                     context.startActivity(Intent(context, InflationActivity::class.java))
                 } else {

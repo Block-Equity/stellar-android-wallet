@@ -22,7 +22,7 @@ class ReceiveActivity : BaseActivity() {
         setSupportActionBar(toolBar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        val pubAddress = WalletApplication.localStore.stellarAccountId
+        val pubAddress = WalletApplication.wallet.getStellarAccountId()
 
         addressEditText.text = pubAddress
         generateQRCode(pubAddress!!, qrImageView, 500)
