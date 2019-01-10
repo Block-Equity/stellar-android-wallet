@@ -2,7 +2,7 @@ package com.blockeq.stellarwallet.helpers
 
 import com.blockeq.stellarwallet.utils.AccountUtils
 
-class StellarRecoveryString (string : String, val isRecoveryPhrase : Boolean, val passphrase : String? = null) {
+class StellarRecoveryString (string : String, private val isRecoveryPhrase : Boolean, val passphrase : String? = null) {
 
     private var recoveryString: String = string.trim()
 

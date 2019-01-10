@@ -1,8 +1,6 @@
 package com.blockeq.stellarwallet.helpers
 
 import android.content.Context
-import android.content.SharedPreferences
-import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.interfaces.LocalStore
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -69,7 +67,12 @@ class LocalStoreImpl(context: Context) : LocalStore {
     }
 
     override fun getIsRecoveryPhrase() : Boolean {
-        return getBoolean(KEY_IS_RECOVERY_PHRASE)
+        return if (contains(KEY_IS_RECOVERY_PHRASE)) {
+            getBoolean(KEY_IS_RECOVERY_PHRASE)
+        } else {
+            //default recovery method is recovery phrase
+            true
+        }
     }
 
     override fun setIsRecoveryPhrase(isRecoveryPhrase : Boolean) {
@@ -81,9 +84,13 @@ class LocalStoreImpl(context: Context) : LocalStore {
     }
 
     override fun getShowPinOnSend() : Boolean {
-        return getBoolean(KEY_PIN_SETTINGS_SEND)
+        return if(contains(KEY_PIN_SETTINGS_SEND)) {
+            getBoolean(KEY_PIN_SETTINGS_SEND)
+        } else {
+            //default logic is show pin on send
+            true
+        }
     }
-
 
     private operator fun set(key: String, value: String?) {
         sharedPreferences.edit().putString(key, value).apply()
@@ -102,9 +109,12 @@ class LocalStoreImpl(context: Context) : LocalStore {
         return sharedPreferences.getString(key, null)
     }
 
+    private fun contains(key:String) : Boolean {
+        return sharedPreferences.contains(key)
+    }
+
     private fun getBoolean(key: String): Boolean {
-        //TODO: refactor this, the default value true is the expected behavior for isRecoveryPhrase and showPinOnSend.
-        return sharedPreferences.getBoolean(key, true)
+        return sharedPreferences.getBoolean(key, false)
     }
 
     private operator fun <T> get(key: String, klass: Class<T>): T? {
