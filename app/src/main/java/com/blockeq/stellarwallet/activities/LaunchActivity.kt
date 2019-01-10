@@ -1,30 +1,22 @@
 package com.blockeq.stellarwallet.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.view.View
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.models.MnemonicType
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_launch.*
 
 class LaunchActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_launch)
 
-        setupUI()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PinActivity.PIN_REQUEST_CODE) {
-            finish()
+        if (isExistingWallet()) {
+            createWalletButton.visibility = View.GONE
+            recoverWalletButton.visibility = View.GONE
         }
-    }
-
-    //region User Interface
-    private fun setupUI() {
 
         createWalletButton.setOnClickListener {
             showCreateDialog()
@@ -65,13 +57,9 @@ class LaunchActivity : BaseActivity() {
 
                     val isPhraseRecovery = (which == 0)
 
-                    val intent = Intent(this, RecoverWalletActivity::class.java)
-                    intent.putExtra("isPhraseRecovery", isPhraseRecovery)
-                    startActivity(intent)
+                    startActivity(RecoverWalletActivity.newInstance(this, isPhraseRecovery))
                 }
         val dialog = builder.create()
         dialog.show()
     }
-
-    //endregion
 }

@@ -35,16 +35,16 @@ class DiagnosticActivity : BaseActivity() {
 
     fun setupUI() {
         setSupportActionBar(toolBar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val isPassphrase = WalletApplication.localStore.encryptedPassphrase != null
+        val isPassphrase = WalletApplication.wallet.getEncryptedPhrase() != null
         recoveryType = getRecoveryType()
 
         deviceModelTextView.text = DiagnosticUtils.getDeviceName()
         androidVersionTextView.text = DiagnosticUtils.getAndroidVersion()
         localeTextView.text = DiagnosticUtils.getLocale()
         appVersionTextView.text = DiagnosticUtils.getAppVersion()
-        publicAddressTextView.text = WalletApplication.localStore.stellarAccountId
+        publicAddressTextView.text = WalletApplication.wallet.getStellarAccountId()
         passphraseUsedTextView.text = isPassphrase.toString()
         recoveryTypeTextView.text = recoveryType
 
@@ -80,7 +80,7 @@ class DiagnosticActivity : BaseActivity() {
 
     private fun getRecoveryType(): String {
         val recoveryType : String
-        val encryptedPhrase = WalletApplication.localStore.encryptedPhrase
+        val encryptedPhrase = WalletApplication.wallet.getEncryptedPhrase()
         val masterKey = AccountUtils.getPinMasterKey(this, WalletApplication.userSession.pin!!)
 
         if (encryptedPhrase != null && masterKey!= null) {

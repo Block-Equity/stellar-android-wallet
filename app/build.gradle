@@ -9,8 +9,8 @@ android {
         applicationId "com.blockeq.stellarwallet"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 28
-        versionName "2.0.4"
+        versionCode 29
+        versionName "2.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
@@ -20,9 +20,11 @@ android {
             }
         }
     }
+
     androidExtensions {
         experimental = true
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -130,4 +132,11 @@ dependencies {
     kapt "android.arch.persistence.room:compiler:$lifecycleVersion"
 
     implementation "com.android.support:preference-v7:$supportLibraryVersion"
+
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+
+    implementation 'com.github.mancj:MaterialSearchBar:0.8.1'
+    implementation 'com.github.abdularis:CircularImageView:v1.2'
+
+    implementation 'com.google.android.gms:play-services-wearable:16.0.1'
 }

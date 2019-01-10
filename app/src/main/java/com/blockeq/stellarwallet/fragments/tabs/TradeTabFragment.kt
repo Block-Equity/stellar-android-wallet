@@ -1,16 +1,16 @@
 package com.blockeq.stellarwallet.fragments.tabs
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.text.Editable
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
@@ -23,6 +23,7 @@ import com.blockeq.stellarwallet.models.Currency
 import com.blockeq.stellarwallet.models.SelectionModel
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
+import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 import kotlinx.android.synthetic.main.fragment_tab_trade.*
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
 import org.stellar.sdk.Asset
@@ -46,7 +47,8 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
     private var latestBid: OrderBookResponse.Row? = null
     private var orderType : OrderType = OrderType.MARKET
     private var dataAvailable = false
-
+    private lateinit var toolTip : PopupWindow
+    private var isToolTipShowing = false
     private val ZERO_VALUE = "0.0"
     private val decimalFormat : NumberFormat = DecimalFormat("0.#######")
 
@@ -57,8 +59,8 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         appContext = view.context.applicationContext
-
-        buyingCustomSelector.editText.isEnabled = false
+        toolTip = PopupWindow(view.context)
+        setBuyingSelectorEnabled(false)
         refreshAddedCurrencies()
         setupListeners()
 
@@ -74,8 +76,6 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         threeQuarters.setOnClickListener(this)
         all.setOnClickListener(this)
         submitTrade.setOnClickListener(this)
-        sellingCustomSelector.isEnabled = true
-        buyingCustomSelector.isEnabled = true
 
         sellingCustomSelector.editText.addTextChangedListener(object : AfterTextChanged() {
             override fun afterTextChanged(editable: Editable) {
@@ -91,7 +91,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 holdingsAmount = selectedSellingCurrency.holdings
 
                 if (selectedSellingCurrency.label == AssetUtil.NATIVE_ASSET_CODE) {
-                    val available = WalletApplication.localStore.availableBalance!!.toDouble()
+                    val available = WalletApplication.wallet.getAvailableBalance().toDouble()
 
                     holdings.text = String.format(getString(R.string.holdings_amount),
                             decimalFormat.format(available),
@@ -149,7 +149,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         if (sellingValue.isEmpty() || buyingValue.isEmpty() ||
                 !numberFormatValid || sellingValueDouble.compareTo(0) == 0 ) {
            submitTrade.isEnabled = false
-        } else {
+        } else if(::selectedSellingCurrency.isInitialized){
             submitTrade.isEnabled = sellingValue.toDouble() <= selectedSellingCurrency.holdings
         }
     }
@@ -188,6 +188,13 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         MARKET
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (toolTip.isShowing) {
+            toolTip.dismiss()
+        }
+    }
+
     override fun onClick(view: View) {
         when (view.id) {
             R.id.tenth -> sellingCustomSelector.editText.setText(decimalFormat.format(0.1 * holdingsAmount).toString())
@@ -202,7 +209,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 toggleLimit.setBackgroundResource(R.drawable.right_toggle)
                 toggleLimit.setTextColor(ContextCompat.getColor(view.context, R.color.black))
 
-                buyingCustomSelector.editText.isEnabled = false
+                setBuyingSelectorEnabled(false)
                 updateBuyingValueIfNeeded()
             }
             R.id.toggleLimit -> {
@@ -211,10 +218,12 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 toggleLimit.setTextColor(ContextCompat.getColor(view.context, R.color.white))
                 toggleMarket.setBackgroundResource(R.drawable.left_toggle)
                 toggleMarket.setTextColor(ContextCompat.getColor(view.context, R.color.black))
-                buyingCustomSelector.editText.isEnabled = true
+                setBuyingSelectorEnabled(true)
             }
             R.id.submitTrade -> {
-                if ((orderType == OrderType.MARKET && !dataAvailable) || buyingCustomSelector.editText.toString() == ZERO_VALUE) {
+                if (buyingCustomSelector.editText.text.toString().isEmpty()) {
+                    createSnackBar("Buying price can not be empty.", Snackbar.LENGTH_SHORT).show()
+                } else if ((orderType == OrderType.MARKET && !dataAvailable) || buyingCustomSelector.editText.text.toString() == ZERO_VALUE) {
                     // buyingEditText should be empty at this moment
 
                     createSnackBar("Trade price cannot be 0. Please override limit order.", Snackbar.LENGTH_SHORT).show()
@@ -264,7 +273,9 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
         submitTrade.isEnabled = false
 
-        setSelectorsEnabled(false)
+        setBuyingSelectorEnabled(false)
+        setSellingSelectorEnabled(false)
+
         WalletApplication.userSession.getAvailableBalance()
 
         val sellingAmountFormatted = decimalFormat.format(sellingAmount.toDouble())
@@ -276,7 +287,8 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 createSnackBar("Order executed", Snackbar.LENGTH_SHORT).show()
 
                 submitTrade.isEnabled = true
-                setSelectorsEnabled(true)
+                setSellingSelectorEnabled(true)
+                setBuyingSelectorEnabled(true)
             }
 
             override fun onFailed(errorMessage : String) {
@@ -285,15 +297,32 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 createSnackBar("Order failed: $errorMessage", Snackbar.LENGTH_SHORT).show()
 
                 submitTrade.isEnabled = true
-                setSelectorsEnabled(true)
+                setSellingSelectorEnabled(false)
+                setBuyingSelectorEnabled(false)
             }
         }, AccountUtils.getSecretSeed(appContext), sellingAsset, buyingAsset,
                 sellingAmountFormatted, priceFormatted)
     }
 
-    private fun setSelectorsEnabled(isEnabled : Boolean) {
-        sellingCustomSelector.isEnabled = isEnabled
-        buyingCustomSelector.isEnabled = isEnabled
+
+    private fun setSellingSelectorEnabled(isEnabled: Boolean) {
+        sellingCustomSelector.editText.isEnabled = isEnabled
+    }
+
+    private fun setBuyingSelectorEnabled(isEnabled: Boolean) {
+        buyingCustomSelector.editText.isEnabled = isEnabled
+        if(isEnabled) {
+            buyingCustomSelector.editTextMask.visibility = View.GONE
+            buyingCustomSelector.editTextMask.setOnClickListener(null)
+        } else {
+            buyingCustomSelector.editTextMask.visibility = View.VISIBLE
+
+            buyingCustomSelector.editTextMask.setOnClickListener {
+                if (DebugPreferencesHelper(appContext).isTradeTooltipEnabled) {
+                    displayPopupWindow(toggleLimit)
+                }
+            }
+        }
     }
 
     override fun onAttach(context: Context?) {
@@ -313,26 +342,24 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
     }
 
     private fun refreshAddedCurrencies() {
-        val accounts = WalletApplication.localStore.balances
-        if (accounts != null) {
-            addedCurrencies.clear()
-            var i = 0
-            var native : Currency? = null
-            accounts.forEach { it ->
-                val currency = if(it.assetType != "native") {
-                    Currency(i, it.assetCode, it.assetCode, it.balance.toDouble(), it.asset)
-                } else {
-                    native = Currency(i, AssetUtil.NATIVE_ASSET_CODE, "LUMEN", it.balance.toDouble(), it.asset)
-                    native as Currency
-                }
-                addedCurrencies.add(currency)
-                i++
+        val accounts = WalletApplication.wallet.getBalances()
+        addedCurrencies.clear()
+        var i = 0
+        var native : Currency? = null
+        accounts.forEach { it ->
+            val currency = if(it.assetType != "native") {
+                Currency(i, it.assetCode, it.assetCode, it.balance.toDouble(), it.asset)
+            } else {
+                native = Currency(i, AssetUtil.NATIVE_ASSET_CODE, "LUMEN", it.balance.toDouble(), it.asset)
+                native as Currency
             }
+            addedCurrencies.add(currency)
+            i++
+        }
 
-            native?.let {
-                addedCurrencies.remove(it)
-                addedCurrencies.add(0, it)
-            }
+        native?.let {
+            addedCurrencies.remove(it)
+            addedCurrencies.add(0, it)
         }
 
         sellingCurrencies.clear()
@@ -350,6 +377,29 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
            updateBuyingValueIfNeeded()
         } else {
            dataAvailable = false
+        }
+    }
+
+    private fun displayPopupWindow(anchorView: View) {
+        if (!toolTip.isShowing) {
+            @SuppressLint("InflateParams")
+            val layout = layoutInflater.inflate(R.layout.popup_content, null)
+            toolTip.contentView = layout
+            // Set content width and height
+            toolTip.height = WindowManager.LayoutParams.WRAP_CONTENT
+            toolTip.width = WindowManager.LayoutParams.WRAP_CONTENT
+            // Show anchored to button
+            toolTip.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            toolTip.showAsDropDown(anchorView)
+            toolTip.setOnDismissListener {
+                isToolTipShowing = false
+            }
+            isToolTipShowing = true
+            anchorView.postDelayed({
+                if (toolTip.isShowing) {
+                    toolTip.dismiss()
+                }
+            }, 800)
         }
     }
 

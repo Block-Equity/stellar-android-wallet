@@ -1,24 +1,22 @@
 package com.blockeq.stellarwallet.activities
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.ImageView
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
-import com.blockeq.stellarwallet.activities.PinActivity.Companion.PIN_REQUEST_CODE
 import com.blockeq.stellarwallet.helpers.PassphraseDialogHelper
 import com.blockeq.stellarwallet.models.MnemonicType
-import com.blockeq.stellarwallet.models.PinType
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.soneso.stellarmnemonics.Wallet
 import kotlinx.android.synthetic.main.activity_mnemonic.*
-import java.lang.IllegalStateException
 
 class MnemonicActivity : BaseActivity(), View.OnClickListener {
+    private val CREATE_WALLET_REQUEST = 0x01
 
     companion object {
         private const val MNEMONIC_PHRASE = "MNEMONIC_PHRASE"
@@ -52,8 +50,10 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PIN_REQUEST_CODE) {
-            finish()
+        if (requestCode == CREATE_WALLET_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                launchWallet()
+            }
         }
     }
 
@@ -61,7 +61,7 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
     override fun onClick(v: View) {
         val itemId = v.id
         when (itemId) {
-            R.id.confirmButton -> launchPINView(PinType.CREATE, getString(R.string.please_create_a_pin), mnemonicString, passphrase, false)
+            R.id.confirmButton -> startActivityForResult(WalletManagerActivity.createWallet(v.context, mnemonicString, passphrase), CREATE_WALLET_REQUEST)
             R.id.passphraseButton -> {
                 val builder = PassphraseDialogHelper(this, object: PassphraseDialogHelper.PassphraseDialogListener {
                     override fun onOK(phrase: String) {
@@ -81,7 +81,7 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
             passphraseButton.visibility = View.GONE
             generateQRCode(mnemonicString, qrImageView, 500)
 
-            if (!WalletApplication.localStore.isRecoveryPhrase) {
+            if (!WalletApplication.wallet.getIsRecoveryPhrase()) {
                 warningPhraseTextView.text = getString(R.string.no_mnemonic_set)
                 mnemonicView.visibility = View.GONE
             }
@@ -92,16 +92,15 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
             // TODO: Problem linked to setting isRecoveryPhrase before it is confirmed in
             // RecoveryWalletActivity.kt for a secret seed, so that needs to be refactored to
             // after the account is created in PinActivity.kt
-            WalletApplication.localStore.isRecoveryPhrase = true
+            WalletApplication.wallet.getIsRecoveryPhrase()
         }
         setupActionBar()
         setupMnemonicView()
     }
 
     private fun setupActionBar() {
-        val toolBar = findViewById<Toolbar>(R.id.toolBar)
         setSupportActionBar(toolBar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolBar.setNavigationOnClickListener { onBackPressed() }
     }
 

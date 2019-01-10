@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +15,7 @@ import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.AssetsActivity
 import com.blockeq.stellarwallet.activities.BalanceSummaryActivity
-import com.blockeq.stellarwallet.activities.EnterAddressActivity
+import com.blockeq.stellarwallet.activities.StellarAddressActivity
 import com.blockeq.stellarwallet.activities.ReceiveActivity
 import com.blockeq.stellarwallet.adapters.WalletRecyclerViewAdapter
 import com.blockeq.stellarwallet.helpers.Constants
@@ -32,10 +33,8 @@ import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
 
-
 class WalletFragment : BaseFragment(), OnLoadAccount {
 
-    private var adapter : WalletRecyclerViewAdapter? = null
     private var effectsList : java.util.ArrayList<EffectResponse>? = null
     private lateinit var recyclerViewArrayList: WalletHeterogeneousArray
     private lateinit var viewModel : WalletViewModel
@@ -68,7 +67,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
 
         sendButton.setOnClickListener {
             activity?.let { activityContext ->
-                startActivity(Intent(activityContext, EnterAddressActivity::class.java))
+                startActivity(StellarAddressActivity.toSend(it.context))
                 activityContext.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
             }
         }
@@ -96,7 +95,7 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
                     recyclerViewArrayList.updateEffectsList(effectsList!!)
                     uiThread {
                         if (walletProgressBar != null) {
-                            adapter!!.notifyDataSetChanged()
+                            walletRecyclerView.adapter?.notifyDataSetChanged()
                             walletProgressBar.visibility = View.GONE
                         }
                     }
@@ -112,47 +111,59 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
     }
 
 
+
     private fun bindAdapter() {
         val currAsset = WalletApplication.userSession.currAssetCode
 
-        recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))),
-                AvailableBalance(WalletApplication.localStore.availableBalance!!), Pair("Activity", "Amount"), effectsList)
+        if (!::recyclerViewArrayList.isInitialized) {
+            walletProgressBar.visibility = View.VISIBLE
 
-        adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList.array)
+            recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))),
+                    AvailableBalance(WalletApplication.wallet.getAvailableBalance()), Pair("Activity", "Amount"), effectsList)
 
-        adapter!!.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
-            override fun onAssetDropdownClicked(view: View, position: Int) {
-                val context = view.context
-                startActivity(Intent(context, AssetsActivity::class.java))
-                (context as Activity).overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+            val adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList.array)
+            adapter.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
+                override fun onAssetDropdownClicked(view: View, position: Int) {
+                    val context = view.context
+                    startActivity(Intent(context, AssetsActivity::class.java))
+                    (context as Activity).overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+                }
+            })
+            adapter.setOnLearnMoreButtonListener(object : WalletRecyclerViewAdapter.OnLearnMoreButtonListener {
+                override fun onLearnMoreButtonClicked(view: View, position: Int) {
+                    val context = view.context
+                    startActivity(Intent(context, BalanceSummaryActivity::class.java))
+                    (context as Activity).overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
+                }
+            })
+            walletRecyclerView.adapter = adapter
+            walletRecyclerView.layoutManager = LinearLayoutManager(activity)
+        } else {
+            if (currAsset != Constants.LUMENS_ASSET_TYPE) {
+                recyclerViewArrayList.hideAvailableBalance()
+            } else {
+                recyclerViewArrayList.showAvailableBalance(AvailableBalance(WalletApplication.wallet.getAvailableBalance()))
             }
-        })
-        adapter!!.setOnLearnMoreButtonListener(object : WalletRecyclerViewAdapter.OnLearnMoreButtonListener {
-            override fun onLearnMoreButtonClicked(view: View, position: Int) {
-                val context = view.context
-                startActivity(Intent(context, BalanceSummaryActivity::class.java))
-                (context as Activity).overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
-            }
-        })
-        walletRecyclerView.adapter = adapter
-        walletRecyclerView.layoutManager = LinearLayoutManager(activity)
-      
-        recyclerViewArrayList!!.updateTotalBalance(TotalBalance(StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))))
-        recyclerViewArrayList!!.updateEffectsList(effectsList)
-   }
+
+            recyclerViewArrayList.updateTotalBalance(TotalBalance(StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))))
+            recyclerViewArrayList.updateEffectsList(effectsList)
+
+            walletRecyclerView.adapter?.notifyDataSetChanged()
+        }
+    }
 
     private fun updateAdapter() {
         val currAsset = WalletApplication.userSession.currAssetCode
         if (currAsset != Constants.LUMENS_ASSET_TYPE) {
             recyclerViewArrayList.hideAvailableBalance()
         } else {
-            recyclerViewArrayList.showAvailableBalance(AvailableBalance(WalletApplication.localStore.availableBalance!!))
+            recyclerViewArrayList.showAvailableBalance(AvailableBalance(WalletApplication.wallet.getAvailableBalance()))
         }
 
         recyclerViewArrayList.updateTotalBalance(TotalBalance(AccountUtils.getTotalBalance(currAsset)))
         recyclerViewArrayList.updateEffectsList(effectsList)
 
-        adapter!!.notifyDataSetChanged()
+        walletRecyclerView.adapter?.notifyDataSetChanged()
     }
 
     //endregion
@@ -160,18 +171,19 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
     //region Call backs
 
     override fun onLoadAccount(result: AccountResponse?) {
-      recyclerViewArrayList!!.updateTotalBalance(
+      recyclerViewArrayList.updateTotalBalance(
                 TotalBalance(StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(WalletApplication.userSession.currAssetCode))))
-        recyclerViewArrayList!!.updateAvailableBalance(AvailableBalance(WalletApplication.localStore.availableBalance!!))
+        recyclerViewArrayList.updateAvailableBalance(
+                AvailableBalance(WalletApplication.wallet.getAvailableBalance()))
     }
 
     override fun onError(error: ErrorResponse) {
         if (error.code == Constants.SERVER_ERROR_NOT_FOUND && walletProgressBar != null) {
-            val mainHandler = Handler(context!!.mainLooper)
-
-            mainHandler.post {
-                noTransactionsTextView.visibility = View.VISIBLE
-                walletProgressBar.visibility = View.GONE
+            Handler(Looper.getMainLooper()).post {
+                if (noTransactionsTextView != null) {
+                    noTransactionsTextView.visibility = View.VISIBLE
+                    walletProgressBar.visibility = View.GONE
+                }
             }
         }
     }

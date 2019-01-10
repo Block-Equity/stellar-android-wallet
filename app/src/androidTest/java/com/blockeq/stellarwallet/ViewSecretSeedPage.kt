@@ -8,7 +8,7 @@ import android.support.test.espresso.assertion.ViewAssertions
 
 object ViewSecretSeedPage : BasePage() {
     override fun onPageLoaded(): ViewSecretSeedPage {
-        onView(ViewMatchers.withId(R.id.toolBar))
+        onView(ViewMatchers.withId(R.id.secretSeedTextView))
         return this
     }
 

@@ -31,9 +31,9 @@ class AccountRepository {
                 if (result != null) {
                    liveData.postValue(result)
 
-                    WalletApplication.localStore.balances = result.balances
+                    WalletApplication.wallet.setBalances(result.balances)
                     WalletApplication.userSession.minimumBalance = MinimumBalance(result)
-                    WalletApplication.localStore.availableBalance = AccountUtils.calculateAvailableBalance()
+                    WalletApplication.wallet.setAvailableBalance(AccountUtils.calculateAvailableBalance())
                 }
             }
 

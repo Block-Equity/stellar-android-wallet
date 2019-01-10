@@ -38,7 +38,7 @@ abstract class ExchangesRoomDatabase : RoomDatabase() {
                                             }
 
                                             populateDatabase(context.applicationContext, entities)
-                                            Timber.d("Populating the emtpy database with a local resource")
+                                            Timber.d("Populating the empty database with a local resource")
                                         }
                                     }
                                 }).build()

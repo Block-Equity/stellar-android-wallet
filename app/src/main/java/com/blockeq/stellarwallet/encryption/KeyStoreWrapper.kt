@@ -45,6 +45,9 @@ class KeyStoreWrapper(private val context: Context) {
         }
     }
 
+    fun getAliases() : List<String> {
+        return Collections.list(keyStore.aliases())
+    }
     /**
      * @return asymmetric keypair from Android Key Store or null if any key with given alias exists
      */

@@ -9,23 +9,19 @@ import android.support.v4.app.Fragment
 import android.view.View
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
+import com.blockeq.stellarwallet.fragments.ContactsFragment
 import com.blockeq.stellarwallet.fragments.SettingsFragment
 import com.blockeq.stellarwallet.fragments.TradingFragment
 import com.blockeq.stellarwallet.fragments.WalletFragment
-import com.blockeq.stellarwallet.interfaces.OnLoadAccount
-import com.blockeq.stellarwallet.models.MinimumBalance
 import com.blockeq.stellarwallet.mvvm.effects.WalletViewModel
-import com.blockeq.stellarwallet.remote.Horizon
-import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.KeyboardUtils
-import com.blockeq.stellarwallet.utils.NetworkUtils
-import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 
 class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener {
     private enum class WalletFragmentType {
         WALLET,
         TRADING,
+        CONTACTS,
         SETTING
     }
 
@@ -47,20 +43,20 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
                 openFragment(walletFragment, WalletFragmentType.WALLET)
             }
             R.id.nav_trading -> {
-                val balances = WalletApplication.localStore.balances
-                if (balances == null || balances.isEmpty()) {
-
-                } else {
+                val balances = WalletApplication.wallet.getBalances()
+                if (!balances.isEmpty()) {
                     val tradingFragment = TradingFragment.newInstance()
                     openFragment(tradingFragment, WalletFragmentType.TRADING)
                 }
             }
-
+            R.id.nav_contacts -> {
+                openFragment(ContactsFragment(), WalletFragmentType.CONTACTS)
+            }
             R.id.nav_settings -> {
                 val settingsFragment = SettingsFragment.newInstance()
                 openFragment(settingsFragment, WalletFragmentType.SETTING)
             }
-            else -> throw IllegalAccessException("navigation item not supported $item.title(${item.itemId})")
+            else -> throw IllegalAccessException("Navigation item not supported $item.title(${item.itemId})")
         }
         return@OnNavigationItemSelectedListener true
     }
@@ -108,11 +104,11 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
         }
     }
 
+//        }
     //TODO: move onError to viewModel
 //    override fun onError(error: ErrorResponse) {
 //        val fragment = supportFragmentManager.findFragmentByTag(WalletFragmentType.WALLET.name)
 //        if (fragment != null) {
 //            (fragment as WalletFragment).onError(error)
-//        }
 //    }
 }

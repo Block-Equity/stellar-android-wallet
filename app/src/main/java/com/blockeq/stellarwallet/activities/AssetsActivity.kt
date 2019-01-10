@@ -3,6 +3,8 @@ package com.blockeq.stellarwallet.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
@@ -49,8 +51,7 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
 
     private fun setupUI() {
         setSupportActionBar(toolBar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         progressBar.visibility = View.VISIBLE
         bindAdapter()
         manuallyAddAssetButton.setOnClickListener {
@@ -68,7 +69,7 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
 
     private fun updateAdapter() {
         assetsList.clear()
-        assetsList.addAll(convertBalanceToSupportedAsset(WalletApplication.localStore.balances!!, map!!))
+        assetsList.addAll(convertBalanceToSupportedAsset(WalletApplication.wallet.getBalances(), map!!))
         val filteredList = getFilteredSupportedAssets(map!!)
         if (!filteredList.isEmpty()) {
             assetsList.add(getString(R.string.supported_assets_header))
@@ -139,7 +140,7 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
 
     private fun getFilteredSupportedAssets(map: Map<String, SupportedAsset>): List<SupportedAsset> {
         return map.values.filter { it ->
-            it.code.toUpperCase() !in WalletApplication.localStore.balances!!.map { it.assetCode }
+            it.code.toUpperCase() !in WalletApplication.wallet.getBalances().map { it.assetCode }
         }
     }
 
@@ -207,13 +208,16 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
 
                 override fun onLoadAccount(result: AccountResponse?) {
                     if (result != null) {
-                        WalletApplication.localStore.balances = result.balances
+                        WalletApplication.wallet.setBalances(result.balances)
                         updateAdapter()
                     }
                 }
 
                 override fun onError(error: ErrorResponse) {
-                    Toast.makeText(context, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
+                    //TODO: please address GH-170 and remove the handler here
+                    Handler(Looper.getMainLooper()).post {
+                        Toast.makeText(context, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
+                    }
                 }
             }).execute()
         }

@@ -4,17 +4,15 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import com.blockeq.stellarwallet.mvvm.effects.remote.RemoteRepository
+import org.glassfish.jersey.media.sse.EventSource
+import org.stellar.sdk.requests.EventListener
 import org.stellar.sdk.responses.effects.EffectResponse
-import java.util.*
-
-/**
- * Tried to implement (https://github.com/JoaquimLey/transport-eta/blob/26ce1a7f4b2dff12c6efa2292531035e70bfc4ae/app/src/main/java/com/joaquimley/buseta/repository/BusRepository.java)
- * While at the same time only using remote, and not local or Room db
- */
+import timber.log.Timber
 
 class EffectsRepository private constructor(private val remoteRepository: RemoteRepository) {
-
-    private var effectList = MutableLiveData<ArrayList<EffectResponse>>()
+    private var effectsList: ArrayList<EffectResponse> = ArrayList()
+    private var effectListLiveData = MutableLiveData<ArrayList<EffectResponse>>()
+    private var eventSource : EventSource? = null
     /**
      * Returns an observable for ALL the effects table changes
      */
@@ -22,19 +20,57 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
         fetchEffectsList(object : OnLoadEffects {
             override fun onLoadEffects(result: ArrayList<EffectResponse>?) {
                 if (result != null) {
-                    effectList.postValue(result)
+                    notifyLiveData(result)
                 }
             }
         })
-        return effectList
+        return effectListLiveData
+    }
+
+    private fun notifyLiveData(data : ArrayList<EffectResponse>){
+        effectListLiveData.postValue(data)
     }
 
     /**
      * Makes a call to the webservice. Keep it private since the view/viewModel should be 100% abstracted
      * from the data sources implementation.
      */
-    private fun fetchEffectsList(listener: OnLoadEffects) {
-        remoteRepository.getEffects(listener)
+    private fun fetchEffectsList(listener: OnLoadEffects?) {
+        var cursor = ""
+        if (!effectsList.isEmpty()) {
+            cursor = effectsList.last().pagingToken
+            listener?.onLoadEffects(effectsList)
+        }
+
+        closeStream()
+        remoteRepository.getEffects(cursor, 200, object : OnLoadEffects {
+            override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
+                Timber.d("fetched {$result?.size} effects")
+                if (result != null) {
+                    if (!result.isEmpty()) {
+                        effectsList.addAll(result)
+                        // it will notify the ui only in the first call.
+                        listener?.onLoadEffects(effectsList)
+                        fetchEffectsList(null)
+                    } else {
+                        Timber.d("Opening the stream")
+                        eventSource = remoteRepository.registerForEffects("now", EventListener {
+                            effectsList.add(0, it)
+                            notifyLiveData(effectsList)
+                        })
+                    }
+                }
+            }
+        })
+    }
+
+    private fun closeStream() {
+        eventSource?.let {
+            if (it.isOpen) {
+                Timber.d("Closing the stream")
+                it.close()
+            }
+        }
     }
 
     companion object {
@@ -45,7 +81,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
             if (instance == null) {
                 instance = EffectsRepository(remoteRepository)
             }
-            return instance!!
+            return instance as EffectsRepository
         }
     }
 }
