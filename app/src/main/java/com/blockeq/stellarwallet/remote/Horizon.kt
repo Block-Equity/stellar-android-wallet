@@ -11,8 +11,6 @@ import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
 import com.blockeq.stellarwallet.models.AssetUtil
 import com.blockeq.stellarwallet.models.DataAsset
 import com.blockeq.stellarwallet.models.HorizonException
-import com.facebook.stetho.okhttp3.StethoInterceptor
-import okhttp3.OkHttpClient
 import org.stellar.sdk.*
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.requests.RequestBuilder
@@ -21,6 +19,7 @@ import org.stellar.sdk.responses.OfferResponse
 import org.stellar.sdk.responses.OrderBookResponse
 import org.stellar.sdk.responses.Page
 import org.stellar.sdk.responses.effects.EffectResponse
+import shadow.okhttp3.OkHttpClient
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -111,9 +110,12 @@ object Horizon : HorizonTasks {
             val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
             var effectResults : Page<EffectResponse>? = null
             try {
-                effectResults = server.effects().order(RequestBuilder.Order.DESC)
+                server.effects().order(RequestBuilder.Order.DESC)
                         .limit(Constants.NUM_TRANSACTIONS_SHOWN)
-                        .forAccount(sourceKeyPair).execute()
+                        .forAccount(sourceKeyPair)
+                        .stream {
+                            Timber.d("onEvent" + it.type + " " + it.id)
+                        }
             } catch (error : Exception) {
                 Timber.e(error.message.toString())
             }
@@ -378,14 +380,14 @@ object Horizon : HorizonTasks {
                 .connectTimeout(10L, TimeUnit.SECONDS)
                 .readTimeout(30L, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
-                .addNetworkInterceptor(StethoInterceptor())
+                .addNetworkInterceptor(ShadowedStethoInterceptor())
                 .build()
 
         val submitHttpClient = OkHttpClient.Builder()
                 .connectTimeout(10L, TimeUnit.SECONDS)
                 .readTimeout(65L, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
-                .addNetworkInterceptor(StethoInterceptor())
+                .addNetworkInterceptor(ShadowedStethoInterceptor())
                 .build()
 
         server.httpClient = httpClient
