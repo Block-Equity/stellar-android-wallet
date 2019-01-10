@@ -1,26 +1,28 @@
 package com.blockeq.stellarwallet
 
-import com.blockeq.stellarwallet.interfaces.CloudNodeStorage
+import android.content.Context
 import com.blockeq.stellarwallet.interfaces.LocalStore
 import com.blockeq.stellarwallet.interfaces.WalletStore
 import com.blockeq.stellarwallet.models.BasicBalance
 import org.stellar.sdk.responses.AccountResponse
+import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.common.api.GoogleApiClient
 
-class BlockEqWallet(private val localStore: LocalStore, private val cloudNode : CloudNodeStorage) : WalletStore {
-    override fun setCloudStorageEnabled(isEnabled: Boolean) {
-        if (isEnabled) {
-            cloudNode.saveAccountId(getStellarAccountId())
-            cloudNode.saveBalances(toBasicBalances((getBalances())))
-        } else {
-            clearCloudStorage()
+class BlockEqWallet(context: Context, private val localStore: LocalStore) : WalletStore {
+    private var googleApiClient = GoogleApiClient.Builder(context)
+
+    init {
+        val accountId = localStore.getStellarAccountId()
+        if (accountId != null) {
+            googleApiClient
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(Wearable.API)
+                    .build()
+
+            googleApiClient.connect()
         }
     }
-
-    override fun clearCloudStorage() {
-        cloudNode.clearNode()
-    }
-
-    //region {@link LocalStore}
     override fun getEncryptedPhrase(): String? {
        return localStore.getEncryptedPhrase()
     }
@@ -42,7 +44,6 @@ class BlockEqWallet(private val localStore: LocalStore, private val cloudNode : 
     }
 
     override fun setStellarAccountId(accountId: String) {
-        cloudNode.saveAccountId(accountId)
         localStore.setStellarAccountId(accountId)
     }
 
@@ -51,9 +52,6 @@ class BlockEqWallet(private val localStore: LocalStore, private val cloudNode : 
     }
 
     override fun setBalances(balances: Array<AccountResponse.Balance>?) {
-       if (balances != null) {
-           cloudNode.saveBalances(toBasicBalances(balances))
-       }
       localStore.setBalances(balances)
     }
 
@@ -81,9 +79,8 @@ class BlockEqWallet(private val localStore: LocalStore, private val cloudNode : 
         return localStore.getShowPinOnSend()
     }
 
-    override fun clearUserData(): Boolean {
-        cloudNode.clearNode()
-        return localStore.clearUserData()
+    override fun clearLocalStore(): Boolean {
+        return localStore.clearLocalStore()
     }
 
     //endregion {@link LocalStore}
