@@ -37,7 +37,7 @@ class WalletApplication : MultiDexApplication() {
 
         setupLifecycleListener()
 
-        wallet = BlockEqWallet(LocalStoreImpl(applicationContext), CloudNodeStorageImpl(applicationContext))
+        wallet = BlockEqWallet(LocalStoreImpl(applicationContext))
 
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
