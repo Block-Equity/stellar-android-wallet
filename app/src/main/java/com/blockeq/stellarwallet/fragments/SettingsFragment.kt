@@ -11,11 +11,6 @@ import android.view.ViewGroup
 import com.blockeq.stellarwallet.BuildConfig
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
-import com.blockeq.stellarwallet.activities.AboutAnimationActivity
-import com.blockeq.stellarwallet.activities.DebugPreferenceActivity
-import com.blockeq.stellarwallet.activities.DiagnosticActivity
-import com.blockeq.stellarwallet.activities.WebViewActivity
-import com.blockeq.stellarwallet.models.PinType
 import com.blockeq.stellarwallet.activities.*
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.DiagnosticUtils
@@ -25,7 +20,7 @@ class SettingsFragment : BaseFragment() {
     private lateinit var appContext : Context
 
     enum class SettingsAction {
-        CLEAR_WALLET, TOGGLE_PIN_ON_SENDING
+        CLEAR_WALLET, TOGGLE_PIN_ON_SENDING, TOGGLE_ENABLE_WEAR_APP
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -59,6 +54,10 @@ class SettingsFragment : BaseFragment() {
 
         clearWalletButton.setOnClickListener {
             startActivityForResult(WalletManagerActivity.verifyPin(it.context), SettingsAction.CLEAR_WALLET.ordinal)
+        }
+
+        enableWear.setOnClickListener {
+            startActivityForResult(WalletManagerActivity.verifyPin(it.context), SettingsAction.TOGGLE_ENABLE_WEAR_APP.ordinal)
         }
 
         pinOnSendPaymentsButton.setOnClickListener {
@@ -112,14 +111,18 @@ class SettingsFragment : BaseFragment() {
 
             SettingsAction.TOGGLE_PIN_ON_SENDING.ordinal -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    WalletApplication.localStore.showPinOnSend = !WalletApplication.localStore.showPinOnSend
+                    WalletApplication.wallet.setShowPinOnSend(!WalletApplication.wallet.getShowPinOnSend())
                 }
+            }
+
+            SettingsAction.TOGGLE_ENABLE_WEAR_APP.ordinal -> {
+                WalletApplication.wallet
             }
         }
     }
 
     private fun setSavedSettings() {
-        pinOnSendPaymentsButton.isChecked = WalletApplication.localStore.showPinOnSend
+        pinOnSendPaymentsButton.isChecked = WalletApplication.wallet.getShowPinOnSend()
     }
 
     private fun wipeAndRestart() {

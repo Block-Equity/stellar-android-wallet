@@ -76,7 +76,7 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
 
         send_button.setOnClickListener {
             if (isAmountValid()) {
-                if (WalletApplication.localStore.showPinOnSend) {
+                if (WalletApplication.wallet.getShowPinOnSend()) {
                    startActivityForResult(WalletManagerActivity.verifyPin(it.context), REQUEST_PIN)
                 } else {
                     sendPayment()

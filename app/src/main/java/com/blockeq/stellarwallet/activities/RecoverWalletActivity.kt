@@ -74,10 +74,8 @@ class RecoverWalletActivity : BaseActivity() {
 
         bottomButton.setOnClickListener {
             try {
-                WalletApplication.localStore.isRecoveryPhrase = isRecoveryPhrase
-
                 recoveryString = StellarRecoveryString(getMnemonicString(), isRecoveryPhrase, passphrase).getString()
-
+                WalletApplication.wallet.setIsRecoveryPhrase(isRecoveryPhrase)
                 startActivityForResult(WalletManagerActivity.restore(it.context, recoveryString, passphrase), RESTORE_REQUEST)
             } catch (e: Exception) {
                 showErrorMessage(e.message)

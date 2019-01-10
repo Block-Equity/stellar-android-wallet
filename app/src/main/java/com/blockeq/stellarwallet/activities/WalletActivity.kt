@@ -50,10 +50,8 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUti
                 openFragment(walletFragment, WalletFragmentType.WALLET)
             }
             R.id.nav_trading -> {
-                val balances = WalletApplication.localStore.balances
-                if (balances == null || balances.isEmpty()) {
-
-                } else {
+                val balances = WalletApplication.wallet.getBalances()
+                if (!balances.isEmpty()) {
                     val tradingFragment = TradingFragment.newInstance()
                     openFragment(tradingFragment, WalletFragmentType.TRADING)
                 }
@@ -65,7 +63,7 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUti
                 val settingsFragment = SettingsFragment.newInstance()
                 openFragment(settingsFragment, WalletFragmentType.SETTING)
             }
-            else -> throw IllegalAccessException("navigation item not supported $item.title(${item.itemId})")
+            else -> throw IllegalAccessException("Navigation item not supported $item.title(${item.itemId})")
         }
         return@OnNavigationItemSelectedListener true
     }
@@ -142,9 +140,9 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUti
 
     override fun onLoadAccount(result: AccountResponse?) {
         if (result != null) {
-            WalletApplication.localStore.balances = result.balances
+            WalletApplication.wallet.setBalances(result.balances)
             WalletApplication.userSession.minimumBalance = MinimumBalance(result)
-            WalletApplication.localStore.availableBalance = AccountUtils.calculateAvailableBalance()
+            WalletApplication.wallet.setAvailableBalance(AccountUtils.calculateAvailableBalance())
 
             bottomNavigation.menu.getItem(WalletFragmentType.TRADING.ordinal).isEnabled = true
         }
