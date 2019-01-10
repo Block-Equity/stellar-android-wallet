@@ -20,7 +20,7 @@ class SettingsFragment : BaseFragment() {
     private lateinit var appContext : Context
 
     enum class SettingsAction {
-        CLEAR_WALLET, TOGGLE_PIN_ON_SENDING
+        CLEAR_WALLET, TOGGLE_PIN_ON_SENDING, TOGGLE_ENABLE_WEAR_APP
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -54,6 +54,10 @@ class SettingsFragment : BaseFragment() {
 
         clearWalletButton.setOnClickListener {
             startActivityForResult(WalletManagerActivity.verifyPin(it.context), SettingsAction.CLEAR_WALLET.ordinal)
+        }
+
+        enableWear.setOnClickListener {
+            startActivityForResult(WalletManagerActivity.verifyPin(it.context), SettingsAction.TOGGLE_ENABLE_WEAR_APP.ordinal)
         }
 
         pinOnSendPaymentsButton.setOnClickListener {
@@ -109,6 +113,10 @@ class SettingsFragment : BaseFragment() {
                 if (resultCode == Activity.RESULT_OK) {
                     WalletApplication.wallet.setShowPinOnSend(!WalletApplication.wallet.getShowPinOnSend())
                 }
+            }
+
+            SettingsAction.TOGGLE_ENABLE_WEAR_APP.ordinal -> {
+                WalletApplication.wallet
             }
         }
     }

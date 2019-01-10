@@ -2,10 +2,25 @@ package com.blockeq.stellarwallet
 
 import com.blockeq.stellarwallet.interfaces.CloudNodeStorage
 import com.blockeq.stellarwallet.interfaces.LocalStore
+import com.blockeq.stellarwallet.interfaces.WalletStore
 import com.blockeq.stellarwallet.models.BasicBalance
 import org.stellar.sdk.responses.AccountResponse
 
-class BlockEqWallet(private val localStore: LocalStore, private val cloudNode : CloudNodeStorage) : LocalStore {
+class BlockEqWallet(private val localStore: LocalStore, private val cloudNode : CloudNodeStorage) : WalletStore {
+    override fun setCloudStorageEnabled(isEnabled: Boolean) {
+        if (isEnabled) {
+            cloudNode.saveAccountId(getStellarAccountId())
+            cloudNode.saveBalances(toBasicBalances((getBalances())))
+        } else {
+            clearCloudStorage()
+        }
+    }
+
+    override fun clearCloudStorage() {
+        cloudNode.clearNode()
+    }
+
+    //region {@link LocalStore}
     override fun getEncryptedPhrase(): String? {
        return localStore.getEncryptedPhrase()
     }
@@ -36,23 +51,9 @@ class BlockEqWallet(private val localStore: LocalStore, private val cloudNode : 
     }
 
     override fun setBalances(balances: Array<AccountResponse.Balance>?) {
-        balances?.let {
-            val simpleBalances = arrayListOf<BasicBalance>()
-            it.forEach { that ->
-                var assetCode = that.assetCode
-                var issuer : String? = null
-                if (assetCode == null) {
-                    assetCode = "LMX"
-                } else {
-                    issuer = that.assetIssuer.accountId
-                }
-                simpleBalances.add(BasicBalance(that.balance, that.assetType, assetCode, issuer))
-            }
-
-            cloudNode.saveBalances(simpleBalances)
-
-
-        }
+       if (balances != null) {
+           cloudNode.saveBalances(toBasicBalances(balances))
+       }
       localStore.setBalances(balances)
     }
 
@@ -83,5 +84,22 @@ class BlockEqWallet(private val localStore: LocalStore, private val cloudNode : 
     override fun clearUserData(): Boolean {
         cloudNode.clearNode()
         return localStore.clearUserData()
+    }
+
+    //endregion {@link LocalStore}
+
+    private fun toBasicBalances(balances: Array<AccountResponse.Balance>) : ArrayList<BasicBalance> {
+        val simpleBalances = arrayListOf<BasicBalance>()
+        balances.forEach { that ->
+                var assetCode = that.assetCode
+                var issuer : String? = null
+                if (assetCode == null) {
+                    assetCode = "LMX"
+                } else {
+                    issuer = that.assetIssuer.accountId
+                }
+                simpleBalances.add(BasicBalance(that.balance, that.assetType, assetCode, issuer))
+            }
+        return simpleBalances
     }
 }
