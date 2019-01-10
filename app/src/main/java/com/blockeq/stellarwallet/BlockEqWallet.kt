@@ -66,8 +66,6 @@ class BlockEqWallet(private val localStore: LocalStore) : WalletStore {
         return localStore.clearLocalStore()
     }
 
-    //endregion {@link LocalStore}
-
     private fun toBasicBalances(balances: Array<AccountResponse.Balance>) : ArrayList<BasicBalance> {
         val simpleBalances = arrayListOf<BasicBalance>()
         balances.forEach { that ->
