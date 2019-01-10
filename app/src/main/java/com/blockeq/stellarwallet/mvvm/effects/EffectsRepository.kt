@@ -2,6 +2,7 @@ package com.blockeq.stellarwallet.mvvm.effects
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import com.blockeq.stellarwallet.mvvm.account.AccountRepository
 import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import com.blockeq.stellarwallet.mvvm.effects.remote.RemoteRepository
 import org.glassfish.jersey.media.sse.EventSource
@@ -55,8 +56,11 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
                     } else {
                         Timber.d("Opening the stream")
                         eventSource = remoteRepository.registerForEffects("now", EventListener {
+                            Timber.d("Stream response {$it}")
                             effectsList.add(0, it)
                             notifyLiveData(effectsList)
+                            //refresh account
+                            AccountRepository.loadAccount()
                         })
                     }
                 }

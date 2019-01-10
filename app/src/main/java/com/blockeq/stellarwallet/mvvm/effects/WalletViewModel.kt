@@ -14,9 +14,8 @@ import java.util.*
 class WalletViewModel(application: Application) : AndroidViewModel(application) {
 
     private val effectsRepository : EffectsRepository = EffectsRepository.getInstance(RemoteRepository())
-    private val accountRepository : AccountRepository = AccountRepository()
 
     var effectsList: LiveData<ArrayList<EffectResponse>> = effectsRepository.loadList()
-    var account : LiveData<AccountResponse> = accountRepository.loadAccount()
+    var account : LiveData<AccountResponse> = AccountRepository.loadAccount()
 
 }
