@@ -5,9 +5,8 @@ import android.support.multidex.MultiDexApplication
 import com.blockeq.stellarwallet.encryption.PRNGFixes
 import com.blockeq.stellarwallet.helpers.LocalStoreImpl
 import com.blockeq.stellarwallet.helpers.WalletLifecycleListener
-import com.blockeq.stellarwallet.interfaces.LocalStore
+import com.blockeq.stellarwallet.interfaces.WalletStore
 import com.blockeq.stellarwallet.models.UserSessionImpl
-import com.blockeq.stellarwallet.utils.CloudNodeStorageImpl
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 import com.blockeq.stellarwallet.vmodels.ExchangeRepository
 import com.facebook.stetho.Stetho
@@ -20,7 +19,7 @@ import java.security.Security
 class WalletApplication : MultiDexApplication() {
     companion object {
         // Use LocalStoreImpl for SharedPreferences
-        lateinit var wallet: LocalStore
+        lateinit var wallet: WalletStore
 
         var userSession = UserSessionImpl()
 
@@ -38,7 +37,7 @@ class WalletApplication : MultiDexApplication() {
 
         setupLifecycleListener()
 
-        wallet = BlockEqWallet(LocalStoreImpl(applicationContext), CloudNodeStorageImpl(applicationContext))
+        wallet = BlockEqWallet(LocalStoreImpl(applicationContext))
 
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)

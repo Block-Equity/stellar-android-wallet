@@ -127,7 +127,7 @@ class LocalStoreImpl(context: Context) : LocalStore {
         }
     }
 
-    override fun clearUserData() : Boolean {
+    override fun clearLocalStore() : Boolean {
         val editor = sharedPreferences.edit()
         editor.remove(KEY_ENCRYPTED_PHRASE)
         editor.remove(KEY_ENCRYPTED_PASSPHRASE)

@@ -95,7 +95,7 @@ class AccountUtils {
         fun wipe(context: Context) : Boolean {
             val keyStoreWrapper = KeyStoreWrapper(context)
             keyStoreWrapper.clear()
-            return WalletApplication.wallet.clearUserData()
+            return WalletApplication.wallet.clearLocalStore()
         }
     }
 }
