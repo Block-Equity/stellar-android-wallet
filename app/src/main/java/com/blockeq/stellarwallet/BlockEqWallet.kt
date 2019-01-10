@@ -5,24 +5,8 @@ import com.blockeq.stellarwallet.interfaces.LocalStore
 import com.blockeq.stellarwallet.interfaces.WalletStore
 import com.blockeq.stellarwallet.models.BasicBalance
 import org.stellar.sdk.responses.AccountResponse
-import com.google.android.gms.wearable.Wearable
-import com.google.android.gms.common.api.GoogleApiClient
 
-class BlockEqWallet(context: Context, private val localStore: LocalStore) : WalletStore {
-    private var googleApiClient = GoogleApiClient.Builder(context)
-
-    init {
-        val accountId = localStore.getStellarAccountId()
-        if (accountId != null) {
-            googleApiClient
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(Wearable.API)
-                    .build()
-
-            googleApiClient.connect()
-        }
-    }
+class BlockEqWallet(private val localStore: LocalStore) : WalletStore {
     override fun getEncryptedPhrase(): String? {
        return localStore.getEncryptedPhrase()
     }
