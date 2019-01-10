@@ -1,6 +1,5 @@
 package com.blockeq.stellarwallet
 
-import android.content.Context
 import com.blockeq.stellarwallet.interfaces.LocalStore
 import com.blockeq.stellarwallet.interfaces.WalletStore
 import com.blockeq.stellarwallet.models.BasicBalance
