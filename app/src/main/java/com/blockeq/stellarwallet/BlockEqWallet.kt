@@ -39,7 +39,14 @@ class BlockEqWallet(private val localStore: LocalStore, private val cloudNode : 
         balances?.let {
             val simpleBalances = arrayListOf<BasicBalance>()
             it.forEach { that ->
-                simpleBalances.add(BasicBalance(that.balance, that.assetType, that.assetCode, that.assetIssuer.accountId))
+                var assetCode = that.assetCode
+                var issuer : String? = null
+                if (assetCode == null) {
+                    assetCode = "LMX"
+                } else {
+                    issuer = that.assetIssuer.accountId
+                }
+                simpleBalances.add(BasicBalance(that.balance, that.assetType, assetCode, issuer))
             }
 
             cloudNode.saveBalances(simpleBalances)
