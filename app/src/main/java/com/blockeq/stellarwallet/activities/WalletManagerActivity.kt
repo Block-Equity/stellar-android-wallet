@@ -122,7 +122,7 @@ class WalletManagerActivity : AppCompatActivity() {
                     if (pin != null) {
                         val masterKey = AccountUtils.getPinMasterKey(applicationContext, pin)
                         if (masterKey != null) {
-                            val encryptedPhrase = WalletApplication.localStore.encryptedPhrase!!
+                            val encryptedPhrase = WalletApplication.wallet.getEncryptedPhrase()!!
                             val decryptedPhrase = AccountUtils.getDecryptedString(encryptedPhrase, masterKey)
                             startActivity(MnemonicActivity.newDisplayMnemonicIntent(this, decryptedPhrase))
                             finish()
@@ -137,10 +137,10 @@ class WalletManagerActivity : AppCompatActivity() {
                     if (pin != null) {
                         val masterKey = AccountUtils.getPinMasterKey(applicationContext, pin)
                         if (masterKey != null) {
-                            val encryptedPhrase = WalletApplication.localStore.encryptedPhrase!!
+                            val encryptedPhrase = WalletApplication.wallet.getEncryptedPhrase()!!
                             val phrase = AccountUtils.getDecryptedString(encryptedPhrase, masterKey)
 
-                            val encryptedPassphrase = WalletApplication.localStore.encryptedPassphrase
+                            val encryptedPassphrase = WalletApplication.wallet.getEncryptedPassphrase()
                             var passphrase: String?= null
                             if (encryptedPassphrase != null) {
                                 passphrase = AccountUtils.getDecryptedString(encryptedPassphrase, masterKey)

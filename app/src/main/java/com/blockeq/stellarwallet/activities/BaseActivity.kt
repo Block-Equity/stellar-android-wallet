@@ -27,8 +27,8 @@ abstract class BaseActivity : AppCompatActivity() {
     //region Helper Functions
 
     internal fun isExistingWallet() : Boolean{
-        return !WalletApplication.localStore.encryptedPhrase.isNullOrEmpty()
-                && !WalletApplication.localStore.stellarAccountId.isNullOrEmpty()
+        return !WalletApplication.wallet.getEncryptedPhrase().isNullOrEmpty()
+                && !WalletApplication.wallet.getStellarAccountId().isNullOrEmpty()
     }
 
     fun launchWallet() {

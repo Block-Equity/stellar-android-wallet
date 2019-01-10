@@ -78,7 +78,7 @@ public class AccountUtilsTest {
     @Test
     public void basic_encryption_mnemonic() {
         AccountUtils.Companion.encryptAndStoreWallet(context, mnemonic12, null, pin);
-        String phrase = WalletApplication.localStore.getEncryptedPhrase();
+        String phrase = WalletApplication.wallet.getEncryptedPhrase();
 
         assertNotNull(phrase);
     }
@@ -86,14 +86,14 @@ public class AccountUtilsTest {
     @Test
     public void basic_encryption_mnemonic_with_passphrase() {
         AccountUtils.Companion.encryptAndStoreWallet(context, mnemonic12, passPhrase, pin);
-        String phrase = WalletApplication.localStore.getEncryptedPhrase();
+        String phrase = WalletApplication.wallet.getEncryptedPhrase();
         assertNotNull(phrase);
 
         KeyPair keyPair = AccountUtils.Companion.getPinMasterKey(context, pin);
         assertNotNull(keyPair);
 
         String decryptedPhrase = AccountUtils.Companion.getDecryptedString(phrase, keyPair);
-        String encryptedPassphrase = WalletApplication.localStore.getEncryptedPassphrase();
+        String encryptedPassphrase = WalletApplication.wallet.getEncryptedPassphrase();
         String decryptedPassphrase = null;
         if (encryptedPassphrase != null) {
             decryptedPassphrase = AccountUtils.Companion.getDecryptedString(encryptedPassphrase, keyPair);
@@ -109,14 +109,14 @@ public class AccountUtilsTest {
         String passphrase = "passphrase with spaces";
 
         AccountUtils.Companion.encryptAndStoreWallet(context, mnemonic12, passphrase, pin);
-        String phrase = WalletApplication.localStore.getEncryptedPhrase();
+        String phrase = WalletApplication.wallet.getEncryptedPhrase();
         assertNotNull(phrase);
 
         KeyPair keyPair = AccountUtils.Companion.getPinMasterKey(context, pin);
         assertNotNull(keyPair);
 
         String decryptedPhrase = AccountUtils.Companion.getDecryptedString(phrase, keyPair);
-        String encryptedPassphrase = WalletApplication.localStore.getEncryptedPassphrase();
+        String encryptedPassphrase = WalletApplication.wallet.getEncryptedPassphrase();
         String decryptedPassphrase = null;
         if (encryptedPassphrase != null) {
             decryptedPassphrase = AccountUtils.Companion.getDecryptedString(encryptedPassphrase, keyPair);
@@ -131,14 +131,14 @@ public class AccountUtilsTest {
         String passphrase = "passphrase with spaces";
 
         AccountUtils.Companion.encryptAndStoreWallet(context, mnemonic24, passphrase, pin);
-        String phrase = WalletApplication.localStore.getEncryptedPhrase();
+        String phrase = WalletApplication.wallet.getEncryptedPhrase();
         assertNotNull(phrase);
 
         KeyPair keyPair = AccountUtils.Companion.getPinMasterKey(context, pin);
         assertNotNull(keyPair);
 
         String decryptedPhrase = AccountUtils.Companion.getDecryptedString(phrase, keyPair);
-        String encryptedPassphrase = WalletApplication.localStore.getEncryptedPassphrase();
+        String encryptedPassphrase = WalletApplication.wallet.getEncryptedPassphrase();
         String decryptedPassphrase = null;
         if (encryptedPassphrase != null) {
             decryptedPassphrase = AccountUtils.Companion.getDecryptedString(encryptedPassphrase, keyPair);

@@ -18,13 +18,13 @@ class AccountUtils {
 
             val stellarKeyPair = AccountUtils.getStellarKeyPair(mnemonic, passphrase)
 
-            WalletApplication.localStore.stellarAccountId = stellarKeyPair.accountId
+            WalletApplication.wallet.setStellarAccountId(stellarKeyPair.accountId)
             WalletApplication.userSession.pin = pin
         }
 
         fun getSecretSeed(context : Context) : CharArray {
-            val encryptedPhrase = WalletApplication.localStore.encryptedPhrase!!
-            val encryptedPassphrase = WalletApplication.localStore.encryptedPassphrase
+            val encryptedPhrase = WalletApplication.wallet.getEncryptedPhrase()!!
+            val encryptedPassphrase = WalletApplication.wallet.getEncryptedPassphrase()
             val masterKey = getPinMasterKey(context, WalletApplication.userSession.pin!!)!!
 
             val decryptedPhrase = getDecryptedString(encryptedPhrase, masterKey)
@@ -48,11 +48,11 @@ class AccountUtils {
             if (passphrase == null || passphrase.isEmpty()) {
                 encryptedPhrase = cipherWrapper.encrypt(mnemonic, masterKey.public)
             } else {
-                WalletApplication.localStore.encryptedPassphrase = cipherWrapper.encrypt(passphrase, masterKey.public)
+                WalletApplication.wallet.setEncryptedPassphrase(cipherWrapper.encrypt(passphrase, masterKey.public))
                 encryptedPhrase = cipherWrapper.encrypt(mnemonic, masterKey.public)
             }
 
-            WalletApplication.localStore.encryptedPhrase = encryptedPhrase
+            WalletApplication.wallet.setEncryptedPhrase(encryptedPhrase)
             return true
 
         }
@@ -63,7 +63,7 @@ class AccountUtils {
         }
 
         fun getTotalBalance(type : String) : String {
-            WalletApplication.localStore.balances!!.forEach {
+            WalletApplication.wallet.getBalances().forEach {
                 if (it.assetType == type) {
                     return it.balance
                 } else if (it.assetCode == type) {
@@ -80,7 +80,7 @@ class AccountUtils {
         }
 
         fun getStellarKeyPair(mnemonic: String, passphrase: String?) : KeyPair {
-            return if (WalletApplication.localStore.isRecoveryPhrase) {
+            return if (WalletApplication.wallet.getIsRecoveryPhrase()) {
                 Wallet.createKeyPair(mnemonic.toCharArray(), passphrase?.toCharArray(), Constants.USER_INDEX)
             } else {
                 KeyPair.fromSecretSeed(mnemonic)
@@ -95,7 +95,7 @@ class AccountUtils {
         fun wipe(context: Context) : Boolean {
             val keyStoreWrapper = KeyStoreWrapper(context)
             keyStoreWrapper.clear()
-            return WalletApplication.localStore.clearUserData()
+            return WalletApplication.wallet.clearUserData()
         }
     }
 }

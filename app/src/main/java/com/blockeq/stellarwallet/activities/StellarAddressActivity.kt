@@ -147,7 +147,7 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
             R.id.bottomButton -> {
                 when(mode) {
                     Mode.SEND_TO -> {
-                        if (address.length == STELLAR_ADDRESS_LENGTH && address != WalletApplication.localStore.stellarAccountId) {
+                        if (address.length == STELLAR_ADDRESS_LENGTH && address != WalletApplication.wallet.getStellarAccountId()) {
                             startActivity(SendActivity.newIntent(this, address))
                             overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
                         } else {

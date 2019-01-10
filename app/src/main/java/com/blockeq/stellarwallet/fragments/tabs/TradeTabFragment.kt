@@ -25,7 +25,6 @@ import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 import kotlinx.android.synthetic.main.fragment_tab_trade.*
-import kotlinx.android.synthetic.main.preference_dialog_edittext.view.*
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
 import org.stellar.sdk.Asset
 import org.stellar.sdk.responses.OrderBookResponse
@@ -92,7 +91,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 holdingsAmount = selectedSellingCurrency.holdings
 
                 if (selectedSellingCurrency.label == AssetUtil.NATIVE_ASSET_CODE) {
-                    val available = WalletApplication.localStore.availableBalance!!.toDouble()
+                    val available = WalletApplication.wallet.getAvailableBalance().toDouble()
 
                     holdings.text = String.format(getString(R.string.holdings_amount),
                             decimalFormat.format(available),
@@ -343,26 +342,24 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
     }
 
     private fun refreshAddedCurrencies() {
-        val accounts = WalletApplication.localStore.balances
-        if (accounts != null) {
-            addedCurrencies.clear()
-            var i = 0
-            var native : Currency? = null
-            accounts.forEach { it ->
-                val currency = if(it.assetType != "native") {
-                    Currency(i, it.assetCode, it.assetCode, it.balance.toDouble(), it.asset)
-                } else {
-                    native = Currency(i, AssetUtil.NATIVE_ASSET_CODE, "LUMEN", it.balance.toDouble(), it.asset)
-                    native as Currency
-                }
-                addedCurrencies.add(currency)
-                i++
+        val accounts = WalletApplication.wallet.getBalances()
+        addedCurrencies.clear()
+        var i = 0
+        var native : Currency? = null
+        accounts.forEach { it ->
+            val currency = if(it.assetType != "native") {
+                Currency(i, it.assetCode, it.assetCode, it.balance.toDouble(), it.asset)
+            } else {
+                native = Currency(i, AssetUtil.NATIVE_ASSET_CODE, "LUMEN", it.balance.toDouble(), it.asset)
+                native as Currency
             }
+            addedCurrencies.add(currency)
+            i++
+        }
 
-            native?.let {
-                addedCurrencies.remove(it)
-                addedCurrencies.add(0, it)
-            }
+        native?.let {
+            addedCurrencies.remove(it)
+            addedCurrencies.add(0, it)
         }
 
         sellingCurrencies.clear()
