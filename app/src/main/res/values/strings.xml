@@ -246,7 +246,7 @@
     <string name="no_contacts_found">No contacts found</string>
 
     <!--Update stellar address-->
-    <string name="stellar_address_title">Stellar Address</string>
+    <string name="stellar_address_title">Public Address</string>
     <string name="create_button">CREATE</string>
 
 </resources>
