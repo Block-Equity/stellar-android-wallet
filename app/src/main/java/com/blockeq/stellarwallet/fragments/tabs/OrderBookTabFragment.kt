@@ -22,14 +22,6 @@ import timber.log.Timber
 import java.util.*
 
 class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnUpdateOrderBook {
-    override fun updateOrderBook(sellingCode: String, buyingCode: String, asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
-        activity?.let {
-            if (!it.isFinishing) {
-               loadOrderBook(sellingCode, buyingCode, asks, bids)
-            }
-        }
-    }
-
     private var orderBooks = mutableListOf<OrderBook>()
     private lateinit var orderBooksAdapter: OrderBooksAdapter
     private var buyingAsset : DataAsset? = null
@@ -44,7 +36,7 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         val dividerItemDecoration = DividerItemDecoration(context,
                 LinearLayoutManager(context).orientation)
         orderBookRv.addItemDecoration(dividerItemDecoration)
-//        swipeRefresh.setOnRefreshListener(this)
+        swipeRefresh.setOnRefreshListener(this)
 
     }
 
@@ -56,6 +48,15 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
             Timber.d("setUserVisibleHint > Refreshing")
             onRefresh()
 
+        }
+    }
+
+    override fun updateOrderBook(sellingCode: String, buyingCode: String, asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
+        Timber.d("updating order book")
+        activity?.let {
+            if (!it.isFinishing) {
+                loadOrderBook(sellingCode, buyingCode, asks, bids)
+            }
         }
     }
 
@@ -73,6 +74,8 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
     }
 
     private fun loadOrderBook(sellingCode: String, buyingCode: String, asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
+        Timber.d("loadOrderBook")
+
         orderBooks.clear()
         val orderBooksTitle = OrderBook(type = OrderBookAdapterTypes.TITLE)
         val buyOffer = OrderBookStickyHeader(type = OrderBookAdapterTypes.BUY_HEADER)
@@ -107,12 +110,10 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
 
         Timber.d("loading order book complete items %s", orderBooks.size)
 
-        if (::orderBooksAdapter.isInitialized) {
-            Handler(Looper.getMainLooper()).post {
-                initializeAdapterIfNeeded(sellingCode, buyingCode)
-                orderBooksAdapter.setCurrencies(sellingCode, buyingCode)
-                orderBooksAdapter.notifyDataSetChanged()
-            }
+        Handler(Looper.getMainLooper()).post {
+            initializeAdapterIfNeeded(sellingCode, buyingCode)
+            orderBooksAdapter.setCurrencies(sellingCode, buyingCode)
+            orderBooksAdapter.notifyDataSetChanged()
         }
 
         if (swipeRefresh != null) {
