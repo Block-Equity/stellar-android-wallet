@@ -230,7 +230,7 @@
 
     <!--Contacts -->
     <string name="hint_search_bar">Find contact…</string>
-    <string name="setup_contact_title">Setup Contact</string>
+    <string name="update_contact_title">Update %1$s</string>
     <string name="add_contact_title">Add Contact</string>
     <string name="enter_the_contact_name">Enter the contact name</string>
     <string name="name">Name</string>

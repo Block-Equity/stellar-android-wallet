@@ -97,7 +97,7 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
             it.setDisplayHomeAsUpEnabled(true)
             when(mode) {
                 Mode.SEND_TO -> it.title = getString(R.string.button_send)
-                Mode.UPDATE_CONTACT -> it.title = getString(R.string.setup_contact_title)
+                Mode.UPDATE_CONTACT -> it.title = getString(R.string.update_contact_title, contact.name)
                 Mode.CREATE_CONTACT -> it.title = getString(R.string.add_contact_title)
             }
         }
@@ -113,10 +113,8 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
             Mode.UPDATE_CONTACT -> {
                 titleBalance.visibility = View.GONE
                 bottomButton.text = getString(R.string.save_button)
-                ContactNameText.visibility = View.VISIBLE
-                ContactNameEditText.visibility = View.VISIBLE
-                ContactNameEditText.isEnabled = false
-                ContactNameEditText.setText(contact.name)
+                ContactNameText.visibility = View.GONE
+                ContactNameEditText.visibility = View.GONE
                 addressTitleText.text = "Stellar Address"
                 addressEditText.setText(contact.stellarAddress)
             }
