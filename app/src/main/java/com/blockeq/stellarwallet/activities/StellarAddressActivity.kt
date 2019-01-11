@@ -115,13 +115,13 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
                 bottomButton.text = getString(R.string.save_button)
                 ContactNameText.visibility = View.GONE
                 ContactNameEditText.visibility = View.GONE
-                addressTitleText.text = "Stellar Address"
+                addressTitleText.text = getString(R.string.stellar_address_title)
                 addressEditText.setText(contact.stellarAddress)
             }
             Mode.CREATE_CONTACT -> {
                 titleBalance.visibility = View.GONE
-                bottomButton.text = "CREATE"
-                addressTitleText.text = "Stellar Address"
+                bottomButton.text = getString(R.string.CREATE_BUTTON)
+                addressTitleText.text = getString(R.string.stellar_address_title)
             }
         }
 
