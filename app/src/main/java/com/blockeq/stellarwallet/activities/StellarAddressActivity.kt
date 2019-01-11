@@ -120,7 +120,7 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
             }
             Mode.CREATE_CONTACT -> {
                 titleBalance.visibility = View.GONE
-                bottomButton.text = getString(R.string.CREATE_BUTTON)
+                bottomButton.text = getString(R.string.create_button)
                 addressTitleText.text = getString(R.string.stellar_address_title)
             }
         }
