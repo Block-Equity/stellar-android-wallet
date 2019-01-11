@@ -57,9 +57,18 @@ class ContactsFragment : Fragment() {
 
         setInitialState()
         requestContacts()
+        //This logic around clearbutton is hack to fix #191, it should be removed if the bug is approved fix and relesaead.
+        // https://github.com/mancj/MaterialSearchBar/issues/104
+        val clearButton = searchBar.findViewById<View>(R.id.mt_clear)
+        clearButton.visibility = View.GONE
         searchBar.addTextChangeListener(object:OnTextChanged() {
             override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
                 filterResults(text.toString())
+                if (text.isEmpty()) {
+                    clearButton.visibility = View.GONE
+                } else{
+                    clearButton.visibility = View.VISIBLE
+                }
             }
         })
     }
