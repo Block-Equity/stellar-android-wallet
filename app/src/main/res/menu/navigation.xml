@@ -7,7 +7,6 @@
         android:title="@string/nav_wallet"/>
 
     <item
-        android:enabled="false"
         android:id="@+id/nav_trading"
         android:icon="@drawable/ic_trading"
         android:title="@string/nav_trading"/>

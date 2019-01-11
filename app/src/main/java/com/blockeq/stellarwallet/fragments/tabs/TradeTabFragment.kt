@@ -3,6 +3,7 @@ package com.blockeq.stellarwallet.fragments.tabs
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -14,6 +15,7 @@ import android.view.*
 import android.widget.*
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
+import com.blockeq.stellarwallet.activities.AssetsActivity
 import com.blockeq.stellarwallet.interfaces.AfterTextChanged
 import com.blockeq.stellarwallet.interfaces.OnItemSelected
 import com.blockeq.stellarwallet.interfaces.OnTradeCurrenciesChanged
@@ -24,6 +26,7 @@ import com.blockeq.stellarwallet.models.SelectionModel
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
+import kotlinx.android.synthetic.main.design_bottom_sheet_dialog.*
 import kotlinx.android.synthetic.main.fragment_tab_trade.*
 import kotlinx.android.synthetic.main.view_custom_selector.view.*
 import org.stellar.sdk.Asset
