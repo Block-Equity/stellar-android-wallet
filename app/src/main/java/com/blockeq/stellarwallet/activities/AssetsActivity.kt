@@ -40,6 +40,12 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
     private lateinit var context : Context
     private lateinit var adapter : AssetsRecyclerViewAdapter
 
+    companion object {
+        fun newInstance(context: Context) : Intent {
+            return Intent(context, AssetsActivity::class.java)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.content_assets_activity)
