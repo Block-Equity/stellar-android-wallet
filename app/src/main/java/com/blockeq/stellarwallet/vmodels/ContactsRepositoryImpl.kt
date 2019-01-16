@@ -7,7 +7,6 @@ import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.provider.ContactsContract
@@ -16,15 +15,17 @@ import com.blockeq.stellarwallet.interfaces.ContactsRepository
 import com.blockeq.stellarwallet.interfaces.ContactsRepository.ContactOperationStatus
 import com.blockeq.stellarwallet.models.Contact
 import com.blockeq.stellarwallet.models.ContactsResult
+import com.blockeq.stellarwallet.models.StellarContact
 import timber.log.Timber
-import java.net.URLDecoder
-import java.net.URLEncoder
 import kotlin.concurrent.thread
 
 @SuppressLint("StaticFieldLeak")
 object ContactsRepositoryImpl : ContactsRepository {
     private lateinit var appContext : Context
     private const val mimeTypeStellarAddress = "vnd.android.cursor.item/stellarAccount"
+    private const val BLOCKEQ_ACCOUNT_NAME = "blockeq"
+    private const val BLOCKEQ_ACCOUNT_TYPE = "default"
+
     private var contactsLiveData : MutableLiveData<ContactsResult> = MutableLiveData()
     private var stellarContactList : ArrayList<Contact> = ArrayList()
     private var contactsList : ArrayList<Contact> = ArrayList()
@@ -48,8 +49,8 @@ object ContactsRepositoryImpl : ContactsRepository {
     {
         val ops = ArrayList<ContentProviderOperation>()
         ops.add(ContentProviderOperation.newInsert(RawContacts.CONTENT_URI)
-                .withValue(RawContacts.ACCOUNT_TYPE, null)
-                .withValue(RawContacts.ACCOUNT_NAME, null).build())
+                .withValue(RawContacts.ACCOUNT_TYPE, BLOCKEQ_ACCOUNT_NAME)
+                .withValue(RawContacts.ACCOUNT_NAME, BLOCKEQ_ACCOUNT_TYPE).build())
 
         ops.add(ContentProviderOperation
                 .newInsert(ContactsContract.Data.CONTENT_URI)
@@ -78,8 +79,6 @@ object ContactsRepositoryImpl : ContactsRepository {
 
     override fun createOrUpdateStellarAddress(name:String, address:String) : ContactOperationStatus {
         var operation: ContactOperationStatus
-//        val encodedName = URLEncoder.encode(name, "utf-8")
-
         try {
             val values = ContentValues()
             values.put(ContactsContract.Data.DATA1, address)
@@ -95,8 +94,8 @@ object ContactsRepositoryImpl : ContactsRepository {
                 ops.add(ContentProviderOperation
                         .newInsert(ContactsContract.RawContacts.CONTENT_URI)
                         .withValue(ContactsContract.RawContacts.ACCOUNT_NAME,
-                                "blockeq")
-                        .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, "default")
+                                BLOCKEQ_ACCOUNT_NAME)
+                        .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, BLOCKEQ_ACCOUNT_TYPE)
                         .build())
 
                 ops.add(ContentProviderOperation
@@ -108,7 +107,7 @@ object ContactsRepositoryImpl : ContactsRepository {
                         .build())
 
                 operation = try {
-                    val contentProviderResult = resolver.applyBatch(ContactsContract.AUTHORITY, ops)
+                    resolver.applyBatch(ContactsContract.AUTHORITY, ops)
                     ContactOperationStatus.INSERTED
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -134,22 +133,12 @@ object ContactsRepositoryImpl : ContactsRepository {
 
         var stellarAddress : String? = null
         if (cursor !== null) {
-            //TODO: check for duplicated rows
             while (cursor.moveToNext()) {
                 stellarAddress = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA1))
             }
             cursor.close()
         }
         return stellarAddress
-    }
-
-    private fun addCallerIsSyncAdapterParameter(uri: Uri,
-                                                isSyncOperation: Boolean): Uri {
-        return if (isSyncOperation) {
-            uri.buildUpon()
-                    .appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER,
-                            "true").build()
-        } else uri
     }
 
     override fun getContactsListLiveData(forceRefresh:Boolean) : MutableLiveData<ContactsResult> {
@@ -166,7 +155,7 @@ object ContactsRepositoryImpl : ContactsRepository {
 
     //region Private Methods
 
-    private fun refreshContacts2() {
+    private fun refreshContacts() {
         thread {
             val stellarAddresses = getStellarContacts()
             val contactList = parseContactCursor(getContactsList(), false)
@@ -191,34 +180,6 @@ object ContactsRepositoryImpl : ContactsRepository {
         }
     }
 
-    private fun refreshContacts() {
-        refreshContacts2()
-        return
-
-        thread {
-            val stellarList = getStellarContacts()
-            stellarContactList = parseContactCursor(getStellarContactsList(), true)
-            val parsedList = parseContactCursor(getContactsList(), false)
-            val list = removeDuplicates(parsedList, stellarContactList)
-            Handler(Looper.getMainLooper()).run {
-                contactsList = list
-                Timber.d("all parsed (${list.size})")
-                notifyLiveData()
-            }
-        }
-    }
-
-    private fun removeDuplicates(contacts: ArrayList<Contact>, stellarContacts:ArrayList<Contact>) : ArrayList<Contact> {
-        val output : ArrayList<Contact> = contacts
-        stellarContacts.forEach {
-            if (contacts.contains(it)) {
-                output.remove(it)
-            }
-        }
-
-        return output
-    }
-
     private fun notifyLiveData() {
         Timber.d("observer notifyLiveData ${stellarContactList.size}")
         contactsLiveData.postValue(ContactsResult(stellarContactList, contactsList))
@@ -236,21 +197,6 @@ object ContactsRepositoryImpl : ContactsRepository {
         }
         return ArrayList()
     }
-
-
-    /**
-     * it will create and return a new cursor, the cursor will be not closed by {@link ContactsRepository}
-     */
-    private fun getStellarContactsList() : Cursor? {
-        val uri = ContactsContract.Data.CONTENT_URI
-        val projection = arrayOf(ContactsContract.Data.CONTACT_ID, ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY, ContactsContract.Data.MIMETYPE, ContactsContract.Data.DATA1)
-        return  appContext.contentResolver.query(uri, projection,
-                ContactsContract.Data.MIMETYPE + " =? AND ${ContactsContract.Data.DATA1} != ''",
-                arrayOf(mimeTypeStellarAddress), null)
-    }
-
-
-    data class StellarContact(var name:String, var address: String)
 
     /**
      * it will create and return a new cursor, the cursor will be not closed by {@link ContactsRepository}
