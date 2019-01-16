@@ -155,7 +155,7 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
                         }
                     }
                     Mode.UPDATE_CONTACT -> {
-                        val status = ContactsRepositoryImpl(applicationContext).createOrUpdateContact(contact.id, address)
+                        val status = ContactsRepositoryImpl(applicationContext).createOrUpdateStellarAddress(contact.name!!, address)
                         when(status) {
                             ContactOperationStatus.UPDATED -> {
                                 Timber.v("data updated")
