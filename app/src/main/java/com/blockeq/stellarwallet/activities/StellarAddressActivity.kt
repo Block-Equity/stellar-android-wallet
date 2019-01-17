@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import com.blockeq.stellarwallet.BuildConfig
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
@@ -97,7 +98,7 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
             it.setDisplayHomeAsUpEnabled(true)
             when(mode) {
                 Mode.SEND_TO -> it.title = getString(R.string.button_send)
-                Mode.UPDATE_CONTACT -> it.title = getString(R.string.setup_contact_title)
+                Mode.UPDATE_CONTACT -> it.title = getString(R.string.update_contact_title, contact.name)
                 Mode.CREATE_CONTACT -> it.title = getString(R.string.add_contact_title)
             }
         }
@@ -113,17 +114,15 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
             Mode.UPDATE_CONTACT -> {
                 titleBalance.visibility = View.GONE
                 bottomButton.text = getString(R.string.save_button)
-                ContactNameText.visibility = View.VISIBLE
-                ContactNameEditText.visibility = View.VISIBLE
-                ContactNameEditText.isEnabled = false
-                ContactNameEditText.setText(contact.name)
-                addressTitleText.text = "Stellar Address"
+                ContactNameText.visibility = View.GONE
+                ContactNameEditText.visibility = View.GONE
+                addressTitleText.text = getString(R.string.stellar_address_title)
                 addressEditText.setText(contact.stellarAddress)
             }
             Mode.CREATE_CONTACT -> {
                 titleBalance.visibility = View.GONE
-                bottomButton.text = "CREATE"
-                addressTitleText.text = "Stellar Address"
+                bottomButton.text = getString(R.string.create_button)
+                addressTitleText.text = getString(R.string.stellar_address_title)
             }
         }
 
@@ -132,7 +131,8 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun onCreateOptionsMenu(menu : Menu) : Boolean {
-        if (mode == Mode.UPDATE_CONTACT) {
+        // This feature is disabled in release since it is not useful for the user.
+        if (mode == Mode.UPDATE_CONTACT && BuildConfig.DEBUG) {
             menuInflater.inflate(R.menu.contact_details, menu)
         }
         return true
@@ -157,7 +157,7 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
                         }
                     }
                     Mode.UPDATE_CONTACT -> {
-                        val status = ContactsRepositoryImpl(applicationContext).createOrUpdateContact(contact.id, address)
+                        val status = ContactsRepositoryImpl(applicationContext).createOrUpdateStellarAddress(contact.name, address)
                         when(status) {
                             ContactOperationStatus.UPDATED -> {
                                 Timber.v("data updated")

@@ -2,6 +2,8 @@ package com.blockeq.stellarwallet.activities
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.app.AlertDialog
+import android.app.Dialog
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.BottomNavigationView
@@ -25,16 +27,32 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
         SETTING
     }
 
+    private lateinit var dialogTradeAlert : Dialog
     private lateinit var bottomNavigation : BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wallet)
 
+        dialogTradeAlert = createTradingErrorDialog()
+
         setupUI()
     }
 
     //region Navigation
+
+    private fun createTradingErrorDialog() : Dialog {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.trade_alert_title))
+        builder.setMessage(getString(R.string.trade_alert_message))
+        builder.setPositiveButton(getString(R.string.trade_alert_button)) { _, _ -> startActivity(AssetsActivity.newInstance(this)) }
+        val dialog = builder.create()
+        dialog.setOnCancelListener {
+            bottomNavigation.selectedItemId = R.id.nav_wallet
+        }
+        dialog.setCanceledOnTouchOutside(false)
+        return dialog
+    }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -44,10 +62,11 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
             }
             R.id.nav_trading -> {
                 val balances = WalletApplication.wallet.getBalances()
-                if (!balances.isEmpty()) {
-                    val tradingFragment = TradingFragment.newInstance()
-                    openFragment(tradingFragment, WalletFragmentType.TRADING)
+                if (balances.isEmpty()) {
+                    dialogTradeAlert.show()
                 }
+                val tradingFragment = TradingFragment.newInstance()
+                openFragment(tradingFragment, WalletFragmentType.TRADING)
             }
             R.id.nav_contacts -> {
                 openFragment(ContactsFragment(), WalletFragmentType.CONTACTS)
@@ -85,6 +104,13 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
 
     override fun onResume() {
         super.onResume()
+
+        if (bottomNavigation.selectedItemId ==  R.id.nav_trading) {
+            val balances = WalletApplication.wallet.getBalances()
+            if (balances.isEmpty()) {
+                dialogTradeAlert.show()
+            }
+        }
         KeyboardUtils.addKeyboardToggleListener(this, this)
     }
 
@@ -93,6 +119,12 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
         KeyboardUtils.removeKeyboardToggleListener(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (dialogTradeAlert.isShowing) {
+            dialogTradeAlert.dismiss()
+        }
+    }
     /**
      * When the keyboard is opened the bottomNavigation gets pushed up.
      */

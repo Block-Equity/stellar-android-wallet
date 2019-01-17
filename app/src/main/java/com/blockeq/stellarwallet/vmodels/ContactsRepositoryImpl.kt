@@ -15,6 +15,7 @@ import com.blockeq.stellarwallet.interfaces.ContactsRepository
 import com.blockeq.stellarwallet.interfaces.ContactsRepository.ContactOperationStatus
 import com.blockeq.stellarwallet.models.Contact
 import com.blockeq.stellarwallet.models.ContactsResult
+import com.blockeq.stellarwallet.models.StellarContact
 import timber.log.Timber
 import kotlin.concurrent.thread
 
@@ -22,6 +23,9 @@ import kotlin.concurrent.thread
 object ContactsRepositoryImpl : ContactsRepository {
     private lateinit var appContext : Context
     private const val mimeTypeStellarAddress = "vnd.android.cursor.item/stellarAccount"
+    private const val BLOCKEQ_ACCOUNT_NAME = "blockeq"
+    private const val BLOCKEQ_ACCOUNT_TYPE = "default"
+
     private var contactsLiveData : MutableLiveData<ContactsResult> = MutableLiveData()
     private var stellarContactList : ArrayList<Contact> = ArrayList()
     private var contactsList : ArrayList<Contact> = ArrayList()
@@ -45,8 +49,8 @@ object ContactsRepositoryImpl : ContactsRepository {
     {
         val ops = ArrayList<ContentProviderOperation>()
         ops.add(ContentProviderOperation.newInsert(RawContacts.CONTENT_URI)
-                .withValue(RawContacts.ACCOUNT_TYPE, null)
-                .withValue(RawContacts.ACCOUNT_NAME, null).build())
+                .withValue(RawContacts.ACCOUNT_TYPE, BLOCKEQ_ACCOUNT_NAME)
+                .withValue(RawContacts.ACCOUNT_NAME, BLOCKEQ_ACCOUNT_TYPE).build())
 
         ops.add(ContentProviderOperation
                 .newInsert(ContactsContract.Data.CONTENT_URI)
@@ -61,7 +65,9 @@ object ContactsRepositoryImpl : ContactsRepository {
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID,
                         0)
                 .withValue(ContactsContract.Data.MIMETYPE, mimeTypeStellarAddress)
-                .withValue(ContactsContract.Data.DATA1, stellarAddress).build())
+                .withValue(ContactsContract.Data.DATA1, stellarAddress)
+                .withValue(ContactsContract.Data.DATA2, name)
+                .build())
 
         val res = appContext.contentResolver.applyBatch(
                 ContactsContract.AUTHORITY, ops)
@@ -73,20 +79,42 @@ object ContactsRepositoryImpl : ContactsRepository {
         return -1
     }
 
-    override fun createOrUpdateContact(contactId:Long, address:String) : ContactOperationStatus {
+    override fun createOrUpdateStellarAddress(name:String, address:String) : ContactOperationStatus {
         var operation: ContactOperationStatus
         try {
             val values = ContentValues()
             values.put(ContactsContract.Data.DATA1, address)
             val contentResolver = appContext.contentResolver
             val rowsUpdated = contentResolver.update(ContactsContract.Data.CONTENT_URI, values,
-                    "${ContactsContract.Data.RAW_CONTACT_ID} = $contactId AND ${ContactsContract.Data.MIMETYPE} = '$mimeTypeStellarAddress'", null)
+                    "${ContactsContract.Data.DATA2} = '$name' AND ${ContactsContract.Data.MIMETYPE} = '$mimeTypeStellarAddress'", null)
 
             if (rowsUpdated == 0) {
-                values.put(ContactsContract.Data.RAW_CONTACT_ID, contactId)
-                values.put(ContactsContract.Data.MIMETYPE, mimeTypeStellarAddress)
-                contentResolver.insert(ContactsContract.Data.CONTENT_URI, values)
-                operation = ContactOperationStatus.INSERTED
+
+                val resolver = appContext.contentResolver
+                val ops = java.util.ArrayList<ContentProviderOperation>()
+
+                ops.add(ContentProviderOperation
+                        .newInsert(ContactsContract.RawContacts.CONTENT_URI)
+                        .withValue(ContactsContract.RawContacts.ACCOUNT_NAME,
+                                BLOCKEQ_ACCOUNT_NAME)
+                        .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, BLOCKEQ_ACCOUNT_TYPE)
+                        .build())
+
+                ops.add(ContentProviderOperation
+                        .newInsert(ContactsContract.Data.CONTENT_URI)
+                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                        .withValue(ContactsContract.Data.MIMETYPE, mimeTypeStellarAddress)
+                        .withValue(ContactsContract.Data.DATA1, address)
+                        .withValue(ContactsContract.Data.DATA2, name)
+                        .build())
+
+                operation = try {
+                    resolver.applyBatch(ContactsContract.AUTHORITY, ops)
+                    ContactOperationStatus.INSERTED
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    ContactOperationStatus.FAILED
+                }
             } else {
                 operation = ContactOperationStatus.UPDATED
             }
@@ -96,24 +124,6 @@ object ContactsRepositoryImpl : ContactsRepository {
         //TODO: this is too heavy, there is enough info to update the local list and notifyLiveData()
         refreshContacts()
         return operation
-    }
-
-    override fun getStellarAddress(contactId: Long): String? {
-        val uri = ContactsContract.Data.CONTENT_URI
-        val projection = arrayOf(ContactsContract.Data.MIMETYPE, ContactsContract.Data.DATA1)
-        val cursor = appContext.contentResolver.query(uri, projection,
-                "${ContactsContract.Data.CONTACT_ID} =? AND ${ContactsContract.Data.MIMETYPE} =?",
-                arrayOf(contactId.toString(), mimeTypeStellarAddress), null)
-
-        var stellarAddress : String? = null
-        if (cursor !== null) {
-            //TODO: check for duplicated rows
-            while (cursor.moveToNext()) {
-                stellarAddress = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA1))
-            }
-            cursor.close()
-        }
-        return stellarAddress
     }
 
     override fun getContactsListLiveData(forceRefresh:Boolean) : MutableLiveData<ContactsResult> {
@@ -132,25 +142,27 @@ object ContactsRepositoryImpl : ContactsRepository {
 
     private fun refreshContacts() {
         thread {
-            stellarContactList = parseContactCursor(getStellarContactsList(), true)
-            val parsedList = parseContactCursor(getContactsList(), false)
-            val list = removeDuplicates(parsedList, stellarContactList)
+            val stellarAddresses = getStellarContacts()
+            val contactList = parseContactCursor(getContactsList())
+
+            val stellarList : ArrayList<Contact> = arrayListOf()
+            stellarAddresses.forEach {
+                val found = contactList.find { that -> that.name == it.name }
+                if (found != null) {
+                    contactList.remove(found)
+                    val contact = Contact(0, it.name, found.profilePic )
+                    contact.stellarAddress = it.address
+                    stellarList.add(contact)
+                }
+            }
+
             Handler(Looper.getMainLooper()).run {
-                contactsList = list
-                Timber.d("all parsed (${list.size})")
+                contactsList = contactList
+                stellarContactList = stellarList
+                Timber.d("all parsed (${contactList.size})")
                 notifyLiveData()
             }
         }
-    }
-
-    private fun removeDuplicates(contacts: ArrayList<Contact>, stellarContacts:ArrayList<Contact>) : ArrayList<Contact> {
-        val output : ArrayList<Contact> = contacts
-        stellarContacts.forEach {
-            if (contacts.contains(it)) {
-                output.remove(it)
-            }
-        }
-        return output
     }
 
     private fun notifyLiveData() {
@@ -158,11 +170,11 @@ object ContactsRepositoryImpl : ContactsRepository {
         contactsLiveData.postValue(ContactsResult(stellarContactList, contactsList))
     }
 
-    private fun parseContactCursor(cursor : Cursor?, populateStellarAddress:Boolean = true) : ArrayList<Contact> {
+    private fun parseContactCursor(cursor : Cursor?) : ArrayList<Contact> {
         if (cursor != null) {
             val list : ArrayList<Contact> = ArrayList()
             while (cursor.moveToNext()) {
-                val contact = toContact(cursor, populateStellarAddress)
+                val contact = toContact(cursor) ?: continue
                 list.add(contact)
             }
             cursor.close()
@@ -171,16 +183,30 @@ object ContactsRepositoryImpl : ContactsRepository {
         return ArrayList()
     }
 
-
     /**
      * it will create and return a new cursor, the cursor will be not closed by {@link ContactsRepository}
      */
-    private fun getStellarContactsList() : Cursor? {
+    private fun getStellarContacts() : List<StellarContact> {
+        val list: ArrayList<StellarContact> = arrayListOf()
+
         val uri = ContactsContract.Data.CONTENT_URI
-        val projection = arrayOf(ContactsContract.Data.CONTACT_ID, ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY, ContactsContract.Data.MIMETYPE, ContactsContract.Data.DATA1)
-        return  appContext.contentResolver.query(uri, projection,
+        val projection = arrayOf(ContactsContract.Data.RAW_CONTACT_ID, ContactsContract.Data.MIMETYPE, ContactsContract.Data.DATA1, ContactsContract.Data.DATA2)
+        val cursor = appContext.contentResolver.query(uri, projection,
                 ContactsContract.Data.MIMETYPE + " =? AND ${ContactsContract.Data.DATA1} != ''",
                 arrayOf(mimeTypeStellarAddress), null)
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                val address = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA1))
+                //should not be null, but during development I messed up some phones
+                val name = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA2)) ?: continue
+
+                list.add(StellarContact(name, address))
+            }
+            cursor.close()
+        }
+
+        return list
     }
 
     /**
@@ -189,27 +215,21 @@ object ContactsRepositoryImpl : ContactsRepository {
     private fun getContactsList() : Cursor? {
         val uri = ContactsContract.Data.CONTENT_URI
         val projection = arrayOf(ContactsContract.Data.CONTACT_ID, ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
-        return appContext.contentResolver.query(uri, projection,
-                null, null, null)
+        return appContext.contentResolver.query(uri, projection, null, null, null)
     }
 
     /**
-     * Move the cursor before calling this.
+     * Cursor has to be readable, move the cursor first.
      */
-    private fun toContact(cursor:Cursor, populateStellarAddress: Boolean = true) : Contact {
+    private fun toContact(cursor: Cursor): Contact? {
         val nameColIdx: Int = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
         val idColIdx: Int = cursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)
         val contactName = cursor.getString(nameColIdx)
         val contactId = cursor.getLong(idColIdx)
-
+        if (contactName == null) return null
         val profilePic = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId)
 
-        val contact = Contact(contactId, contactName, profilePic)
-
-        if (populateStellarAddress) {
-            contact.stellarAddress = getStellarAddress(contactId)
-        }
-        return contact
+        return Contact(contactId, contactName, profilePic)
     }
     //endregion Private Methods
 }
