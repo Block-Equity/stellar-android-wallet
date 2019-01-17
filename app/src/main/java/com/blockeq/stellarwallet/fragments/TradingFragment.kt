@@ -75,7 +75,7 @@ class TradingFragment : Fragment(), OnTradeCurrenciesChanged {
                     tradeTabListener?.onLastOrderBookUpdated(asks, bids)
                 }
 
-                orderBookListener?.updateOrderBook(sellingCode, buyingCode, asks, bids)
+                orderBookListener?.updateOrderBook(sellingCode, buyingCode, bids, asks)
             }
 
             override fun onFailed(errorMessage: String) {
