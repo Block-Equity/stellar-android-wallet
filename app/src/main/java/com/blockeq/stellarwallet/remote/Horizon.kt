@@ -341,7 +341,7 @@ object Horizon : HorizonTasks {
         }
     }
 
-    override fun getOrderBook(listener: OnOrderBookListener, sellingAsset: DataAsset, buyingAsset: DataAsset) {
+    override fun getOrderBook(listener: OnOrderBookListener, buyingAsset: DataAsset, sellingAsset: DataAsset) {
         AsyncTask.execute {
             Network.usePublicNetwork()
 

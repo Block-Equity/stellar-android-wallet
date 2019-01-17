@@ -96,21 +96,28 @@ class WalletManagerActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             ActionType.ENTER_PIN.ordinal -> {
-                startActivityForResult(PinActivity.newInstance(this, getString(R.string.please_reenter_your_pin)), ActionType.REENTER_PIN.ordinal)
-                return
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val pin = PinActivity.getPinFromIntent(data)
+                    startActivityForResult(PinActivity.newInstance(this, pin, getString(R.string.please_reenter_your_pin)), ActionType.REENTER_PIN.ordinal)
+                    return
+                }
             }
             ActionType.REENTER_PIN.ordinal -> {
-                if (actionType == ActionType.NEW_WALLET || actionType ==  ActionType.RESTORE_WALLET) {
-                    val phrase = intent.getStringExtra(INTENT_PHRASE)
-                    if (generateWallet(data, phrase)) {
-                        setResult(Activity.RESULT_OK)
-                        finish()
-                        return
+                if (resultCode == Activity.RESULT_OK) {
+                    if (actionType == ActionType.NEW_WALLET || actionType ==  ActionType.RESTORE_WALLET) {
+                        val phrase = intent.getStringExtra(INTENT_PHRASE)
+                        if (generateWallet(data, phrase)) {
+                            setResult(Activity.RESULT_OK)
+                            finish()
+                            return
+                        }
                     }
                 }
             }
             ActionType.VERIFY_PIN.ordinal -> {
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val pin = PinActivity.getPinFromIntent(data)
+                    WalletApplication.userSession.pin = pin
                     setResult(Activity.RESULT_OK)
                     finish()
                     return
