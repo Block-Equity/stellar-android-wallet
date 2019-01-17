@@ -174,7 +174,7 @@ object ContactsRepositoryImpl : ContactsRepository {
         if (cursor != null) {
             val list : ArrayList<Contact> = ArrayList()
             while (cursor.moveToNext()) {
-                val contact = toContact(cursor)
+                val contact = toContact(cursor) ?: continue
                 list.add(contact)
             }
             cursor.close()
@@ -221,12 +221,12 @@ object ContactsRepositoryImpl : ContactsRepository {
     /**
      * Cursor has to be readable, move the cursor first.
      */
-    private fun toContact(cursor: Cursor): Contact {
+    private fun toContact(cursor: Cursor): Contact? {
         val nameColIdx: Int = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
         val idColIdx: Int = cursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)
         val contactName = cursor.getString(nameColIdx)
         val contactId = cursor.getLong(idColIdx)
-
+        if (contactName == null) return null
         val profilePic = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId)
 
         return Contact(contactId, contactName, profilePic)

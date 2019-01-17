@@ -7,7 +7,7 @@ import android.os.Parcelable
 /**
  * Entity that represents a contact
  */
-data class Contact(var id: Long,  var name: String?, var profilePic: Uri?) : Parcelable {
+data class Contact(var id: Long,  var name: String, var profilePic: Uri?) : Parcelable {
     /**
      * this is not part of the default constructor to prevent its usage in the generated equals() / hashCode()
      */
@@ -40,4 +40,5 @@ data class Contact(var id: Long,  var name: String?, var profilePic: Uri?) : Par
             return arrayOfNulls(size)
         }
     }
+
 }
