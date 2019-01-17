@@ -110,7 +110,9 @@ class WalletManagerActivity : AppCompatActivity() {
                 }
             }
             ActionType.VERIFY_PIN.ordinal -> {
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val pin = PinActivity.getPinFromIntent(data)
+                    WalletApplication.userSession.pin = pin
                     setResult(Activity.RESULT_OK)
                     finish()
                     return
