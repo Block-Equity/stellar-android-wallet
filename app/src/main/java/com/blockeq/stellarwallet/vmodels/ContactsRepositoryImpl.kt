@@ -124,23 +124,6 @@ object ContactsRepositoryImpl : ContactsRepository {
         return operation
     }
 
-    override fun getStellarAddress(contactId: Long): String? {
-        val uri = ContactsContract.Data.CONTENT_URI
-        val projection = arrayOf(ContactsContract.Data.MIMETYPE, ContactsContract.Data.DATA1)
-        val cursor = appContext.contentResolver.query(uri, projection,
-                "${ContactsContract.Data.CONTACT_ID} =? AND ${ContactsContract.Data.MIMETYPE} =?",
-                arrayOf(contactId.toString(), mimeTypeStellarAddress), null)
-
-        var stellarAddress : String? = null
-        if (cursor !== null) {
-            while (cursor.moveToNext()) {
-                stellarAddress = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA1))
-            }
-            cursor.close()
-        }
-        return stellarAddress
-    }
-
     override fun getContactsListLiveData(forceRefresh:Boolean) : MutableLiveData<ContactsResult> {
         Timber.d("start getContactsListLiveData")
         if (!forceRefresh && !contactsList.isEmpty()) {
@@ -158,18 +141,18 @@ object ContactsRepositoryImpl : ContactsRepository {
     private fun refreshContacts() {
         thread {
             val stellarAddresses = getStellarContacts()
-            val contactList = parseContactCursor(getContactsList(), false)
+            val contactList = parseContactCursor(getContactsList())
 
             val stellarList : ArrayList<Contact> = arrayListOf()
             stellarAddresses.forEach {
                 val found = contactList.find { that -> that.name == it.name }
-                contactList.remove(found)
-
-                val contact = Contact(0, it.name, null )
-                contact.stellarAddress = it.address
-                stellarList.add(contact)
+                if (found != null) {
+                    contactList.remove(found)
+                    val contact = Contact(0, it.name, found.profilePic )
+                    contact.stellarAddress = it.address
+                    stellarList.add(contact)
+                }
             }
-
 
             Handler(Looper.getMainLooper()).run {
                 contactsList = contactList
@@ -185,11 +168,11 @@ object ContactsRepositoryImpl : ContactsRepository {
         contactsLiveData.postValue(ContactsResult(stellarContactList, contactsList))
     }
 
-    private fun parseContactCursor(cursor : Cursor?, populateStellarAddress:Boolean = true) : ArrayList<Contact> {
+    private fun parseContactCursor(cursor : Cursor?) : ArrayList<Contact> {
         if (cursor != null) {
             val list : ArrayList<Contact> = ArrayList()
             while (cursor.moveToNext()) {
-                val contact = toContact(cursor, populateStellarAddress)
+                val contact = toContact(cursor)
                 list.add(contact)
             }
             cursor.close()
@@ -230,14 +213,13 @@ object ContactsRepositoryImpl : ContactsRepository {
     private fun getContactsList() : Cursor? {
         val uri = ContactsContract.Data.CONTENT_URI
         val projection = arrayOf(ContactsContract.Data.CONTACT_ID, ContactsContract.Contacts.LOOKUP_KEY, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
-        return appContext.contentResolver.query(uri, projection,
-                null, null, null)
+        return appContext.contentResolver.query(uri, projection, null, null, null)
     }
 
     /**
-     * Move the cursor before calling this.
+     * Cursor has to be readable, move the cursor first.
      */
-    private fun toContact(cursor:Cursor, populateStellarAddress: Boolean = true) : Contact {
+    private fun toContact(cursor: Cursor): Contact {
         val nameColIdx: Int = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
         val idColIdx: Int = cursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)
         val contactName = cursor.getString(nameColIdx)
@@ -245,12 +227,7 @@ object ContactsRepositoryImpl : ContactsRepository {
 
         val profilePic = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId)
 
-        val contact = Contact(contactId, contactName, profilePic)
-
-        if (populateStellarAddress) {
-            contact.stellarAddress = getStellarAddress(contactId)
-        }
-        return contact
+        return Contact(contactId, contactName, profilePic)
     }
     //endregion Private Methods
 }

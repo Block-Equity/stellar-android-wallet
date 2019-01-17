@@ -12,6 +12,5 @@ interface ContactsRepository {
     fun createContact(name : String, stellarAddress : String) : Long
     fun getContactsListLiveData(forceRefresh:Boolean = false) : MutableLiveData<ContactsResult>
     fun createOrUpdateStellarAddress(name:String, address:String) : ContactOperationStatus
-    fun getStellarAddress(contactId: Long): String?
 
 }
