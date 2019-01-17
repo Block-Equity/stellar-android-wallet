@@ -112,9 +112,6 @@ class WalletManagerActivity : AppCompatActivity() {
                             return
                         }
                     }
-                } else if(data != null){
-                    val pin = PinActivity.getPinFromIntent(data)
-                    startActivityForResult(PinActivity.newInstance(this, pin, getString(R.string.please_reenter_your_pin)), ActionType.REENTER_PIN.ordinal)
                 }
             }
             ActionType.VERIFY_PIN.ordinal -> {
