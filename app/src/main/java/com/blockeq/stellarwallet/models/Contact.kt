@@ -3,7 +3,6 @@ package com.blockeq.stellarwallet.models
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
-import java.io.Serializable
 
 /**
  * Entity that represents a contact
