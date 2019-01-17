@@ -44,8 +44,10 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.trade_alert_title))
         builder.setMessage(getString(R.string.trade_alert_message))
-        builder.setPositiveButton(getString(R.string.trade_alert_button)) { _, _ -> startActivity(AssetsActivity.newInstance(this)) }
+        builder.setPositiveButton(getString(R.string.trade_alert_positive_button)) { _, _ -> startActivity(AssetsActivity.newInstance(this)) }
+        builder.setNegativeButton(getString(R.string.trade_alert_negative_button)) { dialog, _ -> dialog.cancel() }
         val dialog = builder.create()
+
         dialog.setOnCancelListener {
             bottomNavigation.selectedItemId = R.id.nav_wallet
         }
