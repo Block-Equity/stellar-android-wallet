@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import com.blockeq.stellarwallet.BuildConfig
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
@@ -130,7 +131,8 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun onCreateOptionsMenu(menu : Menu) : Boolean {
-        if (mode == Mode.UPDATE_CONTACT) {
+        // This feature is disabled in release since it is not useful for the user.
+        if (mode == Mode.UPDATE_CONTACT && BuildConfig.DEBUG) {
             menuInflater.inflate(R.menu.contact_details, menu)
         }
         return true
@@ -155,7 +157,7 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
                         }
                     }
                     Mode.UPDATE_CONTACT -> {
-                        val status = ContactsRepositoryImpl(applicationContext).createOrUpdateContact(contact.id, address)
+                        val status = ContactsRepositoryImpl(applicationContext).createOrUpdateStellarAddress(contact.name, address)
                         when(status) {
                             ContactOperationStatus.UPDATED -> {
                                 Timber.v("data updated")
