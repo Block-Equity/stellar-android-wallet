@@ -156,7 +156,9 @@ class ContactsFragment : Fragment() {
                 currentContactList = ArrayList(that.contacts)
                 currentContactList.addAll(0, that.stellarContacts)
                 populateList(currentContactList)
-                refreshButton.isEnabled = true
+                if (::refreshButton.isInitialized) {
+                    refreshButton.isEnabled = true
+                }
             }
         })
     }
