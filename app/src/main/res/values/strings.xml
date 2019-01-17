@@ -244,6 +244,8 @@
     <string name="you_have_no_contacts">You have no contacts</string>
     <string name="no_results_found">No results found</string>
     <string name="no_contacts_found">No contacts found</string>
+    <string name="contact_header">ADDRESS BOOK</string>
+    <string name="stellar_contact_header">STELLAR CONTACT</string>
 
     <!--Update stellar address-->
     <string name="stellar_address_title">Public Address</string>

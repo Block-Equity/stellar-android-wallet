@@ -35,6 +35,7 @@ class ContactsFragment : Fragment() {
     // Defines a variable for the search string
     private lateinit var appContext : Context
     private var currentContactList = ArrayList<Contact>()
+    private lateinit var refreshButton : MenuItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +77,7 @@ class ContactsFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         // Inflate the menu to use in the action bar
         inflater.inflate(R.menu.contacts_fragment_menu, menu)
+        refreshButton = menu.findItem(R.id.refresh)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -84,6 +86,7 @@ class ContactsFragment : Fragment() {
         when (item.itemId) {
             R.id.refresh -> {
                 setInitialState()
+                refreshButton.isEnabled = false
                 showContacts(true)
                 return true
             }
@@ -152,6 +155,7 @@ class ContactsFragment : Fragment() {
                 currentContactList = ArrayList(that.contacts)
                 currentContactList.addAll(0, that.stellarContacts)
                 populateList(currentContactList)
+                refreshButton.isEnabled = true
             }
         })
     }
@@ -207,9 +211,9 @@ class ContactsFragment : Fragment() {
 
             override fun getSectionHeader(position: Int): CharSequence {
                 return if (list[position].stellarAddress.isNullOrBlank()) {
-                    "ADDRESS BOOK"
+                    getString(R.string.contact_header)
                 } else {
-                    return "STELLAR CONTACT"
+                    getString(R.string.stellar_contact_header)
                 }
             }
         }
