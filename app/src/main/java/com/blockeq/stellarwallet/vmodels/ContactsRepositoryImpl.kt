@@ -65,7 +65,9 @@ object ContactsRepositoryImpl : ContactsRepository {
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID,
                         0)
                 .withValue(ContactsContract.Data.MIMETYPE, mimeTypeStellarAddress)
-                .withValue(ContactsContract.Data.DATA1, stellarAddress).build())
+                .withValue(ContactsContract.Data.DATA1, stellarAddress)
+                .withValue(ContactsContract.Data.DATA2, name)
+                .build())
 
         val res = appContext.contentResolver.applyBatch(
                 ContactsContract.AUTHORITY, ops)

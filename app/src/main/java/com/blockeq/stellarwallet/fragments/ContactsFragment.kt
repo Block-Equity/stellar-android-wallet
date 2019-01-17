@@ -102,6 +102,7 @@ class ContactsFragment : Fragment() {
                 searchBar.setOnSearchActionListener(object: OnSearchStateListener() {
                     override fun onSearchStateChanged(enabled: Boolean) {
                         if (!enabled) {
+                            searchBar.text = null
                             viewFlipper.showPrevious()
                         }
                     }
