@@ -57,7 +57,7 @@ class WalletApplication : MultiDexApplication() {
             }
         }
 
-        // exchange providers addresses are not very likely to change but let's refresh them during application startup
+        // exchange providers addresses are not very likely to change but let's refresh them during application startup.
         ExchangeRepository(this).getAllExchangeProviders(true)
     }
 

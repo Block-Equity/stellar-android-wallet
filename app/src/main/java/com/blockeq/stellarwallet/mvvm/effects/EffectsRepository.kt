@@ -68,7 +68,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
         })
     }
 
-    private fun closeStream() {
+    fun closeStream() {
         eventSource?.let {
             if (it.isOpen) {
                 Timber.d("Closing the stream")
@@ -77,13 +77,21 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
         }
     }
 
+    fun restoreStream() {
+        eventSource?.let {
+            if (!it.isOpen) {
+                it.open()
+            }
+        }
+    }
+
     companion object {
 
         private var instance: EffectsRepository? = null
 
-        fun getInstance(remoteRepository: RemoteRepository): EffectsRepository {
+        fun getInstance(): EffectsRepository {
             if (instance == null) {
-                instance = EffectsRepository(remoteRepository)
+                instance = EffectsRepository(RemoteRepository())
             }
             return instance as EffectsRepository
         }
