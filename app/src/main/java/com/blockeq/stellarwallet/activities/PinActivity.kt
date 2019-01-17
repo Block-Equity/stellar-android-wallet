@@ -23,25 +23,24 @@ class PinActivity : BaseActivity() {
     companion object {
         private const val INTENT_ARG_MESSAGE: String = "INTENT_ARG_MESSAGE"
         private const val INTENT_ARG_PIN: String = "INTENT_ARG_PIN"
-        private const val INTENT_ARG_PIN_RESULT: String = "INTENT_ARG_PIN_RESULT"
 
         /**
          * New Instance of Intent to launch a {@link PinActivity}
          * @param context the activityContext of the requestor
-         * @param PIN pin to verified otherwise it will simple return the inserted pin.
+         * @param pin pin to verified otherwise it will simple return the inserted pin.
          * @param message message to show on the top of the pinlock.
          */
-        fun newInstance(context: Context, PIN : String?, message: String = context.getString(R.string.please_enter_your_pin)): Intent {
+        fun newInstance(context: Context, pin : String?, message: String = context.getString(R.string.please_enter_your_pin)): Intent {
             val intent = Intent(context, PinActivity::class.java)
                 intent.putExtra(INTENT_ARG_MESSAGE, message)
-            if (PIN != null) {
-                intent.putExtra(INTENT_ARG_PIN, PIN)
+            if (pin != null) {
+                intent.putExtra(INTENT_ARG_PIN, pin)
             }
             return intent
         }
 
         fun getPinFromIntent(intent:Intent) : String? {
-            return intent.getStringExtra(INTENT_ARG_PIN_RESULT)
+            return intent.getStringExtra(INTENT_ARG_PIN)
         }
     }
 
@@ -56,7 +55,7 @@ class PinActivity : BaseActivity() {
                 Timber.d("OnComplete")
                 if (PIN == null || PIN == pin) {
                     val intent = Intent()
-                    intent.putExtra(INTENT_ARG_PIN_RESULT, pin)
+                    intent.putExtra(INTENT_ARG_PIN, pin)
                     setResult(Activity.RESULT_OK, intent)
                     overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
                     finish()
@@ -73,7 +72,7 @@ class PinActivity : BaseActivity() {
         val message = intent.getStringExtra(INTENT_ARG_MESSAGE)
         customMessageTextView.text = message
 
-        PIN = intent.getStringExtra(INTENT_ARG_PIN_RESULT)
+        PIN = intent.getStringExtra(INTENT_ARG_PIN)
     }
 
     //region User Interface
