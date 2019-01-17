@@ -17,7 +17,7 @@ class WalletManagerActivity : AppCompatActivity() {
         RESTORE_WALLET,
         VERIFY_PIN,
         DECRYPT_SECRET_SEED,
-        DECRYPT_MNEMONIC,
+        DISPLAY_MNEMONIC,
         /**
          * These are interim action types used in the actions NEW_WALLET & RESTORE_WALLET
          */
@@ -60,7 +60,7 @@ class WalletManagerActivity : AppCompatActivity() {
 
         fun showMnemonic(context: Context) : Intent {
             val intent = Intent(context, WalletManagerActivity::class.java)
-            intent.putExtra(INTENT_ARG_TYPE, ActionType.DECRYPT_MNEMONIC)
+            intent.putExtra(INTENT_ARG_TYPE, ActionType.DISPLAY_MNEMONIC)
             return intent
         }
     }
@@ -78,8 +78,8 @@ class WalletManagerActivity : AppCompatActivity() {
             ActionType.NEW_WALLET -> {
                 startActivityForResult(PinActivity.newInstance(this, null, getString(R.string.please_create_a_pin)), ActionType.ENTER_PIN.ordinal)
             }
-            ActionType.DECRYPT_MNEMONIC -> {
-                startActivityForResult(PinActivity.newInstance(this, getPinFromKeyStore(), getString(R.string.please_enter_your_pin)), ActionType.DECRYPT_MNEMONIC.ordinal)
+            ActionType.DISPLAY_MNEMONIC -> {
+                startActivityForResult(PinActivity.newInstance(this, getPinFromKeyStore(), getString(R.string.please_enter_your_pin)), ActionType.DISPLAY_MNEMONIC.ordinal)
             }
             ActionType.DECRYPT_SECRET_SEED -> {
                 startActivityForResult(PinActivity.newInstance(this, getPinFromKeyStore(), getString(R.string.please_enter_your_pin)), ActionType.DECRYPT_SECRET_SEED.ordinal)
@@ -123,15 +123,22 @@ class WalletManagerActivity : AppCompatActivity() {
                     return
                 }
             }
-            ActionType.DECRYPT_MNEMONIC.ordinal -> {
+            ActionType.DISPLAY_MNEMONIC.ordinal -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val pin = PinActivity.getPinFromIntent(data)
                     if (pin != null) {
                         val masterKey = AccountUtils.getPinMasterKey(applicationContext, pin)
                         if (masterKey != null) {
                             val encryptedPhrase = WalletApplication.wallet.getEncryptedPhrase()!!
-                            val decryptedPhrase = AccountUtils.getDecryptedString(encryptedPhrase, masterKey)
-                            startActivity(MnemonicActivity.newDisplayMnemonicIntent(this, decryptedPhrase))
+                            val phrase = AccountUtils.getDecryptedString(encryptedPhrase, masterKey)
+
+                            WalletApplication.wallet.getEncryptedPassphrase()
+                            val encryptedPassphrase = WalletApplication.wallet.getEncryptedPassphrase()
+                            var passphrase: String?= null
+                            if (encryptedPassphrase != null) {
+                                passphrase = AccountUtils.getDecryptedString(encryptedPassphrase, masterKey)
+                            }
+                            startActivity(MnemonicActivity.newDisplayMnemonicIntent(this, phrase, passphrase))
                             finish()
                             return
                         }

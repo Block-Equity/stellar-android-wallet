@@ -93,11 +93,11 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
         bottomNavigation.selectedItemId = R.id.nav_wallet
 
         ViewModelProviders.of(this).get(WalletViewModel::class.java)
-                .account.observe(this, Observer<AccountResponse> {
-                    if (it != null) {
-                        bottomNavigation.menu.getItem(WalletFragmentType.TRADING.ordinal).isEnabled = true
-                    }
-                })
+            .account.observe(this, Observer<AccountResponse> {
+                if (it != null) {
+                    bottomNavigation.menu.getItem(WalletFragmentType.TRADING.ordinal).isEnabled = true
+                }
+            })
     }
 
 
