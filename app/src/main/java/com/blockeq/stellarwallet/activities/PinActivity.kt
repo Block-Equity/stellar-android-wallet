@@ -27,19 +27,27 @@ class PinActivity : BaseActivity() {
         /**
          * New Instance of Intent to launch a {@link PinActivity}
          * @param context the activityContext of the requestor
-         * @param pin pin to verified otherwise it will simple return the inserted pin.
+         * @param pin pin to verified otherwise it will simple return the inserted pin, it must contain 4 number characters.
          * @param message message to show on the top of the pinlock.
          */
         fun newInstance(context: Context, pin : String?, message: String = context.getString(R.string.please_enter_your_pin)): Intent {
             val intent = Intent(context, PinActivity::class.java)
                 intent.putExtra(INTENT_ARG_MESSAGE, message)
             if (pin != null) {
-                intent.putExtra(INTENT_ARG_PIN, pin)
+                if (pin.length == 4) {
+                    pin.toCharArray().forEach {
+                        if (!it.isDigit()) throw IllegalStateException("Character (Unicode code point) has to be a digit, found ='$it'.")
+                    }
+                    intent.putExtra(INTENT_ARG_PIN, pin)
+                } else {
+                    throw IllegalStateException("pin ahs to contain 4 characters, found = '${pin.length}")
+                }
             }
             return intent
         }
 
-        fun getPinFromIntent(intent:Intent) : String? {
+        fun getPinFromIntent(intent:Intent?) : String? {
+            if(intent == null) return null
             return intent.getStringExtra(INTENT_ARG_PIN)
         }
     }
