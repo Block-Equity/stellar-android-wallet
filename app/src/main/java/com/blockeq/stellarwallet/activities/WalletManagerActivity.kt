@@ -32,6 +32,8 @@ class WalletManagerActivity : AppCompatActivity() {
         private const val INTENT_PHRASE: String = "INTENT_PHRASE"
         private const val INTENT_PASSPHRASE: String = "INTENT_PASSPHRASE"
 
+        private const val INTENT_RESULT_DATA: String = "INTENT_RESULT_DATA"
+
         fun restore(context: Context, recoveryString: String, passphrase: String?): Intent {
           return createWallet(context, recoveryString, passphrase)
         }
@@ -62,6 +64,11 @@ class WalletManagerActivity : AppCompatActivity() {
             val intent = Intent(context, WalletManagerActivity::class.java)
             intent.putExtra(INTENT_ARG_TYPE, ActionType.DECRYPT_MNEMONIC)
             return intent
+        }
+
+        fun getResultDataString(intent:Intent?) : String? {
+            if (intent == null) return null
+            return intent.getStringExtra(INTENT_RESULT_DATA)
         }
     }
 
@@ -131,8 +138,7 @@ class WalletManagerActivity : AppCompatActivity() {
                         if (masterKey != null) {
                             val encryptedPhrase = WalletApplication.wallet.getEncryptedPhrase()!!
                             val decryptedPhrase = AccountUtils.getDecryptedString(encryptedPhrase, masterKey)
-                            startActivity(MnemonicActivity.newDisplayMnemonicIntent(this, decryptedPhrase))
-                            finish()
+                            setResultData(decryptedPhrase)
                             return
                         }
                     }
@@ -154,8 +160,8 @@ class WalletManagerActivity : AppCompatActivity() {
                             }
                             val keyPair = AccountUtils.getStellarKeyPair(phrase, passphrase)
                             val secretSeed = keyPair.secretSeed.joinToString("")
-                            startActivity(ViewSecretSeedActivity.newInstance(this, secretSeed))
-                            finish()
+
+                            setResultData(secretSeed)
                             return
                         }
                     }
@@ -167,6 +173,12 @@ class WalletManagerActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun setResultData(resultData : String) {
+        val intent = Intent()
+        intent.putExtra(INTENT_RESULT_DATA, resultData)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
     private fun getPinFromKeyStore() : String {
         return KeyStoreWrapper(applicationContext).getAliases().first()
     }
