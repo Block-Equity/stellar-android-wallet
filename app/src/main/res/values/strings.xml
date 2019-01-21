@@ -246,6 +246,8 @@
     <string name="no_contacts_found">No contacts found</string>
     <string name="contact_header">ADDRESS BOOK</string>
     <string name="stellar_contact_header">STELLAR CONTACT</string>
+    <string name="contact_list_permission_message">Enable contacts to be able to   send funds to your friends.</string>
+    <string name="contact_list_permission_button">Allow</string>
 
     <!--Update stellar address-->
     <string name="stellar_address_title">Public Address</string>
@@ -253,5 +255,6 @@
     <string name="trade_alert_title">Not enough assets</string>
     <string name="trade_alert_message">You must have at least one Stellar asset in addition to Lumens(XLM) in order to trade.</string>
     <string name="trade_alert_button">Add asset</string>
+
 
 </resources>

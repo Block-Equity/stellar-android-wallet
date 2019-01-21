@@ -64,13 +64,13 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enable contacts to be able to \n send funds to your friends." />
+            android:text="@string/contact_list_permission_message" />
 
         <Button
             android:id="@+id/allow_permissions_button"
             android:layout_marginTop="10dp"
             android:layout_gravity="center"
-            android:text="Allow"
+            android:text="@string/contact_list_permission_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
