@@ -80,7 +80,7 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
 
     private fun setupUI() {
         if (!mnemonicString.isEmpty()) {
-            // Show mnemonic UI
+            // Show chips UI
             confirmButton.visibility = View.GONE
             passphraseButton.visibility = View.GONE
             generateQRCode(mnemonicString, qrImageView, 500)
@@ -90,7 +90,7 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
                 mnemonicView.visibility = View.GONE
             }
         } else {
-            // Create mnemonic UI
+            // Create chips UI
             qrLayout.visibility = View.GONE
 
             // TODO: Problem linked to setting isRecoveryPhrase before it is confirmed in
@@ -109,8 +109,10 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun setupMnemonicView() {
-        mnemonicView.mnemonic = getMnemonic()
-        mnemonicView.loadMnemonic(passphraseToDisplay)
+        mnemonicView.loadChips(getMnemonic())
+        passphraseToDisplay?.let {
+            passphraseView.loadChips(arrayListOf(it), arrayListOf("passPhrase"))
+        }
     }
 
     //endregion

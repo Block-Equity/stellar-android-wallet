@@ -8,26 +8,25 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import com.blockeq.stellarwallet.R
-import kotlinx.android.synthetic.main.mnemonic_custon_view.view.*
+import kotlinx.android.synthetic.main.chip_view.view.*
 
-class MnemonicView(context: Context?, attrs: AttributeSet?) : ScrollView(context, attrs) {
-
-    var mnemonic : List<String>? = null
-
+class ChipView(context: Context, attrs: AttributeSet?) : ScrollView(context, attrs) {
     init {
-        inflate(getContext(), R.layout.mnemonic_custon_view, this)
+      inflate(getContext(), R.layout.chip_view, this)
     }
 
-    fun loadMnemonic (passPhrase:String?) {
-        val mnemonicPhrase = mnemonic
+    fun loadChips(chips : List<String>, chipsIndexes:List<String>? = null) {
+        if (chipsIndexes != null) {
+           if(chips.size != chipsIndexes.size) throw IllegalStateException("chips list and chipIndexes list have to be equal in size.")
+        }
 
-        if (mnemonicPhrase != null) {
-            for (i in mnemonicPhrase.indices) {
-                renderView((i + 1).toString(), mnemonicPhrase[i])
+        for (i in chips.indices) {
+            val index : String = if (chipsIndexes == null) {
+              (i + 1).toString()
+            } else {
+              chipsIndexes[i]
             }
-            if (passPhrase != null) {
-                renderView("passPhrase", passPhrase)
-            }
+            renderView(index, chips[i])
         }
     }
 
