@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BlockEQ Stellar Wallet</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -12,6 +13,7 @@
     <!--Navigation Menu-->
     <string name="nav_wallet">Wallet</string>
     <string name="nav_trading">Trading</string>
+    <string name="nav_contacts">Contacts</string>
     <string name="nav_receive">Receive</string>
     <string name="nav_settings">Settings</string>
 
@@ -20,9 +22,11 @@
     <string name="deleteDialogText">Are you sure you want to delete this %1s?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="refreshed">List Refreshed!</string>
     <string name="no_network">There was a problem connecting to the network. Attempting to reconnect.</string>
-    <string name="available_balance_template">Available: %1$s %2$s</string>
+    <string name="balance_template">%1$s %2$s</string>
+    <string name="asset_template">%1$s (%2$s)</string>
+    <string name="bracket_template">(%1$s)</string>
+    <string name="trade_item_template">Trade %1$s for %2$s</string>
 
     <!--Wallet Fragment-->
     <string name="button_receive">Receive</string>
@@ -33,7 +37,9 @@
     <string name="learn_more">Learn more</string>
     <string name="activity">ACTIVITY</string>
     <string name="amount">AMOUNT</string>
-    <string name="no_transactions">Start trading!\n You currently have no transactions</string>
+    <string name="no_transactions">You currently have no transactions</string>
+    <string name="load_account_error">There was an error loading your account balance</string>
+    <string name="load_effects_error">There was an error loading your account activity</string>
 
     <!-- Login Strings -->
     <string name="create_new_wallet">Create new wallet</string>
@@ -42,15 +48,23 @@
     <string name="phrase_warning">Please write down and safely store this phrase. It\'s the ONLY WAY to retrieve your wallet.</string>
     <string name="no_mnemonic_set">Your wallet was recovered using a secret key and does not use a mnemonic.</string>
     <string name="confirm_written">I have written it down</string>
+    <string name="advanced_security">Advanced Security</string>
     <string name="enter_phrase">Enter Phrase</string>
     <string name="enter_secret_key">Enter Secret Key</string>
     <string name="secret_phrase">Secret Phrase</string>
-    <string name="invalid_input_for_phrase">Invalid number of words (must be 12 or 24).</string>
+    <string name="invalid_input_for_phrase">Invalid number of words (must be one of the followings: %s).</string>
     <string name="invalid_input_for_secret">Invalid secret key.</string>
     <string name="create_word_option_1">Use a 12 word recovery phrase</string>
     <string name="create_word_option_2">Use a 24 word recovery phrase</string>
     <string name="recover_from_phrase">Recover from phrase</string>
     <string name="recover_from_seed">Recover from secret key</string>
+    <string name="passphrase_hint">Enter passphrase</string>
+    <string name="passphrase_dialog_title">Enter a passphrase</string>
+    <string name="passphrase_dialog_info">Passphrase along with mnemonic phrase will be used to derive your address.</string>
+    <string name="passphrase_dialog_error">Please retry, passphrases don\'t match</string>
+    <string name="passphrase_dialog_confirm">Please confirm your passphrase</string>
+    <string name="passphrase_applied">Passphrase applied</string>
+    <string name="passphrase_dialog_empty_field">Empty passphrase field</string>
 
     <!--Settings Fragment-->
     <string name="recovery">Recovery</string>
@@ -58,8 +72,17 @@
     <string name="view_seed">View Secret Key (Not recommended)</string>
     <string name="wallet">Wallet</string>
     <string name="clear_wallet">Clear Wallet</string>
+    <string name="enable_wear">Enable WearApp</string>
     <string name="security">Security</string>
     <string name="pin_send_payments">Request PIN when sending payments</string>
+    <string name="troubleshooting">Troubleshooting</string>
+    <string name="bug_report">Send a bug report</string>
+    <string name="app_information">App information</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="about">About</string>
+    <string name="debug_preferences">Debug</string>
+
 
     <!--Trading Fragment-->
     <string name="tab_trade">Trade</string>
@@ -69,7 +92,7 @@
     <string name="tab_my_offers">My Offers</string>
     <string name="selling_hint">I have</string>
     <string name="buying_hint">I want</string>
-    <string name="holdings_amount">%1$f %2$s</string>
+    <string name="holdings_amount">%1$s %2$s</string>
     <string name="tenth">10%</string>
     <string name="quarter">25%</string>
     <string name="half">50%</string>
@@ -81,7 +104,7 @@
         Any amount larger than this will be posed as an offer.</string>
 
     <!--My Offers Fragment-->
-    <string name="rowDescription">Sell %1$f %2$s for %3$f %4$s at the price of %5$f</string>
+    <string name="rowDescription">Sell %1$s %2$s for %3$s %4$s at the price of %5$s %6$s/%7$s </string>
     <string name="offer">offer</string>
 
     <!--Order Books-->
@@ -91,6 +114,7 @@
     <string name="offerPrice">%1s Price</string>
     <string name="offerAmount">%1$s Amount</string>
     <string name="offerValue">%1s Value</string>
+    <string name="no_enough_data_available">no enough data available</string>
 
     <!--PIN Screen-->
     <string name="please_enter_your_pin">Please enter your PIN code</string>
@@ -119,6 +143,7 @@
     <string name="send_address_hint">Enter address here</string>
     <string name="send_success_message">Transaction sent successfully</string>
     <string name="send_error_message">There was an error sending your transaction. Please try again later.</string>
+    <string name="send_address_identified">Address identified for &lt;u&gt;&lt;b&gt;%1$s&lt;/b&gt;&lt;/u&gt;</string>
 
     <!--Assets Activity-->
     <string name="asset_title_text">Assets</string>
@@ -130,8 +155,11 @@
     <string name="no_balance_text_message">You must have more than 1 Lumen (XLM) to perform this action.</string>
     <string name="add_asset">Add asset</string>
     <string name="success_trustline_changed">Trust line changed!</string>
+    <string name="asset_removed">Asset removed successfully</string>
+    <string name="asset_added">Asset added successfully</string>
     <string name="error_trustline_changed">There was an error changing trust lines.</string>
     <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
     <!--Inflation Activity-->
     <string name="inflation_info_message">We recommend setting your inflation destination to the lumenaut community pool (entered above), which pays out 100% of inflation proceeds every Tuesday without taking any fees. You can change it to any other pool should you prefer to.</string>
@@ -157,5 +185,76 @@
     <string name="secret_seed">Secret Key</string>
     <string name="secret_seed_info_message">We do not recommend using your secret key with other applications as we cannot guarantee their security. \n\nIf your secret key is leaked by a 3rd party your funds can be stolen.</string>
     <string name="copy_address_content_descriptor">Copy address</string>
+
+    <!--Diagnostic Activity-->
+    <string name="bug_report_message">Here is some information that will be sent to BlockEQ for troubleshooting and bug reports.</string>
+    <string name="device_model">Device Model</string>
+    <string name="android_version">Android version</string>
+    <string name="locale">Locale</string>
+    <string name="blockeq_app_version">BlockEQ App version</string>
+    <string name="public_address_of_stellar_account">Public address of Stellar account</string>
+    <string name="send_report">Report issue</string>
+    <string name="recovery_type">Recovery type</string>
+    <string name="mnemonic_phrase_12_words">Recovered with 12-word Mnemonic</string>
+    <string name="mnemonic_phrase_24_words">Recovered with 24-word Mnemonic</string>
+    <string name="advanced_security_passphrase">Is passphrase used?</string>
+    <string name="explain_problem">Explain the problem in detailed steps</string>
+    <string name="explanation_hint">Provide details on which screen it happened, the steps that led to the issue, etc.</string>
+    <string name="recovered_secret_seed">Recovered from Secret Seed</string>
+
+    <!--Horizon Error Messages (Technical followed by user readable)-->
+    <string name="standard_error_message">%1$s: %2$s</string>
+
+    <!--Transaction Result Codes-->
+    <string name="technical_tx_failed">tx_failed</string>
+    <string name="readable_tx_failed">Transaction failed</string>
+
+    <string name="technical_tx_insufficient_balance">tx_insufficient_balance</string>
+    <string name="readable_tx_insufficient_balance">Insufficient balance</string>
+
+    <!--Operation Result Codes-->
+    <string name="technical_op_underfunded">op_underfunded</string>
+    <string name="readable_op_underfunded">Payment is underfunded</string>
+
+    <string name="technical_op_low_reserve">op_low_reserve</string>
+    <string name="readable_op_low_reserve">You don\'t have enough Lumens to add another trust line</string>
+
+    <!--Add Asset Activity-->
+    <string name="asset_code">Asset Code</string>
+    <string name="asset_code_hint">BTC</string>
+    <string name="issuer_address">Issuer Address</string>
+    <string name="empty_fields">You have one or more empty fields</string>
+    <string name="my_offer_empty_list">There are no offers at the moment</string>
+    <string name="add_asset_title">Add Asset</string>
+    <string name="override_limit_order_text">Override limit order</string>
+
+    <!--Contacts -->
+    <string name="hint_search_bar">Find contact…</string>
+    <string name="update_contact_title">Update %1$s</string>
+    <string name="add_contact_title">Add Contact</string>
+    <string name="enter_the_contact_name">Enter the contact name</string>
+    <string name="name">Name</string>
+    <string name="open_camera_to_scan_qr">open camera to scan qr</string>
+    <string name="send_payment">Send Payment</string>
+    <string name="open_contact">Open Contact</string>
+    <string name="refresh">Refresh</string>
+    <string name="add_contact">Add Contact</string>
+    <string name="default_value">0</string>
+    <string name="add_stellar_address">Add Address</string>
+    <string name="you_have_no_contacts">You have no contacts</string>
+    <string name="no_results_found">No results found</string>
+    <string name="no_contacts_found">No contacts found</string>
+    <string name="contact_header">ADDRESS BOOK</string>
+    <string name="stellar_contact_header">STELLAR CONTACT</string>
+    <string name="contact_list_permission_message">Enable contacts to be able to   send funds to your friends.</string>
+    <string name="contact_list_permission_button">Allow</string>
+
+    <!--Update stellar address-->
+    <string name="stellar_address_title">Public Address</string>
+    <string name="create_button">CREATE</string>
+    <string name="trade_alert_title">Not enough assets</string>
+    <string name="trade_alert_message">You must have at least one Stellar asset in addition to Lumens(XLM) in order to trade.</string>
+    <string name="trade_alert_button">Add asset</string>
+
 
 </resources>

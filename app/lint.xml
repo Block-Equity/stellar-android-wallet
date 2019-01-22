@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- stellar sdk is based on java, TODO find or create one for android. -->
+    <issue id="InvalidPackage">
+        <ignore regexp="java" />
+        <ignore regexp="javax" />
+    </issue>
+    <!-- https://github.com/JakeWharton/timber/issues/284 -->
+    <issue id="ObsoleteLintCustomCheck">
+        <ignore regexp="timber.lint" />
+    </issue>
+    <!--Overdraw of the ripple background on the actual background-->
+    <issue id="Overdraw">
+        <ignore path="res/layout/item_asset.xml" />
+        <ignore path="res/layout/content_enter_address.xml" />
+        <ignore path="res/layout/popup_content.xml" />
+        <ignore path="res/layout/activity_pin.xml"/>
+        <ignore path="res/layout/activity_stellar_address.xml"/>
+        <ignore path="res/layout/item_contact.xml"/>
+        <ignore path="res/layout/activity_launch.xml"/>
+        <ignore path="res/layout/item_sticky_header_contact.xml"/>
+    </issue>
+
+    <issue id="IconDensities">
+        <ignore regexp="popup_bg.9.png" />
+    </issue>
+    <issue id="IconColors">
+        <ignore regexp="ic_trading.png" />
+    </issue>
+
+    <issue id="CustomViewStyleable">
+        <ignore regexp="PatchedSearchableSpinner.java" />
+    </issue>
+</lint>

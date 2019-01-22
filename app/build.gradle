@@ -1,36 +1,71 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
-        applicationId "blockeq.com.stellarwallet"
+        applicationId "com.blockeq.stellarwallet"
         minSdkVersion 19
-        targetSdkVersion 27
-        versionCode 12
-        versionName "1.0.2"
+        targetSdkVersion 28
+        versionCode 29
+        versionName "2.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas".toString())
+            }
+        }
     }
+
     androidExtensions {
         experimental = true
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    lintOptions {
+        warningsAsErrors true
+        baseline file("lint-baseline.xml")
+    }
 }
+
+def getVersionCode() {
+    def commandResult = 'git log --oneline'.execute(null, rootDir) | 'wc -l'.execute(null, rootDir)
+    def revNum = commandResult.text.trim()
+    def matcher = revNum =~ /(\d+)\+?/
+    if (!matcher.matches()) {
+        throw new IllegalArgumentException("Git psuedo-revision $revNum does not match \\d+\\+?.")
+    }
+    def code = matcher[0][1]
+    return code.toInteger()
+}
+
+def getVersionHash() {
+    return ('git rev-parse --short HEAD').execute(null, rootDir).text.trim()
+}
+
+def getBranch() {
+    return ('git branch').execute(null, rootDir).text.trim()
+}
+
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
     implementation "com.android.support:support-v4:$supportLibraryVersion"
     implementation "com.android.support:design:$supportLibraryVersion"
@@ -38,27 +73,70 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:$constrainLayoutVersion"
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.android.volley:volley:1.1.1'
-
-    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
-    kapt "android.arch.lifecycle:compiler:$lifecycle_version"
-
+    implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
+    kapt "android.arch.lifecycle:compiler:$lifecycleVersion"
     implementation "com.google.android:flexbox:$flexboxVersion"
-
-    implementation ('com.squareup.picasso:picasso:2.71828') {
-        exclude group:'com.android.support', module:'exifinterface'
-        exclude group:'com.squareup.okio', module:'okio'
-        exclude group:'com.squareup.okhttp3', module:'okhttp'
+    implementation('com.squareup.picasso:picasso:2.71828') {
+        exclude group: 'com.android.support', module: 'exifinterface'
+        exclude group: 'com.squareup.okio', module: 'okio'
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.0'
-
     implementation "io.github.novacrypto:BIP39:$novaCryptoVersion"
     implementation "com.andrognito.pinlockview:pinlockview:$pinlockviewVersion"
     implementation "com.toptoche.searchablespinner:searchablespinnerlibrary:$searchablespinnerVersion"
     implementation "com.journeyapps:zxing-android-embedded:$zxingAndroidVersion"
     implementation "com.github.davidmigloz:number-keyboard:$numberKeyBoardVersion"
     implementation "com.brandongogetap:stickyheaders:$stickyheadersVersion"
-
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
+    androidTestImplementation "com.android.support.test.espresso:espresso-intents:$espressoVersion"
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:$espressoVersion") {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.3'
+    androidTestImplementation "com.android.support:support-annotations:$supportLibraryVersion"
+    androidTestImplementation "com.android.support.test:rules:$testRunnerVersion"
+    androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
+    androidTestImplementation('com.android.support.test.espresso:espresso-contrib:3.0.2') {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude module: 'recyclerview-v7'
+    }
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoVersion"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+
+    //TODO this should be used only in debug builds
+    implementation('com.facebook.stetho:stetho:1.5.0') {
+        exclude group:'com.squareup.okhttp3', module:'okhttp'
+    }
+
+    implementation('com.facebook.stetho:stetho-okhttp3:1.5.0') {
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    }
+
+    implementation("com.github.stellar:java-stellar-sdk:$stellarVersion") {
+        transitive = false
+    }
+
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
+    // Optional, if you use support library fragments:
+    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
+
+    // Room components
+    implementation "android.arch.persistence.room:runtime:$lifecycleVersion"
+    annotationProcessor  "android.arch.persistence.room:compiler:$lifecycleVersion"
+    kapt "android.arch.persistence.room:compiler:$lifecycleVersion"
+
+    implementation "com.android.support:preference-v7:$supportLibraryVersion"
+
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+
+    implementation 'com.github.mancj:MaterialSearchBar:0.8.1'
+    implementation 'com.github.abdularis:CircularImageView:v1.2'
+
+    implementation 'com.google.android.gms:play-services-wearable:16.0.1'
 }

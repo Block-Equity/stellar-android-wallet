@@ -16,6 +16,7 @@
     <color name="puce">#C7808E</color>
     <color name="toryBlue">#0b55b3</color>
     <color name="alabaster">#f7f7f7</color>
+    <color name="transparent_alabaster">#77f7f7f7</color>
     <color name="lightGray">#cccccc</color>
     <color name="alto">#D8D8D8</color>
     <color name="frenchGray">#c8c8cd</color>
@@ -23,9 +24,11 @@
     <color name="black">#000000</color>
     <color name="gallery">#ececec</color>
     <color name="mantis">#71CD5C</color>
-    <color name="funBlue">#1b53b0</color>
     <color name="apricot">#ee7a70</color>
     <color name="paleSky">#6f7785</color>
+    <color name="purple">#800080</color>
+    <color name="pink">#ffa5d2</color>
+    <color name="brown">#964b00</color>
 
     <!--Branding Colors-->
     <color name="blue1">#0043FF</color>
@@ -37,12 +40,18 @@
 
     <!--Global-->
     <color name="fragmentBg">@color/alabaster</color>
-    <color name="toggleSelected">@color/alto</color>
+    <color name="toggleSelected">@color/royalBlue</color>
     <color name="toggleUnselected">@color/white</color>
-    <color name="primaryButtonBg">@color/funBlue</color>
+
+    <color name="primaryButtonBg">@color/blue2</color>
     <color name="primaryButtonPressedBg">@color/royalBlue</color>
     <color name="primaryButtonDisabled">@color/silverChalice</color>
     <color name="primaryButtonText">@color/white</color>
+
+    <color name="secondaryButtonBg">@color/blue4</color>
+    <color name="secondaryButtonPressedBg">@color/lightBlue</color>
+    <color name="secondaryButtonText">@color/white</color>
+
     <color name="container">@color/white</color>
     <color name="divider">@color/alto</color>
     <color name="regularTextColor">@color/black</color>
@@ -64,7 +73,7 @@
     <color name="wrongDotColor">@color/puce</color>
 
     <!--Receive-->
-    <color name="qrCodeLayoutBackGroundColor">@color/toryBlue</color>
+    <color name="qrCodeLayoutBackGroundColor">@color/primaryButtonBg</color>
     <color name="qrCodeBackGroundColor">@color/white</color>
     <color name="addressBackGroundColor">@color/alabaster</color>
     <color name="addressTextColor">@color/silverChalice</color>
@@ -72,7 +81,7 @@
 
     <!--Send-->
     <color name="sendToTextColor">@color/silverChalice</color>
-    <color name="sendButtonColor">@color/toryBlue</color>
+    <color name="sendButtonColor">@color/primaryButtonBg</color>
     <color name="currencyTextColor">@color/lightGray</color>
 
     <!--Trade-->

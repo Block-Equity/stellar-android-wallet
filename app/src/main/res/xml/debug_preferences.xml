@@ -1,0 +1,28 @@
+<android.support.v7.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <android.support.v7.preference.PreferenceCategory
+        android:title="Code Analysis">
+
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:key="@string/preference_debug_leak_canary"
+            android:title="@string/debug_leak_canary_title"
+            android:summary="@string/debug_leak_canary_summary"
+            android:defaultValue="false" />
+
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:key="@string/preference_debug_pin_disabled"
+            android:title="@string/debug_disable_pin_title"
+            android:summary="@string/debug_disable_pin_summary"
+            android:defaultValue="false" />
+
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:key="@string/preference_debug_trade_tooltip"
+            android:title="@string/debug_enable_trade_tooltips_title"
+            android:summary="@string/debug_enable_trade_tooltips_summary"
+            android:defaultValue="false" />
+
+
+    </android.support.v7.preference.PreferenceCategory>
+
+</android.support.v7.preference.PreferenceScreen>
