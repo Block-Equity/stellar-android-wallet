@@ -32,6 +32,9 @@ class WalletManagerActivity : AppCompatActivity() {
         private const val INTENT_PHRASE: String = "INTENT_PHRASE"
         private const val INTENT_PASSPHRASE: String = "INTENT_PASSPHRASE"
 
+        private const val INTENT_RESULT_DATA: String = "INTENT_RESULT_DATA"
+        private const val INTENT_RESULT_EXTRA_DATA: String = "INTENT_RESULT_EXTRA_DATA"
+
         fun restore(context: Context, recoveryString: String, passphrase: String?): Intent {
           return createWallet(context, recoveryString, passphrase)
         }
@@ -62,6 +65,16 @@ class WalletManagerActivity : AppCompatActivity() {
             val intent = Intent(context, WalletManagerActivity::class.java)
             intent.putExtra(INTENT_ARG_TYPE, ActionType.DISPLAY_MNEMONIC)
             return intent
+        }
+
+        fun getResultDataString(intent:Intent?) : String? {
+            if (intent == null) return null
+            return intent.getStringExtra(INTENT_RESULT_DATA)
+        }
+
+        fun getResultExtraDataString(intent:Intent?) : String? {
+            if (intent == null) return null
+            return intent.getStringExtra(INTENT_RESULT_EXTRA_DATA)
         }
     }
 
@@ -130,16 +143,14 @@ class WalletManagerActivity : AppCompatActivity() {
                         val masterKey = AccountUtils.getPinMasterKey(applicationContext, pin)
                         if (masterKey != null) {
                             val encryptedPhrase = WalletApplication.wallet.getEncryptedPhrase()!!
-                            val phrase = AccountUtils.getDecryptedString(encryptedPhrase, masterKey)
-
                             WalletApplication.wallet.getEncryptedPassphrase()
                             val encryptedPassphrase = WalletApplication.wallet.getEncryptedPassphrase()
                             var passphrase: String?= null
                             if (encryptedPassphrase != null) {
                                 passphrase = AccountUtils.getDecryptedString(encryptedPassphrase, masterKey)
                             }
-                            startActivity(MnemonicActivity.newDisplayMnemonicIntent(this, phrase, passphrase))
-                            finish()
+                            val decryptedPhrase = AccountUtils.getDecryptedString(encryptedPhrase, masterKey)
+                            setResultData(decryptedPhrase, passphrase)
                             return
                         }
                     }
@@ -161,8 +172,8 @@ class WalletManagerActivity : AppCompatActivity() {
                             }
                             val keyPair = AccountUtils.getStellarKeyPair(phrase, passphrase)
                             val secretSeed = keyPair.secretSeed.joinToString("")
-                            startActivity(ViewSecretSeedActivity.newInstance(this, secretSeed))
-                            finish()
+
+                            setResultData(secretSeed)
                             return
                         }
                     }
@@ -174,6 +185,15 @@ class WalletManagerActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun setResultData(resultData : String, resultExtraData : String? = null) {
+        val intent = Intent()
+        intent.putExtra(INTENT_RESULT_DATA, resultData)
+        if (resultExtraData != null) {
+           intent.putExtra(INTENT_RESULT_EXTRA_DATA, resultExtraData)
+        }
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
     private fun getPinFromKeyStore() : String {
         return KeyStoreWrapper(applicationContext).getAliases().first()
     }
