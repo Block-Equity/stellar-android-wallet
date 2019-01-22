@@ -5,17 +5,25 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.blockeq.stellarwallet.mvvm.account.AccountRepository
-import com.blockeq.stellarwallet.mvvm.effects.remote.RemoteRepository
+import org.jetbrains.anko.doAsync
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
-import java.util.*
-
 
 class WalletViewModel(application: Application) : AndroidViewModel(application) {
 
     private val effectsRepository : EffectsRepository = EffectsRepository.getInstance()
 
-    var effectsList: LiveData<ArrayList<EffectResponse>> = effectsRepository.loadList()
+    private var effectsList: MutableLiveData<ArrayList<EffectResponse>> = MutableLiveData()
     var account : LiveData<AccountResponse> = AccountRepository.loadAccount()
 
+    fun getEffects() : LiveData<ArrayList<EffectResponse>> {
+        forceRefresh()
+        return effectsList
+    }
+
+    fun forceRefresh() {
+        doAsync {
+            effectsRepository.loadList().observeForever { t -> effectsList.postValue(t) }
+        }
+    }
 }

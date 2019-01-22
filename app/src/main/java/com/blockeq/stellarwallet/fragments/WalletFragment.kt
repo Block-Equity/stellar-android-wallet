@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,7 @@ import com.blockeq.stellarwallet.models.WalletHeterogeneousArray
 import com.blockeq.stellarwallet.mvvm.effects.WalletViewModel
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.StringFormat
+import kotlinx.android.synthetic.main.fragment_tab_order_book.*
 import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -57,6 +59,9 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
         super.onViewCreated(view, savedInstanceState)
 
         bindAdapter()
+        swipeRefresh_wallet.setOnRefreshListener {
+            viewModel.forceRefresh()
+        }
 
         receiveButton.setOnClickListener {
             activity?.let { activityContext ->
@@ -83,11 +88,11 @@ class WalletFragment : BaseFragment(), OnLoadAccount {
     //region User Interface
 
     private fun initViewModels() {
-        viewModel.effectsList.observe(viewLifecycleOwner, Observer { it ->
+        viewModel.getEffects().observe(viewLifecycleOwner, Observer { it ->
             if (it != null && walletProgressBar != null) {
                 noTransactionsTextView.visibility = View.GONE
                 walletProgressBar.visibility = View.VISIBLE
-
+                swipeRefresh_wallet.isRefreshing = false
                 effectsList = it
 
                 doAsync {

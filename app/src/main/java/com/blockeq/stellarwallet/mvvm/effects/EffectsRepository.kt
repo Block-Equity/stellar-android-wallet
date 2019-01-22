@@ -80,7 +80,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
     fun restoreStream() {
         eventSource?.let {
             if (!it.isOpen) {
-                it.open()
+//                it.open()
             }
         }
     }
