@@ -108,7 +108,7 @@ class WalletFragment : BaseFragment() {
     private fun createAdapter() {
         walletProgressBar.visibility = View.VISIBLE
 
-        recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance("Lumens", "XLM","-1"),
+        recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance("Refreshing Wallet", "","Updating..."),
                 AvailableBalance("XLM", "-1"), Pair("Activity", "Amount"), arrayListOf())
 
         val adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList.array)
@@ -126,6 +126,7 @@ class WalletFragment : BaseFragment() {
                 (context as Activity).overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
             }
         })
+        recyclerViewArrayList.hideAvailableBalance()
         walletRecyclerView.adapter = adapter
         walletRecyclerView.layoutManager = LinearLayoutManager(activity)
     }

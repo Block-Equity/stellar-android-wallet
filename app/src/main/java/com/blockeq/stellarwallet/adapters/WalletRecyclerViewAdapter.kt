@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
@@ -16,6 +17,12 @@ import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.utils.StringFormat
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.getFormattedDate
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
+import kotlinx.android.synthetic.main.item_total_balance.view.*
+import android.support.v4.graphics.drawable.DrawableCompat
+import android.graphics.drawable.Drawable
+import android.os.Build
+import android.support.annotation.ColorInt
+
 
 class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -116,6 +123,7 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         var balance: TextView = v.findViewById(R.id.balanceTextView)
         var assetName: TextView = v.findViewById(R.id.assetNameTextView)
         var assetsButton: ImageView = v.findViewById(R.id.assetsButton)
+        var progressBar: ProgressBar = v.findViewById(R.id.progressRefreshingWallet)
 
         init {
             assetsButton.setOnClickListener {
@@ -167,17 +175,37 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     private fun configureTotalBalanceViewHolder(viewHolder : TotalBalanceViewHolder, position : Int) {
         val totalBalance = items[position] as TotalBalance
 
-        viewHolder.balance.text = truncateDecimalPlaces(totalBalance.balance)
-        viewHolder.assetName.text = String.format(context.getString(R.string.asset_template),
-                totalBalance.assetName, getVisibleAssetcode(totalBalance.assetCode))
+        viewHolder.balance.text = totalBalance.balance
+        val code = getVisibleAssetCode(totalBalance.assetCode)
+        if (code.isEmpty()) {
+            tintProgressBar( viewHolder.progressBar, context.getColor(com.blockeq.stellarwallet.R.color.white))
+            viewHolder.progressBar.visibility = View.VISIBLE
+            viewHolder.assetsButton.visibility = View.GONE
+            viewHolder.assetName.text = totalBalance.assetName
+        } else {
+            viewHolder.progressBar.visibility = View.GONE
+            viewHolder.assetsButton.visibility = View.VISIBLE
+            viewHolder.assetName.text = String.format(context.getString(com.blockeq.stellarwallet.R.string.asset_template),
+                    totalBalance.assetName, getVisibleAssetCode(totalBalance.assetCode))
+        }
+    }
+
+    private fun tintProgressBar(progressBar: ProgressBar, @ColorInt color : Int){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            val wrapDrawable = DrawableCompat.wrap(progressBar.indeterminateDrawable)
+            DrawableCompat.setTint(wrapDrawable, color)
+            progressBar.indeterminateDrawable = DrawableCompat.unwrap<Drawable>(wrapDrawable)
+        } else {
+            progressBar.indeterminateDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+        }
     }
 
     private fun configureAvailableBalanceViewHolder(viewHolder : AvailableBalanceViewHolder, position : Int) {
         val availableBalance = items[position] as AvailableBalance
-        viewHolder.balance.text = "${truncateDecimalPlaces(availableBalance.balance)} ${getVisibleAssetcode(availableBalance.assetCode)}"
+        viewHolder.balance.text = "${availableBalance.balance} ${availableBalance.assetCode}"
     }
 
-    private fun getVisibleAssetcode(assetCode : String) : String {
+    private fun getVisibleAssetCode(assetCode : String) : String {
         if(assetCode == "native") return "XLM"
         else return assetCode
     }

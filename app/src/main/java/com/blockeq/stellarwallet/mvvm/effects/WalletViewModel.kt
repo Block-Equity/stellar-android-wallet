@@ -10,6 +10,7 @@ import com.blockeq.stellarwallet.models.AvailableBalance
 import com.blockeq.stellarwallet.models.TotalBalance
 import com.blockeq.stellarwallet.mvvm.account.AccountRepository
 import com.blockeq.stellarwallet.utils.AccountUtils
+import com.blockeq.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
 import org.jetbrains.anko.doAsync
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
@@ -69,8 +70,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun getAssetCode() : String {
-        val code =  WalletApplication.userSession.currAssetCode
-        return  code
+        return WalletApplication.userSession.currAssetCode
     }
 
     private fun getAssetName() : String {
@@ -78,13 +78,13 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun getAvailableBalance() : AvailableBalance {
-        val balance = WalletApplication.wallet.getAvailableBalance()
+        val balance = truncateDecimalPlaces(WalletApplication.wallet.getAvailableBalance())
         return AvailableBalance(getAssetCode(), balance)
     }
 
     private fun getTotalAssetBalance(): TotalBalance {
         val currAsset = WalletApplication.userSession.currAssetCode
-        val assetBalance = AccountUtils.getTotalBalance(currAsset)
+        val assetBalance = truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))
         return TotalBalance(getAssetName(), getAssetCode(), assetBalance)
     }
 }
