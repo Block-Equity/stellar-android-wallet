@@ -9,10 +9,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.adapters.AssetsRecyclerViewAdapter
@@ -33,8 +29,6 @@ import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 import retrofit2.Call
 import retrofit2.Callback
-import shadow.com.google.gson.GsonBuilder
-import shadow.com.google.gson.reflect.TypeToken
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -57,7 +51,7 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
         setContentView(R.layout.content_assets_activity)
 
         setupUI()
-        loadSupportedAssets2()
+        loadSupportedAssets()
         context = applicationContext
     }
 
@@ -156,7 +150,7 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
         }
     }
 
-    private fun loadSupportedAssets2() {
+    private fun loadSupportedAssets() {
         val retrofit = Retrofit.Builder()
                 .baseUrl("https://api.blockeq.com/")
                 .addConverterFactory(GsonConverterFactory.create())

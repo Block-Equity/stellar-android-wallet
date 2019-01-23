@@ -10,6 +10,11 @@ import com.android.volley.toolbox.Volley
 import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.models.ExchangeApiModel
 import com.blockeq.stellarwallet.models.ExchangeMapper
+import com.blockeq.stellarwallet.remote.ExchangeProvidersApi
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import shadow.com.google.gson.GsonBuilder
 import timber.log.Timber
 
@@ -39,29 +44,27 @@ class ExchangeRepository(application: Application) {
         Timber.d("Refreshing exchanges database from remote server")
     }
 
-    /**
-     * It will fetch the exchanges and populate the exchanges database.
-     */
     private fun refreshExchanges() {
-        val queue = Volley.newRequestQueue(appContext)
-        // TODO: Use retrofit and dagger
-        val request = JsonArrayRequest(Request.Method.GET, Constants.BLOCKEQ_EXCHANGES_URL, null,
-                Response.Listener { response ->
-                    // display response
-                    val gson = GsonBuilder().create()
-                    val list = gson.fromJson(response.toString(), Array<ExchangeApiModel>::class.java)
+        val retrofit = Retrofit.Builder()
+                .baseUrl("https://api.blockeq.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
 
-                    if (list != null && list.isNotEmpty()) {
-                        populateExchangeDatabase(list.toList())
-                        listLiveData.postValue(exchangeDao.getAllExchangeProviders())
-                    }
-                },
-                Response.ErrorListener {
-                    it.networkResponse
-                    Timber.e("Error fetching exchange providers")
-                })
+        retrofit.create(ExchangeProvidersApi::class.java).exchangeProviders.enqueue(object : Callback<List<ExchangeApiModel>>{
+            override fun onResponse(call: Call<List<ExchangeApiModel>>, response: retrofit2.Response<List<ExchangeApiModel>>) {
+                val list = response.body()
+                if (list != null && list.isNotEmpty()) {
+                    Timber.e("Fetched {${list.size}} exchange providers")
+                    populateExchangeDatabase(list.toList())
+                    listLiveData.postValue(exchangeDao.getAllExchangeProviders())
+                }
+            }
 
-        queue.add(request)
+            override fun onFailure(call: Call<List<ExchangeApiModel>>, t: Throwable) {
+                Timber.e("Error fetching exchange providers")
+            }
+
+        })
     }
 
     fun getExchange(address : String) : ExchangeEntity {
