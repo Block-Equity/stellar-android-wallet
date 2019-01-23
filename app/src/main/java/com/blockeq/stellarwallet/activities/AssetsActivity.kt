@@ -19,6 +19,7 @@ import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
 import com.blockeq.stellarwallet.models.HorizonException
 import com.blockeq.stellarwallet.models.SupportedAsset
 import com.blockeq.stellarwallet.models.SupportedAssetType
+import com.blockeq.stellarwallet.remote.BlockEqRetrofit
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.remote.SupportedAssetsApi
 import com.blockeq.stellarwallet.utils.AccountUtils
@@ -29,8 +30,6 @@ import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
@@ -151,12 +150,7 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
     }
 
     private fun loadSupportedAssets() {
-        val retrofit = Retrofit.Builder()
-                .baseUrl("https://api.blockeq.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-
-        retrofit.create(SupportedAssetsApi::class.java).assets.enqueue(object : Callback<Map<String, SupportedAsset>> {
+        BlockEqRetrofit.create(SupportedAssetsApi::class.java).assets.enqueue(object : Callback<Map<String, SupportedAsset>> {
             override fun onFailure(call: Call<Map<String, SupportedAsset>>, t: Throwable) {
                 Toast.makeText(applicationContext, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
 

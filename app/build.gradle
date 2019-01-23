@@ -72,11 +72,9 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
     implementation "com.android.support.constraint:constraint-layout:$constrainLayoutVersion"
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.android.volley:volley:1.1.1'
     implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
     kapt "android.arch.lifecycle:compiler:$lifecycleVersion"
     implementation "com.google.android:flexbox:$flexboxVersion"
-
 
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.0'
     implementation "io.github.novacrypto:BIP39:$novaCryptoVersion"

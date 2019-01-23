@@ -6,12 +6,11 @@ import android.os.Looper
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.interfaces.OnLoadAccount
-import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
 import com.blockeq.stellarwallet.models.AssetUtil
 import com.blockeq.stellarwallet.models.DataAsset
 import com.blockeq.stellarwallet.models.HorizonException
-import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import org.stellar.sdk.*
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.requests.EventListener
@@ -23,7 +22,6 @@ import org.stellar.sdk.responses.OrderBookResponse
 import org.stellar.sdk.responses.Page
 import org.stellar.sdk.responses.effects.EffectResponse
 import shadow.okhttp3.OkHttpClient
-import shadow.okhttp3.sse.EventSource
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -389,22 +387,26 @@ object Horizon : HorizonTasks {
         }
     }
 
+    /**
+     * HORIZON_SUBMIT_TIMEOUT is a time in seconds after Horizon sends a timeout response
+     * after internal txsub timeout.
+     */
+    private const val HORIZON_SUBMIT_TIMEOUT = 60L
+
     private fun getServer() : Server {
         val server = Server(PROD_SERVER)
-        // These two clients are a copy of the liens 45 and 46 of org.stellar.sdk.Server class with the stetho interceptor
+        // These two clients are a copy of the lines 32 and 42 of org.stellar.sdk.Server class with the stetho interceptor
         // REVIEW this once you upgrade stellar library
         val httpClient = OkHttpClient.Builder()
-                .connectTimeout(10L, TimeUnit.SECONDS)
-                .readTimeout(30L, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
-                .addNetworkInterceptor(ShadowedStethoInterceptor())
                 .build()
 
         val submitHttpClient = OkHttpClient.Builder()
-                .connectTimeout(10L, TimeUnit.SECONDS)
-                .readTimeout(65L, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(HORIZON_SUBMIT_TIMEOUT + 5, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
-                .addNetworkInterceptor(ShadowedStethoInterceptor())
                 .build()
 
         server.httpClient = httpClient

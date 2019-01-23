@@ -6,24 +6,20 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
-import com.blockeq.stellarwallet.models.Diagnostic
-import com.blockeq.stellarwallet.models.Values
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
+import com.blockeq.stellarwallet.models.Diagnostic
+import com.blockeq.stellarwallet.models.Values
+import com.blockeq.stellarwallet.remote.BlockEqRetrofit
 import com.blockeq.stellarwallet.remote.DiagnosticApi
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.DiagnosticUtils
 import com.blockeq.stellarwallet.utils.StringFormat
-import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_diagnostic.*
-import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 
 
 class DiagnosticActivity : BaseActivity() {
@@ -63,19 +59,6 @@ class DiagnosticActivity : BaseActivity() {
     }
 
     private fun sendDiagnostic(isPassphrase:Boolean) {
-        val httpClient = OkHttpClient.Builder()
-                .connectTimeout(10L, TimeUnit.SECONDS)
-                .readTimeout(30L, TimeUnit.SECONDS)
-                .retryOnConnectionFailure(true)
-                .addNetworkInterceptor(StethoInterceptor())
-                .build()
-
-        val retrofit = Retrofit.Builder()
-                .baseUrl("https://api.blockeq.com/")
-                .client(httpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-
         val diagnosticModel = Diagnostic(
                 Values(
                         appVersionTextView.text.toString(),
@@ -90,7 +73,7 @@ class DiagnosticActivity : BaseActivity() {
 
         val emailBody = "Issue report details:\n" + explanationEditText.text + "\n\nJSON format details:\n\n" + diagnosticModel.toString()
 
-        retrofit.create(DiagnosticApi::class.java).uploadDiagnostic(
+        BlockEqRetrofit.create(DiagnosticApi::class.java).uploadDiagnostic(
                 diagnosticModel).enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: retrofit2.Response<JsonObject>) {
                 val issueId = ((response.body() as JsonObject)["fields"] as JsonObject).get("Report Id").toString()
