@@ -16,7 +16,6 @@ import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.utils.StringFormat
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.getFormattedDate
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
-import timber.log.Timber
 
 class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -170,14 +169,18 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
 
         viewHolder.balance.text = truncateDecimalPlaces(totalBalance.balance)
         viewHolder.assetName.text = String.format(context.getString(R.string.asset_template),
-                WalletApplication.userSession.currAssetName, WalletApplication.userSession.getFormattedCurrentAssetCode())
+                totalBalance.assetName, getVisibleAssetcode(totalBalance.assetCode))
     }
 
     private fun configureAvailableBalanceViewHolder(viewHolder : AvailableBalanceViewHolder, position : Int) {
         val availableBalance = items[position] as AvailableBalance
-        viewHolder.balance.text = truncateDecimalPlaces(availableBalance.balance)
+        viewHolder.balance.text = "${truncateDecimalPlaces(availableBalance.balance)} ${getVisibleAssetcode(availableBalance.assetCode)}"
     }
 
+    private fun getVisibleAssetcode(assetCode : String) : String {
+        if(assetCode == "native") return "XLM"
+        else return assetCode
+    }
     private fun configureTransactionHeaderViewHolder(viewHolder : TransactionHeaderViewHolder, position : Int) {
         val pair = items[position] as Pair<*, *>
         viewHolder.activityTextView.text = pair.first.toString()
@@ -244,11 +247,9 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.paleSky), PorterDuff.Mode.SRC_IN)
         if (WalletApplication.userSession.currAssetCode == trade.boughtAsset) {
             viewHolder.amount.text = truncateDecimalPlaces(trade.boughtAmount)
-            // viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.mantis), PorterDuff.Mode.SRC_IN)
         } else {
             viewHolder.amount.text = String.format(context.getString(R.string.bracket_template),
                     truncateDecimalPlaces(trade.soldAmount))
-            // viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.apricot), PorterDuff.Mode.SRC_IN)
         }
         viewHolder.date.text = getFormattedDate(trade.createdAt)
     }
