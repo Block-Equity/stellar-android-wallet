@@ -92,8 +92,6 @@
                 android:background="@color/addressBackGroundColor"
                 android:textSize="15sp"
                 android:scrollHorizontally="true"
-                android:digits="@string/stellar_address_alphabet"
-                android:inputType="textCapCharacters"
                 android:hint="@string/send_address_hint"
                 android:singleLine="true"
                 android:importantForAutofill="no"
