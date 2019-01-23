@@ -6,8 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
-import com.blockeq.stellarwallet.models.DiagnosticModel
-import com.blockeq.stellarwallet.models.DiagnosticValues
+import com.blockeq.stellarwallet.models.Diagnostic
+import com.blockeq.stellarwallet.models.Values
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.remote.DiagnosticApi
@@ -76,8 +76,8 @@ class DiagnosticActivity : BaseActivity() {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
 
-        val diagnosticModel = DiagnosticModel(
-                DiagnosticValues(
+        val diagnosticModel = Diagnostic(
+                Values(
                         appVersionTextView.text.toString(),
                         deviceModelTextView.text.toString(),
                         localeTextView.text.toString(),

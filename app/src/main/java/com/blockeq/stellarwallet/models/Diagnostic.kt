@@ -2,10 +2,9 @@ package com.blockeq.stellarwallet.models
 
 import com.google.gson.annotations.SerializedName
 
-data class DiagnosticModel(@SerializedName("fields") val values: DiagnosticValues)
+data class Diagnostic(@SerializedName("fields") val values: Values)
 
-
-data class DiagnosticValues(
+data class Values(
         @SerializedName("App Version") val app_version: String,
         @SerializedName("Device Hardware") val device_hardware: String,
         @SerializedName("Locale") val locale: String,
