@@ -24,14 +24,20 @@ import com.blockeq.stellarwallet.models.HorizonException
 import com.blockeq.stellarwallet.models.SupportedAsset
 import com.blockeq.stellarwallet.models.SupportedAssetType
 import com.blockeq.stellarwallet.remote.Horizon
+import com.blockeq.stellarwallet.remote.SupportedAssetsApi
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import kotlinx.android.synthetic.main.content_assets_activity.*
 import org.stellar.sdk.Asset
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
+import retrofit2.Call
+import retrofit2.Callback
 import shadow.com.google.gson.GsonBuilder
 import shadow.com.google.gson.reflect.TypeToken
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
 
 class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
 
@@ -51,7 +57,7 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
         setContentView(R.layout.content_assets_activity)
 
         setupUI()
-        loadSupportedAssets()
+        loadSupportedAssets2()
         context = applicationContext
     }
 
@@ -150,24 +156,26 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
         }
     }
 
-    private fun loadSupportedAssets() {
-        val queue = Volley.newRequestQueue(this)
+    private fun loadSupportedAssets2() {
+        val retrofit = Retrofit.Builder()
+                .baseUrl("https://api.blockeq.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
 
-        // TODO: Use retrofit and dagger
-        val request = JsonObjectRequest(Request.Method.GET, Constants.BLOCKEQ_BASE_URL, null,
-                Response.Listener { response ->
-                    // display response
-                    val gson = GsonBuilder().create()
-                    val token = object : TypeToken<Map<String, SupportedAsset>>(){}.type
+        retrofit.create(SupportedAssetsApi::class.java).assets.enqueue(object : Callback<Map<String, SupportedAsset>> {
+            override fun onFailure(call: Call<Map<String, SupportedAsset>>, t: Throwable) {
+                Toast.makeText(applicationContext, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
 
-                    map = gson.fromJson<Map<String, SupportedAsset>>(response.toString(), token)
-                    updateAdapter()
-                },
-                Response.ErrorListener {
-                    Toast.makeText(this, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
-                })
+            }
 
-        queue.add(request)
+            override fun onResponse(call: Call<Map<String, SupportedAsset>>, response: retrofit2.Response<Map<String, SupportedAsset>>) {
+                map = response.body()
+                updateAdapter()
+            }
+
+        })
+
+
     }
 
     //region Call backs
