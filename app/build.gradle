@@ -78,9 +78,11 @@ dependencies {
     implementation "com.google.android:flexbox:$flexboxVersion"
     implementation('com.squareup.picasso:picasso:2.71828') {
         exclude group: 'com.android.support', module: 'exifinterface'
-        exclude group: 'com.squareup.okio', module: 'okio'
-        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+//        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
+    //picasso needs okio
+    implementation 'com.squareup.okio:okio:2.2.0'
+
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.0'
     implementation "io.github.novacrypto:BIP39:$novaCryptoVersion"
     implementation "com.andrognito.pinlockview:pinlockview:$pinlockviewVersion"
