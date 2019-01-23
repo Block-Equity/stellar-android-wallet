@@ -6,7 +6,7 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 import com.blockeq.stellarwallet.models.ExchangeApiModel
-import com.google.gson.GsonBuilder
+import shadow.com.google.gson.GsonBuilder
 import timber.log.Timber
 import java.io.IOException
 import java.util.concurrent.Executors

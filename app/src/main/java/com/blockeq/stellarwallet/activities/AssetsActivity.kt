@@ -26,12 +26,12 @@ import com.blockeq.stellarwallet.models.SupportedAssetType
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.content_assets_activity.*
 import org.stellar.sdk.Asset
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
+import shadow.com.google.gson.GsonBuilder
+import shadow.com.google.gson.reflect.TypeToken
 
 class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
 

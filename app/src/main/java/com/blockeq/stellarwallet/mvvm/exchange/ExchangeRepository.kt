@@ -10,7 +10,7 @@ import com.android.volley.toolbox.Volley
 import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.models.ExchangeApiModel
 import com.blockeq.stellarwallet.models.ExchangeMapper
-import com.google.gson.GsonBuilder
+import shadow.com.google.gson.GsonBuilder
 import timber.log.Timber
 
 class ExchangeRepository(application: Application) {

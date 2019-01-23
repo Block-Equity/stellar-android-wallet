@@ -12,17 +12,18 @@ import com.blockeq.stellarwallet.models.AssetUtil
 import com.blockeq.stellarwallet.models.DataAsset
 import com.blockeq.stellarwallet.models.HorizonException
 import com.facebook.stetho.okhttp3.StethoInterceptor
-import okhttp3.OkHttpClient
-import org.glassfish.jersey.media.sse.EventSource
 import org.stellar.sdk.*
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.requests.EventListener
 import org.stellar.sdk.requests.RequestBuilder
+import org.stellar.sdk.requests.SSEStream
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.OfferResponse
 import org.stellar.sdk.responses.OrderBookResponse
 import org.stellar.sdk.responses.Page
 import org.stellar.sdk.responses.effects.EffectResponse
+import shadow.okhttp3.OkHttpClient
+import shadow.okhttp3.sse.EventSource
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -107,7 +108,7 @@ object Horizon : HorizonTasks {
         }
     }
 
-    override fun registerForEffects(cursor: String, listener: EventListener<EffectResponse>) : EventSource? {
+    override fun registerForEffects(cursor: String, listener: EventListener<EffectResponse>) : SSEStream<EffectResponse>? {
         val server = getServer()
         val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
         try {
@@ -396,14 +397,14 @@ object Horizon : HorizonTasks {
                 .connectTimeout(10L, TimeUnit.SECONDS)
                 .readTimeout(30L, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
-                .addNetworkInterceptor(StethoInterceptor())
+                .addNetworkInterceptor(ShadowedStethoInterceptor())
                 .build()
 
         val submitHttpClient = OkHttpClient.Builder()
                 .connectTimeout(10L, TimeUnit.SECONDS)
                 .readTimeout(65L, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
-                .addNetworkInterceptor(StethoInterceptor())
+                .addNetworkInterceptor(ShadowedStethoInterceptor())
                 .build()
 
         server.httpClient = httpClient

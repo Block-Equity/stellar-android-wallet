@@ -5,15 +5,15 @@ import android.arch.lifecycle.MutableLiveData
 import com.blockeq.stellarwallet.mvvm.account.AccountRepository
 import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import com.blockeq.stellarwallet.mvvm.effects.remote.RemoteRepository
-import org.glassfish.jersey.media.sse.EventSource
 import org.stellar.sdk.requests.EventListener
+import org.stellar.sdk.requests.SSEStream
 import org.stellar.sdk.responses.effects.EffectResponse
 import timber.log.Timber
 
 class EffectsRepository private constructor(private val remoteRepository: RemoteRepository) {
     private var effectsList: ArrayList<EffectResponse> = ArrayList()
     private var effectListLiveData = MutableLiveData<ArrayList<EffectResponse>>()
-    private var eventSource : EventSource? = null
+    private var eventSource : SSEStream<EffectResponse>? = null
     /**
      * Returns an observable for ALL the effects table changes
      */
@@ -70,19 +70,13 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
 
     fun closeStream() {
         eventSource?.let {
-            if (it.isOpen) {
-                Timber.d("Closing the stream")
-                it.close()
-            }
+            it.close()
+            Timber.d("Closing the stream")
         }
     }
 
     fun restoreStream() {
-        eventSource?.let {
-            if (!it.isOpen) {
-//                it.open()
-            }
-        }
+
     }
 
     companion object {
