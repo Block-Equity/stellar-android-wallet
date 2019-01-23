@@ -76,9 +76,9 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
     kapt "android.arch.lifecycle:compiler:$lifecycleVersion"
     implementation "com.google.android:flexbox:$flexboxVersion"
+    //picasso includes okhttp3
     implementation('com.squareup.picasso:picasso:2.71828') {
         exclude group: 'com.android.support', module: 'exifinterface'
-//        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
     //picasso needs okio
     implementation 'com.squareup.okio:okio:2.2.0'
