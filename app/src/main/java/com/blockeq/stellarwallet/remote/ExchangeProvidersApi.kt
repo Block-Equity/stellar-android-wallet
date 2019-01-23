@@ -6,6 +6,6 @@ import retrofit2.Call
 import retrofit2.http.GET
 
 interface ExchangeProvidersApi {
-    @get:GET("directory/exchanges?asArray")
-    val exchangeProviders: Call<List<ExchangeApiModel>>
+    @GET("directory/exchanges?asArray")
+    fun exchangeProviders(): Call<List<ExchangeApiModel>>
 }

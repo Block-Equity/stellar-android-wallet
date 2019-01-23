@@ -6,20 +6,24 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
+import com.blockeq.stellarwallet.models.DiagnosticModel
+import com.blockeq.stellarwallet.models.DiagnosticValues
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
-import com.blockeq.stellarwallet.helpers.Constants
-import com.blockeq.stellarwallet.models.Diagnostic
-import com.blockeq.stellarwallet.models.Fields
+import com.blockeq.stellarwallet.remote.DiagnosticApi
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.DiagnosticUtils
 import com.blockeq.stellarwallet.utils.StringFormat
+import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_diagnostic.*
-import org.json.JSONObject
+import okhttp3.OkHttpClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 
 class DiagnosticActivity : BaseActivity() {
@@ -52,30 +56,53 @@ class DiagnosticActivity : BaseActivity() {
             if (recoveryType.isEmpty()) {
                 Toast.makeText(applicationContext, getString(R.string.empty_fields), Toast.LENGTH_SHORT).show()
             } else {
-                val queue = Volley.newRequestQueue(this)
-
-                val fields = Fields(appVersionTextView.text.toString(), deviceModelTextView.text.toString(),
-                        localeTextView.text.toString(), "Android " + androidVersionTextView.text,
-                        publicAddressTextView.text.toString(), explanationEditText.text.toString(), isPassphrase, recoveryType)
-
-                val json = Diagnostic(fields).toJSON()
-
-                val emailBody = "Issue report details:\n" + explanationEditText.text + "\n\nJSON format details:\n\n" + json.toString()
-
-                val postRequest = object : JsonObjectRequest(Request.Method.POST,
-                        Constants.BLOCKEQ_DIAGNOSTIC_URL, json,
-                        Response.Listener {
-                            val issueId = (it["fields"] as JSONObject).get("Report Id").toString()
-                            callEmailClient(emailBody, issueId)
-                        },
-                        Response.ErrorListener {
-                            Toast.makeText(applicationContext, "Problem sending diagnostic", Toast.LENGTH_SHORT).show()
-                        }) {}
-
-                queue.add(postRequest)
+                sendDiagnostic(isPassphrase)
                 finish()
             }
         }
+    }
+
+    private fun sendDiagnostic(isPassphrase:Boolean) {
+        val httpClient = OkHttpClient.Builder()
+                .connectTimeout(10L, TimeUnit.SECONDS)
+                .readTimeout(30L, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true)
+                .addNetworkInterceptor(StethoInterceptor())
+                .build()
+
+        val retrofit = Retrofit.Builder()
+                .baseUrl("https://api.blockeq.com/")
+                .client(httpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+        val diagnosticModel = DiagnosticModel(
+                DiagnosticValues(
+                        appVersionTextView.text.toString(),
+                        deviceModelTextView.text.toString(),
+                        localeTextView.text.toString(),
+                        "Android ${androidVersionTextView.text}",
+                        publicAddressTextView.text.toString(),
+                        explanationEditText.text.toString(),
+                        isPassphrase,
+                        recoveryType)
+        )
+
+        val emailBody = "Issue report details:\n" + explanationEditText.text + "\n\nJSON format details:\n\n" + diagnosticModel.toString()
+
+        retrofit.create(DiagnosticApi::class.java).uploadDiagnostic(
+                diagnosticModel).enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: retrofit2.Response<JsonObject>) {
+                val issueId = ((response.body() as JsonObject)["fields"] as JsonObject).get("Report Id").toString()
+                callEmailClient(emailBody, issueId)
+                Timber.v("diagnostic created id = {$issueId}")
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Timber.e("Error uploading diagnostic")
+            }
+        })
+
     }
 
     private fun getRecoveryType(): String {

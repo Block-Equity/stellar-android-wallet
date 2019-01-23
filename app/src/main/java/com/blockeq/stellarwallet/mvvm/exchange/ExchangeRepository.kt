@@ -50,11 +50,11 @@ class ExchangeRepository(application: Application) {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
 
-        retrofit.create(ExchangeProvidersApi::class.java).exchangeProviders.enqueue(object : Callback<List<ExchangeApiModel>>{
+        retrofit.create(ExchangeProvidersApi::class.java).exchangeProviders().enqueue(object : Callback<List<ExchangeApiModel>>{
             override fun onResponse(call: Call<List<ExchangeApiModel>>, response: retrofit2.Response<List<ExchangeApiModel>>) {
                 val list = response.body()
                 if (list != null && list.isNotEmpty()) {
-                    Timber.e("Fetched {${list.size}} exchange providers")
+                    Timber.v("Fetched and updated {${list.size}} exchange providers")
                     populateExchangeDatabase(list.toList())
                     listLiveData.postValue(exchangeDao.getAllExchangeProviders())
                 }
