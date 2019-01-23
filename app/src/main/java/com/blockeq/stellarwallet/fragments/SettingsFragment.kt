@@ -66,15 +66,15 @@ class SettingsFragment : BaseFragment() {
         }
 
         diagnosticButton.setOnClickListener {
-            startActivity(Intent(appContext, DiagnosticActivity::class.java))
+            startActivity(Intent(it.context, DiagnosticActivity::class.java))
         }
 
         privacyPolicyButton.setOnClickListener {
-            startActivity(WebViewActivity.newIntent(appContext, getString(R.string.privacy_policy),"https://www.blockeq.com/privacy.html"))
+            startActivity(WebViewActivity.newIntent(it.context, getString(R.string.privacy_policy),"https://www.blockeq.com/privacy.html"))
         }
 
         termsOfServiceButton.setOnClickListener {
-            startActivity(WebViewActivity.newIntent(appContext, getString(R.string.terms_of_service), "https://www.blockeq.com/terms.html"))
+            startActivity(WebViewActivity.newIntent(it.context, getString(R.string.terms_of_service), "https://www.blockeq.com/terms.html"))
         }
 
         if (BuildConfig.DEBUG) {
@@ -109,7 +109,8 @@ class SettingsFragment : BaseFragment() {
                     context?.let {
                         val mnemonic = WalletManagerActivity.getResultDataString(data)
                         if (mnemonic != null) {
-                            startActivity(MnemonicActivity.newDisplayMnemonicIntent(it, mnemonic))
+                            val phrase = WalletManagerActivity.getResultExtraDataString(data)
+                            startActivity(MnemonicActivity.newDisplayMnemonicIntent(it, mnemonic, phrase))
                         } else {
                             Timber.e("fatal error: mnemonic is null")
                         }
@@ -124,12 +125,11 @@ class SettingsFragment : BaseFragment() {
                         if (decryptedPhrase != null) {
                             startActivity(ViewSecretSeedActivity.newInstance(it, decryptedPhrase))
                         } else {
-                            Timber.e("fatal error: decryptedphrase is null")
+                            Timber.e("fatal error: decrypted phrase is null")
                         }
                     }
                 }
             }
-
 
             SettingsAction.CLEAR_WALLET.ordinal -> {
                 if (resultCode == Activity.RESULT_OK) {

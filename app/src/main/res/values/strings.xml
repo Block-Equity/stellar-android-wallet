@@ -254,7 +254,9 @@
     <string name="create_button">CREATE</string>
     <string name="trade_alert_title">Not enough assets</string>
     <string name="trade_alert_message">You must have at least one Stellar asset in addition to Lumens(XLM) in order to trade.</string>
-    <string name="trade_alert_button">Add asset</string>
+    <string name="trade_alert_positive_button">Add asset</string>
+    <string name="trade_alert_negative_button">Not now</string>
+
 
 
 </resources>

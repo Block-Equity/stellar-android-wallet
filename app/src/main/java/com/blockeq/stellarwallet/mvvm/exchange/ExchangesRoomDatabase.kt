@@ -1,4 +1,4 @@
-package com.blockeq.stellarwallet.vmodels
+package com.blockeq.stellarwallet.mvvm.exchange
 
 import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Database
@@ -6,7 +6,7 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 import com.blockeq.stellarwallet.models.ExchangeApiModel
-import com.google.gson.GsonBuilder
+import shadow.com.google.gson.GsonBuilder
 import timber.log.Timber
 import java.io.IOException
 import java.util.concurrent.Executors
@@ -38,7 +38,7 @@ abstract class ExchangesRoomDatabase : RoomDatabase() {
                                             }
 
                                             populateDatabase(context.applicationContext, entities)
-                                            Timber.d("Populating the emtpy database with a local resource")
+                                            Timber.d("Populating the empty database with a local resource")
                                         }
                                     }
                                 }).build()

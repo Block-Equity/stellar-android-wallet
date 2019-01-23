@@ -1,4 +1,4 @@
-package com.blockeq.stellarwallet.vmodels
+package com.blockeq.stellarwallet.mvvm.exchange
 
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert

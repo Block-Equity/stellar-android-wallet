@@ -8,7 +8,7 @@ import com.blockeq.stellarwallet.helpers.WalletLifecycleListener
 import com.blockeq.stellarwallet.interfaces.WalletStore
 import com.blockeq.stellarwallet.models.UserSessionImpl
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
-import com.blockeq.stellarwallet.vmodels.ExchangeRepository
+import com.blockeq.stellarwallet.mvvm.exchange.ExchangeRepository
 import com.facebook.stetho.Stetho
 import com.squareup.leakcanary.LeakCanary
 import org.bouncycastle.jce.provider.BouncyCastleProvider
@@ -57,7 +57,7 @@ class WalletApplication : MultiDexApplication() {
             }
         }
 
-        // exchange providers addresses are not very likely to change but let's refresh them during application startup
+        // exchange providers addresses are not very likely to change but let's refresh them during application startup.
         ExchangeRepository(this).getAllExchangeProviders(true)
     }
 

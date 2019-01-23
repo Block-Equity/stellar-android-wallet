@@ -44,12 +44,18 @@
 
     </RelativeLayout>
 
-    <com.blockeq.stellarwallet.views.MnemonicView
+    <com.blockeq.stellarwallet.views.ChipView
         android:id="@+id/mnemonicView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/passphraseButton"
+        android:layout_height="wrap_content"
         android:layout_below="@id/qrLayout" />
+
+    <com.blockeq.stellarwallet.views.ChipView
+        android:id="@+id/passphraseView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/passphraseButton"
+        android:layout_below="@id/mnemonicView" />
 
     <TextView
         android:id="@+id/passphraseButton"

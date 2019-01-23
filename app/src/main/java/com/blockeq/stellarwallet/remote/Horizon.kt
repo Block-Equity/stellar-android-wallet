@@ -6,21 +6,22 @@ import android.os.Looper
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.interfaces.OnLoadAccount
-import com.blockeq.stellarwallet.interfaces.OnLoadEffects
 import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
 import com.blockeq.stellarwallet.models.AssetUtil
 import com.blockeq.stellarwallet.models.DataAsset
 import com.blockeq.stellarwallet.models.HorizonException
-import com.facebook.stetho.okhttp3.StethoInterceptor
-import okhttp3.OkHttpClient
+import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import org.stellar.sdk.*
 import org.stellar.sdk.requests.ErrorResponse
+import org.stellar.sdk.requests.EventListener
 import org.stellar.sdk.requests.RequestBuilder
+import org.stellar.sdk.requests.SSEStream
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.OfferResponse
 import org.stellar.sdk.responses.OrderBookResponse
 import org.stellar.sdk.responses.Page
 import org.stellar.sdk.responses.effects.EffectResponse
+import shadow.okhttp3.OkHttpClient
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -29,8 +30,8 @@ object Horizon : HorizonTasks {
     private const val TEST_SERVER = "https://horizon-testnet.stellar.org"
     private const val SERVER_ERROR_MESSAGE = "Error response from the server."
 
-    override fun getLoadEffectsTask(listener: OnLoadEffects): AsyncTask<Void, Void, ArrayList<EffectResponse>?> {
-        return LoadEffectsTask(listener)
+    override fun getLoadEffectsTask(cursor: String, limit: Int, listener: OnLoadEffects): AsyncTask<Void, Void, ArrayList<EffectResponse>?> {
+        return LoadEffectsTask(cursor, limit, listener)
     }
 
     override fun getSendTask(listener: SuccessErrorCallback, destAddress: String, secretSeed: CharArray, memo: String, amount: String): AsyncTask<Void, Void, HorizonException> {
@@ -105,14 +106,30 @@ object Horizon : HorizonTasks {
         }
     }
 
-    private class LoadEffectsTask(private val listener: OnLoadEffects) : AsyncTask<Void, Void, ArrayList<EffectResponse>?>() {
+    override fun registerForEffects(cursor: String, listener: EventListener<EffectResponse>) : SSEStream<EffectResponse>? {
+        val server = getServer()
+        val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
+        try {
+            //ATTENTION STREAM must work with order.ASC!
+            return server.effects()
+                    .cursor(cursor)
+                    .order(RequestBuilder.Order.ASC)
+                    .forAccount(sourceKeyPair).stream(listener)
+        } catch (error : Exception) {
+            Timber.e(error.message.toString())
+        }
+        return null
+    }
+
+    private class LoadEffectsTask(val cursor : String, val limit:Int, private val listener: OnLoadEffects) : AsyncTask<Void, Void, ArrayList<EffectResponse>?>() {
         override fun doInBackground(vararg params: Void?): ArrayList<EffectResponse>? {
             val server = getServer()
             val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
             var effectResults : Page<EffectResponse>? = null
             try {
                 effectResults = server.effects().order(RequestBuilder.Order.DESC)
-                        .limit(Constants.NUM_TRANSACTIONS_SHOWN)
+                        .cursor(cursor)
+                        .limit(limit)
                         .forAccount(sourceKeyPair).execute()
             } catch (error : Exception) {
                 Timber.e(error.message.toString())
@@ -370,22 +387,26 @@ object Horizon : HorizonTasks {
         }
     }
 
+    /**
+     * HORIZON_SUBMIT_TIMEOUT is a time in seconds after Horizon sends a timeout response
+     * after internal txsub timeout.
+     */
+    private const val HORIZON_SUBMIT_TIMEOUT = 60L
+
     private fun getServer() : Server {
         val server = Server(PROD_SERVER)
-        // These two clients are a copy of the liens 45 and 46 of org.stellar.sdk.Server class with the stetho interceptor
+        // These two clients are a copy of the lines 32 and 42 of org.stellar.sdk.Server class with the stetho interceptor
         // REVIEW this once you upgrade stellar library
         val httpClient = OkHttpClient.Builder()
-                .connectTimeout(10L, TimeUnit.SECONDS)
-                .readTimeout(30L, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
-                .addNetworkInterceptor(StethoInterceptor())
                 .build()
 
         val submitHttpClient = OkHttpClient.Builder()
-                .connectTimeout(10L, TimeUnit.SECONDS)
-                .readTimeout(65L, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(HORIZON_SUBMIT_TIMEOUT + 5, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
-                .addNetworkInterceptor(StethoInterceptor())
                 .build()
 
         server.httpClient = httpClient

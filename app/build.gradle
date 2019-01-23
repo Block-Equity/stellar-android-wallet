@@ -72,15 +72,10 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
     implementation "com.android.support.constraint:constraint-layout:$constrainLayoutVersion"
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.android.volley:volley:1.1.1'
     implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
     kapt "android.arch.lifecycle:compiler:$lifecycleVersion"
     implementation "com.google.android:flexbox:$flexboxVersion"
-    implementation('com.squareup.picasso:picasso:2.71828') {
-        exclude group: 'com.android.support', module: 'exifinterface'
-        exclude group: 'com.squareup.okio', module: 'okio'
-        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
-    }
+
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.0'
     implementation "io.github.novacrypto:BIP39:$novaCryptoVersion"
     implementation "com.andrognito.pinlockview:pinlockview:$pinlockviewVersion"
@@ -105,6 +100,18 @@ dependencies {
     }
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+    implementation "org.jetbrains.anko:anko:$anko_version"
+    implementation "org.jetbrains.anko:anko-coroutines:$anko_version"
+
+    //picasso includes okhttp3
+    implementation('com.squareup.picasso:picasso:2.71828') {
+        exclude group: 'com.android.support', module: 'exifinterface'
+    }
+    //picasso needs okio
+    implementation 'com.squareup.okio:okio:2.2.0'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
 
     //TODO this should be used only in debug builds
     implementation('com.facebook.stetho:stetho:1.5.0') {
@@ -116,6 +123,8 @@ dependencies {
     }
 
     implementation("com.github.stellar:java-stellar-sdk:$stellarVersion") {
+        //this library is clashing with themselves
+        //the sdk archive system is setup to support a fat jar file with all transitives inside.
         transitive = false
     }
 

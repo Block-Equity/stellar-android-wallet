@@ -16,9 +16,8 @@ class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: Ava
         const val EFFECTS_LIST_INDEX = 3
     }
 
-
     var array: ArrayList<Any> = ArrayList()
-    var availableBalanceOffset = 0
+    private var availableBalanceOffset = 0
 
     init {
         array.add(totalBalance)
@@ -106,55 +105,46 @@ class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: Ava
     }
 
     private fun getAssetCode(effect: EffectResponse): String? {
-       if (effect is AccountCreditedEffectResponse) {
-           if (effect.asset is AssetTypeCreditAlphaNum) {
-               return (effect.asset as AssetTypeCreditAlphaNum).code
-           } else {
-               return (effect.asset as AssetTypeNative).type
-           }
-       } else if (effect is AccountDebitedEffectResponse) {
-           if (effect.asset is AssetTypeCreditAlphaNum) {
-               return (effect.asset as AssetTypeCreditAlphaNum).code
-           } else {
-               return (effect.asset as AssetTypeNative).type
-           }
-       } else if (effect is TrustlineCreatedEffectResponse) {
-           return (effect.asset as AssetTypeCreditAlphaNum).code
-       } else if (effect is TrustlineRemovedEffectResponse) {
-           return (effect.asset as AssetTypeCreditAlphaNum).code
-       } else if (effect is TrustlineUpdatedEffectResponse) {
-           return (effect.asset as AssetTypeCreditAlphaNum).code
-       } else {
-           return null
-       }
+        when (effect) {
+            is AccountCreditedEffectResponse -> return if (effect.asset is AssetTypeCreditAlphaNum) {
+                (effect.asset as AssetTypeCreditAlphaNum).code
+            } else {
+                (effect.asset as AssetTypeNative).type
+            }
+            is AccountDebitedEffectResponse -> return if (effect.asset is AssetTypeCreditAlphaNum) {
+                (effect.asset as AssetTypeCreditAlphaNum).code
+            } else {
+                (effect.asset as AssetTypeNative).type
+            }
+            is TrustlineCreatedEffectResponse -> return (effect.asset as AssetTypeCreditAlphaNum).code
+            is TrustlineRemovedEffectResponse -> return (effect.asset as AssetTypeCreditAlphaNum).code
+            is TrustlineUpdatedEffectResponse -> return (effect.asset as AssetTypeCreditAlphaNum).code
+            else -> return null
+        }
     }
 
     private fun getAmount(effectResponse: EffectResponse) : String? {
-        if (effectResponse is AccountCreditedEffectResponse) {
-            return effectResponse.amount
-        } else if (effectResponse is AccountDebitedEffectResponse) {
-            return effectResponse.amount
-        } else if (effectResponse is AccountCreatedEffectResponse) {
-            return effectResponse.startingBalance
-        } else {
-            return null
+        return when (effectResponse) {
+            is AccountCreditedEffectResponse -> effectResponse.amount
+            is AccountDebitedEffectResponse -> effectResponse.amount
+            is AccountCreatedEffectResponse -> effectResponse.startingBalance
+            else -> null
         }
     }
 
     private fun getBoughtAsset(trade: TradeEffectResponse) : String {
-        if (trade.boughtAsset is AssetTypeCreditAlphaNum) {
-            return (trade.boughtAsset as AssetTypeCreditAlphaNum).code
+        return if (trade.boughtAsset is AssetTypeCreditAlphaNum) {
+            (trade.boughtAsset as AssetTypeCreditAlphaNum).code
         } else {
-            return (trade.boughtAsset as AssetTypeNative).type
+            (trade.boughtAsset as AssetTypeNative).type
         }
     }
 
     private fun getSoldAsset(trade: TradeEffectResponse) : String {
-        if (trade.soldAsset is AssetTypeCreditAlphaNum) {
-            return (trade.soldAsset as AssetTypeCreditAlphaNum).code
+        return if (trade.soldAsset is AssetTypeCreditAlphaNum) {
+            (trade.soldAsset as AssetTypeCreditAlphaNum).code
         } else {
-            return (trade.soldAsset as AssetTypeNative).type
+            (trade.soldAsset as AssetTypeNative).type
         }
     }
-
 }

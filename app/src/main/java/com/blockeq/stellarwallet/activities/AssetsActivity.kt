@@ -9,10 +9,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.adapters.AssetsRecyclerViewAdapter
@@ -23,15 +19,18 @@ import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
 import com.blockeq.stellarwallet.models.HorizonException
 import com.blockeq.stellarwallet.models.SupportedAsset
 import com.blockeq.stellarwallet.models.SupportedAssetType
+import com.blockeq.stellarwallet.remote.BlockEqRetrofit
 import com.blockeq.stellarwallet.remote.Horizon
+import com.blockeq.stellarwallet.remote.SupportedAssetsApi
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.content_assets_activity.*
 import org.stellar.sdk.Asset
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
+import retrofit2.Call
+import retrofit2.Callback
+
 
 class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
 
@@ -151,23 +150,20 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
     }
 
     private fun loadSupportedAssets() {
-        val queue = Volley.newRequestQueue(this)
+        BlockEqRetrofit.create(SupportedAssetsApi::class.java).assets.enqueue(object : Callback<Map<String, SupportedAsset>> {
+            override fun onFailure(call: Call<Map<String, SupportedAsset>>, t: Throwable) {
+                Toast.makeText(applicationContext, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
 
-        // TODO: Use retrofit and dagger
-        val request = JsonObjectRequest(Request.Method.GET, Constants.BLOCKEQ_BASE_URL, null,
-                Response.Listener { response ->
-                    // display response
-                    val gson = GsonBuilder().create()
-                    val token = object : TypeToken<Map<String, SupportedAsset>>(){}.type
+            }
 
-                    map = gson.fromJson<Map<String, SupportedAsset>>(response.toString(), token)
-                    updateAdapter()
-                },
-                Response.ErrorListener {
-                    Toast.makeText(this, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
-                })
+            override fun onResponse(call: Call<Map<String, SupportedAsset>>, response: retrofit2.Response<Map<String, SupportedAsset>>) {
+                map = response.body()
+                updateAdapter()
+            }
 
-        queue.add(request)
+        })
+
+
     }
 
     //region Call backs
