@@ -46,7 +46,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
         closeStream()
         remoteRepository.getEffects(cursor, 200, object : OnLoadEffects {
             override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
-                Timber.d("fetched {$result?.size} effects")
+                Timber.d("fetched ${result?.size} effects")
                 if (result != null) {
                     if (!result.isEmpty()) {
                         effectsList.addAll(result)

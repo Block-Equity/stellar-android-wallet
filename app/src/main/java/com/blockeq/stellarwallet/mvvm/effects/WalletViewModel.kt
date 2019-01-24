@@ -7,6 +7,7 @@ import android.arch.lifecycle.MutableLiveData
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants.Companion.DEFAULT_ACCOUNT_BALANCE
 import com.blockeq.stellarwallet.models.AvailableBalance
+import com.blockeq.stellarwallet.models.BalanceState
 import com.blockeq.stellarwallet.models.TotalBalance
 import com.blockeq.stellarwallet.mvvm.account.AccountRepository
 import com.blockeq.stellarwallet.utils.AccountUtils
@@ -19,30 +20,45 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
 
     private val effectsRepository : EffectsRepository = EffectsRepository.getInstance()
 
-    private var effectsList: MutableLiveData<ArrayList<EffectResponse>> = MutableLiveData()
     private var walletViewState: MutableLiveData<WalletViewState> = MutableLiveData()
 
-    var account : MutableLiveData<AccountResponse> =  MutableLiveData()
 
     private var accountResponse: AccountResponse? = null
     private var effectsListResponse: ArrayList<EffectResponse>? = null
+    private var state: BalanceState = BalanceState.UPDATING
 
     init {
-        AccountRepository.loadAccount().observeForever {
-            account.postValue(it)
-            accountResponse = it
-        }
+        loadAccount(false)
     }
 
-    fun getEffects() : LiveData<ArrayList<EffectResponse>> {
-        forceRefresh()
-        return effectsList
+    private fun loadAccount(notify: Boolean){
+        AccountRepository.loadAccount().observeForever {
+            if(it != null) {
+                when(it.httpCode) {
+                    200 -> {
+                        accountResponse = it.accountResponse
+                        state = BalanceState.ACTIVE
+                    }
+                    404 -> {
+                        state = BalanceState.NOT_FUNDED
+                    } else -> {
+                        state = BalanceState.ERROR
+                    }
+                }
+
+                if (notify) {
+                    notifyViewState()
+                }
+            }
+        }
     }
 
     fun forceRefresh() {
         doAsync {
+            if (accountResponse == null) {
+                loadAccount(true)
+            }
             effectsRepository.loadList().observeForever { it ->
-                effectsList.postValue(it)
                 effectsListResponse = it
                 notifyViewState()
             }
@@ -61,10 +77,12 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
             val totalAvailableBalance = getTotalAssetBalance()
             //TODO fix the mutable null issue here
            walletViewState.postValue(WalletViewState(WalletViewState.WalletStatus.ACTIVE, getAssetCode(), availableBalance, totalAvailableBalance, effectsListResponse))
-        } else {
+        } else if(state == BalanceState.ERROR) {
+            walletViewState.postValue(WalletViewState(WalletViewState.WalletStatus.ERROR, getAssetCode(), null, null, null))
+        } else if(state == BalanceState.NOT_FUNDED){
             val availableBalance = AvailableBalance("XLM", DEFAULT_ACCOUNT_BALANCE)
-            val totalAvailableBalance = TotalBalance("Lumens", "XLM", DEFAULT_ACCOUNT_BALANCE)
-            walletViewState.postValue(WalletViewState(WalletViewState.WalletStatus.UNKNOWN, getAssetCode(), availableBalance, totalAvailableBalance, null))
+            val totalAvailableBalance = TotalBalance(state, "Lumens", "XLM", DEFAULT_ACCOUNT_BALANCE)
+            walletViewState.postValue(WalletViewState(WalletViewState.WalletStatus.UNFUNDED, getAssetCode(), availableBalance, totalAvailableBalance, null))
 
         }
     }
@@ -85,6 +103,6 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     private fun getTotalAssetBalance(): TotalBalance {
         val currAsset = WalletApplication.userSession.currAssetCode
         val assetBalance = truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))
-        return TotalBalance(getAssetName(), getAssetCode(), assetBalance)
+        return TotalBalance(BalanceState.ACTIVE, getAssetName(), getAssetCode(), assetBalance)
     }
 }

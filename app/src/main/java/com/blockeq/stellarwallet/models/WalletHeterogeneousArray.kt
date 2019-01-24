@@ -45,6 +45,12 @@ class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: Ava
         array.add(PAIR_INDEX - availableBalanceOffset, p)
     }
 
+    fun hidePair() {
+        if (array.size > PAIR_INDEX - availableBalanceOffset) {
+            array.removeAt(PAIR_INDEX - availableBalanceOffset)
+        }
+    }
+
     fun updateEffectsList(activeAsset: String, list: ArrayList<EffectResponse>?) {
         array.subList(EFFECTS_LIST_INDEX - availableBalanceOffset, array.size).clear()
         addFilteredEffects(activeAsset, list)
