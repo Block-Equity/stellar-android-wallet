@@ -57,7 +57,7 @@
                     android:layout_centerVertical="true"
                     android:text="@string/button_send"
                     android:textSize="@dimen/text_size_medium"
-                    android:textColor="@color/blue3" />
+                    android:textColor="@color/selector_color_send_button" />
 
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
@@ -117,12 +117,12 @@
     </LinearLayout>
 
     <LinearLayout
-        android:visibility="gone"
         android:orientation="vertical"
         android:id="@+id/fundingState"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/qrCode"

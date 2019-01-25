@@ -6,7 +6,7 @@ import android.arch.lifecycle.MutableLiveData
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants.Companion.DEFAULT_ACCOUNT_BALANCE
 import com.blockeq.stellarwallet.models.AvailableBalance
-import com.blockeq.stellarwallet.models.BalanceState
+import com.blockeq.stellarwallet.models.WalletState
 import com.blockeq.stellarwallet.models.TotalBalance
 import com.blockeq.stellarwallet.mvvm.account.AccountRepository
 import com.blockeq.stellarwallet.utils.AccountUtils
@@ -21,7 +21,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     private var walletViewState: MutableLiveData<WalletViewState> = MutableLiveData()
     private var accountResponse: AccountResponse? = null
     private var effectsListResponse: ArrayList<EffectResponse>? = null
-    private var state: BalanceState = BalanceState.UPDATING
+    private var state: WalletState = WalletState.UPDATING
 
     init {
         loadAccount(false)
@@ -34,17 +34,17 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
                     200 -> {
                         accountResponse = it.accountResponse
                         if (it.accountResponse != null && effectsListResponse != null) {
-                            state = BalanceState.ACTIVE
+                            state = WalletState.ACTIVE
                             Timber.d("setting state to ACTIVE")
                         }
                     }
                     404 -> {
                         accountResponse = null
                         Timber.d("setting state to NOT_FUNDED")
-                        state = BalanceState.NOT_FUNDED
+                        state = WalletState.NOT_FUNDED
                     }
                     else -> {
-                        state = BalanceState.ERROR
+                        state = WalletState.ERROR
                     }
                 }
 
@@ -56,13 +56,13 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun forceRefresh() {
-        state = BalanceState.UPDATING
+        state = WalletState.UPDATING
         doAsync {
             loadAccount(true)
             effectsRepository.loadList().observeForever { it ->
                 effectsListResponse = it
                 if (it != null && accountResponse != null) {
-                    state = BalanceState.ACTIVE
+                    state = WalletState.ACTIVE
                     Timber.d("setting state to ACTIVE")
                 }
                 notifyViewState()
@@ -79,16 +79,16 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     private fun notifyViewState() {
         val accountId = WalletApplication.wallet.getStellarAccountId()!!
         when(state) {
-            BalanceState.ACTIVE -> {
+            WalletState.ACTIVE -> {
                 val availableBalance = getAvailableBalance()
                 val totalAvailableBalance = getTotalAssetBalance()
                 //TODO fix the mutable null issue here
                 walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ACTIVE, accountId, getActiveAssetCode(), availableBalance, totalAvailableBalance, effectsListResponse))
             }
-            BalanceState.ERROR -> {
+            WalletState.ERROR -> {
                 walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ERROR, accountId, getActiveAssetCode(), null, null, null))
             }
-            BalanceState.NOT_FUNDED -> {
+            WalletState.NOT_FUNDED -> {
                 val availableBalance = AvailableBalance("XLM", DEFAULT_ACCOUNT_BALANCE)
                 val totalAvailableBalance = TotalBalance(state, "Lumens", "XLM", DEFAULT_ACCOUNT_BALANCE)
                 walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.UNFUNDED, accountId, getActiveAssetCode(), availableBalance, totalAvailableBalance, null))
@@ -114,6 +114,6 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     private fun getTotalAssetBalance(): TotalBalance {
         val currAsset = WalletApplication.userSession.currAssetCode
         val assetBalance = truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))
-        return TotalBalance(BalanceState.ACTIVE, getActiveAssetName(), getActiveAssetCode(), assetBalance)
+        return TotalBalance(WalletState.ACTIVE, getActiveAssetName(), getActiveAssetCode(), assetBalance)
     }
 }

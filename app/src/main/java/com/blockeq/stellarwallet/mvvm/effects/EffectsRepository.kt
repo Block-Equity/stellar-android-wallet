@@ -63,6 +63,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
                             Timber.d("Stream response {$it}")
                             effectsList.add(0, it)
                             notifyLiveData(effectsList)
+                            //TODO: use stream on account and remove this refresh
                             //refresh account
                             AccountRepository.loadAccount()
                         })
@@ -74,12 +75,8 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
 
     fun closeStream() {
         eventSource?.let {
-            try {
-                Timber.d("Closing the stream")
-                it.close()
-            } catch (e : IllegalStateException) {
-                Timber.e(e)
-            }
+            Timber.d("Closing the stream")
+            it.close()
         }
     }
 

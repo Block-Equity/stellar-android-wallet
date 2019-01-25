@@ -193,11 +193,11 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         }
 
         when(totalBalance.state) {
-            BalanceState.ERROR, BalanceState.NOT_FUNDED -> {
+            WalletState.ERROR, WalletState.NOT_FUNDED -> {
                 viewHolder.root.setBackgroundColor(getColor(context, R.color.paleSky))
                 viewHolder.progressBar.visibility = View.GONE
             }
-            BalanceState.ACTIVE, BalanceState.UPDATING -> {
+            WalletState.ACTIVE, WalletState.UPDATING -> {
                 viewHolder.root.setBackgroundColor(getColor(context, R.color.blue2))
             }
         }

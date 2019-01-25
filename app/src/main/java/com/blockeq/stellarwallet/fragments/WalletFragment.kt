@@ -17,7 +17,7 @@ import com.blockeq.stellarwallet.activities.ReceiveActivity
 import com.blockeq.stellarwallet.activities.StellarAddressActivity
 import com.blockeq.stellarwallet.adapters.WalletRecyclerViewAdapter
 import com.blockeq.stellarwallet.models.AvailableBalance
-import com.blockeq.stellarwallet.models.BalanceState
+import com.blockeq.stellarwallet.models.WalletState
 import com.blockeq.stellarwallet.models.TotalBalance
 import com.blockeq.stellarwallet.models.WalletHeterogeneousArray
 import com.blockeq.stellarwallet.mvvm.effects.WalletViewModel
@@ -36,7 +36,12 @@ class WalletFragment : BaseFragment() {
 
     private lateinit var recyclerViewArrayList: WalletHeterogeneousArray
     private lateinit var viewModel : WalletViewModel
-    private var state = BalanceState.UNKNOWN
+    private var state = WalletState.UNKNOWN
+
+    companion object {
+        fun newInstance(): WalletFragment = WalletFragment()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_wallet, container, false)
 
@@ -47,18 +52,14 @@ class WalletFragment : BaseFragment() {
         }
     }
 
-    companion object {
-        fun newInstance(): WalletFragment = WalletFragment()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        updateState(BalanceState.UPDATING)
+        updateState(WalletState.UPDATING)
         initViewModels()
 
         swipeRefresh_wallet.setOnRefreshListener {
-            updateState(BalanceState.UPDATING)
+            updateState(WalletState.UPDATING)
             swipeRefresh_wallet.postDelayed({
                 activity?.let {
                     if (!it.isFinishing) {
@@ -113,9 +114,9 @@ class WalletFragment : BaseFragment() {
             it?.let { that ->
                 Timber.d("observed = ${it.status}")
                 when(that.status) {
-                    WalletViewState.AccountStatus.ACTIVE  -> updateState(BalanceState.ACTIVE, it)
-                    WalletViewState.AccountStatus.ERROR  -> updateState(BalanceState.ERROR, it)
-                    WalletViewState.AccountStatus.UNFUNDED  -> updateState(BalanceState.NOT_FUNDED, it)
+                    WalletViewState.AccountStatus.ACTIVE  -> updateState(WalletState.ACTIVE, it)
+                    WalletViewState.AccountStatus.ERROR  -> updateState(WalletState.ERROR, it)
+                    WalletViewState.AccountStatus.UNFUNDED  -> updateState(WalletState.NOT_FUNDED, it)
                     else -> {
                         //nothing
                     }
@@ -124,14 +125,14 @@ class WalletFragment : BaseFragment() {
         })
     }
 
-    private fun updateState(newState : BalanceState, viewState : WalletViewState? = null) {
+    private fun updateState(newState : WalletState, viewState : WalletViewState? = null) {
         Timber.d("updating new state={$newState}")
         if (state == newState) {
             Timber.d("new state ignored because it is the same")
             return
         }
         when(newState) {
-            BalanceState.ACTIVE -> {
+            WalletState.ACTIVE -> {
                 noTransactionsTextView.visibility = View.GONE
                 //indexes in recycler list are messed up, lets create array again
                 createAdapter()
@@ -151,24 +152,27 @@ class WalletFragment : BaseFragment() {
                     }
                 }
             }
-            BalanceState.UPDATING -> {
+            WalletState.UPDATING -> {
                 //we had to hide the list of effects :(
                 createAdapter()
-                recyclerViewArrayList.updateTotalBalance(TotalBalance(state,"Refreshing Wallet", "","Updating..."))
+                recyclerViewArrayList.updateTotalBalance(TotalBalance(newState,"Refreshing Wallet", "","Updating..."))
                 recyclerViewArrayList.hidePair()
                 recyclerViewArrayList.hideAvailableBalance()
             }
-            BalanceState.ERROR -> {
+            WalletState.ERROR -> {
                 recyclerViewArrayList.updateTotalBalance(TotalBalance(newState, "Error fetching from Horizon", "", "Error"))
                 recyclerViewArrayList.hidePair()
             }
-            BalanceState.NOT_FUNDED -> {
+            WalletState.NOT_FUNDED -> {
                if (viewState != null) {
                    generateQRCode(viewState.accountId, qrCode, 500)
                }
+
                recyclerViewArrayList.updateTotalBalance(TotalBalance(newState, "Account Funding Required", "", "0.00"))
                recyclerViewArrayList.hideAvailableBalance()
                recyclerViewArrayList.hidePair()
+            } else -> {
+                //nothing
             }
         }
         runOnUiThread {
@@ -181,31 +185,35 @@ class WalletFragment : BaseFragment() {
     /**
      * run this in the ui thread
      */
-    private fun updatePlaceHolders(newState : BalanceState) {
+    private fun updatePlaceHolders(newState : WalletState) {
         activity?.let {
             if (!it.isFinishing){
                 when(newState) {
-                    BalanceState.NOT_FUNDED -> {
+                    WalletState.NOT_FUNDED -> {
                         swipeRefresh_wallet.isEnabled = true
                         receiveButton.isEnabled = true
+                        noTransactionsTextView.visibility = View.GONE
                         fetchingState.visibility = View.GONE
-                        fundingState.visibility = View.GONE
+                        fundingState.visibility = View.VISIBLE
                     }
-                    BalanceState.ERROR -> {
+                    WalletState.ERROR -> {
+                        noTransactionsTextView.visibility = View.GONE
                         swipeRefresh_wallet.isEnabled = true
                         sendButton.isEnabled = false
                         receiveButton.isEnabled = false
                         fetchingState.visibility = View.VISIBLE
                         fundingState.visibility = View.GONE
                     }
-                    BalanceState.UPDATING -> {
+                    WalletState.UPDATING -> {
+                        noTransactionsTextView.visibility = View.GONE
                         swipeRefresh_wallet.isEnabled = false
                         sendButton.isEnabled = false
                         receiveButton.isEnabled = true
                         swipeRefresh_wallet.isRefreshing = false
                         fetchingState.visibility = View.VISIBLE
                         fundingState.visibility = View.GONE
-                    } BalanceState.ACTIVE -> {
+                    } WalletState.ACTIVE -> {
+                        noTransactionsTextView.visibility = View.GONE
                         swipeRefresh_wallet.isEnabled = true
                     } else -> {
                         // nothing
@@ -216,7 +224,7 @@ class WalletFragment : BaseFragment() {
     }
 
     private fun createAdapter() {
-        recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(BalanceState.UPDATING,"Refreshing Wallet", "","Updating..."),
+        recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(WalletState.UPDATING,"Refreshing Wallet", "","Updating..."),
                 AvailableBalance("XLM", "-1"), Pair("Activity", "Amount"), arrayListOf())
 
         val adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList.array)
