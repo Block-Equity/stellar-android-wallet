@@ -14,7 +14,6 @@ import com.blockeq.stellarwallet.utils.StringFormat.Companion.truncateDecimalPla
 import org.jetbrains.anko.doAsync
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
-import timber.log.Timber
 
 class WalletViewModel(application: Application) : AndroidViewModel(application) {
     private val effectsRepository : EffectsRepository = EffectsRepository.getInstance()
@@ -32,12 +31,17 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
         doAsync {
             loadAccount(true)
             effectsRepository.loadList().observeForever { it ->
+                var toNotify = true
                 effectsListResponse = it
-                if (it != null && accountResponse != null) {
+                if (state == WalletState.ACTIVE) {
+                    // it was already ACTIVE, let's do not notify again
+                    toNotify = false
+                } else if (it != null && accountResponse != null) {
                     state = WalletState.ACTIVE
-                    Timber.d("setting state to ACTIVE")
                 }
-                notifyViewState()
+                if (toNotify) {
+                    notifyViewState()
+                }
             }
         }
     }
@@ -60,12 +64,10 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
                             toNotify = false
                         } else if (it.accountResponse != null && effectsListResponse != null) {
                             state = WalletState.ACTIVE
-                            Timber.d("setting state to ACTIVE")
                         }
                     }
                     404 -> {
                         accountResponse = null
-                        Timber.d("setting state to NOT_FUNDED")
                         state = WalletState.NOT_FUNDED
                     }
                     else -> {
