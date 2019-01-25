@@ -1,8 +1,11 @@
 package com.blockeq.stellarwallet.mvvm.effects
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
+import android.content.Context
+import android.os.Handler
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants.Companion.DEFAULT_ACCOUNT_BALANCE
 import com.blockeq.stellarwallet.models.AvailableBalance
@@ -10,17 +13,24 @@ import com.blockeq.stellarwallet.models.WalletState
 import com.blockeq.stellarwallet.models.TotalBalance
 import com.blockeq.stellarwallet.mvvm.account.AccountRepository
 import com.blockeq.stellarwallet.utils.AccountUtils
+import com.blockeq.stellarwallet.utils.NetworkUtils
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
 import org.jetbrains.anko.doAsync
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
+import timber.log.Timber
 
 class WalletViewModel(application: Application) : AndroidViewModel(application) {
+    @SuppressLint("StaticFieldLeak")
+    private val applicationContext : Context = application.applicationContext
     private val effectsRepository : EffectsRepository = EffectsRepository.getInstance()
     private var walletViewState: MutableLiveData<WalletViewState> = MutableLiveData()
     private var accountResponse: AccountResponse? = null
     private var effectsListResponse: ArrayList<EffectResponse>? = null
     private var state: WalletState = WalletState.UPDATING
+    private var pollingStarted = false
+    private var handler = Handler()
+    private var runnableCode : Runnable? = null
 
     init {
         loadAccount(false)
@@ -52,7 +62,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
         return walletViewState
     }
 
-    private fun loadAccount(notify: Boolean){
+    private fun loadAccount(notify: Boolean, isNotWaitingForActive : Boolean = true) {
         var toNotify = notify
         AccountRepository.loadAccount().observeForever {
             if (it != null) {
@@ -64,19 +74,29 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
                             toNotify = false
                         } else if (it.accountResponse != null && effectsListResponse != null) {
                             state = WalletState.ACTIVE
+                        } else if(!isNotWaitingForActive) {
+                            EffectsRepository.getInstance().forceRefresh()
                         }
                     }
                     404 -> {
                         accountResponse = null
                         state = WalletState.NOT_FUNDED
+                        if (!pollingStarted) {
+                            startPolling()
+                        }
                     }
                     else -> {
                         state = WalletState.ERROR
+                        if (!pollingStarted) {
+                            startPolling()
+                        }
                     }
                 }
 
                 if (toNotify) {
-                    notifyViewState()
+                    if (isNotWaitingForActive || state == WalletState.ACTIVE) {
+                        notifyViewState()
+                    }
                 }
             }
         }
@@ -120,5 +140,40 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
         val currAsset = WalletApplication.userSession.currAssetCode
         val assetBalance = truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))
         return TotalBalance(WalletState.ACTIVE, getActiveAssetName(), getActiveAssetCode(), assetBalance)
+    }
+
+
+    fun moveToForeGround() {
+        startPolling()
+    }
+
+    fun moveToBackground() {
+        Timber.d("disabling polling")
+        synchronized(this) {
+            handler.removeCallbacks(runnableCode)
+            pollingStarted = false
+        }
+    }
+
+    private fun startPolling() {
+        if (pollingStarted) return
+        synchronized(this) {
+            if (state != WalletState.ACTIVE) {
+                pollingStarted = true
+                Timber.d("starting polling")
+                runnableCode = object : Runnable {
+                    override fun run() {
+                        Timber.d("starting pulling cycle")
+                        when {
+                            state == WalletState.ACTIVE -> { Timber.d("polling cancelled") ; return }
+                            state == WalletState.UPDATING -> Timber.d("polling cycle cancelled")
+                            NetworkUtils(applicationContext).isNetworkAvailable() -> loadAccount(true, false)
+                        }
+                        handler.postDelayed(this, 3000)
+                    }
+                }
+                handler.post(runnableCode)
+            }
+        }
     }
 }

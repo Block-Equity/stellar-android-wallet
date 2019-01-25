@@ -18,6 +18,11 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
      * Returns an observable for ALL the effects table changes
      */
     fun loadList(): LiveData<ArrayList<EffectResponse>> {
+        forceRefresh()
+        return effectListLiveData
+    }
+
+    fun forceRefresh() {
         fetchEffectsList(object : OnLoadEffects {
             override fun onLoadEffects(result: ArrayList<EffectResponse>?) {
                 if (result != null) {
@@ -25,9 +30,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
                 }
             }
         })
-        return effectListLiveData
     }
-
     fun clear() {
         effectsList.clear()
     }

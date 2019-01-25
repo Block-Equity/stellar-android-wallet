@@ -111,8 +111,13 @@ class WalletFragment : BaseFragment() {
             receiveButton.isEnabled = true
             receiveButton.isEnabled = true
         }
-        //TODO review this
-//        updateAdapter()
+        viewModel.moveToForeGround()
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.moveToBackground()
     }
 
     //region User Interface
