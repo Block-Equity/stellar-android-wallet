@@ -27,34 +27,6 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
         loadAccount(false)
     }
 
-    private fun loadAccount(notify: Boolean){
-        AccountRepository.loadAccount().observeForever {
-            if (it != null) {
-                when (it.httpCode) {
-                    200 -> {
-                        accountResponse = it.accountResponse
-                        if (it.accountResponse != null && effectsListResponse != null) {
-                            state = WalletState.ACTIVE
-                            Timber.d("setting state to ACTIVE")
-                        }
-                    }
-                    404 -> {
-                        accountResponse = null
-                        Timber.d("setting state to NOT_FUNDED")
-                        state = WalletState.NOT_FUNDED
-                    }
-                    else -> {
-                        state = WalletState.ERROR
-                    }
-                }
-
-                if (notify) {
-                    notifyViewState()
-                }
-            }
-        }
-    }
-
     fun forceRefresh() {
         state = WalletState.UPDATING
         doAsync {
@@ -76,13 +48,44 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
         return walletViewState
     }
 
+    private fun loadAccount(notify: Boolean){
+        var toNotify = notify
+        AccountRepository.loadAccount().observeForever {
+            if (it != null) {
+                when (it.httpCode) {
+                    200 -> {
+                        accountResponse = it.accountResponse
+                        if (state == WalletState.ACTIVE) {
+                            // it was already ACTIVE, let's do not notify again
+                            toNotify = false
+                        } else if (it.accountResponse != null && effectsListResponse != null) {
+                            state = WalletState.ACTIVE
+                            Timber.d("setting state to ACTIVE")
+                        }
+                    }
+                    404 -> {
+                        accountResponse = null
+                        Timber.d("setting state to NOT_FUNDED")
+                        state = WalletState.NOT_FUNDED
+                    }
+                    else -> {
+                        state = WalletState.ERROR
+                    }
+                }
+
+                if (toNotify) {
+                    notifyViewState()
+                }
+            }
+        }
+    }
+
     private fun notifyViewState() {
         val accountId = WalletApplication.wallet.getStellarAccountId()!!
         when(state) {
             WalletState.ACTIVE -> {
                 val availableBalance = getAvailableBalance()
                 val totalAvailableBalance = getTotalAssetBalance()
-                //TODO fix the mutable null issue here
                 walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ACTIVE, accountId, getActiveAssetCode(), availableBalance, totalAvailableBalance, effectsListResponse))
             }
             WalletState.ERROR -> {
