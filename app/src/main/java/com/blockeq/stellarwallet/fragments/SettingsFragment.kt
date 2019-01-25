@@ -159,6 +159,7 @@ class SettingsFragment : BaseFragment() {
             val intent = Intent(activity, LaunchActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
+            it.finish()
         }
     }
 

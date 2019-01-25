@@ -8,6 +8,7 @@ package com.blockeq.stellarwallet.models
 data class TotalBalance (var state: BalanceState, var assetName: String, var assetCode: String, var balance: String)
 
 enum class BalanceState {
+    UNKNOWN,
     ERROR,
     UPDATING,
     ACTIVE,

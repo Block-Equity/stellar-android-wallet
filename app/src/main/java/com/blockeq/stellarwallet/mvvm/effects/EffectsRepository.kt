@@ -28,6 +28,10 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
         return effectListLiveData
     }
 
+    fun clear() {
+        effectsList.clear()
+    }
+
     private fun notifyLiveData(data : ArrayList<EffectResponse>){
         effectListLiveData.postValue(data)
     }
@@ -46,7 +50,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
         closeStream()
         remoteRepository.getEffects(cursor, 200, object : OnLoadEffects {
             override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
-                Timber.d("fetched ${result?.size} effects")
+                Timber.d("fetched ${result?.size} effects from cursor $cursor")
                 if (result != null) {
                     if (!result.isEmpty()) {
                         effectsList.addAll(result)
@@ -70,8 +74,12 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
 
     fun closeStream() {
         eventSource?.let {
-            it.close()
-            Timber.d("Closing the stream")
+            try {
+                Timber.d("Closing the stream")
+                it.close()
+            } catch (e : IllegalStateException) {
+                Timber.e(e)
+            }
         }
     }
 

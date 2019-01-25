@@ -116,9 +116,8 @@
             android:text="Fetching account transactions, please wait" />
     </LinearLayout>
 
-
-
     <LinearLayout
+        android:visibility="gone"
         android:orientation="vertical"
         android:id="@+id/fundingState"
         android:gravity="center_vertical"
