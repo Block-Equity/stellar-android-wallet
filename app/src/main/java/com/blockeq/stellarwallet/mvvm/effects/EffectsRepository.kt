@@ -80,10 +80,6 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
         }
     }
 
-    fun restoreStream() {
-
-    }
-
     companion object {
 
         private var instance: EffectsRepository? = null

@@ -39,6 +39,8 @@ class WalletFragment : BaseFragment() {
     private var state = WalletState.UNKNOWN
 
     companion object {
+        private const val REFRESH_EFFECT_DELAY = 400L
+
         fun newInstance(): WalletFragment = WalletFragment()
     }
 
@@ -66,10 +68,11 @@ class WalletFragment : BaseFragment() {
                         viewModel.forceRefresh()
                     }
                 }
-            }, 400)
+            }, REFRESH_EFFECT_DELAY)
         }
 
         receiveButton.setOnClickListener {
+            receiveButton.isEnabled = false
             activity?.let { activityContext ->
                 startActivity(Intent(activityContext, ReceiveActivity::class.java))
                 activityContext.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
@@ -77,6 +80,7 @@ class WalletFragment : BaseFragment() {
         }
 
         sendButton.setOnClickListener {
+            sendButton.isEnabled = false
             activity?.let { activityContext ->
                 startActivity(StellarAddressActivity.toSend(it.context))
                 activityContext.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
@@ -103,6 +107,10 @@ class WalletFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
+        if (state == WalletState.ACTIVE) {
+            receiveButton.isEnabled = true
+            receiveButton.isEnabled = true
+        }
         //TODO review this
 //        updateAdapter()
     }
@@ -259,20 +267,6 @@ class WalletFragment : BaseFragment() {
         recyclerViewArrayList.updateEffectsList(activeAsset, list)
         recyclerViewArrayList.updateAvailableBalance(availableBalance)
     }
-
-    //endregion
-
-    //region Call backs
-//TODO: propagate errors to ui?
-//    override fun onError(error: ErrorResponse) {
-//        if (error.code == Constants.SERVER_ERROR_NOT_FOUND && walletProgressBar != null) {
-//            Handler(Looper.getMainLooper()).post {
-//                if (noTransactionsTextView != null) {
-//                    noTransactionsTextView.visibility = View.VISIBLE
-//                }
-//            }
-//        }
-//    }
 
     //endregion
 
