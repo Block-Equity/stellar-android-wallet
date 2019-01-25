@@ -191,6 +191,7 @@ class WalletFragment : BaseFragment() {
                 when(newState) {
                     WalletState.NOT_FUNDED -> {
                         swipeRefresh_wallet.isEnabled = true
+                        sendButton.isEnabled = false
                         receiveButton.isEnabled = true
                         noTransactionsTextView.visibility = View.GONE
                         fetchingState.visibility = View.GONE
@@ -208,11 +209,13 @@ class WalletFragment : BaseFragment() {
                         noTransactionsTextView.visibility = View.GONE
                         swipeRefresh_wallet.isEnabled = false
                         sendButton.isEnabled = false
-                        receiveButton.isEnabled = true
+                        receiveButton.isEnabled = false
                         swipeRefresh_wallet.isRefreshing = false
                         fetchingState.visibility = View.VISIBLE
                         fundingState.visibility = View.GONE
                     } WalletState.ACTIVE -> {
+                        sendButton.isEnabled = true
+                        receiveButton.isEnabled = true
                         noTransactionsTextView.visibility = View.GONE
                         swipeRefresh_wallet.isEnabled = true
                     } else -> {

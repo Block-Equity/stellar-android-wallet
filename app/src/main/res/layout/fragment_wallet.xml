@@ -39,7 +39,7 @@
                     android:layout_centerVertical="true"
                     android:text="@string/button_receive"
                     android:textSize="@dimen/text_size_medium"
-                    android:textColor="@color/blue3" />
+                    android:textColor="@color/selector_color_send_button" />
 
                 <ImageView
                     android:layout_width="wrap_content"
