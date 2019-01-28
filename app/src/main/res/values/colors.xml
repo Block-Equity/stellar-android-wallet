@@ -33,7 +33,7 @@
     <!--Branding Colors-->
     <color name="blue1">#0043FF</color>
     <color name="blue2">#006AFF</color>
-    <color name="blue3">#008FFF</color>
+    <!-- not used <color name="blue3">#008FFF</color>-->
     <color name="blue4">#04B2FF</color>
     <color name="lightBlue">#2ED6FF</color>
     <color name="darkBlue">#151B26</color>

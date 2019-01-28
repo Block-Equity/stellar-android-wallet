@@ -256,7 +256,8 @@
     <string name="trade_alert_message">You must have at least one Stellar asset in addition to Lumens(XLM) in order to trade.</string>
     <string name="trade_alert_positive_button">Add asset</string>
     <string name="trade_alert_negative_button">Not now</string>
-
+    <string name="fund_account_string">This account requires activation. Send at least 1 XLM to fund and activate the account</string>
+    <string name="fetching_account_state">Fetching account transactions, please wait</string>
 
 
 </resources>
