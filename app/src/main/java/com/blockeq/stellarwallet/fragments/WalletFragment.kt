@@ -62,6 +62,8 @@ class WalletFragment : BaseFragment() {
 
         resetList()
         updateState(WalletState.UPDATING)
+        // since closing the stream causes so many crashes let's disable the pull to refresh
+        swipeRefresh_wallet.isEnabled = false
         initViewModels()
 
         swipeRefresh_wallet.setOnRefreshListener {
@@ -190,7 +192,7 @@ class WalletFragment : BaseFragment() {
                 recyclerViewArrayList.hidePair()
             }
             WalletState.NOT_FUNDED -> {
-               if (viewState != null) {
+                if (viewState != null) {
                    generateQRCode(viewState.accountId, qrCode, 500)
                }
 

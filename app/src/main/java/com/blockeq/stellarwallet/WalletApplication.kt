@@ -37,7 +37,7 @@ class WalletApplication : MultiDexApplication() {
             override fun getPin(): String? { return impl.getPin() }
             override fun setPin(pin: String?) { impl.setPin(pin) }
             override fun getFormattedCurrentAssetCode(): String? { return impl.getFormattedCurrentAssetCode() }
-            override fun getFormattedCurrentAvailableBalance(context: Context): String? { return getFormattedCurrentAvailableBalance(context) }
+            override fun getFormattedCurrentAvailableBalance(context: Context): String? { return impl.getFormattedCurrentAvailableBalance(context) }
             override fun getAvailableBalance(): String? { return impl.getAvailableBalance() }
             override fun setMinimumBalance(minimumBalance: MinimumBalance) { impl.setMinimumBalance(minimumBalance) }
             override fun getMinimumBalance(): MinimumBalance? { return impl.getMinimumBalance() }
