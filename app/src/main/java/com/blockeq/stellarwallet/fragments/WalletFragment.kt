@@ -140,10 +140,6 @@ class WalletFragment : BaseFragment() {
 
     private fun updateState(newState : WalletState, viewState : WalletViewState? = null) {
         Timber.d("updating new state={$newState}")
-        if (state == newState) {
-            Timber.d("new state ignored because it is the same")
-            return
-        }
         when(newState) {
             WalletState.ACTIVE -> {
                 noTransactionsTextView.visibility = View.GONE

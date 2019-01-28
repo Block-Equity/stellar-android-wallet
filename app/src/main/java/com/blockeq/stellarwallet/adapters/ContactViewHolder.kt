@@ -28,6 +28,7 @@ class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var mBoundContact: Contact? = null // Can be null
     private val colors: IntArray = intArrayOf(R.color.terracotta, R.color.lightBlue, R.color.puce, R.color.mantis, R.color.brown,
             R.color.purple, R.color.pink, R.color.lightBlue, R.color.paleSky, R.color.apricot, R.color.cornflowerBlue)
+
     fun bind(contact: Contact) {
         mBoundContact = contact
         val appContext = label.context.applicationContext
@@ -40,16 +41,15 @@ class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             }
 
             override fun onError(e: Exception?) {
-                contact.name?.let {
-                    if (it.length > 1) {
-                        letter.text = it[0].toString()
-                        val width = appContext.resources.getDimension(R.dimen.badge_width).toInt()
-                        val height = appContext.resources.getDimension(R.dimen.badge_height).toInt()
-                        image.setImageBitmap(createImage(width, height, getColor(appContext, it[0])))
-                        image.visibility = View.VISIBLE
-                    } else {
-                        letter.text = null
-                    }
+                if (contact.name.length > 1) {
+                    val firstLetter = contact.name[0]
+                    letter.text = firstLetter.toString()
+                    val width = appContext.resources.getDimension(R.dimen.badge_width).toInt()
+                    val height = appContext.resources.getDimension(R.dimen.badge_height).toInt()
+                    image.setImageBitmap(createImage(width, height, getColor(appContext, firstLetter)))
+                    image.visibility = View.VISIBLE
+                } else {
+                    letter.text = null
                 }
             }
         })

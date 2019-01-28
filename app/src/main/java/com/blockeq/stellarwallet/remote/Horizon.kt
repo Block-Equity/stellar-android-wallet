@@ -12,6 +12,7 @@ import com.blockeq.stellarwallet.models.DataAsset
 import com.blockeq.stellarwallet.models.HorizonException
 import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import org.stellar.sdk.*
+import org.stellar.sdk.Transaction.Builder.TIMEOUT_INFINITE
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.requests.EventListener
 import org.stellar.sdk.requests.RequestBuilder
@@ -327,7 +328,7 @@ object Horizon : HorizonTasks {
             val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
             val sourceAccount = server.accounts().account(sourceKeyPair)
 
-            val transaction = Transaction.Builder(sourceAccount).addOperation(managedOfferOperation).build()
+            val transaction = Transaction.Builder(sourceAccount).setTimeout(TIMEOUT_INFINITE).addOperation(managedOfferOperation).build()
             transaction.sign(sourceKeyPair)
             val response = server.submitTransaction(transaction)
             Handler(Looper.getMainLooper()).post {
