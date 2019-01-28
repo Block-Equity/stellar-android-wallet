@@ -68,9 +68,6 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
                             Timber.d("Stream response {$it}")
                             effectsList.add(0, it)
                             notifyLiveData(effectsList)
-                            //TODO: use stream on account and remove this refresh
-                            //refresh account
-                            AccountRepository.loadAccount()
                         })
                     }
                 }

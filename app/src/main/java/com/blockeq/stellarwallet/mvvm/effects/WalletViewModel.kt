@@ -22,6 +22,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     @SuppressLint("StaticFieldLeak")
     private val applicationContext : Context = application.applicationContext
     private val effectsRepository : EffectsRepository = EffectsRepository.getInstance()
+    private val accountRepository : AccountRepository = AccountRepository()
     private var walletViewState: MutableLiveData<WalletViewState> = MutableLiveData()
     private var accountResponse: AccountResponse? = null
     private var effectsListResponse: ArrayList<EffectResponse>? = null
@@ -35,17 +36,21 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
         loadAccount(false)
 
         effectsRepository.loadList(false).observeForever { it ->
-            var toNotify = true
-            effectsListResponse = it
-            if (state == WalletState.ACTIVE) {
-                Timber.d("already active, toNotify false")
-                // it was already ACTIVE, let's do not notify again
-                toNotify = false
-            } else if (it != null && accountResponse != null) {
-                state = WalletState.ACTIVE
-            }
-            if (toNotify) {
-                notifyViewState()
+            if(it != null) {
+                var toNotify = false
+                effectsListResponse = it
+                if (state == WalletState.ACTIVE) {
+                    Timber.d("already active, toNotify false")
+                    // it was already ACTIVE, let's do not notify again
+                } else if (accountResponse != null) {
+                    state = WalletState.ACTIVE
+                    toNotify = true
+                } else {
+                    loadAccount(true)
+                }
+                if (toNotify) {
+                    notifyViewState()
+                }
             }
         }
 
@@ -60,7 +65,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     fun forceRefresh() {
         state = WalletState.UPDATING
         doAsync {
-            loadAccount(true, false)
+            loadAccount(true)
             effectsRepository.forceRefresh()
         }
     }
@@ -73,20 +78,22 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
         return walletViewState
     }
 
-    private fun loadAccount(notify: Boolean, isNotWaitingForActive : Boolean = true) {
+    private fun loadAccount(notify: Boolean) {
         var toNotify = notify
-        AccountRepository.loadAccount().observeForever {
+        accountRepository.loadAccount().observeForever {
             if (it != null) {
                 when (it.httpCode) {
                     200 -> {
-                        accountResponse = it.accountResponse
-                        if (state == WalletState.ACTIVE) {
-                            // it was already ACTIVE, let's do not notify again
-                            toNotify = false
-                        } else if (it.accountResponse != null && effectsListResponse != null) {
-                            state = WalletState.ACTIVE
-                        } else if(!isNotWaitingForActive) {
-                            EffectsRepository.getInstance().loadList(true)
+                        if (it.accountResponse != null) {
+                            accountResponse = it.accountResponse
+                            if (state == WalletState.ACTIVE) {
+                                // it was already ACTIVE, let's do not notify again
+                                toNotify = false
+                            } else if (effectsListResponse != null) {
+                                state = WalletState.ACTIVE
+                            } else {
+                                effectsRepository.forceRefresh()
+                            }
                         }
                     }
                     404 -> {
@@ -105,9 +112,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
                 }
 
                 if (toNotify) {
-                    if (isNotWaitingForActive || state == WalletState.ACTIVE) {
-                        notifyViewState()
-                    }
+                    notifyViewState()
                 }
             }
         }
@@ -177,7 +182,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
                         Timber.d("starting pulling cycle")
                         when {
                             state == WalletState.ACTIVE -> { Timber.d("polling cancelled") ; return }
-                            NetworkUtils(applicationContext).isNetworkAvailable() -> loadAccount(true, false)
+                            NetworkUtils(applicationContext).isNetworkAvailable() -> loadAccount(true)
                         }
                         handler.postDelayed(this, 3000)
                     }
