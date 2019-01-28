@@ -124,38 +124,31 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
             WalletState.ACTIVE -> {
                 val availableBalance = getAvailableBalance()
                 val totalAvailableBalance = getTotalAssetBalance()
-                walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ACTIVE, accountId, getActiveAssetCode(), availableBalance, totalAvailableBalance, effectsListResponse))
+                walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ACTIVE, accountId,  sessionAsset.assetCode, availableBalance, totalAvailableBalance, effectsListResponse))
             }
             WalletState.ERROR -> {
-                walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ERROR, accountId, getActiveAssetCode(), null, null, null))
+                walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ERROR, accountId,  sessionAsset.assetCode, null, null, null))
             }
             WalletState.NOT_FUNDED -> {
                 val availableBalance = AvailableBalance("XLM", DEFAULT_ACCOUNT_BALANCE)
                 val totalAvailableBalance = TotalBalance(state, "Lumens", "XLM", DEFAULT_ACCOUNT_BALANCE)
-                walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.UNFUNDED, accountId, getActiveAssetCode(), availableBalance, totalAvailableBalance, null))
+                walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.UNFUNDED, accountId, sessionAsset.assetCode, availableBalance, totalAvailableBalance, null))
             } else -> {
                 // nothing
             }
         }
     }
 
-    private fun getActiveAssetCode() : String {
-        return sessionAsset.assetCode
-    }
-
-    private fun getActiveAssetName() : String {
-        return sessionAsset.assetName
-    }
-
     private fun getAvailableBalance() : AvailableBalance {
         val balance = truncateDecimalPlaces(WalletApplication.wallet.getAvailableBalance())
-        return AvailableBalance(getActiveAssetCode(), balance)
+        val currAsset = sessionAsset.assetCode
+        return AvailableBalance(currAsset, balance)
     }
 
     private fun getTotalAssetBalance(): TotalBalance {
-        val currAsset = WalletApplication.userSession.getSessionAsset().assetCode
+        val currAsset = sessionAsset.assetCode
         val assetBalance = truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))
-        return TotalBalance(WalletState.ACTIVE, getActiveAssetName(), getActiveAssetCode(), assetBalance)
+        return TotalBalance(WalletState.ACTIVE, sessionAsset.assetName, sessionAsset.assetCode, assetBalance)
     }
 
 
