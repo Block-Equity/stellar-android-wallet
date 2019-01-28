@@ -109,7 +109,7 @@ class WalletFragment : BaseFragment() {
         super.onResume()
         if (state == WalletState.ACTIVE) {
             receiveButton.isEnabled = true
-            receiveButton.isEnabled = true
+            sendButton.isEnabled = true
         }
         viewModel.moveToForeGround()
 
@@ -123,7 +123,7 @@ class WalletFragment : BaseFragment() {
     //region User Interface
 
     private fun initViewModels() {
-        viewModel.walletViewState().observe(this, Observer {
+        viewModel.walletViewState(false).observe(this, Observer {
             it?.let { that ->
                 Timber.d("observed = ${it.status}")
                 when(that.status) {
@@ -147,10 +147,10 @@ class WalletFragment : BaseFragment() {
         when(newState) {
             WalletState.ACTIVE -> {
                 noTransactionsTextView.visibility = View.GONE
-                //indexes in recycler list are messed up, lets create array again
-                createAdapter()
                 if (viewState != null) {
                     doAsync {
+                        //indexes in recycler list are messed up, lets create array again
+                        createAdapter()
                         updateListData(viewState.effectList!!, viewState.activeAssetCode, viewState.availableBalance!!, viewState.totalBalance!!)
                         uiThread {
                             if (swipeRefresh_wallet != null) {

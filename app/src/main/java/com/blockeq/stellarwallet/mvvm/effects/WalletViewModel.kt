@@ -34,31 +34,36 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
 
     init {
         loadAccount(false)
+
+        effectsRepository.loadList(false).observeForever { it ->
+            var toNotify = true
+            effectsListResponse = it
+            if (state == WalletState.ACTIVE) {
+                Timber.d("already active, toNotify false")
+                // it was already ACTIVE, let's do not notify again
+                toNotify = false
+            } else if (it != null && accountResponse != null) {
+                state = WalletState.ACTIVE
+            }
+            if (toNotify) {
+                notifyViewState()
+            }
+        }
     }
 
     fun forceRefresh() {
         state = WalletState.UPDATING
         doAsync {
-            loadAccount(true)
-            effectsRepository.loadList().observeForever { it ->
-                var toNotify = true
-                effectsListResponse = it
-                if (state == WalletState.ACTIVE) {
-                    // it was already ACTIVE, let's do not notify again
-                    toNotify = false
-                } else if (it != null && accountResponse != null) {
-                    state = WalletState.ACTIVE
-                }
-                if (toNotify) {
-                    notifyViewState()
-                }
-            }
+            loadAccount(true, false)
+            effectsRepository.forceRefresh()
         }
     }
 
-    fun walletViewState(): MutableLiveData<WalletViewState> {
-        notifyViewState()
-        forceRefresh()
+    fun walletViewState(forceRefresh: Boolean ): MutableLiveData<WalletViewState> {
+        // it does not need to refresh since polling will try to get an active account
+        if (forceRefresh) {
+            forceRefresh()
+        }
         return walletViewState
     }
 
@@ -75,7 +80,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
                         } else if (it.accountResponse != null && effectsListResponse != null) {
                             state = WalletState.ACTIVE
                         } else if(!isNotWaitingForActive) {
-                            EffectsRepository.getInstance().forceRefresh()
+                            EffectsRepository.getInstance().loadList(true)
                         }
                     }
                     404 -> {
@@ -166,7 +171,6 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
                         Timber.d("starting pulling cycle")
                         when {
                             state == WalletState.ACTIVE -> { Timber.d("polling cancelled") ; return }
-                            state == WalletState.UPDATING -> Timber.d("polling cycle cancelled")
                             NetworkUtils(applicationContext).isNetworkAvailable() -> loadAccount(true, false)
                         }
                         handler.postDelayed(this, 3000)
