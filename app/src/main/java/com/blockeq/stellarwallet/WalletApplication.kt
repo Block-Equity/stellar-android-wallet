@@ -1,12 +1,14 @@
 package com.blockeq.stellarwallet
 
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ProcessLifecycleOwner
+import android.content.Context
 import android.support.multidex.MultiDexApplication
 import com.blockeq.stellarwallet.encryption.PRNGFixes
 import com.blockeq.stellarwallet.helpers.LocalStoreImpl
 import com.blockeq.stellarwallet.helpers.WalletLifecycleListener
 import com.blockeq.stellarwallet.interfaces.WalletStore
-import com.blockeq.stellarwallet.models.UserSessionImpl
+import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 import com.blockeq.stellarwallet.mvvm.exchange.ExchangeRepository
 import com.facebook.stetho.Stetho
@@ -24,7 +26,24 @@ class WalletApplication : MultiDexApplication() {
         // Use LocalStoreImpl for SharedPreferences
         lateinit var wallet: WalletStore
 
-        var userSession = UserSessionImpl()
+        var userSession = object : UserSession {
+            var impl = UserSessionImpl()
+
+            override fun getSessionAsset(): SessionAsset { return impl.getSessionAsset() }
+            override fun setSessionAsset(sessionAsset: SessionAsset) {
+                impl.setSessionAsset(sessionAsset)
+                assetSession.postValue(sessionAsset)
+            }
+            override fun getPin(): String? { return impl.getPin() }
+            override fun setPin(pin: String?) { impl.setPin(pin) }
+            override fun getFormattedCurrentAssetCode(): String? { return impl.getFormattedCurrentAssetCode() }
+            override fun getFormattedCurrentAvailableBalance(context: Context): String? { return impl.getFormattedCurrentAvailableBalance(context) }
+            override fun getAvailableBalance(): String? { return impl.getAvailableBalance() }
+            override fun setMinimumBalance(minimumBalance: MinimumBalance) { impl.setMinimumBalance(minimumBalance) }
+            override fun getMinimumBalance(): MinimumBalance? { return impl.getMinimumBalance() }
+        }
+
+        var assetSession : MutableLiveData<SessionAsset> = MutableLiveData()
 
         var appReturnedFromBackground = false
     }

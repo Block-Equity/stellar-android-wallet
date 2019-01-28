@@ -12,5 +12,5 @@ abstract class AfterTextChanged : TextWatcher {
         // empty implementation
     }
 
-    abstract override fun afterTextChanged(s: Editable)
+    abstract override fun afterTextChanged(editable: Editable)
 }

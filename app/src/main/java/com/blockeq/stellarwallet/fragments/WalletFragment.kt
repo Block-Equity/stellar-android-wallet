@@ -32,6 +32,8 @@ import org.stellar.sdk.responses.effects.EffectResponse
 import timber.log.Timber
 import android.support.v4.content.ContextCompat.getColor
 import android.graphics.*
+import android.support.v7.widget.RecyclerView
+
 class WalletFragment : BaseFragment() {
 
     private lateinit var recyclerViewArrayList: WalletHeterogeneousArray
@@ -56,8 +58,12 @@ class WalletFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        walletRecyclerView.layoutManager = LinearLayoutManager(activity)
 
+        resetList()
         updateState(WalletState.UPDATING)
+        // since closing the stream causes so many crashes let's disable the pull to refresh
+        swipeRefresh_wallet.isEnabled = false
         initViewModels()
 
         swipeRefresh_wallet.setOnRefreshListener {
@@ -105,11 +111,16 @@ class WalletFragment : BaseFragment() {
         return bitmapResult
     }
 
+    private fun resetList() {
+        recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(WalletState.UPDATING,"Refreshing Wallet", "","Updating..."),
+                AvailableBalance("XLM", "-1"), Pair("Activity", "Amount"), arrayListOf())
+    }
+
     override fun onResume() {
         super.onResume()
         if (state == WalletState.ACTIVE) {
             receiveButton.isEnabled = true
-            receiveButton.isEnabled = true
+            sendButton.isEnabled = true
         }
         viewModel.moveToForeGround()
 
@@ -123,7 +134,7 @@ class WalletFragment : BaseFragment() {
     //region User Interface
 
     private fun initViewModels() {
-        viewModel.walletViewState().observe(this, Observer {
+        viewModel.walletViewState(false).observe(this, Observer {
             it?.let { that ->
                 Timber.d("observed = ${it.status}")
                 when(that.status) {
@@ -140,26 +151,23 @@ class WalletFragment : BaseFragment() {
 
     private fun updateState(newState : WalletState, viewState : WalletViewState? = null) {
         Timber.d("updating new state={$newState}")
-        if (state == newState) {
-            Timber.d("new state ignored because it is the same")
-            return
-        }
         when(newState) {
             WalletState.ACTIVE -> {
                 noTransactionsTextView.visibility = View.GONE
-                //indexes in recycler list are messed up, lets create array again
-                createAdapter()
                 if (viewState != null) {
                     doAsync {
+                        //indexes in recycler list are messed up, lets create array again
+                        val adapter = createAdapter()
                         updateListData(viewState.effectList!!, viewState.activeAssetCode, viewState.availableBalance!!, viewState.totalBalance!!)
                         uiThread {
-                            if (swipeRefresh_wallet != null) {
-                                fetchingState.visibility = View.GONE
-                                fundingState.visibility = View.GONE
+                            activity?.let { that ->
+                                if (!that.isFinishing && fetchingState != null) {
+                                    fetchingState.visibility = View.GONE
+                                    fundingState.visibility = View.GONE
 
-                                walletRecyclerView.adapter?.notifyDataSetChanged()
-
-                                swipeRefresh_wallet.isRefreshing = false
+                                    walletRecyclerView.adapter = adapter
+                                    swipeRefresh_wallet.isRefreshing = false
+                                }
                             }
                         }
                     }
@@ -167,17 +175,24 @@ class WalletFragment : BaseFragment() {
             }
             WalletState.UPDATING -> {
                 //we had to hide the list of effects :(
-                createAdapter()
                 recyclerViewArrayList.updateTotalBalance(TotalBalance(newState,"Refreshing Wallet", "","Updating..."))
                 recyclerViewArrayList.hidePair()
                 recyclerViewArrayList.hideAvailableBalance()
+                val adapter = createAdapter()
+                runOnUiThread {
+                    activity?.let {
+                        if (!it.isFinishing && walletRecyclerView != null) {
+                            walletRecyclerView.adapter = adapter
+                        }
+                    }
+                }
             }
             WalletState.ERROR -> {
                 recyclerViewArrayList.updateTotalBalance(TotalBalance(newState, "Error fetching from Horizon", "", "Error"))
                 recyclerViewArrayList.hidePair()
             }
             WalletState.NOT_FUNDED -> {
-               if (viewState != null) {
+                if (viewState != null) {
                    generateQRCode(viewState.accountId, qrCode, 500)
                }
 
@@ -239,10 +254,11 @@ class WalletFragment : BaseFragment() {
         }
     }
 
-    private fun createAdapter() {
-        recyclerViewArrayList = WalletHeterogeneousArray(TotalBalance(WalletState.UPDATING,"Refreshing Wallet", "","Updating..."),
-                AvailableBalance("XLM", "-1"), Pair("Activity", "Amount"), arrayListOf())
-
+    /**
+     * It will reset the array list.
+     */
+    private fun createAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        resetList()
         val adapter = WalletRecyclerViewAdapter(activity!!, recyclerViewArrayList.array)
         adapter.setOnAssetDropdownListener(object : WalletRecyclerViewAdapter.OnAssetDropdownListener {
             override fun onAssetDropdownClicked(view: View, position: Int) {
@@ -259,11 +275,7 @@ class WalletFragment : BaseFragment() {
             }
         })
         recyclerViewArrayList.hideAvailableBalance()
-        walletRecyclerView.adapter = adapter
-        walletRecyclerView.layoutManager = LinearLayoutManager(activity)
-
-        fetchingState.visibility = View.VISIBLE
-        fundingState.visibility = View.GONE
+        return adapter
     }
 
     private fun updateListData(list : ArrayList<EffectResponse>, activeAsset : String, availableBalance: AvailableBalance, totalAssetBalance : TotalBalance){

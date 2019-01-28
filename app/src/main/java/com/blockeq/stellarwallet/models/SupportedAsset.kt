@@ -24,3 +24,4 @@ data class SupportedAsset (var id: Int, var code: String, var image: String, var
                            var updatedAt: String, var amount: String?,
                            var type: SupportedAssetType? = SupportedAssetType.NOT_ADDED,
                            var asset: Asset?)
+

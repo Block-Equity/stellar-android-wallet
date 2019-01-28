@@ -91,7 +91,7 @@ class DiagnosticActivity : BaseActivity() {
     private fun getRecoveryType(): String {
         val recoveryType : String
         val encryptedPhrase = WalletApplication.wallet.getEncryptedPhrase()
-        val masterKey = AccountUtils.getPinMasterKey(this, WalletApplication.userSession.pin!!)
+        val masterKey = AccountUtils.getPinMasterKey(this, WalletApplication.userSession.getPin()!!)
 
         if (encryptedPhrase != null && masterKey!= null) {
             val decryptedPhrase = AccountUtils.getDecryptedString(encryptedPhrase, masterKey)

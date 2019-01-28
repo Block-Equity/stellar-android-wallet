@@ -22,6 +22,7 @@ import com.blockeq.stellarwallet.models.MyOffer
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import kotlinx.android.synthetic.main.fragment_tab_my_offers.*
+import org.jetbrains.anko.support.v4.runOnUiThread
 import org.stellar.sdk.responses.OfferResponse
 import timber.log.Timber
 import java.util.*
@@ -130,14 +131,20 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
                 }
 
                 override fun onFailed(errorMessage: String) {
-                    Toast.makeText(appContext, "Failed to delete offer: $errorMessage", Toast.LENGTH_SHORT).show()
+                    runOnUiThread {
+                        activity?.let {
+                            if(it.isFinishing) {
+                                Toast.makeText(appContext, "Failed to delete offer: $errorMessage", Toast.LENGTH_SHORT).show()
 
-                    val snackbar = Snackbar.make(activity!!.findViewById(R.id.content_container),
-                            "failed to delete the offer", Snackbar.LENGTH_INDEFINITE)
-                    snackbar.setAction("retry") {
-                        deleteOffer(offerId)
+                                val snackbar = Snackbar.make(activity!!.findViewById(R.id.content_container),
+                                        "failed to delete the offer", Snackbar.LENGTH_INDEFINITE)
+                                snackbar.setAction("retry") {
+                                    deleteOffer(offerId)
+                                }
+                                snackbar.show()
+                            }
+                        }
                     }
-                    snackbar.show()
                 }
             })
         }

@@ -13,6 +13,7 @@ import com.blockeq.stellarwallet.fragments.SettingsFragment
 import com.blockeq.stellarwallet.fragments.TradingFragment
 import com.blockeq.stellarwallet.fragments.WalletFragment
 import com.blockeq.stellarwallet.utils.KeyboardUtils
+import timber.log.Timber
 
 class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener {
     private enum class WalletFragmentType {
@@ -32,6 +33,14 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
         dialogTradeAlert = createTradingErrorDialog()
 
         setupUI()
+    }
+
+    private fun getReusedFragment(tag:String) : Fragment? {
+       val fragment = supportFragmentManager.findFragmentByTag(tag)
+       if (fragment != null) {
+           Timber.d("reused a cached fragment {$tag}")
+       }
+       return fragment
     }
 
     //region Navigation
@@ -54,32 +63,35 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.nav_wallet -> {
-                val walletFragment = WalletFragment.newInstance()
-                openFragment(walletFragment, WalletFragmentType.WALLET)
+                val walletFragment = getReusedFragment(WalletFragmentType.WALLET.name) ?: WalletFragment.newInstance()
+                replaceFragment(walletFragment, WalletFragmentType.WALLET)
             }
             R.id.nav_trading -> {
                 val balances = WalletApplication.wallet.getBalances()
+                
                 if (balances.isEmpty()) {
                     dialogTradeAlert.show()
                 }
-                val tradingFragment = TradingFragment.newInstance()
-                openFragment(tradingFragment, WalletFragmentType.TRADING)
+                val tradingFragment = getReusedFragment(WalletFragmentType.TRADING.name) ?: TradingFragment.newInstance()
+                replaceFragment(tradingFragment, WalletFragmentType.TRADING)
             }
             R.id.nav_contacts -> {
-                openFragment(ContactsFragment(), WalletFragmentType.CONTACTS)
+                replaceFragment(getReusedFragment(WalletFragmentType.CONTACTS.name) ?: ContactsFragment(), WalletFragmentType.CONTACTS)
             }
             R.id.nav_settings -> {
-                val settingsFragment = SettingsFragment.newInstance()
-                openFragment(settingsFragment, WalletFragmentType.SETTING)
+                val settingsFragment = getReusedFragment(WalletFragmentType.SETTING.name) ?: SettingsFragment.newInstance()
+                replaceFragment(settingsFragment, WalletFragmentType.SETTING)
             }
             else -> throw IllegalAccessException("Navigation item not supported $item.title(${item.itemId})")
         }
         return@OnNavigationItemSelectedListener true
     }
 
-    private fun openFragment(fragment: Fragment, type : WalletFragmentType) {
+    private fun replaceFragment(fragment: Fragment, type : WalletFragmentType) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.content_container, fragment, type.name)
+        //This is complete necessary to be able to reuse the fragments using the supportFragmentManager
+        transaction.addToBackStack(null)
         transaction.commit()
     }
 

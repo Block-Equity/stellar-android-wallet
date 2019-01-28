@@ -8,9 +8,7 @@ import android.content.Context
 import android.os.Handler
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants.Companion.DEFAULT_ACCOUNT_BALANCE
-import com.blockeq.stellarwallet.models.AvailableBalance
-import com.blockeq.stellarwallet.models.WalletState
-import com.blockeq.stellarwallet.models.TotalBalance
+import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.mvvm.account.AccountRepository
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
@@ -24,6 +22,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     @SuppressLint("StaticFieldLeak")
     private val applicationContext : Context = application.applicationContext
     private val effectsRepository : EffectsRepository = EffectsRepository.getInstance()
+    private val accountRepository : AccountRepository = AccountRepository()
     private var walletViewState: MutableLiveData<WalletViewState> = MutableLiveData()
     private var accountResponse: AccountResponse? = null
     private var effectsListResponse: ArrayList<EffectResponse>? = null
@@ -31,51 +30,70 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     private var pollingStarted = false
     private var handler = Handler()
     private var runnableCode : Runnable? = null
+    private var sessionAsset : SessionAsset = DefaultAsset()
 
     init {
         loadAccount(false)
-    }
 
-    fun forceRefresh() {
-        state = WalletState.UPDATING
-        doAsync {
-            loadAccount(true)
-            effectsRepository.loadList().observeForever { it ->
-                var toNotify = true
+        effectsRepository.loadList(false).observeForever { it ->
+            if(it != null) {
+                var toNotify = false
                 effectsListResponse = it
                 if (state == WalletState.ACTIVE) {
+                    Timber.d("already active, toNotify false")
                     // it was already ACTIVE, let's do not notify again
-                    toNotify = false
-                } else if (it != null && accountResponse != null) {
+                } else if (accountResponse != null) {
                     state = WalletState.ACTIVE
+                    toNotify = true
+                } else {
+                    loadAccount(true)
                 }
                 if (toNotify) {
                     notifyViewState()
                 }
             }
         }
+
+        WalletApplication.assetSession.observeForever {
+            if (it != null) {
+                sessionAsset = it
+                notifyViewState()
+            }
+        }
     }
 
-    fun walletViewState(): MutableLiveData<WalletViewState> {
-        notifyViewState()
-        forceRefresh()
+    fun forceRefresh() {
+        state = WalletState.UPDATING
+        doAsync {
+            loadAccount(true)
+            effectsRepository.forceRefresh()
+        }
+    }
+
+    fun walletViewState(forceRefresh: Boolean ): MutableLiveData<WalletViewState> {
+        // it does not need to refresh since polling will try to get an active account
+        if (forceRefresh) {
+            forceRefresh()
+        }
         return walletViewState
     }
 
-    private fun loadAccount(notify: Boolean, isNotWaitingForActive : Boolean = true) {
+    private fun loadAccount(notify: Boolean) {
         var toNotify = notify
-        AccountRepository.loadAccount().observeForever {
+        accountRepository.loadAccount().observeForever {
             if (it != null) {
                 when (it.httpCode) {
                     200 -> {
-                        accountResponse = it.accountResponse
-                        if (state == WalletState.ACTIVE) {
-                            // it was already ACTIVE, let's do not notify again
-                            toNotify = false
-                        } else if (it.accountResponse != null && effectsListResponse != null) {
-                            state = WalletState.ACTIVE
-                        } else if(!isNotWaitingForActive) {
-                            EffectsRepository.getInstance().forceRefresh()
+                        if (it.accountResponse != null) {
+                            accountResponse = it.accountResponse
+                            if (state == WalletState.ACTIVE) {
+                                // it was already ACTIVE, let's do not notify again
+                                toNotify = false
+                            } else if (effectsListResponse != null) {
+                                state = WalletState.ACTIVE
+                            } else {
+                                effectsRepository.forceRefresh()
+                            }
                         }
                     }
                     404 -> {
@@ -94,9 +112,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
                 }
 
                 if (toNotify) {
-                    if (isNotWaitingForActive || state == WalletState.ACTIVE) {
-                        notifyViewState()
-                    }
+                    notifyViewState()
                 }
             }
         }
@@ -108,38 +124,31 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
             WalletState.ACTIVE -> {
                 val availableBalance = getAvailableBalance()
                 val totalAvailableBalance = getTotalAssetBalance()
-                walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ACTIVE, accountId, getActiveAssetCode(), availableBalance, totalAvailableBalance, effectsListResponse))
+                walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ACTIVE, accountId,  sessionAsset.assetCode, availableBalance, totalAvailableBalance, effectsListResponse))
             }
             WalletState.ERROR -> {
-                walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ERROR, accountId, getActiveAssetCode(), null, null, null))
+                walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ERROR, accountId,  sessionAsset.assetCode, null, null, null))
             }
             WalletState.NOT_FUNDED -> {
                 val availableBalance = AvailableBalance("XLM", DEFAULT_ACCOUNT_BALANCE)
                 val totalAvailableBalance = TotalBalance(state, "Lumens", "XLM", DEFAULT_ACCOUNT_BALANCE)
-                walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.UNFUNDED, accountId, getActiveAssetCode(), availableBalance, totalAvailableBalance, null))
+                walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.UNFUNDED, accountId, sessionAsset.assetCode, availableBalance, totalAvailableBalance, null))
             } else -> {
                 // nothing
             }
         }
     }
 
-    private fun getActiveAssetCode() : String {
-        return WalletApplication.userSession.currAssetCode
-    }
-
-    private fun getActiveAssetName() : String {
-        return WalletApplication.userSession.currAssetName
-    }
-
     private fun getAvailableBalance() : AvailableBalance {
         val balance = truncateDecimalPlaces(WalletApplication.wallet.getAvailableBalance())
-        return AvailableBalance(getActiveAssetCode(), balance)
+        val currAsset = sessionAsset.assetCode
+        return AvailableBalance(currAsset, balance)
     }
 
     private fun getTotalAssetBalance(): TotalBalance {
-        val currAsset = WalletApplication.userSession.currAssetCode
+        val currAsset = sessionAsset.assetCode
         val assetBalance = truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))
-        return TotalBalance(WalletState.ACTIVE, getActiveAssetName(), getActiveAssetCode(), assetBalance)
+        return TotalBalance(WalletState.ACTIVE, sessionAsset.assetName, sessionAsset.assetCode, assetBalance)
     }
 
 
@@ -166,8 +175,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
                         Timber.d("starting pulling cycle")
                         when {
                             state == WalletState.ACTIVE -> { Timber.d("polling cancelled") ; return }
-                            state == WalletState.UPDATING -> Timber.d("polling cycle cancelled")
-                            NetworkUtils(applicationContext).isNetworkAvailable() -> loadAccount(true, false)
+                            NetworkUtils(applicationContext).isNetworkAvailable() -> loadAccount(true)
                         }
                         handler.postDelayed(this, 3000)
                     }

@@ -23,7 +23,7 @@ class WalletLifecycleListener(val context: Context) : LifecycleObserver {
             // in debug builds it is possible to disable pin.
         } else {
             WalletApplication.appReturnedFromBackground = false
-            WalletApplication.userSession.pin = null
+            WalletApplication.userSession.setPin(null)
             EffectsRepository.getInstance().closeStream()
         }
     }

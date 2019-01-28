@@ -17,8 +17,10 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
     /**
      * Returns an observable for ALL the effects table changes
      */
-    fun loadList(): LiveData<ArrayList<EffectResponse>> {
-        forceRefresh()
+    fun loadList(forceRefresh:Boolean): LiveData<ArrayList<EffectResponse>> {
+        if (forceRefresh) {
+            forceRefresh()
+        }
         return effectListLiveData
     }
 
@@ -66,9 +68,6 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
                             Timber.d("Stream response {$it}")
                             effectsList.add(0, it)
                             notifyLiveData(effectsList)
-                            //TODO: use stream on account and remove this refresh
-                            //refresh account
-                            AccountRepository.loadAccount()
                         })
                     }
                 }

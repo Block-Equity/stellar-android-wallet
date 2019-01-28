@@ -17,6 +17,8 @@ import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.InflationActivity
 import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.interfaces.ChangeTrustlineListener
+import com.blockeq.stellarwallet.models.DefaultAsset
+import com.blockeq.stellarwallet.models.SessionAssetImpl
 import com.blockeq.stellarwallet.models.SupportedAsset
 import com.blockeq.stellarwallet.models.SupportedAssetType
 import com.blockeq.stellarwallet.utils.AccountUtils
@@ -147,13 +149,9 @@ class AssetsRecyclerViewAdapter(var context: Context, private var listener: Chan
 
         viewHolder.itemView.setOnClickListener {
             if (asset.code == Constants.LUMENS_ASSET_CODE) {
-                WalletApplication.userSession.currAssetCode = Constants.LUMENS_ASSET_TYPE
-                WalletApplication.userSession.currAssetName = Constants.LUMENS_ASSET_NAME
-                WalletApplication.userSession.currAssetIssuer = ""
+                WalletApplication.userSession.setSessionAsset(DefaultAsset())
             } else {
-                WalletApplication.userSession.currAssetCode = asset.code.toUpperCase()
-                WalletApplication.userSession.currAssetName = asset.name
-                WalletApplication.userSession.currAssetIssuer = asset.issuer
+                WalletApplication.userSession.setSessionAsset(SessionAssetImpl(asset.code.toUpperCase(), asset.name, asset.issuer))
             }
             (context as Activity).finish()
         }
