@@ -37,19 +37,12 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
 
         effectsRepository.loadList(false).observeForever { it ->
             if(it != null) {
-                var toNotify = false
                 effectsListResponse = it
-                if (state == WalletState.ACTIVE) {
-                    Timber.d("already active, toNotify false")
-                    // it was already ACTIVE, let's do not notify again
-                } else if (accountResponse != null) {
+                if (accountResponse != null) {
                     state = WalletState.ACTIVE
-                    toNotify = true
+                    notifyViewState()
                 } else {
                     loadAccount(true)
-                }
-                if (toNotify) {
-                    notifyViewState()
                 }
             }
         }
