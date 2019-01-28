@@ -5,6 +5,7 @@ import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.encryption.CipherWrapper
 import com.blockeq.stellarwallet.encryption.KeyStoreWrapper
 import com.blockeq.stellarwallet.helpers.Constants
+import com.blockeq.stellarwallet.mvvm.effects.EffectsRepository
 import com.soneso.stellarmnemonics.Wallet
 import org.stellar.sdk.KeyPair
 
@@ -93,6 +94,7 @@ class AccountUtils {
         }
 
         fun wipe(context: Context) : Boolean {
+            EffectsRepository.getInstance().clear()
             val keyStoreWrapper = KeyStoreWrapper(context)
             keyStoreWrapper.clear()
             return WalletApplication.wallet.clearLocalStore()

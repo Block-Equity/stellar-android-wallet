@@ -6,27 +6,30 @@ import android.support.v7.app.AppCompatActivity
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
+import timber.log.Timber
 
 abstract class BaseActivity : AppCompatActivity() {
     private val VERIFY_PIN_REQUEST : Int = 0x01
 
     override fun onResume() {
         super.onResume()
-        val pinDisabled = (this !is LaunchActivity) && DebugPreferencesHelper(applicationContext).isPinDisabled
-        if (WalletApplication.appReturnedFromBackground && !pinDisabled) {
+        val askForPin = this !is PinActivity && !DebugPreferencesHelper(applicationContext).isPinDisabled
+        if (WalletApplication.appReturnedFromBackground && askForPin) {
             WalletApplication.appReturnedFromBackground =  false
 
             if (isExistingWallet()) {
+                Timber.d("Opening WalletManagerActivity to verify the pin")
                 startActivityForResult(WalletManagerActivity.verifyPin(this), VERIFY_PIN_REQUEST)
             } else {
-                AccountUtils.wipe(this)
+                // let's clean the wallet
+                AccountUtils.wipe(applicationContext)
             }
         }
     }
 
     //region Helper Functions
 
-    internal fun isExistingWallet() : Boolean{
+    internal fun isExistingWallet() : Boolean {
         return !WalletApplication.wallet.getEncryptedPhrase().isNullOrEmpty()
                 && !WalletApplication.wallet.getStellarAccountId().isNullOrEmpty()
     }

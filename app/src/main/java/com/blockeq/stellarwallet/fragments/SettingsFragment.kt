@@ -15,12 +15,13 @@ import com.blockeq.stellarwallet.activities.*
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.DiagnosticUtils
 import kotlinx.android.synthetic.main.fragment_settings.*
+import timber.log.Timber
 
 class SettingsFragment : BaseFragment() {
     private lateinit var appContext : Context
 
     enum class SettingsAction {
-        CLEAR_WALLET, TOGGLE_PIN_ON_SENDING, TOGGLE_ENABLE_WEAR_APP
+        SHOW_MNEMONIC, SHOW_SECRET_SEED, CLEAR_WALLET, TOGGLE_PIN_ON_SENDING, TOGGLE_ENABLE_WEAR_APP
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -45,11 +46,11 @@ class SettingsFragment : BaseFragment() {
 
     private fun setupUI() {
         viewPhraseButton.setOnClickListener {
-            startActivity(WalletManagerActivity.showMnemonic(it.context))
+            startActivityForResult(WalletManagerActivity.showMnemonic(it.context), SettingsAction.SHOW_MNEMONIC.ordinal)
         }
 
         viewSeedButton.setOnClickListener {
-            startActivity(WalletManagerActivity.showSecretSeed(it.context))
+            startActivityForResult(WalletManagerActivity.showSecretSeed(it.context), SettingsAction.SHOW_SECRET_SEED.ordinal)
         }
 
         clearWalletButton.setOnClickListener {
@@ -65,15 +66,15 @@ class SettingsFragment : BaseFragment() {
         }
 
         diagnosticButton.setOnClickListener {
-            startActivity(Intent(appContext, DiagnosticActivity::class.java))
+            startActivity(Intent(it.context, DiagnosticActivity::class.java))
         }
 
         privacyPolicyButton.setOnClickListener {
-            startActivity(WebViewActivity.newIntent(appContext, getString(R.string.privacy_policy),"https://www.blockeq.com/privacy.html"))
+            startActivity(WebViewActivity.newIntent(it.context, getString(R.string.privacy_policy),"https://www.blockeq.com/privacy.html"))
         }
 
         termsOfServiceButton.setOnClickListener {
-            startActivity(WebViewActivity.newIntent(appContext, getString(R.string.terms_of_service), "https://www.blockeq.com/terms.html"))
+            startActivity(WebViewActivity.newIntent(it.context, getString(R.string.terms_of_service), "https://www.blockeq.com/terms.html"))
         }
 
         if (BuildConfig.DEBUG) {
@@ -103,6 +104,33 @@ class SettingsFragment : BaseFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode) {
+            SettingsAction.SHOW_MNEMONIC.ordinal -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    context?.let {
+                        val mnemonic = WalletManagerActivity.getResultDataString(data)
+                        if (mnemonic != null) {
+                            val phrase = WalletManagerActivity.getResultExtraDataString(data)
+                            startActivity(MnemonicActivity.newDisplayMnemonicIntent(it, mnemonic, phrase))
+                        } else {
+                            Timber.e("fatal error: mnemonic is null")
+                        }
+                    }
+                }
+            }
+
+            SettingsAction.SHOW_SECRET_SEED.ordinal -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    context?.let {
+                        val decryptedPhrase = WalletManagerActivity.getResultDataString(data)
+                        if (decryptedPhrase != null) {
+                            startActivity(ViewSecretSeedActivity.newInstance(it, decryptedPhrase))
+                        } else {
+                            Timber.e("fatal error: decrypted phrase is null")
+                        }
+                    }
+                }
+            }
+
             SettingsAction.CLEAR_WALLET.ordinal -> {
                 if (resultCode == Activity.RESULT_OK) {
                     wipeAndRestart()
@@ -131,6 +159,7 @@ class SettingsFragment : BaseFragment() {
             val intent = Intent(activity, LaunchActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
+            it.finish()
         }
     }
 

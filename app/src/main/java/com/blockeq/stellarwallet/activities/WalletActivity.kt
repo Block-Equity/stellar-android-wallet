@@ -3,7 +3,6 @@ package com.blockeq.stellarwallet.activities
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.os.Handler
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.view.View
@@ -13,20 +12,10 @@ import com.blockeq.stellarwallet.fragments.ContactsFragment
 import com.blockeq.stellarwallet.fragments.SettingsFragment
 import com.blockeq.stellarwallet.fragments.TradingFragment
 import com.blockeq.stellarwallet.fragments.WalletFragment
-import com.blockeq.stellarwallet.interfaces.OnLoadAccount
-import com.blockeq.stellarwallet.interfaces.OnLoadEffects
-import com.blockeq.stellarwallet.models.MinimumBalance
-import com.blockeq.stellarwallet.remote.Horizon
-import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.KeyboardUtils
-import com.blockeq.stellarwallet.utils.NetworkUtils
-import org.stellar.sdk.requests.ErrorResponse
-import org.stellar.sdk.responses.AccountResponse
-import org.stellar.sdk.responses.effects.EffectResponse
 import timber.log.Timber
-import java.util.*
 
-class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUtils.SoftKeyboardToggleListener {
+class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener {
     private enum class WalletFragmentType {
         WALLET,
         TRADING,
@@ -44,7 +33,6 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUti
         dialogTradeAlert = createTradingErrorDialog()
 
         setupUI()
-
     }
 
     private fun getReusedFragment(tag:String) : Fragment? {
@@ -61,8 +49,10 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUti
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.trade_alert_title))
         builder.setMessage(getString(R.string.trade_alert_message))
-        builder.setPositiveButton(getString(R.string.trade_alert_button)) { _, _ -> startActivity(AssetsActivity.newInstance(this)) }
+        builder.setPositiveButton(getString(R.string.trade_alert_positive_button)) { _, _ -> startActivity(AssetsActivity.newInstance(this)) }
+        builder.setNegativeButton(getString(R.string.trade_alert_negative_button)) { dialog, _ -> dialog.cancel() }
         val dialog = builder.create()
+
         dialog.setOnCancelListener {
             bottomNavigation.selectedItemId = R.id.nav_wallet
         }
@@ -111,11 +101,11 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUti
         bottomNavigation.selectedItemId = R.id.nav_wallet
     }
 
+
     //endregion
 
     override fun onResume() {
         super.onResume()
-        startPollingAccount()
 
         if (bottomNavigation.selectedItemId ==  R.id.nav_trading) {
             val balances = WalletApplication.wallet.getBalances()
@@ -123,16 +113,12 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUti
                 dialogTradeAlert.show()
             }
         }
-
         KeyboardUtils.addKeyboardToggleListener(this, this)
     }
 
     override fun onPause() {
         super.onPause()
-        endPollingAccount()
-
         KeyboardUtils.removeKeyboardToggleListener(this)
-
     }
 
     override fun onDestroy() {
@@ -152,62 +138,11 @@ class WalletActivity : BaseActivity(), OnLoadAccount, OnLoadEffects, KeyboardUti
         }
     }
 
-    private var handler = Handler()
-    private var runnableCode : Runnable? = null
-
-    //TODO polling for only non-created accounts on Stellar.
-    private fun startPollingAccount() {
-        runnableCode = object : Runnable {
-            override fun run() {
-
-                if (NetworkUtils(applicationContext).isNetworkAvailable()) {
-
-                    Horizon.getLoadAccountTask(this@WalletActivity)
-                            .execute()
-
-                    Horizon.getLoadEffectsTask(this@WalletActivity)
-                            .execute()
-                } else {
-                    NetworkUtils(applicationContext).displayNoNetwork()
-                }
-
-                handler.postDelayed(this, 5000)
-            }
-        }
-
-        handler.post(runnableCode)
-    }
-
-    private fun endPollingAccount() {
-        handler.removeCallbacks(runnableCode)
-    }
-
-    override fun onLoadAccount(result: AccountResponse?) {
-        if (result != null) {
-            WalletApplication.wallet.setBalances(result.balances)
-            WalletApplication.userSession.minimumBalance = MinimumBalance(result)
-            WalletApplication.wallet.setAvailableBalance(AccountUtils.calculateAvailableBalance())
-
-            bottomNavigation.menu.getItem(WalletFragmentType.TRADING.ordinal).isEnabled = true
-        }
-
-        val fragment = supportFragmentManager.findFragmentByTag(WalletFragmentType.WALLET.name)
-        if (fragment != null) {
-            (fragment as WalletFragment).onLoadAccount(result)
-        }
-    }
-
-    override fun onError(error: ErrorResponse) {
-        val fragment = supportFragmentManager.findFragmentByTag(WalletFragmentType.WALLET.name)
-        if (fragment != null) {
-            (fragment as WalletFragment).onError(error)
-        }
-    }
-
-    override fun onLoadEffects(result: ArrayList<EffectResponse>?) {
-        val fragment = supportFragmentManager.findFragmentByTag(WalletFragmentType.WALLET.name)
-        if (fragment != null) {
-            (fragment as WalletFragment).onLoadEffects(result)
-        }
-    }
+//        }
+    //TODO: move onError to viewModel
+//    override fun onError(error: ErrorResponse) {
+//        val fragment = supportFragmentManager.findFragmentByTag(WalletFragmentType.WALLET.name)
+//        if (fragment != null) {
+//            (fragment as WalletFragment).onError(error)
+//    }
 }

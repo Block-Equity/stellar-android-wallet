@@ -1,4 +1,4 @@
-package com.blockeq.stellarwallet.vmodels
+package com.blockeq.stellarwallet.mvvm.exchange
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey

@@ -1,6 +1,7 @@
 package com.blockeq.stellarwallet.helpers
 
 import com.blockeq.stellarwallet.utils.AccountUtils
+import org.stellar.sdk.KeyPair
 
 class StellarRecoveryString (string : String, private val isRecoveryPhrase : Boolean, val passphrase : String? = null) {
 
@@ -27,6 +28,11 @@ class StellarRecoveryString (string : String, private val isRecoveryPhrase : Boo
         } else {
             if (recoveryString.length != Constants.STELLAR_ADDRESS_LENGTH || recoveryString[0] != 'S' || invalidRecovery) {
                 throw InvalidStellarSecretSeedException("Invalid Secret Seed: Length should be ${Constants.STELLAR_ADDRESS_LENGTH} characters. The first character should be 'S'")
+            }
+            try {
+                KeyPair.fromSecretSeed(recoveryString)
+            } catch (e : java.lang.Exception) {
+                throw InvalidStellarSecretSeedException("Invalid Secret Seed, ${e.localizedMessage}")
             }
         }
 

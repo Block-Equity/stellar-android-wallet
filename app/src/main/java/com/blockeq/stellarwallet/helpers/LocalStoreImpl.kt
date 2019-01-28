@@ -2,9 +2,9 @@ package com.blockeq.stellarwallet.helpers
 
 import android.content.Context
 import com.blockeq.stellarwallet.interfaces.LocalStore
-import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import org.stellar.sdk.responses.AccountResponse
+import shadow.com.google.gson.Gson
+import shadow.com.google.gson.JsonSyntaxException
 import timber.log.Timber
 
 class LocalStoreImpl(context: Context) : LocalStore {
