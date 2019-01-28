@@ -14,7 +14,6 @@ class WalletLifecycleListener(val context: Context) : LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onMoveToForeground() {
         WalletApplication.appReturnedFromBackground = true
-        EffectsRepository.getInstance().restoreStream()
 
     }
 

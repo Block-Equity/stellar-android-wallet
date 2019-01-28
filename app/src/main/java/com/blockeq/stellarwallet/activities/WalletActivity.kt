@@ -1,7 +1,5 @@
 package com.blockeq.stellarwallet.activities
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
@@ -14,9 +12,7 @@ import com.blockeq.stellarwallet.fragments.ContactsFragment
 import com.blockeq.stellarwallet.fragments.SettingsFragment
 import com.blockeq.stellarwallet.fragments.TradingFragment
 import com.blockeq.stellarwallet.fragments.WalletFragment
-import com.blockeq.stellarwallet.mvvm.effects.WalletViewModel
 import com.blockeq.stellarwallet.utils.KeyboardUtils
-import org.stellar.sdk.responses.AccountResponse
 
 class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener {
     private enum class WalletFragmentType {
@@ -91,13 +87,6 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
         bottomNavigation = findViewById(R.id.navigationView)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         bottomNavigation.selectedItemId = R.id.nav_wallet
-
-        ViewModelProviders.of(this).get(WalletViewModel::class.java)
-            .account.observe(this, Observer<AccountResponse> {
-                if (it != null) {
-                    bottomNavigation.menu.getItem(WalletFragmentType.TRADING.ordinal).isEnabled = true
-                }
-            })
     }
 
 

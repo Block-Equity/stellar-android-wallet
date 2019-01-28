@@ -16,12 +16,12 @@ import timber.log.Timber
  * While at the same time only using remote, and not local or Room db
  */
 object AccountRepository {
-    private var liveData = MutableLiveData<AccountResponse>()
+    private var liveData = MutableLiveData<AccountEvent>()
 
     /**
      * Returns an observable for ALL the effects table changes
      */
-    fun loadAccount(): LiveData<AccountResponse> {
+    fun loadAccount(): LiveData<AccountEvent> {
         Timber.d("Loading account")
         Horizon.getLoadAccountTask(object : OnLoadAccount {
             override fun onLoadAccount(result: AccountResponse?) {
@@ -32,15 +32,19 @@ object AccountRepository {
                     WalletApplication.userSession.minimumBalance = MinimumBalance(result)
                     WalletApplication.wallet.setAvailableBalance(AccountUtils.calculateAvailableBalance())
 
-                    liveData.postValue(result)
+                    liveData.postValue(AccountEvent(200, result))
                 }
             }
 
             override fun onError(error: ErrorResponse) {
-                Timber.d("Error Loading account")
+                Timber.e("Error Loading account")
+                liveData.postValue(AccountEvent(error.code, null))
             }
 
         }).execute()
         return liveData
     }
+
+    data class AccountEvent(val httpCode:Int, val accountResponse: AccountResponse?)
+
 }

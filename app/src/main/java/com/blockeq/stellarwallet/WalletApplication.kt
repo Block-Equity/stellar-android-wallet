@@ -12,9 +12,12 @@ import com.blockeq.stellarwallet.mvvm.exchange.ExchangeRepository
 import com.facebook.stetho.Stetho
 import com.squareup.leakcanary.LeakCanary
 import org.bouncycastle.jce.provider.BouncyCastleProvider
+import shadow.okhttp3.OkHttpClient
 import timber.log.Timber
 import java.security.Provider
 import java.security.Security
+import java.util.logging.Level
+import java.util.logging.Logger
 
 class WalletApplication : MultiDexApplication() {
     companion object {
@@ -28,6 +31,7 @@ class WalletApplication : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
+        Logger.getLogger(OkHttpClient::class.java.name).level = Level.FINE
 
         //removing the default provider coming from Android SDK.
         Security.removeProvider("BC")

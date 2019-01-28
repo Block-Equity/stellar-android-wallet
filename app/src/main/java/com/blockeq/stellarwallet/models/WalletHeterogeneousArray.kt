@@ -23,7 +23,7 @@ class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: Ava
         array.add(totalBalance)
         array.add(availableBalance)
         array.add(pair)
-        addFilteredEffects(effectsList)
+        addFilteredEffects("LMX", effectsList)
     }
 
     //region Update methods
@@ -45,9 +45,15 @@ class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: Ava
         array.add(PAIR_INDEX - availableBalanceOffset, p)
     }
 
-    fun updateEffectsList(list: ArrayList<EffectResponse>?) {
+    fun hidePair() {
+        if (array.size > PAIR_INDEX - availableBalanceOffset) {
+            array.removeAt(PAIR_INDEX - availableBalanceOffset)
+        }
+    }
+
+    fun updateEffectsList(activeAsset: String, list: ArrayList<EffectResponse>?) {
         array.subList(EFFECTS_LIST_INDEX - availableBalanceOffset, array.size).clear()
-        addFilteredEffects(list)
+        addFilteredEffects(activeAsset, list)
     }
 
     //endregion
@@ -66,10 +72,10 @@ class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: Ava
         }
     }
 
-    private fun addFilteredEffects(list: ArrayList<EffectResponse>?) {
-        val filteredEffects = getFilteredEffects(list, WalletApplication.userSession.currAssetCode)
+    private fun addFilteredEffects(activeAsset: String, list: ArrayList<EffectResponse>?) {
+        val filteredEffects = getFilteredEffects(list, activeAsset)
         if (filteredEffects != null) {
-            array.addAll(convertEffectsToAccountEffects(filteredEffects))
+            array.addAll(convertEffectsToAccountEffects(activeAsset, filteredEffects))
         }
     }
 
@@ -93,10 +99,10 @@ class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: Ava
         } as ArrayList)
     }
 
-    private fun convertEffectsToAccountEffects(list: ArrayList<EffectResponse>) : ArrayList<Any> {
+    private fun convertEffectsToAccountEffects(activeAsset: String, list: ArrayList<EffectResponse>) : ArrayList<Any> {
         return list.map {
             if (it is TradeEffectResponse) {
-                return@map TradeEffect(it.type, it.createdAt, getBoughtAsset(it), getSoldAsset(it),
+                return@map TradeEffect(activeAsset, it.type, it.createdAt, getBoughtAsset(it), getSoldAsset(it),
                         it.boughtAmount, it.soldAmount)
             } else {
                 return@map AccountEffect(it.type, it.createdAt, getAssetCode(it), getAmount(it))

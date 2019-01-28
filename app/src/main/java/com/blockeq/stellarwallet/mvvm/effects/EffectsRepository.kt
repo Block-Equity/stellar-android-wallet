@@ -18,6 +18,11 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
      * Returns an observable for ALL the effects table changes
      */
     fun loadList(): LiveData<ArrayList<EffectResponse>> {
+        forceRefresh()
+        return effectListLiveData
+    }
+
+    fun forceRefresh() {
         fetchEffectsList(object : OnLoadEffects {
             override fun onLoadEffects(result: ArrayList<EffectResponse>?) {
                 if (result != null) {
@@ -25,7 +30,9 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
                 }
             }
         })
-        return effectListLiveData
+    }
+    fun clear() {
+        effectsList.clear()
     }
 
     private fun notifyLiveData(data : ArrayList<EffectResponse>){
@@ -46,7 +53,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
         closeStream()
         remoteRepository.getEffects(cursor, 200, object : OnLoadEffects {
             override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
-                Timber.d("fetched {$result?.size} effects")
+                Timber.d("fetched ${result?.size} effects from cursor $cursor")
                 if (result != null) {
                     if (!result.isEmpty()) {
                         effectsList.addAll(result)
@@ -59,6 +66,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
                             Timber.d("Stream response {$it}")
                             effectsList.add(0, it)
                             notifyLiveData(effectsList)
+                            //TODO: use stream on account and remove this refresh
                             //refresh account
                             AccountRepository.loadAccount()
                         })
@@ -70,13 +78,9 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
 
     fun closeStream() {
         eventSource?.let {
-            it.close()
             Timber.d("Closing the stream")
+            it.close()
         }
-    }
-
-    fun restoreStream() {
-
     }
 
     companion object {

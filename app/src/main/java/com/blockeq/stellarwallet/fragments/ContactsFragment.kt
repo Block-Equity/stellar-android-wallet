@@ -27,7 +27,6 @@ import android.net.Uri
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import com.blockeq.stellarwallet.R
 
-
 /**
  * Fragment that holds the RecyclerView
  */
@@ -44,7 +43,7 @@ class ContactsFragment : Fragment() {
     private lateinit var searchButton : MenuItem
     private lateinit var refreshButton : MenuItem
     private lateinit var addContactButton : MenuItem
-
+    private var menuItemsInitialized = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -68,7 +67,7 @@ class ContactsFragment : Fragment() {
         checkRationale()
         requestContacts()
 
-        //This logic around clearbutton is hack to fix #191, it should be removed if the bug is approved fix and relesaead.
+        // This logic around mt_clear button is hack to fix #191, it should be removed if the bug is approved fix and released.
         // https://github.com/mancj/MaterialSearchBar/issues/104
         val clearButton = searchBar.findViewById<View>(R.id.mt_clear)
         clearButton.visibility = View.GONE
@@ -90,8 +89,8 @@ class ContactsFragment : Fragment() {
         refreshButton = menu.findItem(R.id.refresh_contacts)
         searchButton = menu.findItem(R.id.search_contacts)
         addContactButton = menu.findItem(R.id.add_contact)
-
         setMenuItemsEnable(false)
+        menuItemsInitialized = true
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -151,9 +150,11 @@ class ContactsFragment : Fragment() {
     }
 
     private fun setMenuItemsEnable(isEnabled : Boolean) {
-        refreshButton.isEnabled = isEnabled
-        searchButton.isEnabled = isEnabled
-        addContactButton.isEnabled = isEnabled
+        if (menuItemsInitialized) {
+            refreshButton.isEnabled = isEnabled
+            searchButton.isEnabled = isEnabled
+            addContactButton.isEnabled = isEnabled
+        }
     }
 
     private fun setInitialStateContacts() {
