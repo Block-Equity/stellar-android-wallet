@@ -116,7 +116,7 @@ class WalletFragment : BaseFragment() {
         list.array.add(Pair("Activity", "Amount"))
         list.hideAvailableBalance()
         val delta = System.currentTimeMillis() - time
-        Timber.d("createListWrapper(), it took: $delta")
+        Timber.d("createListWrapper(), it took: $delta ms")
         return list
     }
 
