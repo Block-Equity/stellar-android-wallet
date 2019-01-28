@@ -34,7 +34,7 @@ class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: Ava
     }
 
     fun updateAvailableBalance(balance: AvailableBalance) {
-        if (WalletApplication.userSession.getSessionAsset()!!.assetCode == Constants.LUMENS_ASSET_TYPE) {
+        if (WalletApplication.userSession.getSessionAsset().assetCode == Constants.LUMENS_ASSET_TYPE) {
             array.removeAt(AVAILABLE_INDEX)
             array.add(AVAILABLE_INDEX, balance)
         }

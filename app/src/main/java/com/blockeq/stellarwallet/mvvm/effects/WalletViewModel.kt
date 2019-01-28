@@ -148,7 +148,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun getTotalAssetBalance(): TotalBalance {
-        val currAsset = WalletApplication.userSession.getSessionAsset()!!.assetCode
+        val currAsset = WalletApplication.userSession.getSessionAsset().assetCode
         val assetBalance = truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))
         return TotalBalance(WalletState.ACTIVE, getActiveAssetName(), getActiveAssetCode(), assetBalance)
     }

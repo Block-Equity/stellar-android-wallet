@@ -131,7 +131,7 @@ class ContactsFragment : Fragment() {
         empty_view.visibility = View.GONE
         progress_view.visibility = View.GONE
         enable_permissions.visibility = View.VISIBLE
-        allow_permissions_button.setOnClickListener { it ->
+        allow_permissions_button.setOnClickListener {
             if (shouldShowRationale) {
                 requestContacts()
             } else {
@@ -139,7 +139,7 @@ class ContactsFragment : Fragment() {
                 builder.setTitle("Contact Permission Needed")
                 builder.setMessage("Open Settings, then tap Permissions and turn on Contacts.")
                 builder.setPositiveButton("Open Settings") { _, _ ->
-                    context?.let {that ->
+                    context?.let {
                         val intent = getAppSettingsIntent(appContext.packageName)
                         startActivity(intent)
                     }

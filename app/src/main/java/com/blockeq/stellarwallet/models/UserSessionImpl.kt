@@ -40,7 +40,7 @@ class UserSessionImpl : UserSession {
         return sessionPin
     }
     override fun getFormattedCurrentAssetCode() : String {
-        return StringFormat.formatAssetCode(getSessionAsset()!!.assetCode)
+        return StringFormat.formatAssetCode(getSessionAsset().assetCode)
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -49,7 +49,7 @@ class UserSessionImpl : UserSession {
     }
 
     override fun getAvailableBalance(): String {
-        return if (getSessionAsset()!!.assetCode == Constants.LUMENS_ASSET_TYPE) {
+        return if (getSessionAsset().assetCode == Constants.LUMENS_ASSET_TYPE) {
             WalletApplication.wallet.getAvailableBalance()
         } else {
             AccountUtils.getTotalBalance(getFormattedCurrentAssetCode())
