@@ -16,6 +16,7 @@ import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.interfaces.ChangeTrustlineListener
 import com.blockeq.stellarwallet.interfaces.OnLoadAccount
 import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
+import com.blockeq.stellarwallet.models.DefaultAsset
 import com.blockeq.stellarwallet.models.HorizonException
 import com.blockeq.stellarwallet.models.SupportedAsset
 import com.blockeq.stellarwallet.models.SupportedAssetType
@@ -186,9 +187,7 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
                     }
                     progressBar.visibility = View.GONE
                     if (isRemove) {
-                        WalletApplication.userSession.currAssetCode = Constants.LUMENS_ASSET_TYPE
-                        WalletApplication.userSession.currAssetName = Constants.LUMENS_ASSET_NAME
-                        WalletApplication.userSession.currAssetIssuer = ""
+                        WalletApplication.userSession.setSessionAsset(DefaultAsset())
                         finish()
                     }
                 }

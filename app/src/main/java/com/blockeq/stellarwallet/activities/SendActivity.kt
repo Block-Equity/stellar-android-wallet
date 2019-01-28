@@ -166,7 +166,7 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
     }
 
     private fun isAmountValid() : Boolean {
-        return amount <= WalletApplication.userSession.getAvailableBalance().toDouble() && amount != 0.0
+        return amount <= WalletApplication.userSession.getAvailableBalance()!!.toDouble() && amount != 0.0
     }
 
     //endregion

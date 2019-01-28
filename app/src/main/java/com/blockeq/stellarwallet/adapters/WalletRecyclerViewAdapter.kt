@@ -290,7 +290,7 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         viewHolder.transactionType.text = String.format(context.getString(R.string.trade_item_template),
                 StringFormat.formatAssetCode(trade.soldAsset), StringFormat.formatAssetCode(trade.boughtAsset))
         viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.paleSky), PorterDuff.Mode.SRC_IN)
-        if (WalletApplication.userSession.currAssetCode == trade.boughtAsset) {
+        if (WalletApplication.userSession.getSessionAsset()!!.assetCode == trade.boughtAsset) {
             viewHolder.amount.text = truncateDecimalPlaces(trade.boughtAmount)
         } else {
             viewHolder.amount.text = String.format(context.getString(R.string.bracket_template),

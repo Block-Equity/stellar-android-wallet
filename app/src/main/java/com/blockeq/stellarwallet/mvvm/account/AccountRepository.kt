@@ -29,7 +29,7 @@ object AccountRepository {
                     Timber.d("onLoadAccount")
 
                     WalletApplication.wallet.setBalances(result.balances)
-                    WalletApplication.userSession.minimumBalance = MinimumBalance(result)
+                    WalletApplication.userSession.setMinimumBalance(MinimumBalance(result))
                     WalletApplication.wallet.setAvailableBalance(AccountUtils.calculateAvailableBalance())
 
                     liveData.postValue(AccountEvent(200, result))

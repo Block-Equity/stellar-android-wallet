@@ -8,9 +8,7 @@ import android.content.Context
 import android.os.Handler
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants.Companion.DEFAULT_ACCOUNT_BALANCE
-import com.blockeq.stellarwallet.models.AvailableBalance
-import com.blockeq.stellarwallet.models.WalletState
-import com.blockeq.stellarwallet.models.TotalBalance
+import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.mvvm.account.AccountRepository
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
@@ -31,6 +29,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     private var pollingStarted = false
     private var handler = Handler()
     private var runnableCode : Runnable? = null
+    private var sessionAsset : SessionAsset = DefaultAsset()
 
     init {
         loadAccount(false)
@@ -46,6 +45,13 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
                 state = WalletState.ACTIVE
             }
             if (toNotify) {
+                notifyViewState()
+            }
+        }
+
+        WalletApplication.assetSession.observeForever {
+            if (it != null) {
+                sessionAsset = it
                 notifyViewState()
             }
         }
@@ -129,11 +135,11 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun getActiveAssetCode() : String {
-        return WalletApplication.userSession.currAssetCode
+        return sessionAsset.assetCode
     }
 
     private fun getActiveAssetName() : String {
-        return WalletApplication.userSession.currAssetName
+        return sessionAsset.assetName
     }
 
     private fun getAvailableBalance() : AvailableBalance {
@@ -142,7 +148,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun getTotalAssetBalance(): TotalBalance {
-        val currAsset = WalletApplication.userSession.currAssetCode
+        val currAsset = WalletApplication.userSession.getSessionAsset()!!.assetCode
         val assetBalance = truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))
         return TotalBalance(WalletState.ACTIVE, getActiveAssetName(), getActiveAssetCode(), assetBalance)
     }

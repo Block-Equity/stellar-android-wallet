@@ -20,13 +20,13 @@ class AccountUtils {
             val stellarKeyPair = AccountUtils.getStellarKeyPair(mnemonic, passphrase)
 
             WalletApplication.wallet.setStellarAccountId(stellarKeyPair.accountId)
-            WalletApplication.userSession.pin = pin
+            WalletApplication.userSession.setPin(pin)
         }
 
         fun getSecretSeed(context : Context) : CharArray {
             val encryptedPhrase = WalletApplication.wallet.getEncryptedPhrase()!!
             val encryptedPassphrase = WalletApplication.wallet.getEncryptedPassphrase()
-            val masterKey = getPinMasterKey(context, WalletApplication.userSession.pin!!)!!
+            val masterKey = getPinMasterKey(context, WalletApplication.userSession.getPin()!!)!!
 
             val decryptedPhrase = getDecryptedString(encryptedPhrase, masterKey)
 
@@ -89,7 +89,7 @@ class AccountUtils {
         }
 
         fun calculateAvailableBalance(): String {
-            val minimumBalance = WalletApplication.userSession.minimumBalance!!
+            val minimumBalance = WalletApplication.userSession.getMinimumBalance()!!
             return (getTotalBalance(Constants.LUMENS_ASSET_TYPE).toDouble() - minimumBalance.totalAmount).toString()
         }
 

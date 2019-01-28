@@ -6,27 +6,50 @@ import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.StringFormat
 import java.text.DecimalFormat
-import java.text.NumberFormat
 
-class UserSessionImpl(var currAssetCode: String = Constants.LUMENS_ASSET_TYPE,
-                      var currAssetName: String = Constants.LUMENS_ASSET_NAME,
-                      var currAssetIssuer: String = "") {
-    private val decimalFormat : NumberFormat = DecimalFormat("0.#######")
+class UserSessionImpl : UserSession {
 
-    var minimumBalance: MinimumBalance? = null
-    var pin: String? = null
+    override fun setMinimumBalance(minimumBalance: MinimumBalance) {
+        minimumBalanceSession = minimumBalance
+    }
 
-    fun getFormattedCurrentAssetCode() : String {
-        return StringFormat.formatAssetCode(currAssetCode)
+    override fun getMinimumBalance(): MinimumBalance? {
+       return minimumBalanceSession
+    }
+
+    private var asset : SessionAsset = DefaultAsset()
+
+    override fun getSessionAsset(): SessionAsset {
+      return asset
+    }
+
+    override fun setSessionAsset(sessionAsset: SessionAsset){
+        asset = sessionAsset
+    }
+
+    override fun setPin(pin:String?) {
+      sessionPin = pin
+    }
+
+    private val decimalFormat : DecimalFormat = DecimalFormat("0.#######")
+
+    private var minimumBalanceSession: MinimumBalance? = null
+    private var sessionPin: String? = null
+
+    override fun getPin(): String? {
+        return sessionPin
+    }
+    override fun getFormattedCurrentAssetCode() : String {
+        return StringFormat.formatAssetCode(getSessionAsset()!!.assetCode)
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun getFormattedCurrentAvailableBalance(context: Context): String {
+    override fun getFormattedCurrentAvailableBalance(context: Context): String {
         return decimalFormat.format(getAvailableBalance().toDouble()) + " " + getFormattedCurrentAssetCode()
     }
 
-    fun getAvailableBalance(): String {
-        return if (currAssetCode == Constants.LUMENS_ASSET_TYPE) {
+    override fun getAvailableBalance(): String {
+        return if (getSessionAsset()!!.assetCode == Constants.LUMENS_ASSET_TYPE) {
             WalletApplication.wallet.getAvailableBalance()
         } else {
             AccountUtils.getTotalBalance(getFormattedCurrentAssetCode())

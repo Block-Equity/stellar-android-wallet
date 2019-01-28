@@ -378,8 +378,8 @@ object Horizon : HorizonTasks {
 
 
     private fun getCurrentAsset(): Asset {
-        val assetCode = WalletApplication.userSession.currAssetCode
-        val assetIssuer = WalletApplication.userSession.currAssetIssuer
+        val assetCode = WalletApplication.userSession.getSessionAsset()!!.assetCode
+        val assetIssuer = WalletApplication.userSession.getSessionAsset()!!.assetIssuer
 
         return if (assetCode == Constants.LUMENS_ASSET_TYPE) {
             AssetTypeNative()
