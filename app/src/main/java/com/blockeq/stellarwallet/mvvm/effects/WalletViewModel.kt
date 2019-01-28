@@ -70,7 +70,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun walletViewState(forceRefresh: Boolean ): MutableLiveData<WalletViewState> {
+    fun walletViewState(forceRefresh: Boolean): MutableLiveData<WalletViewState> {
         // it does not need to refresh since polling will try to get an active account
         if (forceRefresh) {
             forceRefresh()
@@ -80,6 +80,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun loadAccount(notify: Boolean) {
         var toNotify = notify
+        Timber.d("Loading account, notify {$notify}")
         accountRepository.loadAccount().observeForever {
             if (it != null) {
                 when (it.httpCode) {

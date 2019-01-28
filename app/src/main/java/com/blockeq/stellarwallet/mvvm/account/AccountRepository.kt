@@ -22,11 +22,10 @@ class AccountRepository {
      * Returns an observable for ALL the effects table changes
      */
     fun loadAccount(): LiveData<AccountEvent> {
-        Timber.d("Loading account")
         Horizon.getLoadAccountTask(object : OnLoadAccount {
             override fun onLoadAccount(result: AccountResponse?) {
                 if (result != null) {
-                    Timber.d("onLoadAccount")
+                    Timber.d("loadAccount successfully")
 
                     WalletApplication.wallet.setBalances(result.balances)
                     WalletApplication.userSession.setMinimumBalance(MinimumBalance(result))

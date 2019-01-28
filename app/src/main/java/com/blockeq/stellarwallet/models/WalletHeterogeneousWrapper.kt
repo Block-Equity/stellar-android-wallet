@@ -6,8 +6,7 @@ import org.stellar.sdk.AssetTypeCreditAlphaNum
 import org.stellar.sdk.AssetTypeNative
 import org.stellar.sdk.responses.effects.*
 
-class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: AvailableBalance,
-                               pair: Pair<*, *>, effectsList: ArrayList<EffectResponse>?) : ArrayList<Any>() {
+class WalletHeterogeneousWrapper {
 
     companion object {
         const val TOTAL_INDEX = 0
@@ -18,13 +17,6 @@ class WalletHeterogeneousArray(totalBalance: TotalBalance, availableBalance: Ava
 
     var array: ArrayList<Any> = ArrayList()
     private var availableBalanceOffset = 0
-
-    init {
-        array.add(totalBalance)
-        array.add(availableBalance)
-        array.add(pair)
-        addFilteredEffects("LMX", effectsList)
-    }
 
     //region Update methods
 

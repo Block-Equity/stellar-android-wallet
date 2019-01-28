@@ -23,10 +23,12 @@ import android.os.Build
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat.getColor
 
-class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+class WalletRecyclerViewAdapter(var context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var onAssetsDropdownListener : OnAssetDropdownListener? = null
     private var onLearnMoreListener : OnLearnMoreButtonListener? = null
+    private var items : ArrayList<Any>? = null
 
     interface OnAssetDropdownListener {
         fun onAssetDropdownClicked(view : View, position : Int)
@@ -39,6 +41,10 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     enum class TransactionViewType(val value :Int) {
         TOTAL(0), AVAILABLE(1), HEADER(2),
         ACCOUNT_EFFECT(3), TRADE_EFFECT(4)
+    }
+
+    fun setItems(list : ArrayList<Any>){
+        items = list
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -69,18 +75,23 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        if (items == null) return 0
+        return items!!.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when {
-            items[position] is TotalBalance -> TransactionViewType.TOTAL.value
-            items[position] is AvailableBalance -> TransactionViewType.AVAILABLE.value
-            items[position] is Pair<*, *> -> TransactionViewType.HEADER.value
-            items[position] is AccountEffect -> TransactionViewType.ACCOUNT_EFFECT.value
-            items[position] is TradeEffect -> TransactionViewType.TRADE_EFFECT.value
-            else -> 0
+        items?.let{
+            return when {
+                it[position] is TotalBalance -> TransactionViewType.TOTAL.value
+                it[position] is AvailableBalance -> TransactionViewType.AVAILABLE.value
+                it[position] is Pair<*, *> -> TransactionViewType.HEADER.value
+                it[position] is AccountEffect -> TransactionViewType.ACCOUNT_EFFECT.value
+                it[position] is TradeEffect -> TransactionViewType.TRADE_EFFECT.value
+                else -> 0
+            }
         }
+
+        return 0
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -173,7 +184,7 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     }
 
     private fun configureTotalBalanceViewHolder(viewHolder : TotalBalanceViewHolder, position : Int) {
-        val totalBalance = items[position] as TotalBalance
+        val totalBalance = items!![position] as TotalBalance
 
         viewHolder.balance.text = totalBalance.balance
         val code = getVisibleAssetCode(totalBalance.assetCode)
@@ -199,8 +210,7 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
             WalletState.ACTIVE, WalletState.UPDATING -> {
                 viewHolder.root.setBackgroundColor(getColor(context, R.color.blue2))
             }
-            else -> {
-                //nothing
+            else -> { //nothing
             }
         }
     }
@@ -216,7 +226,7 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     }
 
     private fun configureAvailableBalanceViewHolder(viewHolder : AvailableBalanceViewHolder, position : Int) {
-        val availableBalance = items[position] as AvailableBalance
+        val availableBalance = items!![position] as AvailableBalance
         @SuppressLint("SetTextI18n")
         viewHolder.balance.text = "${availableBalance.balance} ${getVisibleAssetCode(availableBalance.assetCode)}"
     }
@@ -229,7 +239,7 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
         }
     }
     private fun configureTransactionHeaderViewHolder(viewHolder : TransactionHeaderViewHolder, position : Int) {
-        val pair = items[position] as Pair<*, *>
+        val pair = items!![position] as Pair<*, *>
         viewHolder.activityTextView.text = pair.first.toString()
         viewHolder.amountTextView.text = pair.second.toString()
     }
@@ -245,7 +255,7 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
 
     @SuppressLint("SetTextI18n")
     private fun configureAccountEffectViewHolder(viewHolder : AccountEffectViewHolder, position : Int) {
-        val transaction = items[position] as AccountEffect
+        val transaction = items!![position] as AccountEffect
 
         viewHolder.amount.text = formatNumber4Decimals(transaction.amount)
         viewHolder.date.text = getFormattedDate(transaction.createdAt)
@@ -287,7 +297,7 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     }
 
     private fun configureTradeEffectViewHolder(viewHolder : TradeEffectViewHolder, position : Int) {
-        val trade = items[position] as TradeEffect
+        val trade = items!![position] as TradeEffect
 
         viewHolder.transactionType.text = String.format(context.getString(R.string.trade_item_template),
                 StringFormat.formatAssetCode(trade.soldAsset), StringFormat.formatAssetCode(trade.boughtAsset))
