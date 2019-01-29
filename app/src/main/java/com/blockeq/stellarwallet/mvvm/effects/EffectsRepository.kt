@@ -14,6 +14,8 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
     private var effectsList: ArrayList<EffectResponse> = ArrayList()
     private var effectListLiveData = MutableLiveData<ArrayList<EffectResponse>>()
     private var eventSource : SSEStream<EffectResponse>? = null
+    private var isFetching = false
+    private var currentCursor : String = ""
     /**
      * Returns an observable for ALL the effects table changes
      */
@@ -25,6 +27,9 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
     }
 
     fun forceRefresh() {
+        Timber.d("Force refresh effects")
+        if (isFetching) Timber.d("ignoring force refresh, it is busy.")
+        isFetching = true
         fetchEffectsList(object : OnLoadEffects {
             override fun onLoadEffects(result: ArrayList<EffectResponse>?) {
                 if (result != null) {
@@ -52,23 +57,28 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
             listener?.onLoadEffects(effectsList)
         }
 
-        closeStream()
         remoteRepository.getEffects(cursor, 200, object : OnLoadEffects {
             override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
-                Timber.d("fetched ${result?.size} effects from cursor $cursor")
+                Timber.d("fetched ${result?.size} effects from cursor $currentCursor")
                 if (result != null) {
                     if (!result.isEmpty()) {
                         effectsList.addAll(result)
                         // it will notify the ui only in the first call.
                         listener?.onLoadEffects(effectsList)
+                        Timber.d("recursive call to getEffects")
                         fetchEffectsList(null)
                     } else {
-                        Timber.d("Opening the stream")
-                        eventSource = remoteRepository.registerForEffects("now", EventListener {
-                            Timber.d("Stream response {$it}")
-                            effectsList.add(0, it)
-                            notifyLiveData(effectsList)
-                        })
+                        if (cursor != currentCursor) {
+                            closeStream()
+                            Timber.d("Opening the stream")
+                            eventSource = remoteRepository.registerForEffects("now", EventListener {
+                                Timber.d("Stream response {$it}, created at: ${it.createdAt}")
+                                effectsList.add(0, it)
+                                notifyLiveData(effectsList)
+                            })
+                            currentCursor = cursor
+                        }
+                        isFetching = false
                     }
                 }
             }
@@ -76,6 +86,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
     }
 
     fun closeStream() {
+        Timber.d("trying to close the stream {$eventSource}")
         eventSource?.let {
             Timber.d("Closing the stream")
             it.close()

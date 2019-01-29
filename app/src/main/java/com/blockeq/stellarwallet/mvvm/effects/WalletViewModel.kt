@@ -13,6 +13,7 @@ import com.blockeq.stellarwallet.mvvm.account.AccountRepository
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
+import com.soneso.stellarmnemonics.Wallet
 import org.jetbrains.anko.doAsync
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
@@ -36,17 +37,15 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
         loadAccount(false)
 
         effectsRepository.loadList(false).observeForever { it ->
-            if(it != null) {
-                var toNotify = false
+            Timber.d("effects repository, observer triggered")
+            if (it != null) {
+                var toNotify = true
                 effectsListResponse = it
-                if (state == WalletState.ACTIVE) {
-                    Timber.d("already active, toNotify false")
-                    // it was already ACTIVE, let's do not notify again
-                } else if (accountResponse != null) {
+                if (state != WalletState.ACTIVE && accountResponse != null) {
                     state = WalletState.ACTIVE
-                    toNotify = true
-                } else {
+                } else if(state != WalletState.ACTIVE) {
                     loadAccount(true)
+                    toNotify = false
                 }
                 if (toNotify) {
                     notifyViewState()
@@ -74,6 +73,10 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
         // it does not need to refresh since polling will try to get an active account
         if (forceRefresh) {
             forceRefresh()
+        } else {
+            if (state == WalletState.ACTIVE) {
+                notifyViewState()
+            }
         }
         return walletViewState
     }
@@ -87,12 +90,9 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
                     200 -> {
                         if (it.accountResponse != null) {
                             accountResponse = it.accountResponse
-                            if (state == WalletState.ACTIVE) {
-                                // it was already ACTIVE, let's do not notify again
-                                toNotify = false
-                            } else if (effectsListResponse != null) {
+                            if (effectsListResponse != null) {
                                 state = WalletState.ACTIVE
-                            } else {
+                            } else if(state != WalletState.ACTIVE){
                                 effectsRepository.forceRefresh()
                             }
                         }
