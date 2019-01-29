@@ -95,17 +95,12 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
     }
 
     override fun onDialogOpen(offerId: Int) {
-        if (context != null) {
-            AlertDialog.Builder(context!!)
+        context?.let{
+            AlertDialog.Builder(it)
                     .setTitle(getString(R.string.deleteDialogTitle))
                     .setMessage(getString(R.string.deleteDialogText, getText(R.string.offer)))
-                    .setPositiveButton(getText(R.string.yes))
-                    { _, _ ->
-                        deleteOffer(offerId)
-                    }
-                    .setNegativeButton(getText(R.string.no))
-                    { _, _ ->
-                    }
+                    .setPositiveButton(getText(R.string.yes)) { _, _ -> deleteOffer(offerId)}
+                    .setNegativeButton(getText(R.string.no)) { dialog, _ -> dialog.dismiss()}
                     .show()
         }
     }
@@ -122,21 +117,28 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
         val offer = offerResponses.find {
             it -> it.id.toInt() == offerId
         }
-        val secretSeed = AccountUtils.getSecretSeed(appContext)
 
         if (offer != null) {
+            val secretSeed = AccountUtils.getSecretSeed(appContext)
             Horizon.deleteOffer(offer.id, secretSeed, offer.selling, offer.buying, offer.price, object: Horizon.OnMarketOfferListener {
                 override fun onExecuted() {
-                    Timber.d("offer has been deleted")
+                    runOnUiThread {
+                        activity?.let {
+                            if (!it.isFinishing) {
+                                Toast.makeText(appContext, "Order has been deleted", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+
                 }
 
                 override fun onFailed(errorMessage: String) {
                     runOnUiThread {
                         activity?.let {
-                            if(it.isFinishing) {
+                            if (!it.isFinishing) {
                                 Toast.makeText(appContext, "Failed to delete offer: $errorMessage", Toast.LENGTH_SHORT).show()
 
-                                val snackbar = Snackbar.make(activity!!.findViewById(R.id.content_container),
+                                val snackbar = Snackbar.make(it.findViewById(R.id.content_container),
                                         "failed to delete the offer", Snackbar.LENGTH_INDEFINITE)
                                 snackbar.setAction("retry") {
                                     deleteOffer(offerId)
