@@ -60,7 +60,7 @@ object Horizon : HorizonTasks {
             try {
                 val sourceAccount = server.accounts().account(sourceKeyPair)
 
-                val transaction = Transaction.Builder(sourceAccount).addOperation(offerOperation).build()
+                val transaction = Transaction.Builder(sourceAccount).setTimeout(TIMEOUT_INFINITE).addOperation(offerOperation).build()
                 transaction.sign(sourceKeyPair)
                 val response = server.submitTransaction(transaction)
 

@@ -1,9 +1,6 @@
 package com.blockeq.stellarwallet.fragments.tabs
 
-import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
@@ -17,6 +14,7 @@ import com.blockeq.stellarwallet.interfaces.OnUpdateOrderBook
 import com.blockeq.stellarwallet.models.*
 import com.brandongogetap.stickyheaders.StickyLayoutManager
 import kotlinx.android.synthetic.main.fragment_tab_order_book.*
+import org.jetbrains.anko.support.v4.runOnUiThread
 import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber
 import java.util.*
@@ -26,7 +24,8 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
     private lateinit var orderBooksAdapter: OrderBooksAdapter
     private var buyingAsset : DataAsset? = null
     private var sellingAsset : DataAsset? = null
-
+    private var buyingCode : String? = null
+    private var sellingCode : String? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_tab_order_book, container, false)
     }
@@ -36,6 +35,10 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         val dividerItemDecoration = DividerItemDecoration(context,
                 LinearLayoutManager(context).orientation)
         orderBookRv.addItemDecoration(dividerItemDecoration)
+        orderBooksAdapter = OrderBooksAdapter(view.context)
+        val layout = StickyLayoutManager(context, orderBooksAdapter)
+        orderBookRv.adapter = orderBooksAdapter
+        orderBookRv.layoutManager = layout
         swipeRefresh.setOnRefreshListener(this)
 
     }
@@ -43,11 +46,10 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         Timber.d("setUserVisibleHint %s", isVisibleToUser)
-        if (isVisibleToUser && orderBookRv != null && buyingAsset != null && sellingAsset != null) {
-            updateList(buyingAsset!!.code, sellingAsset!!.code)
+        if (isVisibleToUser && orderBookRv != null && buyingCode != null && sellingCode != null) {
+            updateList(orderBooks, buyingCode!!, sellingCode!!)
             Timber.d("setUserVisibleHint > Refreshing")
             onRefresh()
-
         }
     }
 
@@ -108,12 +110,11 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
             orderBooks.add(OrderBook(type = OrderBookAdapterTypes.EMPTY))
         }
 
+
         Timber.d("loading order book complete items %s", orderBooks.size)
 
-        Handler(Looper.getMainLooper()).post {
-            initializeAdapterIfNeeded(sellingCode, buyingCode)
-            orderBooksAdapter.setCurrencies(sellingCode, buyingCode)
-            orderBooksAdapter.notifyDataSetChanged()
+        runOnUiThread {
+            updateList(orderBooks, sellingCode, buyingCode)
         }
 
         if (swipeRefresh != null) {
@@ -129,26 +130,15 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         sellingAsset = selling
 
         Timber.d("Updating objects in order book")
-        updateList(sellingAsset!!.code, buyingAsset!!.code)
+        updateList(orderBooks, sellingAsset!!.code, buyingAsset!!.code)
     }
 
-    private fun initializeAdapterIfNeeded(sellingCode: String, buyingCode: String) : Boolean {
-        if (!::orderBooksAdapter.isInitialized && context != null) {
-            orderBooksAdapter = OrderBooksAdapter(orderBooks, sellingCode, buyingCode, context as Context)
-            orderBookRv.adapter = orderBooksAdapter
-
-            val layout = StickyLayoutManager(context, orderBooksAdapter)
-            orderBookRv.layoutManager = layout
-            return true
-        }
-        return false
-    }
-
-    private fun updateList(sellingCode: String, buyingCode: String) {
-        initializeAdapterIfNeeded(sellingCode, buyingCode)
+    private fun updateList(list : MutableList<OrderBook>, sellingCode: String, buyingCode: String) {
         Timber.d("updateTradingCurrencies %s %s", buyingCode, sellingCode)
+        this.buyingCode = buyingCode
+        this.sellingCode = sellingCode
+        orderBooksAdapter.setOrderBookList(list)
         orderBooksAdapter.setCurrencies(sellingCode, buyingCode)
         orderBooksAdapter.notifyDataSetChanged()
-
     }
 }
