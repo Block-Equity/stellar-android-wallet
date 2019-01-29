@@ -107,6 +107,10 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
 
     private fun deleteOffer(offerId: Int) {
         val index = myOffers.indexOf(myOffers.find { offer -> offer.id == offerId })
+        if (index == -1) {
+            Timber.e("failed to delete, the offer does not exist in the array")
+            return
+        }
         myOffers.removeAt(index)
         myOffersAdapter.notifyItemRemoved(index)
 
