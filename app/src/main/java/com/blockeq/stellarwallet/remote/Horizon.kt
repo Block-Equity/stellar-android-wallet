@@ -13,10 +13,7 @@ import com.blockeq.stellarwallet.models.HorizonException
 import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import org.stellar.sdk.*
 import org.stellar.sdk.Transaction.Builder.TIMEOUT_INFINITE
-import org.stellar.sdk.requests.ErrorResponse
-import org.stellar.sdk.requests.EventListener
-import org.stellar.sdk.requests.RequestBuilder
-import org.stellar.sdk.requests.SSEStream
+import org.stellar.sdk.requests.*
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.OfferResponse
 import org.stellar.sdk.responses.OrderBookResponse
@@ -368,9 +365,14 @@ object Horizon : HorizonTasks {
                 Handler(Looper.getMainLooper()).post {
                     listener.onOffers(response.records)
                 }
-            } catch (error : ErrorResponse ) {
+            } catch (error : ErrorResponse) {
                 Handler(Looper.getMainLooper()).post {
                     listener.onFailed(error.message!!)
+                }
+            } catch (error: TooManyRequestsException) {
+                //TODO add this to every api
+                Handler(Looper.getMainLooper()).post {
+                    listener.onFailed("API rate limit reach, retry in ${error.retryAfter} seconds.")
                 }
             }
         }
