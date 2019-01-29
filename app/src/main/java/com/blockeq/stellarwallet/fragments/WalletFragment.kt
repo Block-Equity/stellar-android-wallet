@@ -36,6 +36,7 @@ class WalletFragment : BaseFragment() {
 
     private lateinit var viewModel : WalletViewModel
     private var state = WalletState.UNKNOWN
+    private var lastEffectListSize = 0
 
     companion object {
         private const val REFRESH_EFFECT_DELAY = 400L
@@ -55,6 +56,7 @@ class WalletFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        lastEffectListSize = 0
         walletRecyclerView.layoutManager = LinearLayoutManager(activity)
         walletRecyclerView.adapter = createAdapter()
 
@@ -160,8 +162,15 @@ class WalletFragment : BaseFragment() {
             when(newState) {
                 WalletState.ACTIVE -> {
                     noTransactionsTextView.visibility = View.GONE
-                    if (viewState != null) {
-                       listWrapper = createListWithData(viewState.effectList!!, viewState.activeAssetCode, viewState.availableBalance!!, viewState.totalBalance!!)
+                    viewState?.effectList?.let {
+                        val numberEffects = it.size
+                        Timber.d("ACTIVE effects = $numberEffects vs $lastEffectListSize")
+                        if (numberEffects != lastEffectListSize) {
+                            lastEffectListSize = numberEffects
+                            listWrapper = createListWithData(it, viewState.activeAssetCode, viewState.availableBalance!!, viewState.totalBalance!!)
+                        } else {
+                            Timber.d("ACTIVE event ignored")
+                        }
                     }
                 }
                 WalletState.UPDATING -> {
