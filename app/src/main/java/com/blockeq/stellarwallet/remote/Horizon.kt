@@ -173,7 +173,7 @@ object Horizon : HorizonTasks {
 
                 val sourceAccount = server.accounts().account(sourceKeyPair)
 
-                val transactionBuilder = Transaction.Builder(sourceAccount)
+                val transactionBuilder = Transaction.Builder(sourceAccount).setTimeout(TIMEOUT_INFINITE)
                 if (isCreateAccount) {
                     transactionBuilder.addOperation(CreateAccountOperation.Builder(destKeyPair, amount).build())
                 } else {
@@ -226,7 +226,7 @@ object Horizon : HorizonTasks {
             try {
                 val sourceAccount = server.accounts().account(sourceKeyPair)
 
-                val transaction = Transaction.Builder(sourceAccount)
+                val transaction = Transaction.Builder(sourceAccount).setTimeout(TIMEOUT_INFINITE)
                         .addOperation(SetOptionsOperation.Builder()
                                 .setInflationDestination(destKeyPair)
                                 .build())
@@ -273,7 +273,7 @@ object Horizon : HorizonTasks {
             try {
                 val sourceAccount = server.accounts().account(sourceKeyPair)
 
-                val transaction = Transaction.Builder(sourceAccount)
+                val transaction = Transaction.Builder(sourceAccount).setTimeout(TIMEOUT_INFINITE)
                         .addOperation(ChangeTrustOperation.Builder(asset, limit).build())
                         .build()
 
