@@ -16,10 +16,6 @@ import com.blockeq.stellarwallet.activities.BalanceSummaryActivity
 import com.blockeq.stellarwallet.activities.ReceiveActivity
 import com.blockeq.stellarwallet.activities.StellarAddressActivity
 import com.blockeq.stellarwallet.adapters.WalletRecyclerViewAdapter
-import com.blockeq.stellarwallet.models.AvailableBalance
-import com.blockeq.stellarwallet.models.WalletState
-import com.blockeq.stellarwallet.models.TotalBalance
-import com.blockeq.stellarwallet.models.WalletHeterogeneousWrapper
 import com.blockeq.stellarwallet.mvvm.effects.WalletViewModel
 import com.blockeq.stellarwallet.mvvm.effects.WalletViewState
 import com.google.zxing.BarcodeFormat
@@ -31,12 +27,14 @@ import org.stellar.sdk.responses.effects.EffectResponse
 import timber.log.Timber
 import android.support.v4.content.ContextCompat.getColor
 import android.graphics.*
+import com.blockeq.stellarwallet.models.*
 
 class WalletFragment : BaseFragment() {
 
     private lateinit var viewModel : WalletViewModel
     private var state = WalletState.UNKNOWN
     private var lastEffectListSize = 0
+    private var activeAsset : String = DefaultAsset().LUMENS_ASSET_NAME
 
     companion object {
         private const val REFRESH_EFFECT_DELAY = 400L
@@ -56,11 +54,12 @@ class WalletFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lastEffectListSize = 0
         walletRecyclerView.layoutManager = LinearLayoutManager(activity)
         walletRecyclerView.adapter = createAdapter()
 
         updateState(WalletState.UPDATING)
+        lastEffectListSize = 0
+
         // since closing the stream causes so many crashes let's disable the pull to refresh
         swipeRefresh_wallet.isEnabled = false
         initViewModels()
@@ -165,7 +164,7 @@ class WalletFragment : BaseFragment() {
                     viewState?.effectList?.let {
                         val numberEffects = it.size
                         Timber.d("ACTIVE effects = $numberEffects vs $lastEffectListSize")
-                        if (numberEffects != lastEffectListSize) {
+                        if (activeAsset != viewState.activeAssetCode || numberEffects != lastEffectListSize) {
                             lastEffectListSize = numberEffects
                             listWrapper = createListWithData(it, viewState.activeAssetCode, viewState.availableBalance!!, viewState.totalBalance!!)
                         } else {
@@ -206,6 +205,9 @@ class WalletFragment : BaseFragment() {
                 }
             }
             state = newState
+            viewState?.let {
+                activeAsset = it.activeAssetCode
+            }
         }
     }
 

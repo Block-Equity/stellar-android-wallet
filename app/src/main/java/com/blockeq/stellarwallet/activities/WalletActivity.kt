@@ -138,11 +138,11 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
         }
     }
 
-//        }
-    //TODO: move onError to viewModel
-//    override fun onError(error: ErrorResponse) {
-//        val fragment = supportFragmentManager.findFragmentByTag(WalletFragmentType.WALLET.name)
-//        if (fragment != null) {
-//            (fragment as WalletFragment).onError(error)
-//    }
+    override fun onBackPressed() {
+        if (bottomNavigation.selectedItemId != R.id.nav_wallet) {
+            bottomNavigation.selectedItemId = R.id.nav_wallet
+        } else {
+           finish()
+        }
+    }
 }

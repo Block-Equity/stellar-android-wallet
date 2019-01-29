@@ -13,7 +13,6 @@ import com.blockeq.stellarwallet.mvvm.account.AccountRepository
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
-import com.soneso.stellarmnemonics.Wallet
 import org.jetbrains.anko.doAsync
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
@@ -82,7 +81,6 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun loadAccount(notify: Boolean) {
-        var toNotify = notify
         Timber.d("Loading account, notify {$notify}")
         accountRepository.loadAccount().observeForever {
             if (it != null) {
@@ -105,14 +103,15 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
                         }
                     }
                     else -> {
-                        state = WalletState.ERROR
+                        // disabling the ui of ERROR since without pull to refresh makes no sense
+                        // state = WalletState.ERROR
                         if (!pollingStarted) {
                             startPolling()
                         }
                     }
                 }
 
-                if (toNotify) {
+                if (notify) {
                     notifyViewState()
                 }
             }
@@ -127,9 +126,9 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
                 val totalAvailableBalance = getTotalAssetBalance()
                 walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ACTIVE, accountId,  sessionAsset.assetCode, availableBalance, totalAvailableBalance, effectsListResponse))
             }
-            WalletState.ERROR -> {
-                walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ERROR, accountId,  sessionAsset.assetCode, null, null, null))
-            }
+           // WalletState.ERROR -> {
+           //      walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ERROR, accountId,  sessionAsset.assetCode, null, null, null))
+           // }
             WalletState.NOT_FUNDED -> {
                 val availableBalance = AvailableBalance("XLM", DEFAULT_ACCOUNT_BALANCE)
                 val totalAvailableBalance = TotalBalance(state, "Lumens", "XLM", DEFAULT_ACCOUNT_BALANCE)
