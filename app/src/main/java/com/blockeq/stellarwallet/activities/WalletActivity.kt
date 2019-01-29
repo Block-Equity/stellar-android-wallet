@@ -67,9 +67,8 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
                 replaceFragment(walletFragment, WalletFragmentType.WALLET)
             }
             R.id.nav_trading -> {
-                val balances = WalletApplication.wallet.getBalances()
-                
-                if (balances.isEmpty()) {
+                // minimum two trades
+                if (!enoughAssetsToTrade()) {
                     dialogTradeAlert.show()
                 }
                 val tradingFragment = getReusedFragment(WalletFragmentType.TRADING.name) ?: TradingFragment.newInstance()
@@ -108,8 +107,7 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
         super.onResume()
 
         if (bottomNavigation.selectedItemId ==  R.id.nav_trading) {
-            val balances = WalletApplication.wallet.getBalances()
-            if (balances.isEmpty()) {
+            if (!enoughAssetsToTrade()) {
                 dialogTradeAlert.show()
             }
         }
@@ -127,6 +125,13 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
             dialogTradeAlert.dismiss()
         }
     }
+
+    private fun enoughAssetsToTrade() : Boolean {
+        val balances = WalletApplication.wallet.getBalances()
+        //minimum 2 assets to trade
+        return balances.size > 1
+    }
+
     /**
      * When the keyboard is opened the bottomNavigation gets pushed up.
      */

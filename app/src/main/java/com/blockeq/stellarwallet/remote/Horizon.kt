@@ -25,33 +25,51 @@ import org.stellar.sdk.responses.effects.EffectResponse
 import shadow.okhttp3.OkHttpClient
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import com.blockeq.stellarwallet.remote.HorizonTasks.ServerType
 
 object Horizon : HorizonTasks {
-    private const val PROD_SERVER = "https://horizon.stellar.org"
-    private const val TEST_SERVER = "https://horizon-testnet.stellar.org"
-    private const val SERVER_ERROR_MESSAGE = "Error response from the server."
+    private lateinit var SERVER : String
+
+    override fun init(server: ServerType) {
+       when(server) {
+           ServerType.PROD -> {
+               SERVER = "https://horizon.stellar.org"
+               Network.usePublicNetwork()
+           }
+           ServerType.TEST_NET -> {
+               SERVER = "https://horizon-testnet.stellar.org"
+               Network.useTestNetwork()
+           }
+       }
+    }
 
     override fun getLoadEffectsTask(cursor: String, limit: Int, listener: OnLoadEffects): AsyncTask<Void, Void, ArrayList<EffectResponse>?> {
+        checkNotNull(SERVER)
         return LoadEffectsTask(cursor, limit, listener)
     }
 
     override fun getSendTask(listener: SuccessErrorCallback, destAddress: String, secretSeed: CharArray, memo: String, amount: String): AsyncTask<Void, Void, HorizonException> {
+        checkNotNull(SERVER)
         return SendTask(listener, destAddress, secretSeed, memo, amount)
     }
 
     override fun getJoinInflationDestination(listener: SuccessErrorCallback, secretSeed: CharArray, inflationDest: String): AsyncTask<Void, Void, HorizonException> {
+        checkNotNull(SERVER)
         return JoinInflationDestination(listener, secretSeed, inflationDest)
     }
 
     override fun getChangeTrust(listener: SuccessErrorCallback, asset: Asset, removeTrust: Boolean, secretSeed: CharArray): AsyncTask<Void, Void, HorizonException?> {
+        checkNotNull(SERVER)
         return ChangeTrust(listener, asset, removeTrust, secretSeed)
     }
 
     override fun getLoadAccountTask(listener: OnLoadAccount): AsyncTask<Void, Void, AccountResponse> {
+        checkNotNull(SERVER)
         return LoadAccountTask(listener)
     }
 
     override fun deleteOffer(id:Long, secretSeed : CharArray, selling: Asset, buying: Asset, price: String, listener: Horizon.OnMarketOfferListener) {
+        checkNotNull(SERVER)
         AsyncTask.execute {
             val server = getServer()
             val offerOperation = ManageOfferOperation.Builder(selling, buying, "0", price).setOfferId(id).build()
@@ -76,6 +94,79 @@ object Horizon : HorizonTasks {
                     listener.onFailed(error.message as String)
                 } else {
                     listener.onFailed("Unknown error")
+                }
+            }
+        }
+    }
+
+    override fun registerForEffects(cursor: String, listener: EventListener<EffectResponse>) : SSEStream<EffectResponse>? {
+        checkNotNull(SERVER)
+        val server = getServer()
+        val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
+        try {
+            //ATTENTION STREAM must work with order.ASC!
+            return server.effects()
+                    .cursor(cursor)
+                    .order(RequestBuilder.Order.ASC)
+                    .forAccount(sourceKeyPair).stream(listener)
+        } catch (error : Exception) {
+            Timber.e(error.message.toString())
+        }
+        return null
+    }
+
+    override fun getCreateMarketOffer(listener: OnMarketOfferListener, secretSeed: CharArray, sellingAsset: Asset, buyingAsset: Asset, amount: String, price: String) {
+        checkNotNull(SERVER)
+        AsyncTask.execute {
+            val server = getServer()
+            val managedOfferOperation = ManageOfferOperation.Builder(sellingAsset, buyingAsset, amount, price).build()
+            val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
+            val sourceAccount = server.accounts().account(sourceKeyPair)
+
+            val transaction = Transaction.Builder(sourceAccount).setTimeout(TIMEOUT_INFINITE).addOperation(managedOfferOperation).build()
+            transaction.sign(sourceKeyPair)
+            val response = server.submitTransaction(transaction)
+            Handler(Looper.getMainLooper()).post {
+                if (response.isSuccess) {
+                    listener.onExecuted()
+                } else {
+                    val list = response.extras.resultCodes.operationsResultCodes
+                    if (list != null && !list.isEmpty()) {
+                        listener.onFailed(list[0].toString())
+                    }
+                }
+            }
+        }
+    }
+
+    override fun getOrderBook(listener: OnOrderBookListener, buyingAsset: DataAsset, sellingAsset: DataAsset) {
+        checkNotNull(SERVER)
+        AsyncTask.execute {
+            val server = getServer()
+            val buying : Asset = AssetUtil.toAssetFrom(buyingAsset)
+            val selling : Asset = AssetUtil.toAssetFrom(sellingAsset)
+
+            val response = server.orderBook().buyingAsset(buying).sellingAsset(selling).execute()
+
+            Handler(Looper.getMainLooper()).post {
+                listener.onOrderBook(response.asks, response.bids)
+            }
+        }
+    }
+
+    override fun getOffers(listener: OnOffersListener) {
+        checkNotNull(SERVER)
+        AsyncTask.execute {
+            val server = getServer()
+            try {
+                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
+                val response = server.offers().forAccount(sourceKeyPair).execute()
+                Handler(Looper.getMainLooper()).post {
+                    listener.onOffers(response.records)
+                }
+            } catch (error : ErrorResponse ) {
+                Handler(Looper.getMainLooper()).post {
+                    listener.onFailed(error.message!!)
                 }
             }
         }
@@ -107,20 +198,6 @@ object Horizon : HorizonTasks {
         }
     }
 
-    override fun registerForEffects(cursor: String, listener: EventListener<EffectResponse>) : SSEStream<EffectResponse>? {
-        val server = getServer()
-        val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
-        try {
-            //ATTENTION STREAM must work with order.ASC!
-            return server.effects()
-                    .cursor(cursor)
-                    .order(RequestBuilder.Order.ASC)
-                    .forAccount(sourceKeyPair).stream(listener)
-        } catch (error : Exception) {
-            Timber.e(error.message.toString())
-        }
-        return null
-    }
 
     private class LoadEffectsTask(val cursor : String, val limit:Int, private val listener: OnLoadEffects) : AsyncTask<Void, Void, ArrayList<EffectResponse>?>() {
         override fun doInBackground(vararg params: Void?): ArrayList<EffectResponse>? {
@@ -154,8 +231,6 @@ object Horizon : HorizonTasks {
             val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
             val destKeyPair = KeyPair.fromAccountId(destAddress)
             var isCreateAccount = false
-
-            Network.usePublicNetwork()
 
             try {
                 try {
@@ -217,7 +292,6 @@ object Horizon : HorizonTasks {
         : AsyncTask<Void, Void, HorizonException>() {
 
         override fun doInBackground(vararg params: Void?): HorizonException? {
-            Network.usePublicNetwork()
 
             val server = getServer()
             val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
@@ -264,7 +338,6 @@ object Horizon : HorizonTasks {
         : AsyncTask<Void, Void, HorizonException?>() {
 
         override fun doInBackground(vararg params: Void?): HorizonException? {
-            Network.usePublicNetwork()
 
             val server = getServer()
             val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
@@ -319,63 +392,6 @@ object Horizon : HorizonTasks {
         fun onFailed(errorMessage: String)
     }
 
-    override fun getCreateMarketOffer(listener: OnMarketOfferListener, secretSeed: CharArray, sellingAsset: Asset, buyingAsset: Asset, amount: String, price: String) {
-        AsyncTask.execute {
-            Network.usePublicNetwork()
-
-            val server = getServer()
-            val managedOfferOperation = ManageOfferOperation.Builder(sellingAsset, buyingAsset, amount, price).build()
-            val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
-            val sourceAccount = server.accounts().account(sourceKeyPair)
-
-            val transaction = Transaction.Builder(sourceAccount).setTimeout(TIMEOUT_INFINITE).addOperation(managedOfferOperation).build()
-            transaction.sign(sourceKeyPair)
-            val response = server.submitTransaction(transaction)
-            Handler(Looper.getMainLooper()).post {
-                if (response.isSuccess) {
-                    listener.onExecuted()
-                } else {
-                    listener.onFailed(response.extras.resultCodes.operationsResultCodes[0].toString())
-                }
-            }
-        }
-    }
-
-    override fun getOrderBook(listener: OnOrderBookListener, buyingAsset: DataAsset, sellingAsset: DataAsset) {
-        AsyncTask.execute {
-            Network.usePublicNetwork()
-
-            val server = getServer()
-            val buying : Asset = AssetUtil.toAssetFrom(buyingAsset)
-            val selling : Asset = AssetUtil.toAssetFrom(sellingAsset)
-
-            val response = server.orderBook().buyingAsset(buying).sellingAsset(selling).execute()
-
-            Handler(Looper.getMainLooper()).post {
-                listener.onOrderBook(response.asks, response.bids)
-            }
-        }
-    }
-
-    override fun getOffers(listener: OnOffersListener) {
-        AsyncTask.execute {
-            Network.usePublicNetwork()
-
-            val server = getServer()
-            try {
-                val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
-                val response = server.offers().forAccount(sourceKeyPair).execute()
-                Handler(Looper.getMainLooper()).post {
-                    listener.onOffers(response.records)
-                }
-            } catch (error : ErrorResponse ) {
-                Handler(Looper.getMainLooper()).post {
-                    listener.onFailed(error.message!!)
-                }
-            }
-        }
-    }
-
 
     private fun getCurrentAsset(): Asset {
         val assetCode = WalletApplication.userSession.getSessionAsset().assetCode
@@ -395,19 +411,22 @@ object Horizon : HorizonTasks {
     private const val HORIZON_SUBMIT_TIMEOUT = 60L
 
     private fun getServer() : Server {
-        val server = Server(PROD_SERVER)
+        checkNotNull(SERVER)
+        val server = Server(SERVER)
         // These two clients are a copy of the lines 32 and 42 of org.stellar.sdk.Server class with the stetho interceptor
         // REVIEW this once you upgrade stellar library
         val httpClient = OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
+                .addNetworkInterceptor(ShadowedStethoInterceptor())
                 .build()
 
         val submitHttpClient = OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(HORIZON_SUBMIT_TIMEOUT + 5, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
+                .addNetworkInterceptor(ShadowedStethoInterceptor())
                 .build()
 
         server.httpClient = httpClient

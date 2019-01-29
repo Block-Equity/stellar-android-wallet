@@ -139,6 +139,7 @@ class WalletFragment : BaseFragment() {
     //region User Interface
 
     private fun initViewModels() {
+        Timber.d("initViewModels called")
         viewModel.walletViewState(false).observe(this, Observer {
             it?.let { that ->
                 Timber.d("observed = ${it.status}")
@@ -163,13 +164,13 @@ class WalletFragment : BaseFragment() {
                     noTransactionsTextView.visibility = View.GONE
                     viewState?.effectList?.let {
                         val numberEffects = it.size
-                        Timber.d("ACTIVE effects = $numberEffects vs $lastEffectListSize")
-                        if (activeAsset != viewState.activeAssetCode || numberEffects != lastEffectListSize) {
+                        Timber.d("ACTIVE effects = $numberEffects vs last event $lastEffectListSize")
+//                        if (activeAsset != viewState.activeAssetCode || numberEffects != lastEffectListSize) {
                             lastEffectListSize = numberEffects
                             listWrapper = createListWithData(it, viewState.activeAssetCode, viewState.availableBalance!!, viewState.totalBalance!!)
-                        } else {
-                            Timber.d("ACTIVE event ignored")
-                        }
+//                        } else {
+//                            Timber.d("ACTIVE event ignored")
+//                        }
                     }
                 }
                 WalletState.UPDATING -> {
@@ -183,9 +184,6 @@ class WalletFragment : BaseFragment() {
                     listWrapper.hidePair()
                 }
                 WalletState.NOT_FUNDED -> {
-                    if (viewState != null) {
-                        generateQRCode(viewState.accountId, qrCode, 500)
-                    }
                     listWrapper.updateTotalBalance(TotalBalance(newState, "Account Funding Required", "", "0.00"))
                     listWrapper.hideAvailableBalance()
                     listWrapper.hidePair()
@@ -196,6 +194,12 @@ class WalletFragment : BaseFragment() {
             runOnUiThread {
                 activity?.let {
                     if (!it.isFinishing && walletRecyclerView != null) {
+                        if (state == WalletState.NOT_FUNDED) {
+                            if (viewState != null && qrCode != null) {
+                                generateQRCode(viewState.accountId, qrCode, 500)
+                            }
+                        }
+
                         if (!listWrapper.array.isEmpty()) {
                             (walletRecyclerView.adapter as WalletRecyclerViewAdapter).setItems(listWrapper.array)
                             walletRecyclerView.adapter?.notifyDataSetChanged()
@@ -243,6 +247,7 @@ class WalletFragment : BaseFragment() {
                         sendButton.isEnabled = true
                         receiveButton.isEnabled = true
                         noTransactionsTextView.visibility = View.GONE
+                        fetchingState.visibility = View.GONE
                     } else -> {
                         // nothing
                     }

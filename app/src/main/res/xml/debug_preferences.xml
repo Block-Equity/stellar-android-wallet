@@ -22,6 +22,11 @@
             android:summary="@string/debug_enable_trade_tooltips_summary"
             android:defaultValue="false" />
 
+        <android.support.v7.preference.SwitchPreferenceCompat
+            android:key="@string/preference_debug_test_server"
+            android:title="@string/debug_enable_test_server"
+            android:summary="@string/debug_enable_test_server_summary"
+            android:defaultValue="false" />
 
     </android.support.v7.preference.PreferenceCategory>
 
