@@ -43,7 +43,7 @@ class WalletRecyclerViewAdapter(var context: Context) : RecyclerView.Adapter<Rec
         ACCOUNT_EFFECT(3), TRADE_EFFECT(4)
     }
 
-    fun setItems(list : ArrayList<Any>){
+    fun setItems(list : ArrayList<Any>) {
         items = list
     }
 
