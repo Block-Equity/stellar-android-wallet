@@ -13,6 +13,7 @@ import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
 
 interface HorizonTasks {
+    fun init(server: ServerType)
     fun registerForEffects(cursor: String, listener: EventListener<EffectResponse>): SSEStream<EffectResponse>?
     fun getLoadAccountTask(listener: OnLoadAccount) : AsyncTask<Void, Void, AccountResponse>
     fun getLoadEffectsTask(cursor: String, limit: Int, listener: OnLoadEffects) : AsyncTask<Void, Void, ArrayList<EffectResponse>?>

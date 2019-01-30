@@ -28,6 +28,7 @@ import timber.log.Timber
 import android.support.v4.content.ContextCompat.getColor
 import android.graphics.*
 import com.blockeq.stellarwallet.models.*
+import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 
 class WalletFragment : BaseFragment() {
 
@@ -56,6 +57,10 @@ class WalletFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         walletRecyclerView.layoutManager = LinearLayoutManager(activity)
         walletRecyclerView.adapter = createAdapter()
+
+        if (DebugPreferencesHelper(view.context.applicationContext).isTestNetServerEnabled) {
+            mainTitle.text = "Wallet (TEST-NET SERVER)"
+        }
 
         updateState(WalletState.UPDATING)
         lastEffectListSize = 0
@@ -139,6 +144,7 @@ class WalletFragment : BaseFragment() {
     //region User Interface
 
     private fun initViewModels() {
+        Timber.d("initViewModels called")
         viewModel.walletViewState(false).observe(this, Observer {
             it?.let { that ->
                 Timber.d("observed = ${it.status}")
@@ -163,13 +169,9 @@ class WalletFragment : BaseFragment() {
                     noTransactionsTextView.visibility = View.GONE
                     viewState?.effectList?.let {
                         val numberEffects = it.size
-                        Timber.d("ACTIVE effects = $numberEffects vs $lastEffectListSize")
-                        if (activeAsset != viewState.activeAssetCode || numberEffects != lastEffectListSize) {
-                            lastEffectListSize = numberEffects
-                            listWrapper = createListWithData(it, viewState.activeAssetCode, viewState.availableBalance!!, viewState.totalBalance!!)
-                        } else {
-                            Timber.d("ACTIVE event ignored")
-                        }
+                        Timber.d("ACTIVE effects = $numberEffects vs last event $lastEffectListSize")
+                        lastEffectListSize = numberEffects
+                        listWrapper = createListWithData(it, viewState.activeAssetCode, viewState.availableBalance!!, viewState.totalBalance!!)
                     }
                 }
                 WalletState.UPDATING -> {
@@ -183,9 +185,6 @@ class WalletFragment : BaseFragment() {
                     listWrapper.hidePair()
                 }
                 WalletState.NOT_FUNDED -> {
-                    if (viewState != null) {
-                        generateQRCode(viewState.accountId, qrCode, 500)
-                    }
                     listWrapper.updateTotalBalance(TotalBalance(newState, "Account Funding Required", "", "0.00"))
                     listWrapper.hideAvailableBalance()
                     listWrapper.hidePair()
@@ -196,6 +195,12 @@ class WalletFragment : BaseFragment() {
             runOnUiThread {
                 activity?.let {
                     if (!it.isFinishing && walletRecyclerView != null) {
+                        if (state == WalletState.NOT_FUNDED) {
+                            if (viewState != null && qrCode != null) {
+                                generateQRCode(viewState.accountId, qrCode, 500)
+                            }
+                        }
+
                         if (!listWrapper.array.isEmpty()) {
                             (walletRecyclerView.adapter as WalletRecyclerViewAdapter).setItems(listWrapper.array)
                             walletRecyclerView.adapter?.notifyDataSetChanged()
@@ -243,6 +248,7 @@ class WalletFragment : BaseFragment() {
                         sendButton.isEnabled = true
                         receiveButton.isEnabled = true
                         noTransactionsTextView.visibility = View.GONE
+                        fetchingState.visibility = View.GONE
                     } else -> {
                         // nothing
                     }
@@ -281,7 +287,7 @@ class WalletFragment : BaseFragment() {
         list.updateEffectsList(activeAsset, effects)
         list.updateAvailableBalance(availableBalance)
         val delta = System.currentTimeMillis() - time
-        Timber.d("createListWithData(), it took: $delta")
+        Timber.d("createListWithData(list{${effects.size}}, $activeAsset), it took: $delta ms")
         return list
     }
 

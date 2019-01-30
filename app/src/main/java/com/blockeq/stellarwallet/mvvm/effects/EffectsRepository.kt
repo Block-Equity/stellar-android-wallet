@@ -2,7 +2,6 @@ package com.blockeq.stellarwallet.mvvm.effects
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import com.blockeq.stellarwallet.mvvm.account.AccountRepository
 import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import com.blockeq.stellarwallet.mvvm.effects.remote.RemoteRepository
 import org.stellar.sdk.requests.EventListener
@@ -14,35 +13,34 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
     private var effectsList: ArrayList<EffectResponse> = ArrayList()
     private var effectListLiveData = MutableLiveData<ArrayList<EffectResponse>>()
     private var eventSource : SSEStream<EffectResponse>? = null
-    private var isFetching = false
+    private var isBusy = false
     private var currentCursor : String = ""
     /**
      * Returns an observable for ALL the effects table changes
      */
     fun loadList(forceRefresh:Boolean): LiveData<ArrayList<EffectResponse>> {
-        if (forceRefresh) {
+        if (forceRefresh || effectsList.isEmpty()) {
             forceRefresh()
         }
         return effectListLiveData
     }
 
-    fun forceRefresh() {
+    @Synchronized fun forceRefresh() {
         Timber.d("Force refresh effects")
-        if (isFetching) Timber.d("ignoring force refresh, it is busy.")
-        isFetching = true
-        fetchEffectsList(object : OnLoadEffects {
-            override fun onLoadEffects(result: ArrayList<EffectResponse>?) {
-                if (result != null) {
-                    notifyLiveData(result)
-                }
-            }
-        })
+        if (isBusy){
+            Timber.d("ignoring force refresh, it is busy.")
+            return
+        }
+        isBusy = true
+        fetchEffectsList(true)
+
     }
     fun clear() {
         effectsList.clear()
     }
 
     private fun notifyLiveData(data : ArrayList<EffectResponse>){
+        Timber.d("notifyLiveData size {${data.size}}")
         effectListLiveData.postValue(data)
     }
 
@@ -50,23 +48,26 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
      * Makes a call to the webservice. Keep it private since the view/viewModel should be 100% abstracted
      * from the data sources implementation.
      */
-    private fun fetchEffectsList(listener: OnLoadEffects?) {
+    private fun fetchEffectsList(notifyFirsTime : Boolean = false) {
         var cursor = ""
         if (!effectsList.isEmpty()) {
             cursor = effectsList.last().pagingToken
-            listener?.onLoadEffects(effectsList)
+            if (notifyFirsTime) {
+                notifyLiveData(effectsList)
+            }
         }
 
         remoteRepository.getEffects(cursor, 200, object : OnLoadEffects {
             override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
-                Timber.d("fetched ${result?.size} effects from cursor $currentCursor")
+                Timber.d("fetched ${result?.size} effects from cursor $cursor")
                 if (result != null) {
                     if (!result.isEmpty()) {
+                        //is the first time let's notify the ui
+                        val isFirstTime = effectsList.isEmpty()
                         effectsList.addAll(result)
-                        // it will notify the ui only in the first call.
-                        listener?.onLoadEffects(effectsList)
+                        if (isFirstTime) notifyLiveData(effectsList)
                         Timber.d("recursive call to getEffects")
-                        fetchEffectsList(null)
+                        fetchEffectsList()
                     } else {
                         if (cursor != currentCursor) {
                             closeStream()
@@ -78,7 +79,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
                             })
                             currentCursor = cursor
                         }
-                        isFetching = false
+                        isBusy = false
                     }
                 }
             }

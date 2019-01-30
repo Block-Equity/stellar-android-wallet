@@ -3,6 +3,7 @@
     <string name="preference_debug_leak_canary">preference_leak_canary</string>
     <string name="preference_debug_pin_disabled">preference_pin_disabled</string>
     <string name="preference_debug_trade_tooltip">preference_trade_tooltip</string>
+    <string name="preference_debug_test_server">preference_debug_test_server</string>
 
     <string name="debug_leak_canary_title">LeakCanary</string>
     <string name="debug_leak_canary_summary">A memory leak detection library for Android and Java. A restart is required.</string>
@@ -13,4 +14,6 @@
     <string name="debug_enable_trade_tooltips_title">Trade Tooltips</string>
     <string name="debug_enable_trade_tooltips_summary">Enable the tooltips in the trade feature</string>
 
+    <string name="debug_enable_test_server">TestNet Server</string>
+    <string name="debug_enable_test_server_summary">Enable the test net server. A restart is required.</string>
 </resources>

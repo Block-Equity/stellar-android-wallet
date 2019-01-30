@@ -36,7 +36,7 @@ class AccountRepository {
             }
 
             override fun onError(error: ErrorResponse) {
-                Timber.e("Error Loading account")
+                Timber.e("(${error.code}) Error Loading account")
                 liveData.postValue(AccountEvent(error.code, null))
             }
 

@@ -11,6 +11,9 @@ import com.blockeq.stellarwallet.interfaces.WalletStore
 import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 import com.blockeq.stellarwallet.mvvm.exchange.ExchangeRepository
+import com.blockeq.stellarwallet.remote.Horizon
+import com.blockeq.stellarwallet.remote.HorizonTasks
+import com.blockeq.stellarwallet.remote.ServerType
 import com.facebook.stetho.Stetho
 import com.squareup.leakcanary.LeakCanary
 import org.bouncycastle.jce.provider.BouncyCastleProvider
@@ -77,6 +80,12 @@ class WalletApplication : MultiDexApplication() {
                 // Normal app init code...
             } else {
                 Timber.d("Leak canary is disabled")
+            }
+
+            if (DebugPreferencesHelper(applicationContext).isTestNetServerEnabled) {
+                Horizon.init(ServerType.TEST_NET)
+            } else {
+                Horizon.init(ServerType.PROD)
             }
         }
 

@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.FragmentActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +13,8 @@ import com.blockeq.stellarwallet.BuildConfig
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.*
-import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.DiagnosticUtils
+import com.blockeq.stellarwallet.utils.GlobalGraphHelper
 import kotlinx.android.synthetic.main.fragment_settings.*
 import timber.log.Timber
 
@@ -133,7 +134,7 @@ class SettingsFragment : BaseFragment() {
 
             SettingsAction.CLEAR_WALLET.ordinal -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    wipeAndRestart()
+                    GlobalGraphHelper.wipeAndRestart(activity as FragmentActivity)
                 }
             }
 
@@ -152,15 +153,4 @@ class SettingsFragment : BaseFragment() {
     private fun setSavedSettings() {
         pinOnSendPaymentsButton.isChecked = WalletApplication.wallet.getShowPinOnSend()
     }
-
-    private fun wipeAndRestart() {
-        activity?.let {
-            AccountUtils.wipe(appContext)
-            val intent = Intent(activity, LaunchActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
-            it.finish()
-        }
-    }
-
 }

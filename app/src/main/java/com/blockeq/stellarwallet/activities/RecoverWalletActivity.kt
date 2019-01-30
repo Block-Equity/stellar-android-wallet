@@ -12,6 +12,7 @@ import android.view.View
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.*
+import com.blockeq.stellarwallet.utils.GlobalGraphHelper
 import com.soneso.stellarmnemonics.mnemonic.WordList
 import kotlinx.android.synthetic.main.activity_recover_wallet.*
 
@@ -42,7 +43,7 @@ class RecoverWalletActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RESTORE_REQUEST) {
             if (resultCode ==  Activity.RESULT_OK) {
-                launchWallet()
+                GlobalGraphHelper.launchWallet(this)
             }
         }
     }

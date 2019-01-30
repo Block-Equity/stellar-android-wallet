@@ -10,6 +10,7 @@ import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.PassphraseDialogHelper
 import com.blockeq.stellarwallet.models.MnemonicType
+import com.blockeq.stellarwallet.utils.GlobalGraphHelper
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.soneso.stellarmnemonics.Wallet
@@ -56,7 +57,7 @@ class MnemonicActivity : BaseActivity(), View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CREATE_WALLET_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
-                launchWallet()
+                GlobalGraphHelper.launchWallet(this)
             }
         }
     }

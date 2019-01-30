@@ -72,10 +72,6 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
         // it does not need to refresh since polling will try to get an active account
         if (forceRefresh) {
             forceRefresh()
-        } else {
-            if (state == WalletState.ACTIVE) {
-                notifyViewState()
-            }
         }
         return walletViewState
     }
@@ -119,6 +115,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun notifyViewState() {
+        Timber.d("Notifying state {$state}")
         val accountId = WalletApplication.wallet.getStellarAccountId()!!
         when(state) {
             WalletState.ACTIVE -> {

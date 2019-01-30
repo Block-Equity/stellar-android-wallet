@@ -22,4 +22,7 @@ class DebugPreferencesHelper(context: Context) {
 
     val isTradeTooltipEnabled: Boolean
         get() = sharedPreferences.getBoolean(appContext.getString(R.string.preference_debug_trade_tooltip), false)
+
+    val isTestNetServerEnabled: Boolean
+        get() = sharedPreferences.getBoolean(appContext.getString(R.string.preference_debug_test_server), false)
 }
