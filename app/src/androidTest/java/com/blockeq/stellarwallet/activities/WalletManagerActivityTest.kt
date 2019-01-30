@@ -10,6 +10,7 @@ import org.junit.Rule
 import android.support.test.runner.AndroidJUnit4
 import com.blockeq.stellarwallet.PinPage
 import com.blockeq.stellarwallet.utils.AccountUtils
+import com.blockeq.stellarwallet.utils.GlobalGraphHelper
 import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Test
@@ -62,7 +63,7 @@ class WalletManagerActivityTest {
     }
 
     @After
-    fun tearDown(){
-        AccountUtils.wipe(context.applicationContext)
+    fun tearDown() {
+        GlobalGraphHelper.wipe(context.applicationContext)
     }
 }
