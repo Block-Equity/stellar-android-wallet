@@ -33,8 +33,8 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
         }
         isBusy = true
         fetchEffectsList(true)
-
     }
+
     fun clear() {
         effectsList.clear()
     }

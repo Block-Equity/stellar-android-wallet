@@ -30,8 +30,6 @@ import org.stellar.sdk.Asset
 import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber
 import java.text.DecimalFormat
-import java.text.NumberFormat
-
 
 class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
@@ -50,7 +48,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
     private lateinit var toolTip : PopupWindow
     private var isToolTipShowing = false
     private val ZERO_VALUE = "0.0"
-    private val decimalFormat : NumberFormat = DecimalFormat("0.#######")
+    private val decimalFormat = DecimalFormat("0.#######")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_tab_trade, container, false)
@@ -63,8 +61,6 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         setBuyingSelectorEnabled(false)
         refreshAddedCurrencies()
         setupListeners()
-
-        Timber.d("TradeTabFragment{$this}#onViewCreated")
     }
 
     private fun setupListeners() {
@@ -222,11 +218,11 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
             }
             R.id.submitTrade -> {
                 if (buyingCustomSelector.editText.text.toString().isEmpty()) {
-                    createSnackBar("Buying price can not be empty.", Snackbar.LENGTH_SHORT).show()
+                    createSnackBar("Buying price can not be empty.", Snackbar.LENGTH_SHORT)?.show()
                 } else if ((orderType == OrderType.MARKET && !dataAvailable) || buyingCustomSelector.editText.text.toString() == ZERO_VALUE) {
                     // buyingEditText should be empty at this moment
 
-                    createSnackBar("Trade price cannot be 0. Please override limit order.", Snackbar.LENGTH_SHORT).show()
+                    createSnackBar("Trade price cannot be 0. Please override limit order.", Snackbar.LENGTH_SHORT)?.show()
 
                 } else {
 
@@ -253,13 +249,16 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         }
     }
 
-    private fun createSnackBar(text : CharSequence, duration: Int) : Snackbar {
-        return Snackbar.make(activity!!.findViewById(R.id.content_container), text, duration)
+    private fun createSnackBar(text : CharSequence, duration: Int) : Snackbar? {
+        activity?.let {
+            return Snackbar.make(it.findViewById(R.id.content_container), text, duration)
+        }
+        return null
     }
 
     private fun proceedWithTrade(buyingAmount :String, sellingAmount :String, sellingAsset : Asset, buyingAsset: Asset) {
-        val snackbar =  createSnackBar("Submitting order",  Snackbar.LENGTH_INDEFINITE)
-        val snackView = snackbar.view as Snackbar.SnackbarLayout
+        val snackbar = createSnackBar("Submitting order",  Snackbar.LENGTH_INDEFINITE)
+        val snackView = snackbar?.view as Snackbar.SnackbarLayout
         val progress = ProgressBar(context)
         val height = resources.getDimensionPixelOffset(R.dimen.progress_snackbar_height)
         val width = resources.getDimensionPixelOffset(R.dimen.progress_snackbar_width)
@@ -284,7 +283,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         Horizon.getCreateMarketOffer(object: Horizon.OnMarketOfferListener {
             override fun onExecuted() {
                 snackbar.dismiss()
-                createSnackBar("Order executed", Snackbar.LENGTH_SHORT).show()
+                createSnackBar("Order executed", Snackbar.LENGTH_SHORT)?.show()
 
                 submitTrade.isEnabled = true
                 setSellingSelectorEnabled(true)
@@ -294,7 +293,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
             override fun onFailed(errorMessage : String) {
                 snackbar.dismiss()
 
-                createSnackBar("Order failed: $errorMessage", Snackbar.LENGTH_SHORT).show()
+                createSnackBar("Order failed: $errorMessage", Snackbar.LENGTH_SHORT)?.show()
 
                 submitTrade.isEnabled = true
                 setSellingSelectorEnabled(false)
@@ -311,7 +310,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
     private fun setBuyingSelectorEnabled(isEnabled: Boolean) {
         buyingCustomSelector.editText.isEnabled = isEnabled
-        if(isEnabled) {
+        if (isEnabled) {
             buyingCustomSelector.editTextMask.visibility = View.GONE
             buyingCustomSelector.editTextMask.setOnClickListener(null)
         } else {
@@ -346,7 +345,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         addedCurrencies.clear()
         var i = 0
         var native : Currency? = null
-        accounts.forEach { it ->
+        accounts.forEach {
             val currency = if(it.assetType != "native") {
                 Currency(i, it.assetCode, it.assetCode, it.balance.toDouble(), it.asset)
             } else {
@@ -402,5 +401,4 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
             }, 800)
         }
     }
-
 }

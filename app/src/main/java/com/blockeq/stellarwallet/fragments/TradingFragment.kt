@@ -72,16 +72,16 @@ class TradingFragment : Fragment(), OnTradeCurrenciesChanged {
         Horizon.getOrderBook(object: Horizon.OnOrderBookListener {
             override fun onOrderBook(asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
                 if (asks.isNotEmpty() && bids.isNotEmpty()) {
-                    tradeTabListener?.onLastOrderBookUpdated(asks, bids)
+                    tradeTabListener?.onLastOrderBookUpdated(bids, asks)
                 }
 
-                orderBookListener?.updateOrderBook(sellingCode, buyingCode, bids, asks)
+                orderBookListener?.updateOrderBook(sellingCode, buyingCode, asks, bids)
             }
 
             override fun onFailed(errorMessage: String) {
                 Timber.d("failed to load the order book %s", errorMessage)
             }
 
-        }, sell, buy)
+        }, buy, sell)
     }
 }
