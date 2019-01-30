@@ -32,7 +32,7 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == VERIFY_PIN_REQUEST) {
             when(resultCode) {
-                Activity.RESULT_OK -> GlobalGraphHelper.launchWallet(this)
+                Activity.RESULT_OK -> Timber.d("pin was successful, user will go back to the screen")
                 Activity.RESULT_CANCELED -> finish()
             }
         }
