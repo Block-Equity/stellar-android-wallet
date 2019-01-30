@@ -13,10 +13,7 @@ import com.blockeq.stellarwallet.models.HorizonException
 import com.blockeq.stellarwallet.mvvm.effects.remote.OnLoadEffects
 import org.stellar.sdk.*
 import org.stellar.sdk.Transaction.Builder.TIMEOUT_INFINITE
-import org.stellar.sdk.requests.ErrorResponse
-import org.stellar.sdk.requests.EventListener
-import org.stellar.sdk.requests.RequestBuilder
-import org.stellar.sdk.requests.SSEStream
+import org.stellar.sdk.requests.*
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.OfferResponse
 import org.stellar.sdk.responses.OrderBookResponse
@@ -391,7 +388,6 @@ object Horizon : HorizonTasks {
         fun onOffers(offers : ArrayList<OfferResponse>)
         fun onFailed(errorMessage: String)
     }
-
 
     private fun getCurrentAsset(): Asset {
         val assetCode = WalletApplication.userSession.getSessionAsset().assetCode
