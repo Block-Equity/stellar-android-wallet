@@ -5,6 +5,7 @@ import android.support.v7.app.AlertDialog
 import android.view.View
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.models.MnemonicType
+import com.blockeq.stellarwallet.utils.GlobalGraphHelper
 import kotlinx.android.synthetic.main.activity_launch.*
 
 class LaunchActivity : BaseActivity() {
@@ -13,7 +14,7 @@ class LaunchActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch)
 
-        if (isExistingWallet()) {
+        if (GlobalGraphHelper.isExistingWallet()) {
             createWalletButton.visibility = View.GONE
             recoverWalletButton.visibility = View.GONE
         }
@@ -24,6 +25,10 @@ class LaunchActivity : BaseActivity() {
 
         recoverWalletButton.setOnClickListener {
             showRecoverDialog()
+        }
+
+        if (GlobalGraphHelper.isExistingWallet()) {
+            GlobalGraphHelper.launchWallet(this)
         }
     }
 

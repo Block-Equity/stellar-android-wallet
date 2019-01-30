@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.text.Html
 import android.text.Spanned
@@ -20,13 +19,13 @@ import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
 import com.blockeq.stellarwallet.models.ExchangeApiModel
 import com.blockeq.stellarwallet.models.HorizonException
+import com.blockeq.stellarwallet.mvvm.exchange.ExchangeEntity
+import com.blockeq.stellarwallet.mvvm.exchange.ExchangeViewModel
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
-import com.blockeq.stellarwallet.mvvm.exchange.ExchangeEntity
-import com.blockeq.stellarwallet.mvvm.exchange.ExchangeViewModel
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
 import kotlinx.android.synthetic.main.activity_send_funds.*
 
@@ -194,11 +193,11 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
     override fun onSuccess() {
         progressBar.visibility = View.GONE
         Toast.makeText(applicationContext, getString(R.string.send_success_message), Toast.LENGTH_LONG).show()
-        val handler = Handler()
-        val runnableCode = Runnable {
-            launchWallet()
+        runOnUiThread {
+            if (!isFinishing) {
+                finish()
+            }
         }
-        handler.postDelayed(runnableCode, 1000)
     }
 
     override fun onError(error: HorizonException) {

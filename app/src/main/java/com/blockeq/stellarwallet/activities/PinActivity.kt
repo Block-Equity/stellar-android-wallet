@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -13,7 +14,7 @@ import com.blockeq.stellarwallet.utils.GlobalGraphHelper
 import kotlinx.android.synthetic.main.activity_pin.*
 import timber.log.Timber
 
-class PinActivity : BaseActivity() {
+class PinActivity : AppCompatActivity() {
 
     private var numAttempts = 0
     private val MAX_ATTEMPTS = 3
