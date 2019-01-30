@@ -35,7 +35,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     init {
         loadAccount(false)
 
-        effectsRepository.loadList(false).observeForever { it ->
+        effectsRepository.loadList(false).observeForever {
             Timber.d("effects repository, observer triggered")
             if (it != null) {
                 var toNotify = true
