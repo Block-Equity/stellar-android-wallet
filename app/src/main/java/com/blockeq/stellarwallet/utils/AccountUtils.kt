@@ -92,12 +92,5 @@ class AccountUtils {
             val minimumBalance = WalletApplication.userSession.getMinimumBalance()!!
             return (getTotalBalance(Constants.LUMENS_ASSET_TYPE).toDouble() - minimumBalance.totalAmount).toString()
         }
-
-        fun wipe(context: Context) : Boolean {
-            EffectsRepository.getInstance().clear()
-            val keyStoreWrapper = KeyStoreWrapper(context)
-            keyStoreWrapper.clear()
-            return WalletApplication.wallet.clearLocalStore()
-        }
     }
 }

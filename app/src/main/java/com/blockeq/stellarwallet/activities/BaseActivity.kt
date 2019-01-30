@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
+import com.blockeq.stellarwallet.utils.GlobalGraphHelper
 import timber.log.Timber
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -21,8 +22,8 @@ abstract class BaseActivity : AppCompatActivity() {
                 Timber.d("Opening WalletManagerActivity to verify the pin")
                 startActivityForResult(WalletManagerActivity.verifyPin(this), VERIFY_PIN_REQUEST)
             } else {
-                // let's clean the wallet
-                AccountUtils.wipe(applicationContext)
+                // bad state, let's clean the wallet
+                GlobalGraphHelper.wipe(applicationContext)
             }
         }
     }

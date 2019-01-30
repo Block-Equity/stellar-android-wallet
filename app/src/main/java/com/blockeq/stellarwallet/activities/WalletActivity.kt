@@ -25,7 +25,7 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
 
     private lateinit var dialogTradeAlert : Dialog
     private lateinit var bottomNavigation : BottomNavigationView
-
+    private var currentItemSelected : Int = -1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wallet)
@@ -60,28 +60,36 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
         return dialog
     }
 
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.nav_wallet -> {
-                val walletFragment = getReusedFragment(WalletFragmentType.WALLET.name) ?: WalletFragment.newInstance()
-                replaceFragment(walletFragment, WalletFragmentType.WALLET)
-            }
-            R.id.nav_trading -> {
-                // minimum two trades
-                if (!enoughAssetsToTrade()) {
-                    dialogTradeAlert.show()
+    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        //let's ignore item selection in the current item
+        if (currentItemSelected != item.itemId) {
+            currentItemSelected = item.itemId
+            when (item.itemId) {
+                R.id.nav_wallet -> {
+                    val walletFragment = getReusedFragment(WalletFragmentType.WALLET.name)
+                            ?: WalletFragment.newInstance()
+                    replaceFragment(walletFragment, WalletFragmentType.WALLET)
                 }
-                val tradingFragment = getReusedFragment(WalletFragmentType.TRADING.name) ?: TradingFragment.newInstance()
-                replaceFragment(tradingFragment, WalletFragmentType.TRADING)
+                R.id.nav_trading -> {
+                    // minimum two trades
+                    if (!enoughAssetsToTrade()) {
+                        dialogTradeAlert.show()
+                    }
+                    val tradingFragment = getReusedFragment(WalletFragmentType.TRADING.name)
+                            ?: TradingFragment.newInstance()
+                    replaceFragment(tradingFragment, WalletFragmentType.TRADING)
+                }
+                R.id.nav_contacts -> {
+                    replaceFragment(getReusedFragment(WalletFragmentType.CONTACTS.name)
+                            ?: ContactsFragment(), WalletFragmentType.CONTACTS)
+                }
+                R.id.nav_settings -> {
+                    val settingsFragment = getReusedFragment(WalletFragmentType.SETTING.name)
+                            ?: SettingsFragment.newInstance()
+                    replaceFragment(settingsFragment, WalletFragmentType.SETTING)
+                }
+                else -> throw IllegalAccessException("Navigation item not supported $item.title(${item.itemId})")
             }
-            R.id.nav_contacts -> {
-                replaceFragment(getReusedFragment(WalletFragmentType.CONTACTS.name) ?: ContactsFragment(), WalletFragmentType.CONTACTS)
-            }
-            R.id.nav_settings -> {
-                val settingsFragment = getReusedFragment(WalletFragmentType.SETTING.name) ?: SettingsFragment.newInstance()
-                replaceFragment(settingsFragment, WalletFragmentType.SETTING)
-            }
-            else -> throw IllegalAccessException("Navigation item not supported $item.title(${item.itemId})")
         }
         return@OnNavigationItemSelectedListener true
     }
@@ -96,7 +104,7 @@ class WalletActivity : BaseActivity(), KeyboardUtils.SoftKeyboardToggleListener 
 
     private fun setupUI() {
         bottomNavigation = findViewById(R.id.navigationView)
-        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        bottomNavigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         bottomNavigation.selectedItemId = R.id.nav_wallet
     }
 

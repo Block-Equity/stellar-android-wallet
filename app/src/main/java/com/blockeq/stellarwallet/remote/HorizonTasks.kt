@@ -24,9 +24,4 @@ interface HorizonTasks {
     fun getOrderBook(listener: Horizon.OnOrderBookListener, buyingAsset: DataAsset, sellingAsset: DataAsset)
     fun getOffers(listener: Horizon.OnOffersListener)
     fun deleteOffer(id:Long, secretSeed : CharArray, selling: Asset, buying: Asset, price: String, listener: Horizon.OnMarketOfferListener)
-
-    enum class ServerType {
-        PROD,
-        TEST_NET
-    }
 }

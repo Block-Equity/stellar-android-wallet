@@ -145,23 +145,22 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
     }
 
     private fun getFilteredSupportedAssets(map: Map<String, SupportedAsset>): List<SupportedAsset> {
-        return map.values.filter { it ->
+        return map.values.filter {
             it.code.toUpperCase() !in WalletApplication.wallet.getBalances().map { it.assetCode }
         }
     }
 
     private fun loadSupportedAssets() {
         BlockEqRetrofit.create(SupportedAssetsApi::class.java).assets.enqueue(object : Callback<Map<String, SupportedAsset>> {
-            override fun onFailure(call: Call<Map<String, SupportedAsset>>, t: Throwable) {
-                Toast.makeText(applicationContext, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
-
-            }
-
             override fun onResponse(call: Call<Map<String, SupportedAsset>>, response: retrofit2.Response<Map<String, SupportedAsset>>) {
                 map = response.body()
                 updateAdapter()
             }
 
+            override fun onFailure(call: Call<Map<String, SupportedAsset>>, t: Throwable) {
+                Toast.makeText(applicationContext, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
+
+            }
         })
 
 

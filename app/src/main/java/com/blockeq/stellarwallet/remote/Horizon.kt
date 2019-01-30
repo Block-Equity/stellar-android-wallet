@@ -22,51 +22,45 @@ import org.stellar.sdk.responses.effects.EffectResponse
 import shadow.okhttp3.OkHttpClient
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-import com.blockeq.stellarwallet.remote.HorizonTasks.ServerType
 
 object Horizon : HorizonTasks {
-    private lateinit var SERVER : String
-
+    private lateinit var HORIZON_SERVER : Server
     override fun init(server: ServerType) {
-       when(server) {
+        var serverAddress = ""
+        when(server) {
            ServerType.PROD -> {
-               SERVER = "https://horizon.stellar.org"
+               serverAddress = "https://horizon.stellar.org"
                Network.usePublicNetwork()
            }
            ServerType.TEST_NET -> {
-               SERVER = "https://horizon-testnet.stellar.org"
+               serverAddress = "https://horizon-testnet.stellar.org"
                Network.useTestNetwork()
            }
        }
+        HORIZON_SERVER = createServer(serverAddress)
     }
 
     override fun getLoadEffectsTask(cursor: String, limit: Int, listener: OnLoadEffects): AsyncTask<Void, Void, ArrayList<EffectResponse>?> {
-        checkNotNull(SERVER)
         return LoadEffectsTask(cursor, limit, listener)
     }
 
     override fun getSendTask(listener: SuccessErrorCallback, destAddress: String, secretSeed: CharArray, memo: String, amount: String): AsyncTask<Void, Void, HorizonException> {
-        checkNotNull(SERVER)
         return SendTask(listener, destAddress, secretSeed, memo, amount)
     }
 
     override fun getJoinInflationDestination(listener: SuccessErrorCallback, secretSeed: CharArray, inflationDest: String): AsyncTask<Void, Void, HorizonException> {
-        checkNotNull(SERVER)
         return JoinInflationDestination(listener, secretSeed, inflationDest)
     }
 
     override fun getChangeTrust(listener: SuccessErrorCallback, asset: Asset, removeTrust: Boolean, secretSeed: CharArray): AsyncTask<Void, Void, HorizonException?> {
-        checkNotNull(SERVER)
         return ChangeTrust(listener, asset, removeTrust, secretSeed)
     }
 
     override fun getLoadAccountTask(listener: OnLoadAccount): AsyncTask<Void, Void, AccountResponse> {
-        checkNotNull(SERVER)
         return LoadAccountTask(listener)
     }
 
     override fun deleteOffer(id:Long, secretSeed : CharArray, selling: Asset, buying: Asset, price: String, listener: Horizon.OnMarketOfferListener) {
-        checkNotNull(SERVER)
         AsyncTask.execute {
             val server = getServer()
             val offerOperation = ManageOfferOperation.Builder(selling, buying, "0", price).setOfferId(id).build()
@@ -97,7 +91,6 @@ object Horizon : HorizonTasks {
     }
 
     override fun registerForEffects(cursor: String, listener: EventListener<EffectResponse>) : SSEStream<EffectResponse>? {
-        checkNotNull(SERVER)
         val server = getServer()
         val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
         try {
@@ -113,7 +106,6 @@ object Horizon : HorizonTasks {
     }
 
     override fun getCreateMarketOffer(listener: OnMarketOfferListener, secretSeed: CharArray, sellingAsset: Asset, buyingAsset: Asset, amount: String, price: String) {
-        checkNotNull(SERVER)
         AsyncTask.execute {
             val server = getServer()
             val managedOfferOperation = ManageOfferOperation.Builder(sellingAsset, buyingAsset, amount, price).build()
@@ -137,7 +129,6 @@ object Horizon : HorizonTasks {
     }
 
     override fun getOrderBook(listener: OnOrderBookListener, buyingAsset: DataAsset, sellingAsset: DataAsset) {
-        checkNotNull(SERVER)
         AsyncTask.execute {
             val server = getServer()
             val buying : Asset = AssetUtil.toAssetFrom(buyingAsset)
@@ -152,7 +143,6 @@ object Horizon : HorizonTasks {
     }
 
     override fun getOffers(listener: OnOffersListener) {
-        checkNotNull(SERVER)
         AsyncTask.execute {
             val server = getServer()
             try {
@@ -407,8 +397,12 @@ object Horizon : HorizonTasks {
     private const val HORIZON_SUBMIT_TIMEOUT = 60L
 
     private fun getServer() : Server {
-        checkNotNull(SERVER)
-        val server = Server(SERVER)
+        checkNotNull(HORIZON_SERVER, lazyMessage = {"Horizon server has not been initialized, please call {${this::class.java}#init(..)" })
+        return HORIZON_SERVER
+    }
+
+    private fun createServer(serverAddress : String) : Server {
+        val server = Server(serverAddress)
         // These two clients are a copy of the lines 32 and 42 of org.stellar.sdk.Server class with the stetho interceptor
         // REVIEW this once you upgrade stellar library
         val httpClient = OkHttpClient.Builder()

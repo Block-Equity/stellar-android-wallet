@@ -13,6 +13,7 @@ import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 import com.blockeq.stellarwallet.mvvm.exchange.ExchangeRepository
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.remote.HorizonTasks
+import com.blockeq.stellarwallet.remote.ServerType
 import com.facebook.stetho.Stetho
 import com.squareup.leakcanary.LeakCanary
 import org.bouncycastle.jce.provider.BouncyCastleProvider
@@ -82,9 +83,9 @@ class WalletApplication : MultiDexApplication() {
             }
 
             if (DebugPreferencesHelper(applicationContext).isTestNetServerEnabled) {
-                Horizon.init(HorizonTasks.ServerType.TEST_NET)
+                Horizon.init(ServerType.TEST_NET)
             } else {
-                Horizon.init(HorizonTasks.ServerType.PROD)
+                Horizon.init(ServerType.PROD)
             }
         }
 

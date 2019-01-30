@@ -9,7 +9,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.interfaces.OnPinLockCompleteListener
-import com.blockeq.stellarwallet.utils.AccountUtils
+import com.blockeq.stellarwallet.utils.GlobalGraphHelper
 import kotlinx.android.synthetic.main.activity_pin.*
 import timber.log.Timber
 
@@ -98,7 +98,8 @@ class PinActivity : BaseActivity() {
                 customMessageTextView.text = resources.getQuantityString(R.plurals.attempts_template,
                         MAX_ATTEMPTS - numAttempts, MAX_ATTEMPTS - numAttempts)
                 if (numAttempts == MAX_ATTEMPTS) {
-                    wipeAndRestart()
+                    //TODO move this to WalletManager
+                    GlobalGraphHelper.wipeAndRestart(this@PinActivity)
                 }
             }
         })
@@ -114,13 +115,6 @@ class PinActivity : BaseActivity() {
         setResult(RESULT_CANCELED)
         super.onBackPressed()
         overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
-    }
-
-    private fun wipeAndRestart() {
-        AccountUtils.wipe(this)
-        val intent = Intent(this, LaunchActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        startActivity(intent)
     }
     //endregion
 }

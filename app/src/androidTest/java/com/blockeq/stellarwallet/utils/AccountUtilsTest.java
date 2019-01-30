@@ -24,7 +24,6 @@ public class AccountUtilsTest {
     private String mnemonic24;
     private Context context;
     private String pin = "1234";
-    private String passPhrase = "this_is_a_passphrase";
 
     @Before
     public void before(){
@@ -85,6 +84,7 @@ public class AccountUtilsTest {
 
     @Test
     public void basic_encryption_mnemonic_with_passphrase() {
+        String passPhrase = "this_is_a_passphrase";
         AccountUtils.Companion.encryptAndStoreWallet(context, mnemonic12, passPhrase, pin);
         String phrase = WalletApplication.wallet.getEncryptedPhrase();
         assertNotNull(phrase);
@@ -150,7 +150,7 @@ public class AccountUtilsTest {
 
     @After
     public void cleanUp() {
-        if (!AccountUtils.Companion.wipe(context)) {
+        if (!GlobalGraphHelper.Companion.wipe(context)) {
             throw new IllegalStateException("failed to wipe");
         }
     }

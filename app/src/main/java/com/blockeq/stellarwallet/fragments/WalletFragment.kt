@@ -28,6 +28,7 @@ import timber.log.Timber
 import android.support.v4.content.ContextCompat.getColor
 import android.graphics.*
 import com.blockeq.stellarwallet.models.*
+import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 
 class WalletFragment : BaseFragment() {
 
@@ -56,6 +57,10 @@ class WalletFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         walletRecyclerView.layoutManager = LinearLayoutManager(activity)
         walletRecyclerView.adapter = createAdapter()
+
+        if (DebugPreferencesHelper(view.context.applicationContext).isTestNetServerEnabled) {
+            mainTitle.text = "Wallet (TEST-NET SERVER)"
+        }
 
         updateState(WalletState.UPDATING)
         lastEffectListSize = 0
@@ -165,12 +170,8 @@ class WalletFragment : BaseFragment() {
                     viewState?.effectList?.let {
                         val numberEffects = it.size
                         Timber.d("ACTIVE effects = $numberEffects vs last event $lastEffectListSize")
-//                        if (activeAsset != viewState.activeAssetCode || numberEffects != lastEffectListSize) {
-                            lastEffectListSize = numberEffects
-                            listWrapper = createListWithData(it, viewState.activeAssetCode, viewState.availableBalance!!, viewState.totalBalance!!)
-//                        } else {
-//                            Timber.d("ACTIVE event ignored")
-//                        }
+                        lastEffectListSize = numberEffects
+                        listWrapper = createListWithData(it, viewState.activeAssetCode, viewState.availableBalance!!, viewState.totalBalance!!)
                     }
                 }
                 WalletState.UPDATING -> {
@@ -286,7 +287,7 @@ class WalletFragment : BaseFragment() {
         list.updateEffectsList(activeAsset, effects)
         list.updateAvailableBalance(availableBalance)
         val delta = System.currentTimeMillis() - time
-        Timber.d("createListWithData(), it took: $delta")
+        Timber.d("createListWithData(list{${effects.size}}, $activeAsset), it took: $delta ms")
         return list
     }
 
