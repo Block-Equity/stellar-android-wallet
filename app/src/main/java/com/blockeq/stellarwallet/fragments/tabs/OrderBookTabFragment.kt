@@ -153,7 +153,7 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         this.buyingCode = buyingCode
         this.sellingCode = sellingCode
         orderBooksAdapter.setOrderBookList(list)
-        orderBooksAdapter.setCurrencies(sellingCode, buyingCode)
+        orderBooksAdapter.setCurrencies(buyingCode, sellingCode)
         orderBooksAdapter.notifyDataSetChanged()
     }
 }
