@@ -50,9 +50,8 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         super.setUserVisibleHint(isVisibleToUser)
         Timber.d("setUserVisibleHint %s", isVisibleToUser)
         if (isVisibleToUser && orderBookRv != null && buyingCode != null && sellingCode != null) {
-            updateList(orderBooks, buyingCode!!, sellingCode!!)
+            updateList(orderBooks, sellingCode!!, buyingCode!!)
             Timber.d("setUserVisibleHint > Refreshing")
-//            onRefreshOrderBook()
         }
     }
 
@@ -153,7 +152,7 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         this.buyingCode = buyingCode
         this.sellingCode = sellingCode
         orderBooksAdapter.setOrderBookList(list)
-        orderBooksAdapter.setCurrencies(buyingCode, sellingCode)
+        orderBooksAdapter.setCurrencies(sellingCode, buyingCode)
         orderBooksAdapter.notifyDataSetChanged()
     }
 }
