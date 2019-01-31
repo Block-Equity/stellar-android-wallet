@@ -16,6 +16,7 @@ import com.blockeq.stellarwallet.interfaces.OnUpdateOrderBook
 import com.blockeq.stellarwallet.models.*
 import com.brandongogetap.stickyheaders.StickyLayoutManager
 import kotlinx.android.synthetic.main.fragment_tab_order_book.*
+import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.jetbrains.anko.support.v4.runOnUiThread
 import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber
@@ -144,11 +145,14 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
     override fun failedToUpdate() {
         if (swipeRefresh != null) {
             swipeRefresh.isRefreshing = false
+            orderBookRv.visibility = View.GONE
+            empty_view_order_book.visibility = View.VISIBLE
         }
     }
 
     private fun updateList(list : MutableList<OrderBook>, sellingCode: String, buyingCode: String) {
         Timber.d("updateTradingCurrencies %s %s", buyingCode, sellingCode)
+        orderBookRv.visibility = View.VISIBLE
         this.buyingCode = buyingCode
         this.sellingCode = sellingCode
         orderBooksAdapter.setOrderBookList(list)
