@@ -14,7 +14,7 @@ class KotlinClassRoom {
     }
 
     @Test
-    fun testLetElse3(){
+    fun testLetElse2(){
         val value : String? = "234"
         value?.let {
             assert(true)

@@ -161,29 +161,26 @@ object Horizon : HorizonTasks {
             val server = getServer()
             try {
                 val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
-//                val response = server.offers().forAccount(sourceKeyPair).execute()
-//                Handler(Looper.getMainLooper()).post {
-//                if(response != null) {
-//                    list = response.records
-//                }
-//                }
+                val response = server.offers().forAccount(sourceKeyPair).execute()
+                if(response != null) {
+                    list = response.records
+                }
             } catch (error : java.lang.Exception ) {
                 Timber.d(error)
-                errorMessage = error.message!!
-//                Handler(Looper.getMainLooper()).post {
-//                }
-            } catch (error : java.net.UnknownHostException) {
+                error.message?.let{
+                    errorMessage = it
+                }
 
             }
             return list
         }
 
         override fun onPostExecute(result: ArrayList<OfferResponse>?) {
-//            result?.let {
-//                listener.onOffers(it)
-//                return
-//            }
-//            listener.onFailed(errorMessage)
+            result?.let {
+                listener.onOffers(it)
+            }?:run {
+                listener.onFailed(errorMessage)
+            }
         }
 
     }

@@ -28,7 +28,6 @@ import org.stellar.sdk.responses.OfferResponse
 import timber.log.Timber
 import java.util.*
 
-
 class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRefreshListener {
     private lateinit var appContext : Context
     private var myOffers = mutableListOf<MyOffer>()
@@ -81,23 +80,28 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
                 }
                 myOffersAdapter.notifyDataSetChanged()
 
-                val handler = Handler(Looper.getMainLooper())
-                val runnable = Runnable {
-                    if(swipeRefreshOffer != null) {
-                        swipeRefreshOffer.isRefreshing = false
-                    }
-                }
-                handler.post(runnable)
+                setRefreshingFalse()
             }
 
             override fun onFailed(errorMessage: String) {
                 Timber.e(errorMessage)
+                setRefreshingFalse()
             }
         })
     }
 
+    private fun setRefreshingFalse(){
+        val handler = Handler(Looper.getMainLooper())
+        val runnable = Runnable {
+            if (swipeRefreshOffer != null) {
+                swipeRefreshOffer.isRefreshing = false
+            }
+        }
+        handler.post(runnable)
+    }
+
     override fun onDialogOpen(offerId: Int) {
-        context?.let{
+        context?.let {
             AlertDialog.Builder(it)
                     .setTitle(getString(R.string.deleteDialogTitle))
                     .setMessage(getString(R.string.deleteDialogText, getText(R.string.offer)))

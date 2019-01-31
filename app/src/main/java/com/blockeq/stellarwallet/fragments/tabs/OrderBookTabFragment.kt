@@ -143,10 +143,12 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
     }
 
     override fun failedToUpdate() {
-        if (swipeRefresh != null) {
-            swipeRefresh.isRefreshing = false
-            orderBookRv.visibility = View.GONE
-            empty_view_order_book.visibility = View.VISIBLE
+        runOnUiThread {
+            if (swipeRefresh != null) {
+                swipeRefresh.isRefreshing = false
+                orderBookRv.visibility = View.GONE
+                empty_view_order_book.visibility = View.VISIBLE
+            }
         }
     }
 
