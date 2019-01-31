@@ -14,10 +14,7 @@ import android.view.*
 import android.widget.*
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
-import com.blockeq.stellarwallet.interfaces.AfterTextChanged
-import com.blockeq.stellarwallet.interfaces.OnItemSelected
-import com.blockeq.stellarwallet.interfaces.OnTradeCurrenciesChanged
-import com.blockeq.stellarwallet.interfaces.OnUpdateTradeTab
+import com.blockeq.stellarwallet.interfaces.*
 import com.blockeq.stellarwallet.models.AssetUtil
 import com.blockeq.stellarwallet.models.Currency
 import com.blockeq.stellarwallet.models.SelectionModel
@@ -32,20 +29,19 @@ import timber.log.Timber
 import java.text.DecimalFormat
 
 class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
-
     private lateinit var appContext : Context
+    private lateinit var parentListener: OnTradeCurrenciesChanged
+    private lateinit var selectedSellingCurrency: SelectionModel
+    private lateinit var selectedBuyingCurrency: SelectionModel
+    private lateinit var toolTip : PopupWindow
 
     private var sellingCurrencies = mutableListOf<SelectionModel>()
     private var buyingCurrencies = mutableListOf<SelectionModel>()
     private var holdingsAmount : Double = 0.0
-    private lateinit var listener: OnTradeCurrenciesChanged
-    private lateinit var selectedSellingCurrency: SelectionModel
-    private lateinit var selectedBuyingCurrency: SelectionModel
     private var addedCurrencies : ArrayList<Currency> = ArrayList()
     private var latestBid: OrderBookResponse.Row? = null
     private var orderType : OrderType = OrderType.MARKET
     private var dataAvailable = false
-    private lateinit var toolTip : PopupWindow
     private var isToolTipShowing = false
     private val ZERO_VALUE = "0.0"
     private val decimalFormat = DecimalFormat("0.#######")
@@ -175,7 +171,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
     private fun notifyParent(selling : SelectionModel?, buying : SelectionModel?) {
         if (selling != null && buying != null) {
-            listener.onCurrencyChange(selling, buying)
+            parentListener.onCurrencyChange(selling, buying)
         }
     }
 
@@ -327,9 +323,9 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         try {
-            listener = parentFragment as OnTradeCurrenciesChanged
+            parentListener = parentFragment as OnTradeCurrenciesChanged
         } catch (e: ClassCastException) {
-            Timber.e("the parent activity must implement: %s", OnTradeCurrenciesChanged::class.java.simpleName)
+            Timber.e("the parent must implement: %s", OnTradeCurrenciesChanged::class.java.simpleName)
         }
     }
 
