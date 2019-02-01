@@ -38,6 +38,8 @@ class WalletFragment : BaseFragment() {
     private var state = WalletState.UNKNOWN
     private var lastEffectListSize = 0
     private var activeAsset : String = DefaultAsset().LUMENS_ASSET_NAME
+    private var qrRendered = false
+
     companion object {
         private const val REFRESH_EFFECT_DELAY = 400L
 
@@ -97,6 +99,8 @@ class WalletFragment : BaseFragment() {
                 activityContext.overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
             }
         }
+
+        fetching_wallet_image.setColorFilter(getColor(appContext, R.color.paleSky), PorterDuff.Mode.SRC_ATOP)
 
     }
 
@@ -197,10 +201,9 @@ class WalletFragment : BaseFragment() {
             runOnUiThread {
                 activity?.let {
                     if (!it.isFinishing && walletRecyclerView != null) {
-                        if (state == WalletState.NOT_FUNDED) {
-                            if (viewState != null && qrCode != null) {
-                                generateQRCode(viewState.accountId, qrCode, 500)
-                            }
+                        if (!qrRendered && viewState != null && qrCode != null) {
+                            generateQRCode(viewState.accountId, qrCode, 500)
+                            qrRendered = true
                         }
 
                         if (!listWrapper.array.isEmpty()) {
@@ -252,7 +255,7 @@ class WalletFragment : BaseFragment() {
                         noTransactionsTextView.visibility = View.GONE
                         fetchingState.visibility = View.GONE
                         fundingState.visibility = View.GONE
-                    } else -> {
+                } else -> {
                         // nothing
                     }
                 }

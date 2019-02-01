@@ -103,6 +103,7 @@
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
+            android:id="@+id/fetching_wallet_image"
             android:layout_gravity="center"
             android:layout_width="90dp"
             android:layout_height="90dp"
