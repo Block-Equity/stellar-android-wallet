@@ -19,10 +19,8 @@ import java.lang.IllegalStateException
 import java.text.DecimalFormat
 
 class OrderBooksAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyHeaderHandler {
-    override fun getAdapterData(): MutableList<*> {
-        orderBooksList?.let {
-            return it
-        }
+    override fun getAdapterData(): MutableList<*>? {
+        return orderBooksList
     }
 
     private var orderBooksList: MutableList<OrderBook>? = null

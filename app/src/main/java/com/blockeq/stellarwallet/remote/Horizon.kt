@@ -134,31 +134,56 @@ object Horizon : HorizonTasks {
             val buying : Asset = AssetUtil.toAssetFrom(buyingAsset)
             val selling : Asset = AssetUtil.toAssetFrom(sellingAsset)
 
-            val response = server.orderBook().buyingAsset(buying).sellingAsset(selling).execute()
+            try {
+                val response = server.orderBook().buyingAsset(buying).sellingAsset(selling).execute()
+                Handler(Looper.getMainLooper()).post {
+                    listener.onOrderBook(response.asks, response.bids)
+                }
+            } catch(error : java.lang.Exception ) {
+                error.message?.let {
+                    listener.onFailed(it)
+                } ?: run {
+                    listener.onFailed("fail to get the order book")
+                }
 
-            Handler(Looper.getMainLooper()).post {
-                listener.onOrderBook(response.asks, response.bids)
             }
         }
     }
 
     override fun getOffers(listener: OnOffersListener) {
-        AsyncTask.execute {
+        LoadOffersTask(listener).execute()
+    }
+
+    private class LoadOffersTask(private val listener: OnOffersListener) : AsyncTask<Void, Void, ArrayList<OfferResponse>>() {
+        var errorMessage : String = "failed to fetch the offers"
+        override fun doInBackground(vararg params: Void?): ArrayList<OfferResponse>? {
+            var list : ArrayList<OfferResponse>? = null
             val server = getServer()
             try {
                 val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
                 val response = server.offers().forAccount(sourceKeyPair).execute()
-                Handler(Looper.getMainLooper()).post {
-                    listener.onOffers(response.records)
+                if(response != null) {
+                    list = response.records
                 }
-            } catch (error : ErrorResponse ) {
-                Handler(Looper.getMainLooper()).post {
-                    listener.onFailed(error.message!!)
+            } catch (error : java.lang.Exception ) {
+                Timber.d(error)
+                error.message?.let{
+                    errorMessage = it
                 }
+
+            }
+            return list
+        }
+
+        override fun onPostExecute(result: ArrayList<OfferResponse>?) {
+            result?.let {
+                listener.onOffers(it)
+            }?:run {
+                listener.onFailed(errorMessage)
             }
         }
-    }
 
+    }
 
     private class LoadAccountTask(private val listener: OnLoadAccount) : AsyncTask<Void, Void, AccountResponse>() {
         override fun doInBackground(vararg params: Void?) : AccountResponse? {

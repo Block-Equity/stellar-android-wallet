@@ -1,5 +1,6 @@
 package com.blockeq.stellarwallet.fragments.tabs
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
@@ -10,10 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.adapters.OrderBooksAdapter
+import com.blockeq.stellarwallet.interfaces.OnRefreshOrderBookListener
 import com.blockeq.stellarwallet.interfaces.OnUpdateOrderBook
 import com.blockeq.stellarwallet.models.*
 import com.brandongogetap.stickyheaders.StickyLayoutManager
 import kotlinx.android.synthetic.main.fragment_tab_order_book.*
+import kotlinx.android.synthetic.main.fragment_wallet.*
 import org.jetbrains.anko.support.v4.runOnUiThread
 import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber
@@ -22,6 +25,7 @@ import java.util.*
 class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, OnUpdateOrderBook {
     private var orderBooks = mutableListOf<OrderBook>()
     private lateinit var orderBooksAdapter: OrderBooksAdapter
+    private lateinit var parentListener: OnRefreshOrderBookListener
     private var buyingAsset : DataAsset? = null
     private var sellingAsset : DataAsset? = null
     private var buyingCode : String? = null
@@ -47,9 +51,8 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         super.setUserVisibleHint(isVisibleToUser)
         Timber.d("setUserVisibleHint %s", isVisibleToUser)
         if (isVisibleToUser && orderBookRv != null && buyingCode != null && sellingCode != null) {
-            updateList(orderBooks, buyingCode!!, sellingCode!!)
+            updateList(orderBooks, sellingCode!!, buyingCode!!)
             Timber.d("setUserVisibleHint > Refreshing")
-            onRefresh()
         }
     }
 
@@ -62,17 +65,22 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         }
     }
 
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        try {
+            parentListener = parentFragment as OnRefreshOrderBookListener
+        } catch (e: ClassCastException) {
+            Timber.e("the parent must implement: %s", OnRefreshOrderBookListener::class.java.simpleName)
+        }
+    }
+
     override fun onRefresh() {
         if (!isAdded || isDetached || !isVisible) {
-            Timber.d("onRefresh failed fragment not ready")
+            Timber.d("onRefreshOrderBook failed fragment not ready")
             return
         }
 
-        Timber.d("buyingAsset %s sellingAsset %s", buyingAsset, sellingAsset)
-
-        if (buyingAsset != null && sellingAsset != null) {
-//            loadOrderBook(buyingAsset!!, sellingAsset!!)
-        }
+        parentListener.onRefreshOrderBook()
     }
 
     private fun loadOrderBook(sellingCode: String, buyingCode: String, asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {
@@ -115,6 +123,7 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
 
         runOnUiThread {
             updateList(orderBooks, sellingCode, buyingCode)
+            empty_view_order_book.visibility = View.GONE
         }
 
         if (swipeRefresh != null) {
@@ -133,8 +142,19 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         updateList(orderBooks, sellingAsset!!.code, buyingAsset!!.code)
     }
 
+    override fun failedToUpdate() {
+        runOnUiThread {
+            if (swipeRefresh != null) {
+                swipeRefresh.isRefreshing = false
+                orderBookRv.visibility = View.GONE
+                empty_view_order_book.visibility = View.VISIBLE
+            }
+        }
+    }
+
     private fun updateList(list : MutableList<OrderBook>, sellingCode: String, buyingCode: String) {
         Timber.d("updateTradingCurrencies %s %s", buyingCode, sellingCode)
+        orderBookRv.visibility = View.VISIBLE
         this.buyingCode = buyingCode
         this.sellingCode = sellingCode
         orderBooksAdapter.setOrderBookList(list)

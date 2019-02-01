@@ -3,6 +3,7 @@ package com.blockeq.stellarwallet.fragments.tabs
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
@@ -27,7 +28,6 @@ import org.stellar.sdk.responses.OfferResponse
 import timber.log.Timber
 import java.util.*
 
-
 class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRefreshListener {
     private lateinit var appContext : Context
     private var myOffers = mutableListOf<MyOffer>()
@@ -42,8 +42,8 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         appContext = view.context.applicationContext
-        myOffersRv.layoutManager = LinearLayoutManager(context)
-        myOffersAdapter = MyOffersAdapter(myOffers, context, this)
+        myOffersRv.layoutManager = LinearLayoutManager(appContext)
+        myOffersAdapter = MyOffersAdapter(myOffers, view.context, this)
         myOffersRv.adapter = myOffersAdapter
         val dividerItemDecoration = DividerItemDecoration(context,
                 LinearLayoutManager(context).orientation)
@@ -57,6 +57,7 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
     }
 
     override fun onRefresh() {
+        Timber.d("refreshing offers")
         Horizon.getOffers(object: Horizon.OnOffersListener {
             override fun onOffers(offers: ArrayList<OfferResponse>) {
                 if (empty_view == null) return
@@ -79,23 +80,28 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
                 }
                 myOffersAdapter.notifyDataSetChanged()
 
-                val handler = Handler()
-                val runnable = Runnable {
-                    if(swipeRefreshOffer != null) {
-                        swipeRefreshOffer.isRefreshing = false
-                    }
-                }
-                handler.post(runnable)
+                setRefreshingFalse()
             }
 
             override fun onFailed(errorMessage: String) {
                 Timber.e(errorMessage)
+                setRefreshingFalse()
             }
         })
     }
 
+    private fun setRefreshingFalse(){
+        val handler = Handler(Looper.getMainLooper())
+        val runnable = Runnable {
+            if (swipeRefreshOffer != null) {
+                swipeRefreshOffer.isRefreshing = false
+            }
+        }
+        handler.post(runnable)
+    }
+
     override fun onDialogOpen(offerId: Int) {
-        context?.let{
+        context?.let {
             AlertDialog.Builder(it)
                     .setTitle(getString(R.string.deleteDialogTitle))
                     .setMessage(getString(R.string.deleteDialogText, getText(R.string.offer)))
@@ -119,7 +125,7 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
         }
 
         val offer = offerResponses.find {
-            it -> it.id.toInt() == offerId
+            it.id.toInt() == offerId
         }
 
         if (offer != null) {

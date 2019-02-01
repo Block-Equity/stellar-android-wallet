@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.adapters.TradingPagerAdapter
+import com.blockeq.stellarwallet.interfaces.OnRefreshOrderBookListener
 import com.blockeq.stellarwallet.interfaces.OnTradeCurrenciesChanged
 import com.blockeq.stellarwallet.interfaces.OnUpdateOrderBook
 import com.blockeq.stellarwallet.interfaces.OnUpdateTradeTab
@@ -18,23 +19,18 @@ import kotlinx.android.synthetic.main.fragment_trade.*
 import org.stellar.sdk.responses.OrderBookResponse
 import timber.log.Timber
 
-class TradingFragment : Fragment(), OnTradeCurrenciesChanged {
+class TradingFragment : Fragment(), OnTradeCurrenciesChanged, OnRefreshOrderBookListener {
+    private lateinit var fragmentAdapter: TradingPagerAdapter
+
     private var orderBookListener : OnUpdateOrderBook? = null
     private var tradeTabListener : OnUpdateTradeTab? = null
+
+    private var currentSell : DataAsset? = null
+    private var currentBuy : DataAsset? = null
 
     companion object {
         fun newInstance(): TradingFragment = TradingFragment()
     }
-
-    override fun onCurrencyChange(selling: SelectionModel, buying: SelectionModel) {
-        val sellAsset =  AssetUtil.toDataAssetFrom(selling)
-        val buyingAsset = AssetUtil.toDataAssetFrom(buying)
-        if (sellAsset != null && buyingAsset != null) {
-            loadOrderBook(selling.label, buying.label, sellAsset, buyingAsset)
-        }
-    }
-
-    private lateinit var fragmentAdapter: TradingPagerAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_trade, container, false)
@@ -59,13 +55,19 @@ class TradingFragment : Fragment(), OnTradeCurrenciesChanged {
         }
     }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser) {
-//            loadOrderBook
-        }
+    override fun onCurrencyChange(selling: SelectionModel, buying: SelectionModel) {
+        currentSell =  AssetUtil.toDataAssetFrom(selling)
+        currentBuy = AssetUtil.toDataAssetFrom(buying)
+        onRefreshOrderBook()
     }
 
+    override fun onRefreshOrderBook() {
+        currentSell?.let { sell -> currentBuy?.let { buy ->
+            loadOrderBook(sell.code, buy.code, sell, buy) }
+            return
+        }
+        orderBookListener?.failedToUpdate()
+    }
 
     private fun loadOrderBook(sellingCode:String, buyingCode:String, sell : DataAsset, buy : DataAsset) {
         Timber.d("Loading order book %s %s", sellingCode, buyingCode)
@@ -80,6 +82,7 @@ class TradingFragment : Fragment(), OnTradeCurrenciesChanged {
 
             override fun onFailed(errorMessage: String) {
                 Timber.d("failed to load the order book %s", errorMessage)
+                orderBookListener?.failedToUpdate()
             }
 
         }, buy, sell)

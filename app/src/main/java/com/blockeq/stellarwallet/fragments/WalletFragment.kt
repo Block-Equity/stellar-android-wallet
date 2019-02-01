@@ -3,6 +3,7 @@ package com.blockeq.stellarwallet.fragments
 import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -31,12 +32,11 @@ import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 
 class WalletFragment : BaseFragment() {
-
+    private lateinit var appContext : Context
     private lateinit var viewModel : WalletViewModel
     private var state = WalletState.UNKNOWN
     private var lastEffectListSize = 0
     private var activeAsset : String = DefaultAsset().LUMENS_ASSET_NAME
-
     companion object {
         private const val REFRESH_EFFECT_DELAY = 400L
 
@@ -49,13 +49,14 @@ class WalletFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
+            appContext = it.applicationContext
             viewModel = ViewModelProviders.of(it).get(WalletViewModel::class.java)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        walletRecyclerView.layoutManager = LinearLayoutManager(activity)
+        walletRecyclerView.layoutManager = LinearLayoutManager(appContext)
         walletRecyclerView.adapter = createAdapter()
 
         if (DebugPreferencesHelper(view.context.applicationContext).isTestNetServerEnabled) {
@@ -102,7 +103,7 @@ class WalletFragment : BaseFragment() {
         val barcodeEncoder = BarcodeEncoder()
         val bitmap = barcodeEncoder.encodeBitmap(data, BarcodeFormat.QR_CODE, size, size)
 
-        imageView.setImageBitmap(tintImage(bitmap, getColor(context!!, R.color.paleSky)))
+        imageView.setImageBitmap(tintImage(bitmap, getColor(appContext, R.color.paleSky)))
     }
 
     private fun tintImage(bitmap: Bitmap, color: Int): Bitmap {
