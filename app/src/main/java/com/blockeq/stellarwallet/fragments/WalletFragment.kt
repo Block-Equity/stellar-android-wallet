@@ -59,6 +59,7 @@ class WalletFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         walletRecyclerView.layoutManager = LinearLayoutManager(appContext)
         walletRecyclerView.adapter = createAdapter()
 
@@ -101,7 +102,11 @@ class WalletFragment : BaseFragment() {
         }
 
         fetching_wallet_image.setColorFilter(getColor(appContext, R.color.paleSky), PorterDuff.Mode.SRC_ATOP)
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        qrRendered = false
     }
 
     private fun generateQRCode(data: String, imageView: ImageView, size: Int) {
