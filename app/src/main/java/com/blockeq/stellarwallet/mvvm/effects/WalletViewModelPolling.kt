@@ -8,23 +8,23 @@ import android.content.Context
 import android.os.Handler
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants.Companion.DEFAULT_ACCOUNT_BALANCE
+import com.blockeq.stellarwallet.interfaces.StellarAccount
 import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.mvvm.account.AccountRepository
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
 import org.jetbrains.anko.doAsync
-import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.effects.EffectResponse
 import timber.log.Timber
 
-class WalletViewModel(application: Application) : AndroidViewModel(application) {
+class WalletViewModelPolling(application: Application) : AndroidViewModel(application) {
     @SuppressLint("StaticFieldLeak")
     private val applicationContext : Context = application.applicationContext
     private val effectsRepository : EffectsRepository = EffectsRepository.getInstance()
     private val accountRepository : AccountRepository = AccountRepository()
     private var walletViewState: MutableLiveData<WalletViewState> = MutableLiveData()
-    private var accountResponse: AccountResponse? = null
+    private var stellarAccount: StellarAccount? = null
     private var effectsListResponse: ArrayList<EffectResponse>? = null
     private var state: WalletState = WalletState.UPDATING
     private var pollingStarted = false
@@ -33,29 +33,21 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     private var sessionAsset : SessionAsset = DefaultAsset()
 
     init {
-        loadAccount(false)
-
-        effectsRepository.loadList(false).observeForever {
-            Timber.d("effects repository, observer triggered")
-            if (it != null) {
-                var toNotify = true
-                effectsListResponse = it
-                if (state != WalletState.ACTIVE && accountResponse != null) {
-                    state = WalletState.ACTIVE
-                } else if(state != WalletState.ACTIVE) {
-                    loadAccount(true)
-                    toNotify = false
-                }
-                if (toNotify) {
-                    notifyViewState()
-                }
-            }
-        }
-
         WalletApplication.assetSession.observeForever {
             if (it != null) {
                 sessionAsset = it
                 notifyViewState()
+            }
+        }
+
+        effectsRepository.loadList(false).observeForever {
+            Timber.d("effects repository, observer triggered")
+            if (it != null) {
+                effectsListResponse = it
+                if (state != WalletState.ACTIVE && stellarAccount != null) {
+                    state = WalletState.ACTIVE
+                    notifyViewState()
+                }
             }
         }
     }
@@ -82,18 +74,21 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
             if (it != null) {
                 when (it.httpCode) {
                     200 -> {
-                        it.stellarAccount?.let { stellarAccount ->
-                            accountResponse = stellarAccount.getAccountResponse()
-                            if (effectsListResponse != null) {
-                                state = WalletState.ACTIVE
-                            } else if(state != WalletState.ACTIVE){
-                                effectsRepository.forceRefresh()
-                            }
+                        val immutableAccount = this.stellarAccount
+                        if (immutableAccount == null
+                                || immutableAccount.basicHashCode() != it.stellarAccount.basicHashCode()
+                                || state != WalletState.ACTIVE) {
+                            stellarAccount = it.stellarAccount
+                            effectsRepository.forceRefresh()
+                        } else {
+                            //let's ignore this response
+                            Timber.d("ignoring account response")
                         }
                     }
                     404 -> {
-                        accountResponse = null
+                        stellarAccount = it.stellarAccount
                         state = WalletState.NOT_FUNDED
+                        notifyViewState()
                         if (!pollingStarted) {
                             startPolling()
                         }
@@ -106,32 +101,29 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
                         }
                     }
                 }
-
-                if (notify) {
-                    notifyViewState()
-                }
             }
         }
     }
 
     private fun notifyViewState() {
         Timber.d("Notifying state {$state}")
-        val accountId = WalletApplication.wallet.getStellarAccountId()!!
-        when(state) {
-            WalletState.ACTIVE -> {
-                val availableBalance = getAvailableBalance()
-                val totalAvailableBalance = getTotalAssetBalance()
-                walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ACTIVE, accountId,  sessionAsset.assetCode, availableBalance, totalAvailableBalance, effectsListResponse))
-            }
-           // WalletState.ERROR -> {
-           //      walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ERROR, accountId,  sessionAsset.assetCode, null, null, null))
-           // }
-            WalletState.NOT_FUNDED -> {
-                val availableBalance = AvailableBalance("XLM", DEFAULT_ACCOUNT_BALANCE)
-                val totalAvailableBalance = TotalBalance(state, "Lumens", "XLM", DEFAULT_ACCOUNT_BALANCE)
-                walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.UNFUNDED, accountId, sessionAsset.assetCode, availableBalance, totalAvailableBalance, null))
-            } else -> {
+        stellarAccount?.let{
+            when(state) {
+                WalletState.ACTIVE -> {
+                    val availableBalance = getAvailableBalance()
+                    val totalAvailableBalance = getTotalAssetBalance()
+                    walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ACTIVE, it.getAccountId(),  sessionAsset.assetCode, availableBalance, totalAvailableBalance, effectsListResponse))
+                }
+                // WalletState.ERROR -> {
+                //      walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ERROR, accountId,  sessionAsset.assetCode, null, null, null))
+                // }
+                WalletState.NOT_FUNDED -> {
+                    val availableBalance = AvailableBalance("XLM", DEFAULT_ACCOUNT_BALANCE)
+                    val totalAvailableBalance = TotalBalance(state, "Lumens", "XLM", DEFAULT_ACCOUNT_BALANCE)
+                    walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.UNFUNDED, it.getAccountId(), sessionAsset.assetCode, availableBalance, totalAvailableBalance, null))
+                } else -> {
                 // nothing
+                }
             }
         }
     }
@@ -164,14 +156,12 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     private fun startPolling() {
         if (pollingStarted) return
         synchronized(this) {
-            if (state != WalletState.ACTIVE) {
                 pollingStarted = true
                 Timber.d("starting polling")
                 runnableCode = object : Runnable {
                     override fun run() {
                         Timber.d("starting pulling cycle")
                         when {
-                            state == WalletState.ACTIVE -> { Timber.d("polling cancelled") ; return }
                             NetworkUtils(applicationContext).isNetworkAvailable() -> loadAccount(true)
                         }
                         handler.postDelayed(this, 4000)
@@ -179,6 +169,5 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
                 }
                 handler.post(runnableCode)
             }
-        }
     }
 }

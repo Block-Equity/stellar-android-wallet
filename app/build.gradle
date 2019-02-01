@@ -148,4 +148,5 @@ dependencies {
     implementation 'com.github.abdularis:CircularImageView:v1.2'
 
     implementation 'com.google.android.gms:play-services-wearable:16.0.1'
+    implementation 'commons-lang:commons-lang:2.6'
 }

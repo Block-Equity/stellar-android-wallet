@@ -87,26 +87,6 @@
                 android:text="@string/clear_wallet"
                 style="@style/SettingsButton" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/enable_wear"
-                    style="@style/SettingsButton" />
-
-                <Switch
-                    android:id="@+id/enableWear"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/activity_vertical_margin"/>
-
-            </LinearLayout>
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -29,11 +29,12 @@ import timber.log.Timber
 import android.support.v4.content.ContextCompat.getColor
 import android.graphics.*
 import com.blockeq.stellarwallet.models.*
+import com.blockeq.stellarwallet.mvvm.effects.WalletViewModelPolling
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 
 class WalletFragment : BaseFragment() {
     private lateinit var appContext : Context
-    private lateinit var viewModel : WalletViewModel
+    private lateinit var viewModel : WalletViewModelPolling
     private var state = WalletState.UNKNOWN
     private var lastEffectListSize = 0
     private var activeAsset : String = DefaultAsset().LUMENS_ASSET_NAME
@@ -50,7 +51,7 @@ class WalletFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         activity?.let {
             appContext = it.applicationContext
-            viewModel = ViewModelProviders.of(it).get(WalletViewModel::class.java)
+            viewModel = ViewModelProviders.of(it).get(WalletViewModelPolling::class.java)
         }
     }
 
@@ -250,6 +251,7 @@ class WalletFragment : BaseFragment() {
                         receiveButton.isEnabled = true
                         noTransactionsTextView.visibility = View.GONE
                         fetchingState.visibility = View.GONE
+                        fundingState.visibility = View.GONE
                     } else -> {
                         // nothing
                     }

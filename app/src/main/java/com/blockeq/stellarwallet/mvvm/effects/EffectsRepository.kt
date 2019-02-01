@@ -10,6 +10,7 @@ import org.stellar.sdk.responses.effects.EffectResponse
 import timber.log.Timber
 
 class EffectsRepository private constructor(private val remoteRepository: RemoteRepository) {
+    private val ENABLE_STREAM = false
     private var effectsList: ArrayList<EffectResponse> = ArrayList()
     private var effectListLiveData = MutableLiveData<ArrayList<EffectResponse>>()
     private var eventSource : SSEStream<EffectResponse>? = null
@@ -58,6 +59,10 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
         }
 
         remoteRepository.getEffects(cursor, 200, object : OnLoadEffects {
+            override fun onError(errorMessage: String) {
+                isBusy = false
+            }
+
             override fun onLoadEffects(result: java.util.ArrayList<EffectResponse>?) {
                 Timber.d("fetched ${result?.size} effects from cursor $cursor")
                 if (result != null) {
@@ -70,16 +75,19 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
                         fetchEffectsList()
                     } else {
                         if (cursor != currentCursor) {
-                            closeStream()
-                            Timber.d("Opening the stream")
-                            eventSource = remoteRepository.registerForEffects("now", EventListener {
-                                Timber.d("Stream response {$it}, created at: ${it.createdAt}")
-                                effectsList.add(0, it)
-                                notifyLiveData(effectsList)
-                            })
+                            if (ENABLE_STREAM) {
+                                closeStream()
+                                Timber.d("Opening the stream")
+                                eventSource = remoteRepository.registerForEffects("now", EventListener {
+                                    Timber.d("Stream response {$it}, created at: ${it.createdAt}")
+                                    effectsList.add(0, it)
+                                    notifyLiveData(effectsList)
+                                })
+                            }
                             currentCursor = cursor
                         }
                         isBusy = false
+                        notifyLiveData(effectsList)
                     }
                 }
             }
@@ -87,6 +95,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
     }
 
     fun closeStream() {
+        if(!ENABLE_STREAM) return
         Timber.d("trying to close the stream {$eventSource}")
         eventSource?.let {
             Timber.d("Closing the stream")
