@@ -82,13 +82,11 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
             if (it != null) {
                 when (it.httpCode) {
                     200 -> {
-                        it.stellarAccount?.let { stellarAccount ->
-                            accountResponse = stellarAccount.getAccountResponse()
-                            if (effectsListResponse != null) {
-                                state = WalletState.ACTIVE
-                            } else if(state != WalletState.ACTIVE){
-                                effectsRepository.forceRefresh()
-                            }
+                        accountResponse = it.stellarAccount.getAccountResponse()
+                        if (effectsListResponse != null) {
+                            state = WalletState.ACTIVE
+                        } else if(state != WalletState.ACTIVE){
+                            effectsRepository.forceRefresh()
                         }
                     }
                     404 -> {
