@@ -5,4 +5,5 @@ import java.util.ArrayList
 
 interface OnLoadEffects {
     fun onLoadEffects(result: ArrayList<EffectResponse>?)
+    fun onError(errorMessage:String)
 }

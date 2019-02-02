@@ -58,10 +58,6 @@ class SettingsFragment : BaseFragment() {
             startActivityForResult(WalletManagerActivity.verifyPin(it.context), SettingsAction.CLEAR_WALLET.ordinal)
         }
 
-        enableWear.setOnClickListener {
-            startActivityForResult(WalletManagerActivity.verifyPin(it.context), SettingsAction.TOGGLE_ENABLE_WEAR_APP.ordinal)
-        }
-
         pinOnSendPaymentsButton.setOnClickListener {
             startActivityForResult(WalletManagerActivity.verifyPin(it.context), SettingsAction.TOGGLE_PIN_ON_SENDING.ordinal)
         }

@@ -212,6 +212,7 @@ object Horizon : HorizonTasks {
 
 
     private class LoadEffectsTask(val cursor : String, val limit:Int, private val listener: OnLoadEffects) : AsyncTask<Void, Void, ArrayList<EffectResponse>?>() {
+        var errorMessage : String? = null
         override fun doInBackground(vararg params: Void?): ArrayList<EffectResponse>? {
             val server = getServer()
             val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
@@ -223,13 +224,18 @@ object Horizon : HorizonTasks {
                         .forAccount(sourceKeyPair).execute()
             } catch (error : Exception) {
                 Timber.e(error.message.toString())
+                errorMessage = error.message.toString()
             }
 
             return effectResults?.records
         }
 
         override fun onPostExecute(result: ArrayList<EffectResponse>?) {
-            listener.onLoadEffects(result)
+            errorMessage?.let {
+                listener.onError(it)
+             }?: run {
+                listener.onLoadEffects(result)
+            }
         }
 
     }

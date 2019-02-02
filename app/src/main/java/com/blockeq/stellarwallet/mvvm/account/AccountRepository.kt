@@ -4,7 +4,10 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.interfaces.OnLoadAccount
+import com.blockeq.stellarwallet.interfaces.StellarAccount
+import com.blockeq.stellarwallet.models.BasicStellarAccount
 import com.blockeq.stellarwallet.models.MinimumBalance
+import com.blockeq.stellarwallet.models.StellarAccountImpl
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import org.stellar.sdk.requests.ErrorResponse
@@ -31,19 +34,20 @@ class AccountRepository {
                     WalletApplication.userSession.setMinimumBalance(MinimumBalance(result))
                     WalletApplication.wallet.setAvailableBalance(AccountUtils.calculateAvailableBalance())
 
-                    liveData.postValue(AccountEvent(200, result))
+                    liveData.postValue(AccountEvent(200, StellarAccountImpl(result)))
                 }
             }
 
             override fun onError(error: ErrorResponse) {
                 Timber.e("(${error.code}) Error Loading account")
-                liveData.postValue(AccountEvent(error.code, null))
+
+                liveData.postValue(AccountEvent(error.code, BasicStellarAccount(WalletApplication.wallet.getStellarAccountId()!!, null, 0L, null)))
             }
 
         }).execute()
         return liveData
     }
 
-    data class AccountEvent(val httpCode:Int, val accountResponse: AccountResponse?)
+    data class AccountEvent(val httpCode:Int, val stellarAccount: StellarAccount)
 
 }
