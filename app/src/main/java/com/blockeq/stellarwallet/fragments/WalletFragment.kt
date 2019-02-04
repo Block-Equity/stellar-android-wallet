@@ -29,14 +29,17 @@ import timber.log.Timber
 import android.support.v4.content.ContextCompat.getColor
 import android.graphics.*
 import com.blockeq.stellarwallet.models.*
+import com.blockeq.stellarwallet.mvvm.effects.WalletViewModelPolling
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 
 class WalletFragment : BaseFragment() {
     private lateinit var appContext : Context
-    private lateinit var viewModel : WalletViewModel
+    private lateinit var viewModel : WalletViewModelPolling
     private var state = WalletState.UNKNOWN
     private var lastEffectListSize = 0
     private var activeAsset : String = DefaultAsset().LUMENS_ASSET_NAME
+    private var qrRendered = false
+
     companion object {
         private const val REFRESH_EFFECT_DELAY = 400L
 
@@ -50,12 +53,13 @@ class WalletFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         activity?.let {
             appContext = it.applicationContext
-            viewModel = ViewModelProviders.of(it).get(WalletViewModel::class.java)
+            viewModel = ViewModelProviders.of(it).get(WalletViewModelPolling::class.java)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         walletRecyclerView.layoutManager = LinearLayoutManager(appContext)
         walletRecyclerView.adapter = createAdapter()
 
@@ -97,6 +101,12 @@ class WalletFragment : BaseFragment() {
             }
         }
 
+        fetching_wallet_image.setColorFilter(getColor(appContext, R.color.paleSky), PorterDuff.Mode.SRC_ATOP)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        qrRendered = false
     }
 
     private fun generateQRCode(data: String, imageView: ImageView, size: Int) {
@@ -196,10 +206,9 @@ class WalletFragment : BaseFragment() {
             runOnUiThread {
                 activity?.let {
                     if (!it.isFinishing && walletRecyclerView != null) {
-                        if (state == WalletState.NOT_FUNDED) {
-                            if (viewState != null && qrCode != null) {
-                                generateQRCode(viewState.accountId, qrCode, 500)
-                            }
+                        if (!qrRendered && viewState != null && qrCode != null) {
+                            generateQRCode(viewState.accountId, qrCode, 500)
+                            qrRendered = true
                         }
 
                         if (!listWrapper.array.isEmpty()) {
@@ -250,7 +259,8 @@ class WalletFragment : BaseFragment() {
                         receiveButton.isEnabled = true
                         noTransactionsTextView.visibility = View.GONE
                         fetchingState.visibility = View.GONE
-                    } else -> {
+                        fundingState.visibility = View.GONE
+                } else -> {
                         // nothing
                     }
                 }
