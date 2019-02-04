@@ -18,36 +18,68 @@ import timber.log.Timber
  * Tried to implement (https://github.com/JoaquimLey/transport-eta/blob/26ce1a7f4b2dff12c6efa2292531035e70bfc4ae/app/src/main/java/com/joaquimley/buseta/repository/BusRepository.java)
  * While at the same time only using remote, and not local or Room db
  */
-class AccountRepository {
+object AccountRepository {
     private var liveData = MutableLiveData<AccountEvent>()
+    private var accountLiveData = MutableLiveData<AccountResponse>()
 
+    private var accountResponse : AccountResponse? = null
+    private var isBusy = false
     /**
      * Returns an observable for ALL the effects table changes
      */
-    fun loadAccount(): LiveData<AccountEvent> {
-        Horizon.getLoadAccountTask(object : OnLoadAccount {
-            override fun onLoadAccount(result: AccountResponse?) {
-                if (result != null) {
-                    Timber.d("loadAccount successfully")
-
-                    WalletApplication.wallet.setBalances(result.balances)
-                    WalletApplication.userSession.setMinimumBalance(MinimumBalance(result))
-                    WalletApplication.wallet.setAvailableBalance(AccountUtils.calculateAvailableBalance())
-
-                    liveData.postValue(AccountEvent(200, StellarAccountImpl(result)))
-                }
-            }
-
-            override fun onError(error: ErrorResponse) {
-                Timber.e("(${error.code}) Error Loading account")
-
-                liveData.postValue(AccountEvent(error.code, BasicStellarAccount(WalletApplication.wallet.getStellarAccountId()!!, null, 0L, null)))
-            }
-
-        }).execute()
+    fun loadAccountEvent(forceRefresh:Boolean = true): LiveData<AccountEvent> {
+        fetch(forceRefresh)
         return liveData
     }
 
+    fun loadAccount():MutableLiveData<AccountResponse> {
+        fetch()
+        return accountLiveData
+    }
+
+    private fun fetch(forceRefresh:Boolean = true){
+        val account = accountResponse
+        if (!forceRefresh && account != null) {
+            liveData.postValue(AccountEvent(200, StellarAccountImpl(account)))
+            accountLiveData.postValue(accountResponse)
+        } else {
+            if(!isBusy) {
+                Horizon.getLoadAccountTask(object : OnLoadAccount {
+                    override fun onLoadAccount(result: AccountResponse?) {
+                        if (result != null) {
+                            Timber.d("loadAccountEvent successfully")
+                            accountResponse = result
+
+                            WalletApplication.wallet.setBalances(result.balances)
+                            WalletApplication.userSession.setMinimumBalance(MinimumBalance(result))
+                            WalletApplication.wallet.setAvailableBalance(AccountUtils.calculateAvailableBalance())
+
+                            liveData.postValue(AccountEvent(200, StellarAccountImpl(result)))
+
+                            accountLiveData.postValue(accountResponse)
+                        }
+                        isBusy = false
+                    }
+
+                    override fun onError(error: ErrorResponse) {
+                        Timber.e("(${error.code}) Error Loading account")
+                        liveData.postValue(AccountEvent(error.code, BasicStellarAccount(WalletApplication.wallet.getStellarAccountId()!!, null, 0L, null)))
+                        isBusy = false
+                    }
+
+                }).execute()
+            } else {
+                Timber.d("it is busy, loading account cancelled")
+            }
+        }
+    }
+
     data class AccountEvent(val httpCode:Int, val stellarAccount: StellarAccount)
+
+    fun clear() {
+        accountResponse = null
+        liveData = MutableLiveData()
+        accountLiveData = MutableLiveData()
+    }
 
 }

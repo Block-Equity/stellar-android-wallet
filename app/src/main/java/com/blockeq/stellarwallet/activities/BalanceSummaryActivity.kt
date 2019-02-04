@@ -1,17 +1,21 @@
 package com.blockeq.stellarwallet.activities
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants
+import com.blockeq.stellarwallet.models.NativeAssetAvailability
+import com.blockeq.stellarwallet.mvvm.balance.BalanceViewModel
+import com.blockeq.stellarwallet.mvvm.effects.WalletViewModelPolling
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.StringFormat
 import kotlinx.android.synthetic.main.activity_balance_summary.*
 
 class BalanceSummaryActivity : BasePopupActivity() {
 
-    val DEFAULT_BALANCE = "0"
-    val BASE_RESERVE_AMOUNT = "1"
+    private lateinit var viewModel: BalanceViewModel
 
     override fun setContent(): Int {
         return R.layout.activity_balance_summary
@@ -19,49 +23,34 @@ class BalanceSummaryActivity : BasePopupActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        viewModel = ViewModelProviders.of(this).get(BalanceViewModel::class.java)
         setupUI()
     }
 
     private fun setupUI() {
-        val minimumBalance = WalletApplication.userSession.getMinimumBalance()
+        viewModel.loadBalance().observe(this, Observer {
+            if (it != null) {
+                val native = it.getNativeAssetAvailability()
 
-        if (minimumBalance != null) {
+                totalBalanceTextView.text = native.total.toString()
+                availableBalanceTextView.text = native.totalAvailable.toString()
 
-            totalBalanceTextView.text = StringFormat.truncateDecimalPlaces(AccountUtils.getTotalBalance(Constants.LUMENS_ASSET_TYPE))
-            availableBalanceTextView.text = StringFormat.truncateDecimalPlaces(WalletApplication.wallet.getAvailableBalance())
+                baseReserveAmountTextView.text = 1.toString()
+                baseReserveXLMTextView.text = native.baseAmount.toString()
 
-            baseReserveAmountTextView.text = BASE_RESERVE_AMOUNT
-            baseReserveXLMTextView.text = Constants.BASE_RESERVE.toString()
+                trustlinesAmountTextView.text = native.trustLinesCount.toString()
+                trustlinesXLMTextView.text = native.trustLinesAmount.toString()
 
-            trustlinesAmountTextView.text = minimumBalance.trustlines.count.toString()
-            trustlinesXLMTextView.text = minimumBalance.trustlines.amount.toString()
+                signersAmountTextView.text = native.additionalSignersCount.toString()
+                signersXLMTextView.text = native.additionalSignersAmount.toString()
 
-            offersAmountTextView.text = minimumBalance.offers.count.toString()
-            offersXLMTextView.text = minimumBalance.offers.amount.toString()
+                offersAmountTextView.text = native.openOffersCount.toString()
+                offersXLMTextView.text = native.openOffersAmount.toString()
 
-            signersAmountTextView.text = minimumBalance.signers.count.toString()
-            signersXLMTextView.text = minimumBalance.signers.amount.toString()
-
-            minimumBalanceTextView.text = minimumBalance.totalAmount.toString()
-        } else {
-
-            totalBalanceTextView.text = Constants.DEFAULT_ACCOUNT_BALANCE
-            availableBalanceTextView.text = Constants.DEFAULT_ACCOUNT_BALANCE
-
-            baseReserveAmountTextView.text = DEFAULT_BALANCE
-            baseReserveXLMTextView.text = DEFAULT_BALANCE
-
-            trustlinesAmountTextView.text = DEFAULT_BALANCE
-            trustlinesXLMTextView.text = DEFAULT_BALANCE
-
-            offersAmountTextView.text = DEFAULT_BALANCE
-            offersXLMTextView.text = DEFAULT_BALANCE
-
-            signersAmountTextView.text = DEFAULT_BALANCE
-            signersXLMTextView.text = DEFAULT_BALANCE
-
-            minimumBalanceTextView.text = Constants.DEFAULT_ACCOUNT_BALANCE
-        }
+                tradedAmountTextView.text = "-"
+                tradedXLMTextView.text = native.postedForTradeAmount.toString()
+                minimumBalanceTextView.text = native.totalAvailable.toString()
+            }
+        })
     }
 }

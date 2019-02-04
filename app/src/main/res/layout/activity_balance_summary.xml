@@ -196,6 +196,29 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/traded"
+                style="@style/RegularText"
+                android:padding="@dimen/activity_vertical_margin" />
+            <TextView
+                android:id="@+id/tradedAmountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
+            <TextView
+                android:id="@+id/tradedXLMTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/minimum_balance"
                 android:textSize="@dimen/text_size_small"
                 style="@style/NavTitleText"

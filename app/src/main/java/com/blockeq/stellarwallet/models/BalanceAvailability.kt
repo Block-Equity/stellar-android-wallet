@@ -4,6 +4,7 @@ import org.stellar.sdk.AssetTypeCreditAlphaNum
 import org.stellar.sdk.AssetTypeNative
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.OfferResponse
+import timber.log.Timber
 import java.util.ArrayList
 
 class BalanceAvailability(private val account: AccountResponse, private val offerList: ArrayList<OfferResponse>) {
@@ -12,14 +13,20 @@ class BalanceAvailability(private val account: AccountResponse, private val offe
     private val nativeBalance: NativeAssetAvailability
 
     init {
-        val signersValue = account.signers.size - 1f
+        val extraSigners = account.signers.size - 1f
         val baseAmount = 2f
         val trustLinesValue = (account.balances.size - 1f) * baseAmount
 
         val balance = getNativeBalance().balance.toFloat()
         nativeBalance = NativeAssetAvailabilityImpl(
-                baseAmount, signersValue, trustLinesValue,
-                offerList.size.toFloat()*0.5f, getPostedForTradeAmount("native",null), balance)
+                baseAmount,
+                extraSigners.toInt(), extraSigners*1,
+                account.balances.size,
+                trustLinesValue,
+                offerList.size,
+                offerList.size.toFloat()*0.5f,
+                getPostedForTradeAmount("native",null),
+                balance)
     }
 
     fun getAssetAvailability(assetCode: String, issuer:String): AssetAvailability {
@@ -52,21 +59,21 @@ class BalanceAvailability(private val account: AccountResponse, private val offe
     private fun getPostedForTradeAmount(assetCode : String, issuer: String?) : Float {
         var postedForTrade = 0f
         offerList.forEach {
-            it.selling.let { asset -> {
-                when (asset) {
-                    is AssetTypeNative -> {
-                        if (assetCode == "native" || assetCode == "XLM") {
-                           postedForTrade += it.amount.toLong()
-                        }
-                    }
-                    is AssetTypeCreditAlphaNum -> {
-                        if (assetCode == asset.code
-                                && issuer == asset.issuer.accountId) {
-                            postedForTrade += it.amount.toLong()
-                        }
+            Timber.d("d")
+            val asset = it.selling
+            when (asset) {
+                is AssetTypeNative -> {
+                    if (assetCode == "native" || assetCode == "XLM") {
+                       postedForTrade += it.amount.toFloat()
                     }
                 }
-            }}
+                is AssetTypeCreditAlphaNum -> {
+                    if (assetCode == asset.code
+                            && issuer == asset.issuer.accountId) {
+                        postedForTrade += it.amount.toFloat()
+                    }
+                }
+            }
         }
         return postedForTrade
     }

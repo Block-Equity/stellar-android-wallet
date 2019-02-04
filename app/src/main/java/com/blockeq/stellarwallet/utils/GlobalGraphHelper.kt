@@ -7,6 +7,7 @@ import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.activities.LaunchActivity
 import com.blockeq.stellarwallet.activities.WalletActivity
 import com.blockeq.stellarwallet.encryption.KeyStoreWrapper
+import com.blockeq.stellarwallet.mvvm.account.AccountRepository
 import com.blockeq.stellarwallet.mvvm.effects.EffectsRepository
 
 class GlobalGraphHelper {
@@ -29,6 +30,7 @@ class GlobalGraphHelper {
 
         fun wipe(context: Context) : Boolean {
             clearSession()
+            AccountRepository.clear()
             EffectsRepository.getInstance().clear()
             val keyStoreWrapper = KeyStoreWrapper(context)
             keyStoreWrapper.clear()

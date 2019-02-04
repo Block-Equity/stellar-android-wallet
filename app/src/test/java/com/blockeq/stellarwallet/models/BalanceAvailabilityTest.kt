@@ -30,10 +30,12 @@ class BalanceAvailabilityTest {
         assertEquals(nativeAsset.additionalSignersAmount, account.signers.size-1f)
         assertEquals(nativeAsset.trustLinesAmount, (account.balances.size-1)*2.0f)
         assertEquals(nativeAsset.openOffersAmount, offers.size * 0.5f)
+        assertEquals(nativeAsset.postedForTradeAmount, 11.0f)
         assertEquals(nativeAsset.totalAvailable,
                 nativeAsset.total
                 - nativeAsset.baseAmount
                 - nativeAsset.additionalSignersAmount
+                - nativeAsset.postedForTradeAmount
                 - nativeAsset.trustLinesAmount
                 - nativeAsset.openOffersAmount)
     }

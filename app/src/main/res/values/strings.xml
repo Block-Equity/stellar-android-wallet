@@ -178,7 +178,8 @@
     <string name="base_reserve">Base Reserve</string>
     <string name="trustlines">Trustlines</string>
     <string name="offers">Offers</string>
-    <string name="signers">Signers</string>
+    <string name="signers">Additional signers</string>
+    <string name="traded">Funds in open trade</string>
     <string name="minimum_balance">Minimum Balance</string>
     <string name="balance_summary">Balance Summary</string>
 

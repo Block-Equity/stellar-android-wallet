@@ -22,7 +22,6 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     @SuppressLint("StaticFieldLeak")
     private val applicationContext : Context = application.applicationContext
     private val effectsRepository : EffectsRepository = EffectsRepository.getInstance()
-    private val accountRepository : AccountRepository = AccountRepository()
     private var walletViewState: MutableLiveData<WalletViewState> = MutableLiveData()
     private var accountResponse: AccountResponse? = null
     private var effectsListResponse: ArrayList<EffectResponse>? = null
@@ -78,7 +77,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun loadAccount(notify: Boolean) {
         Timber.d("Loading account, notify {$notify}")
-        accountRepository.loadAccount().observeForever {
+        AccountRepository.loadAccountEvent().observeForever {
             if (it != null) {
                 when (it.httpCode) {
                     200 -> {
