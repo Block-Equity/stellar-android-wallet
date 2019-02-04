@@ -170,7 +170,7 @@
     <string name="inflation_set_success">Inflation destination set!</string>
     <string name="inflation_set_error">There was an error setting inflation destination.</string>
 
-    <!--Balance Summary Activity-->
+    <!--BalanceAvailability Summary Activity-->
     <string name="total_balance">Total Balance</string>
     <string name="available_balance">Available Balance</string>
     <string name="type">Type</string>
