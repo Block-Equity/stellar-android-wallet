@@ -18,6 +18,7 @@ interface StellarAccount {
                 .append(getAccountId())
                 .append(getInflationDestination())
                 .append(getSubEntryCount())
+                .append(getSequenceNumber())
                 .toHashCode()
     }
 

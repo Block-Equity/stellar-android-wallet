@@ -56,6 +56,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Timber.d("view created")
         appContext = view.context.applicationContext
         toolTip = PopupWindow(view.context)
         setBuyingSelectorEnabled(false)
@@ -96,20 +97,9 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 selectedSellingCurrency = sellingCurrencies[position]
                 holdingsAmount = selectedSellingCurrency.holdings
 
-                if (selectedSellingCurrency.label == AssetUtil.NATIVE_ASSET_CODE) {
-                    val available = WalletApplication.wallet.getAvailableBalance().toDouble()
-
-                    holdings.text = String.format(getString(R.string.holdings_amount),
-                            decimalFormat.format(available),
-                            selectedSellingCurrency.label)
-
-                    holdingsAmount = available
-
-                } else {
-                    holdings.text = String.format(getString(R.string.holdings_amount),
-                            decimalFormat.format(holdingsAmount),
-                            selectedSellingCurrency.label)
-                }
+                holdings.text = String.format(getString(R.string.holdings_amount),
+                        decimalFormat.format(holdingsAmount),
+                        selectedSellingCurrency.label)
 
                 resetBuyingCurrencies()
                 buyingCurrencies.removeAt(position)
@@ -360,11 +350,11 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         var native: Currency? = null
         balance?.let {
             it.getAllBalances().forEach { that ->
-                val currency = if (that.assetCode != "native") {
-                    Currency(i, that.assetCode, that.assetCode, that.totalAvailable.toDouble(), that.asset)
-                } else {
+                val currency = if (that.assetCode == "XLM") {
                     native = Currency(i, AssetUtil.NATIVE_ASSET_CODE, "LUMEN", that.totalAvailable.toDouble(), that.asset)
                     native as Currency
+                } else {
+                    Currency(i, that.assetCode, that.assetCode, that.totalAvailable.toDouble(), that.asset)
                 }
                 addedCurrencies.add(currency)
                 i++

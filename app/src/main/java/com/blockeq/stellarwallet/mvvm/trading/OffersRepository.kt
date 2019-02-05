@@ -9,11 +9,11 @@ import java.util.*
 object OffersRepository {
     private var liveData = MutableLiveData<ArrayList<OfferResponse>>()
     fun loadOffers(): MutableLiveData<ArrayList<OfferResponse>> {
-        refresh()
         return liveData
     }
 
     fun refresh(){
+        Timber.d("refreshing offers")
         Horizon.getOffers(object: Horizon.OnOffersListener {
             override fun onOffers(offers: ArrayList<OfferResponse>) {
                 liveData.postValue(offers)

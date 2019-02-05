@@ -1,6 +1,5 @@
 package com.blockeq.stellarwallet.models
 
-import com.blockeq.stellarwallet.remote.Horizon
 import org.stellar.sdk.Asset
 import org.stellar.sdk.AssetTypeCreditAlphaNum12
 import org.stellar.sdk.AssetTypeCreditAlphaNum4
