@@ -140,8 +140,13 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         buyingAsset = buying
         sellingAsset = selling
 
-        Timber.d("Updating objects in order book")
-        updateList(orderBooks, sellingAsset!!.code, buyingAsset!!.code)
+        orderBooks.clear()
+        if (orderBookRv != null) {
+            orderBookRv.visibility = View.GONE
+        }
+
+//        Timber.d("Updating objects in order book")
+//        updateList(orderBooks, sellingAsset!!.code, buyingAsset!!.code)
     }
 
     override fun failedToUpdate() {
@@ -156,7 +161,7 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
 
     private fun updateList(list : MutableList<OrderBook>, sellingCode: String, buyingCode: String) {
         Timber.d("updateTradingCurrencies %s %s", buyingCode, sellingCode)
-        if (orderBookRv != null) {
+        if (orderBookRv != null && list.isNotEmpty()) {
             orderBookRv.visibility = View.VISIBLE
             this.buyingCode = buyingCode
             this.sellingCode = sellingCode
