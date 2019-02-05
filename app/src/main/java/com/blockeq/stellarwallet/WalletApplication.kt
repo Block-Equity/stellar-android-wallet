@@ -2,7 +2,6 @@ package com.blockeq.stellarwallet
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ProcessLifecycleOwner
-import android.content.Context
 import android.support.multidex.MultiDexApplication
 import com.blockeq.stellarwallet.encryption.PRNGFixes
 import com.blockeq.stellarwallet.helpers.LocalStoreImpl
@@ -13,7 +12,6 @@ import com.blockeq.stellarwallet.mvvm.balance.BalanceRepository
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 import com.blockeq.stellarwallet.mvvm.exchange.ExchangeRepository
 import com.blockeq.stellarwallet.remote.Horizon
-import com.blockeq.stellarwallet.remote.HorizonTasks
 import com.blockeq.stellarwallet.remote.ServerType
 import com.facebook.stetho.Stetho
 import com.squareup.leakcanary.LeakCanary
@@ -45,9 +43,6 @@ class WalletApplication : MultiDexApplication() {
                     BalanceRepository.init()
                 }
             }
-            override fun getFormattedCurrentAssetCode(): String? { return impl.getFormattedCurrentAssetCode() }
-            override fun getFormattedCurrentAvailableBalance(context: Context): String? { return impl.getFormattedCurrentAvailableBalance(context) }
-            override fun getAvailableBalance(): String? { return impl.getAvailableBalance() }
             override fun setMinimumBalance(minimumBalance: MinimumBalance) { impl.setMinimumBalance(minimumBalance) }
             override fun getMinimumBalance(): MinimumBalance? { return impl.getMinimumBalance() }
         }

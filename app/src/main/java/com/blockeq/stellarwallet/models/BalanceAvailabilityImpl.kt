@@ -1,5 +1,6 @@
 package com.blockeq.stellarwallet.models
 
+import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.interfaces.BalanceAvailability
 import org.stellar.sdk.Asset
 import org.stellar.sdk.AssetTypeCreditAlphaNum
@@ -9,6 +10,15 @@ import org.stellar.sdk.responses.OfferResponse
 
 class BalanceAvailabilityImpl(private val account: AccountResponse,
                               private val offerList: ArrayList<OfferResponse>) : BalanceAvailability {
+
+    override fun getActiveAssetAvailability(): AssetAvailability {
+        val sessionAsset = WalletApplication.userSession.getSessionAsset()
+        return if(sessionAsset.assetCode == "native") {
+            getNativeAssetAvailability()
+        } else {
+            getAssetAvailability(sessionAsset.assetCode, sessionAsset.assetIssuer)
+        }
+    }
 
     override fun getAccountId(): String {
         return account.keypair.accountId

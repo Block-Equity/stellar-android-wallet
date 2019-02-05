@@ -60,21 +60,23 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         appContext = view.context.applicationContext
         toolTip = PopupWindow(view.context)
         setBuyingSelectorEnabled(false)
-        refreshAddedCurrencies()
         setupListeners()
 
         BalanceRepository.loadBalance().observe(this, Observer {
-            balance = it
-            Timber.d("new balance")
-            if (::selectedSellingCurrency.isInitialized) {
+            if(it != null) {
+                balance = it
                 refreshAddedCurrencies()
-                sellingCurrencies.forEach { selection ->
-                    if (selection.label == selectedSellingCurrency.label) {
-                        refreshBalance(selection.holdings)
+                setupSpinners()
+                Timber.d("new balance")
+                if (::selectedSellingCurrency.isInitialized) {
+                    sellingCurrencies.forEach { selection ->
+                        if (selection.label == selectedSellingCurrency.label) {
+                            refreshBalance(selection.holdings)
+                        }
                     }
+                    refreshSubmitTradeButton()
+                    updateBuyingValueIfNeeded()
                 }
-                refreshSubmitTradeButton()
-                updateBuyingValueIfNeeded()
             }
         })
     }
@@ -95,12 +97,13 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 refreshSubmitTradeButton()
             }
         })
+    }
 
+    private fun setupSpinners() {
         sellingCustomSelector.setSelectionValues(sellingCurrencies)
         sellingCustomSelector.spinner.onItemSelectedListener = object : OnItemSelected() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectedSellingCurrency = sellingCurrencies[position]
-
                 refreshBalance(selectedSellingCurrency.holdings)
 
                 resetBuyingCurrencies()
@@ -306,8 +309,6 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
 
         setBuyingSelectorEnabled(false)
         setSellingSelectorEnabled(false)
-
-        WalletApplication.userSession.getAvailableBalance()
 
         val sellingAmountFormatted = decimalFormat.format(sellingAmount.toDouble())
         val priceFormatted = decimalFormat.format(buyingAmount.toDouble() / sellingAmount.toDouble())
