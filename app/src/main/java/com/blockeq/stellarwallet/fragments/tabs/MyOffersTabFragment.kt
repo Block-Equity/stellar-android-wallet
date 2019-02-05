@@ -20,11 +20,13 @@ import com.blockeq.stellarwallet.interfaces.OnDeleteRequest
 import com.blockeq.stellarwallet.models.AssetUtil
 import com.blockeq.stellarwallet.models.Currency
 import com.blockeq.stellarwallet.models.MyOffer
+import com.blockeq.stellarwallet.mvvm.account.AccountRepository
 import com.blockeq.stellarwallet.mvvm.trading.OffersRepository
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import kotlinx.android.synthetic.main.fragment_tab_my_offers.*
 import org.jetbrains.anko.support.v4.runOnUiThread
+import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.OfferResponse
 import timber.log.Timber
 import java.util.*
@@ -138,6 +140,7 @@ class MyOffersTabFragment : Fragment(), OnDeleteRequest, SwipeRefreshLayout.OnRe
                             if (!it.isFinishing) {
                                 Toast.makeText(appContext, "Order has been deleted", Toast.LENGTH_SHORT).show()
                             }
+                            AccountRepository.refresh()
                         }
                     }
 

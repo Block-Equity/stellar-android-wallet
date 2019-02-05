@@ -6,7 +6,7 @@ import org.junit.Test
 import org.stellar.sdk.responses.*
 import java.io.File
 
-class BalanceAvailabilityTest {
+class BalanceAvailabilityImplTest {
     /**
      * Native ASSET
      * (base amount 2) * 0.5
@@ -22,13 +22,13 @@ class BalanceAvailabilityTest {
         val account : AccountResponse = getAccount(getFileFromPath(this,"account.json").readText())
         val offers : ArrayList<OfferResponse> = getOffers(getFileFromPath(this,"offer.json").readText())
 
-        val availability = BalanceAvailability(
+        val availability = BalanceAvailabilityImpl(
                 account, offers)
 
         val nativeAsset = availability.getNativeAssetAvailability()
-        assertEquals(nativeAsset.baseAmount, 2f)
+        assertEquals(nativeAsset.baseAmount, 1f)
         assertEquals(nativeAsset.additionalSignersAmount, account.signers.size-1f)
-        assertEquals(nativeAsset.trustLinesAmount, (account.balances.size-1)*2.0f)
+        assertEquals(nativeAsset.trustLinesAmount, (account.balances.size-1)*0.5f)
         assertEquals(nativeAsset.openOffersAmount, offers.size * 0.5f)
         assertEquals(nativeAsset.postedForTradeAmount, 11.0f)
         assertEquals(nativeAsset.totalAvailable,

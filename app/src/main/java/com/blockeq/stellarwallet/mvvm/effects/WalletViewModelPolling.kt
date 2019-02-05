@@ -8,9 +8,11 @@ import android.content.Context
 import android.os.Handler
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants.Companion.DEFAULT_ACCOUNT_BALANCE
+import com.blockeq.stellarwallet.interfaces.BalanceAvailability
 import com.blockeq.stellarwallet.interfaces.StellarAccount
 import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.mvvm.account.AccountRepository
+import com.blockeq.stellarwallet.mvvm.balance.BalanceRepository
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
@@ -31,6 +33,7 @@ class WalletViewModelPolling(application: Application) : AndroidViewModel(applic
     private var runnableCode : Runnable? = null
     private var sessionAsset : SessionAsset = DefaultAsset()
 
+    private var balance : BalanceAvailability? = null
     init {
         WalletApplication.assetSession.observeForever {
             if (it != null) {
@@ -47,6 +50,16 @@ class WalletViewModelPolling(application: Application) : AndroidViewModel(applic
                     state = WalletState.ACTIVE
                     notifyViewState()
                 }
+            }
+        }
+
+        BalanceRepository.loadBalance().observeForever {
+            balance = it
+            if (it != null && effectsListResponse != null) {
+                state = WalletState.ACTIVE
+                notifyViewState()
+            } else {
+                EffectsRepository.getInstance().forceRefresh()
             }
         }
     }
@@ -73,7 +86,8 @@ class WalletViewModelPolling(application: Application) : AndroidViewModel(applic
             if (it != null) {
                 when (it.httpCode) {
                     200 -> {
-                        val immutableAccount = this.stellarAccount
+                        Timber.d("${stellarAccount?.getSubEntryCount()} vs ${it.stellarAccount.getSubEntryCount()}")
+                        val immutableAccount = stellarAccount
                         if (immutableAccount == null
                                 || immutableAccount.basicHashCode() != it.stellarAccount.basicHashCode()
                                 || state != WalletState.ACTIVE) {
@@ -105,8 +119,12 @@ class WalletViewModelPolling(application: Application) : AndroidViewModel(applic
     }
 
     private fun notifyViewState() {
+        if (balance == null) {
+            Timber.d("ignoring state since balance is null")
+            return
+        }
         Timber.d("Notifying state {$state}")
-        stellarAccount?.let{
+        balance?.let{
             when(state) {
                 WalletState.ACTIVE -> {
                     val availableBalance = getAvailableBalance()
@@ -117,7 +135,7 @@ class WalletViewModelPolling(application: Application) : AndroidViewModel(applic
                 //      walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ERROR, accountId,  sessionAsset.assetCode, null, null, null))
                 // }
                 WalletState.NOT_FUNDED -> {
-                    val availableBalance = AvailableBalance("XLM", DEFAULT_ACCOUNT_BALANCE)
+                    val availableBalance = AvailableBalance("XLM", null, DEFAULT_ACCOUNT_BALANCE)
                     val totalAvailableBalance = TotalBalance(state, "Lumens", "XLM", DEFAULT_ACCOUNT_BALANCE)
                     walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.UNFUNDED, it.getAccountId(), sessionAsset.assetCode, availableBalance, totalAvailableBalance, null))
                 } else -> {
@@ -128,13 +146,18 @@ class WalletViewModelPolling(application: Application) : AndroidViewModel(applic
     }
 
     private fun getAvailableBalance() : AvailableBalance {
-        val balance = truncateDecimalPlaces(WalletApplication.wallet.getAvailableBalance())
-        val currAsset = sessionAsset.assetCode
-        return AvailableBalance(currAsset, balance)
+        val totalAvailable : String?
+        if (sessionAsset.assetCode == "native") {
+            totalAvailable = truncateDecimalPlaces(balance!!.getNativeAssetAvailability().totalAvailable.toString())
+        } else {
+            totalAvailable = truncateDecimalPlaces(balance!!.getAssetAvailability(sessionAsset.assetCode, sessionAsset.assetIssuer).totalAvailable.toString())
+        }
+        return AvailableBalance(sessionAsset.assetCode, sessionAsset.assetIssuer, totalAvailable)
     }
 
     private fun getTotalAssetBalance(): TotalBalance {
         val currAsset = sessionAsset.assetCode
+
         val assetBalance = truncateDecimalPlaces(AccountUtils.getTotalBalance(currAsset))
         return TotalBalance(WalletState.ACTIVE, sessionAsset.assetName, sessionAsset.assetCode, assetBalance)
     }
@@ -161,7 +184,7 @@ class WalletViewModelPolling(application: Application) : AndroidViewModel(applic
                     override fun run() {
                         Timber.d("starting pulling cycle")
                         when {
-                            NetworkUtils(applicationContext).isNetworkAvailable() -> loadAccount(true)
+                            NetworkUtils(applicationContext).isNetworkAvailable() -> AccountRepository.refresh()
                         }
                         handler.postDelayed(this, 4000)
                     }

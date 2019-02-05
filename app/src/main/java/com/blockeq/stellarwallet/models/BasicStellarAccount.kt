@@ -11,7 +11,6 @@ class BasicStellarAccount(private val accountId:String, private val inflationDes
         return AccountResponse(KeyPair.fromAccountId(accountId), sequenceNumber)
     }
 
-
     override fun getAccountId(): String {
         return accountId
     }

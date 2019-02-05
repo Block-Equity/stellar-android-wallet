@@ -9,6 +9,7 @@ import com.blockeq.stellarwallet.helpers.LocalStoreImpl
 import com.blockeq.stellarwallet.helpers.WalletLifecycleListener
 import com.blockeq.stellarwallet.interfaces.WalletStore
 import com.blockeq.stellarwallet.models.*
+import com.blockeq.stellarwallet.mvvm.balance.BalanceRepository
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 import com.blockeq.stellarwallet.mvvm.exchange.ExchangeRepository
 import com.blockeq.stellarwallet.remote.Horizon
@@ -38,7 +39,12 @@ class WalletApplication : MultiDexApplication() {
                 assetSession.postValue(sessionAsset)
             }
             override fun getPin(): String? { return impl.getPin() }
-            override fun setPin(pin: String?) { impl.setPin(pin) }
+            override fun setPin(pin: String?) {
+                impl.setPin(pin)
+                if(pin != null) {
+                    BalanceRepository.init()
+                }
+            }
             override fun getFormattedCurrentAssetCode(): String? { return impl.getFormattedCurrentAssetCode() }
             override fun getFormattedCurrentAvailableBalance(context: Context): String? { return impl.getFormattedCurrentAvailableBalance(context) }
             override fun getAvailableBalance(): String? { return impl.getAvailableBalance() }

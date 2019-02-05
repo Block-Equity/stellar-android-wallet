@@ -2,6 +2,7 @@ package com.blockeq.stellarwallet.fragments.tabs
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.arch.lifecycle.Observer
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -18,6 +19,8 @@ import com.blockeq.stellarwallet.interfaces.*
 import com.blockeq.stellarwallet.models.AssetUtil
 import com.blockeq.stellarwallet.models.Currency
 import com.blockeq.stellarwallet.models.SelectionModel
+import com.blockeq.stellarwallet.mvvm.account.AccountRepository
+import com.blockeq.stellarwallet.mvvm.balance.BalanceRepository
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
@@ -46,6 +49,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
     private val ZERO_VALUE = "0.0"
     private val decimalFormat = DecimalFormat("0.#######")
 
+    private var balance : BalanceAvailability? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_tab_trade, container, false)
     }
@@ -57,6 +61,16 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         setBuyingSelectorEnabled(false)
         refreshAddedCurrencies()
         setupListeners()
+
+        BalanceRepository.loadBalance().observe(this, Observer {
+            balance = it
+            Timber.d("new balance")
+            if (::selectedSellingCurrency.isInitialized) {
+                refreshAddedCurrencies()
+                setupListeners()
+            }
+            //TODO refresh non native amount
+        })
     }
 
     private fun setupListeners() {
@@ -284,6 +298,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 submitTrade.isEnabled = true
                 setSellingSelectorEnabled(true)
                 setBuyingSelectorEnabled(true)
+                BalanceRepository.refresh()
             }
 
             override fun onFailed(errorMessage : String) {
@@ -337,32 +352,37 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
     }
 
     private fun refreshAddedCurrencies() {
-        val accounts = WalletApplication.wallet.getBalances()
+        if (balance == null) {
+            return
+        }
         addedCurrencies.clear()
         var i = 0
-        var native : Currency? = null
-        accounts.forEach {
-            val currency = if(it.assetType != "native") {
-                Currency(i, it.assetCode, it.assetCode, it.balance.toDouble(), it.asset)
-            } else {
-                native = Currency(i, AssetUtil.NATIVE_ASSET_CODE, "LUMEN", it.balance.toDouble(), it.asset)
-                native as Currency
+        var native: Currency? = null
+        balance?.let {
+            it.getAllBalances().forEach { that ->
+                val currency = if (that.assetCode != "native") {
+                    Currency(i, that.assetCode, that.assetCode, that.totalAvailable.toDouble(), that.asset)
+                } else {
+                    native = Currency(i, AssetUtil.NATIVE_ASSET_CODE, "LUMEN", that.totalAvailable.toDouble(), that.asset)
+                    native as Currency
+                }
+                addedCurrencies.add(currency)
+                i++
             }
-            addedCurrencies.add(currency)
-            i++
+
+            native?.let { currency ->
+                addedCurrencies.remove(currency)
+                addedCurrencies.add(0, currency)
+            }
+
+            sellingCurrencies.clear()
+            buyingCurrencies.clear()
+            addedCurrencies.forEach { added ->
+                sellingCurrencies.add(added)
+                buyingCurrencies.add(added)
+            }
         }
 
-        native?.let {
-            addedCurrencies.remove(it)
-            addedCurrencies.add(0, it)
-        }
-
-        sellingCurrencies.clear()
-        buyingCurrencies.clear()
-        addedCurrencies.forEach {
-            sellingCurrencies.add(it)
-            buyingCurrencies.add(it)
-        }
     }
 
     override fun onLastOrderBookUpdated(asks: Array<OrderBookResponse.Row>, bids: Array<OrderBookResponse.Row>) {

@@ -8,7 +8,6 @@ interface StellarAccount {
     fun getInflationDestination() : String?
     fun getSequenceNumber() : Long
     fun getSubEntryCount() : Int?
-
     fun getAccountResponse(): AccountResponse
 
     /**

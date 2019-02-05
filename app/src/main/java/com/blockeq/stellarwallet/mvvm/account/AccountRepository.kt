@@ -37,6 +37,10 @@ object AccountRepository {
         return accountLiveData
     }
 
+    fun refresh(){
+        fetch(true)
+    }
+
     private fun fetch(forceRefresh:Boolean = true){
         val account = accountResponse
         if (!forceRefresh && account != null) {

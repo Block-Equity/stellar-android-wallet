@@ -1,40 +1,56 @@
 package com.blockeq.stellarwallet.models
 
+import com.blockeq.stellarwallet.interfaces.BalanceAvailability
+import org.stellar.sdk.Asset
 import org.stellar.sdk.AssetTypeCreditAlphaNum
 import org.stellar.sdk.AssetTypeNative
 import org.stellar.sdk.responses.AccountResponse
 import org.stellar.sdk.responses.OfferResponse
-import timber.log.Timber
-import java.util.ArrayList
 
-class BalanceAvailability(private val account: AccountResponse, private val offerList: ArrayList<OfferResponse>) {
-    private var baseReserve = 0.5
-    private var baseFee = 0.00001
+class BalanceAvailabilityImpl(private val account: AccountResponse,
+                              private val offerList: ArrayList<OfferResponse>) : BalanceAvailability {
+
+    override fun getAccountId(): String {
+        return account.keypair.accountId
+    }
+
     private val nativeBalance: NativeAssetAvailability
 
     init {
         val extraSigners = account.signers.size - 1f
-        val baseAmount = 2f
-        val trustLinesValue = (account.balances.size - 1f) * baseAmount
+        val trustlineCount = account.balances.size -1
+        val baseCount = 2
+        val baseAmount = baseCount*0.5f
+        val trustLinesValue = (trustlineCount) * 0.5f
 
         val balance = getNativeBalance().balance.toFloat()
+
+        var nativeAsset: Asset? = null
+        account.balances.forEach {
+            if (it.assetType == "native") {
+                nativeAsset = it.asset
+            }
+        }
+
         nativeBalance = NativeAssetAvailabilityImpl(
+                baseCount,
                 baseAmount,
                 extraSigners.toInt(), extraSigners*1,
-                account.balances.size,
+                trustlineCount,
                 trustLinesValue,
                 offerList.size,
                 offerList.size.toFloat()*0.5f,
                 getPostedForTradeAmount("native",null),
-                balance)
+                balance, "XLM", null, nativeAsset!!)
     }
 
-    fun getAssetAvailability(assetCode: String, issuer:String): AssetAvailability {
-        return AssetAvailabilityImpl(getPostedForTradeAmount(assetCode, issuer),
-                getBalanceByAsset(assetCode).balance.toFloat())
+    override fun getAssetAvailability(assetCode: String, issuer:String): AssetAvailability {
+        val balance = getBalanceByAsset(assetCode)
+        return AssetAvailabilityImpl(assetCode, issuer, getPostedForTradeAmount(assetCode, issuer),
+                balance.balance.toFloat(), balance.asset)
     }
 
-    fun getNativeAssetAvailability() : NativeAssetAvailability {
+    override fun getNativeAssetAvailability() : NativeAssetAvailability {
         return nativeBalance
     }
 
@@ -59,7 +75,6 @@ class BalanceAvailability(private val account: AccountResponse, private val offe
     private fun getPostedForTradeAmount(assetCode : String, issuer: String?) : Float {
         var postedForTrade = 0f
         offerList.forEach {
-            Timber.d("d")
             val asset = it.selling
             when (asset) {
                 is AssetTypeNative -> {
@@ -76,5 +91,16 @@ class BalanceAvailability(private val account: AccountResponse, private val offe
             }
         }
         return postedForTrade
+    }
+
+    override fun getAllBalances(): ArrayList<AssetAvailability> {
+        val balances : ArrayList<AssetAvailability> = arrayListOf()
+        balances.add(getNativeAssetAvailability())
+        account.balances.forEach {
+            if (it.assetType != "native") {
+                balances.add(getAssetAvailability(it.assetCode, it.assetIssuer.accountId))
+            }
+        }
+        return balances
     }
 }

@@ -8,8 +8,10 @@ import android.content.Context
 import android.os.Handler
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants.Companion.DEFAULT_ACCOUNT_BALANCE
+import com.blockeq.stellarwallet.interfaces.BalanceAvailability
 import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.mvvm.account.AccountRepository
+import com.blockeq.stellarwallet.mvvm.balance.BalanceRepository
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
@@ -124,7 +126,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
            //      walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.ERROR, accountId,  sessionAsset.assetCode, null, null, null))
            // }
             WalletState.NOT_FUNDED -> {
-                val availableBalance = AvailableBalance("XLM", DEFAULT_ACCOUNT_BALANCE)
+                val availableBalance = AvailableBalance("XLM", null, DEFAULT_ACCOUNT_BALANCE)
                 val totalAvailableBalance = TotalBalance(state, "Lumens", "XLM", DEFAULT_ACCOUNT_BALANCE)
                 walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.UNFUNDED, accountId, sessionAsset.assetCode, availableBalance, totalAvailableBalance, null))
             } else -> {
@@ -136,7 +138,7 @@ class WalletViewModel(application: Application) : AndroidViewModel(application) 
     private fun getAvailableBalance() : AvailableBalance {
         val balance = truncateDecimalPlaces(WalletApplication.wallet.getAvailableBalance())
         val currAsset = sessionAsset.assetCode
-        return AvailableBalance(currAsset, balance)
+        return AvailableBalance(currAsset,  sessionAsset.assetIssuer, balance)
     }
 
     private fun getTotalAssetBalance(): TotalBalance {
