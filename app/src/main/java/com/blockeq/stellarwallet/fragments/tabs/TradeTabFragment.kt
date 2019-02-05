@@ -68,9 +68,14 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
             Timber.d("new balance")
             if (::selectedSellingCurrency.isInitialized) {
                 refreshAddedCurrencies()
-                setupListeners()
+                sellingCurrencies.forEach { selection ->
+                    if (selection.label == selectedSellingCurrency.label) {
+                        refreshBalance(selection.holdings)
+                    }
+                }
+                refreshSubmitTradeButton()
+                updateBuyingValueIfNeeded()
             }
-            //TODO refresh non native amount
         })
     }
 
@@ -95,11 +100,8 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
         sellingCustomSelector.spinner.onItemSelectedListener = object : OnItemSelected() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectedSellingCurrency = sellingCurrencies[position]
-                holdingsAmount = selectedSellingCurrency.holdings
 
-                holdings.text = String.format(getString(R.string.holdings_amount),
-                        decimalFormat.format(holdingsAmount),
-                        selectedSellingCurrency.label)
+                refreshBalance(selectedSellingCurrency.holdings)
 
                 resetBuyingCurrencies()
                 buyingCurrencies.removeAt(position)
@@ -117,6 +119,32 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 onSelectorChanged()
             }
         }
+    }
+
+    private fun applyNativeFees(amount : Double): Double {
+        // it will reserve double the network fee to be able to cancel the 100% open offer
+        val value = amount -0.5 -0.0002
+        if (value < 0) return 0.00
+        return value
+    }
+
+    private fun refreshBalance(holding: Double) {
+        var availableForTrading = holding
+        if (selectedSellingCurrency.label == "XLM") {
+            availableForTrading = applyNativeFees(holding)
+        }
+
+        var string = String.format(getString(R.string.holdings_amount),
+                decimalFormat.format(availableForTrading),
+                selectedSellingCurrency.label)
+
+        if (selectedSellingCurrency.label == "XLM") {
+            string += " available"
+        }
+
+        holdings.text = string
+
+        holdingsAmount = availableForTrading
     }
 
     private fun onSelectorChanged() {
@@ -197,7 +225,11 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
             R.id.quarter -> sellingCustomSelector.editText.setText(decimalFormat.format(0.25 * holdingsAmount).toString())
             R.id.half -> sellingCustomSelector.editText.setText(decimalFormat.format(0.5 * holdingsAmount).toString())
             R.id.threeQuarters -> sellingCustomSelector.editText.setText(decimalFormat.format(0.75 * holdingsAmount).toString())
-            R.id.all -> sellingCustomSelector.editText.setText(decimalFormat.format(holdingsAmount))
+            R.id.all -> {
+                if (selectedSellingCurrency.label == "XLM") {
+                    sellingCustomSelector.editText.setText(decimalFormat.format(holdingsAmount))
+                }
+            }
             R.id.toggleMarket -> {
                 orderType = OrderType.MARKET
                 toggleMarket.setTextColor(ContextCompat.getColor(view.context, R.color.white))

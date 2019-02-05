@@ -77,7 +77,12 @@ object Horizon : HorizonTasks {
                     if (response.isSuccess) {
                         listener.onExecuted()
                     } else {
-                        listener.onFailed(response.extras.resultCodes.operationsResultCodes[0].toString())
+                        val resultCodes = response.extras.resultCodes.operationsResultCodes
+                        if (resultCodes != null && resultCodes.size > 0) {
+                            listener.onFailed(response.extras.resultCodes.operationsResultCodes[0].toString())
+                        } else {
+                            listener.onFailed(response.toString())
+                        }
                     }
                 }
             } catch (error : java.lang.Exception) {
