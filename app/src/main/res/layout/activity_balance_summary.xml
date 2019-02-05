@@ -102,6 +102,12 @@
 
         <TableRow android:id="@+id/row2">
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/base_reserve"
+                style="@style/RegularText"
+                android:padding="@dimen/activity_vertical_margin" />
+            <TextView
                 android:id="@+id/baseReserveAmountTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
