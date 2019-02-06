@@ -249,7 +249,7 @@ class WalletFragment : BaseFragment() {
                     WalletState.UPDATING -> {
                         noTransactionsTextView.visibility = View.GONE
                         sendButton.isEnabled = false
-                        receiveButton.isEnabled = false
+                        receiveButton.isEnabled = true
                         swipeRefresh_wallet.isRefreshing = false
                         fetchingState.visibility = View.VISIBLE
                         fundingState.visibility = View.GONE
