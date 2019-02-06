@@ -74,7 +74,7 @@
         android:stretchColumns="0,1,2"
         android:layout_margin="@dimen/activity_vertical_margin" >
 
-        <TableRow>
+        <TableRow android:id="@+id/row1">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
                 android:gravity="center" />
         </TableRow>
 
-        <TableRow>
+        <TableRow android:id="@+id/row2">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -123,7 +123,30 @@
                 style="@style/RegularText" />
         </TableRow>
 
-        <TableRow>
+        <TableRow android:id="@+id/row3">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/signers"
+                style="@style/RegularText"
+                android:padding="@dimen/activity_vertical_margin" />
+            <TextView
+                android:id="@+id/signersAmountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
+            <TextView
+                android:id="@+id/signersXLMTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/activity_vertical_margin"
+                style="@style/RegularText" />
+        </TableRow>
+
+        <TableRow android:id="@+id/row4">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -146,7 +169,7 @@
                 style="@style/RegularText" />
         </TableRow>
 
-        <TableRow>
+        <TableRow android:id="@+id/row5">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -173,46 +196,23 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/signers"
+                android:text="@string/traded"
                 style="@style/RegularText"
                 android:padding="@dimen/activity_vertical_margin" />
             <TextView
-                android:id="@+id/signersAmountTextView"
+                android:id="@+id/tradedAmountTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="@dimen/activity_vertical_margin"
                 style="@style/RegularText" />
             <TextView
-                android:id="@+id/signersXLMTextView"
+                android:id="@+id/tradedXLMTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="@dimen/activity_vertical_margin"
                 style="@style/RegularText" />
-        </TableRow>
-
-        <TableRow>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/minimum_balance"
-                android:textSize="@dimen/text_size_small"
-                style="@style/NavTitleText"
-                android:padding="@dimen/activity_vertical_margin" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/activity_vertical_margin"
-                android:gravity="center" />
-            <TextView
-                android:id="@+id/minimumBalanceTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                style="@style/NavTitleText"
-                android:textSize="@dimen/text_size_small"
-                android:padding="@dimen/activity_vertical_margin" />
         </TableRow>
 
     </TableLayout>

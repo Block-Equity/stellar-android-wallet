@@ -169,17 +169,17 @@
     <string name="inflation_set_success">Inflation destination set!</string>
     <string name="inflation_set_error">There was an error setting inflation destination.</string>
 
-    <!--Balance Summary Activity-->
+    <!--BalanceAvailabilityImpl Summary Activity-->
     <string name="total_balance">Total Balance</string>
     <string name="available_balance">Available Balance</string>
     <string name="type">Type</string>
     <string name="amount_lowercase">Amount</string>
     <string name="xlm">XLM</string>
-    <string name="base_reserve">Base Reserve</string>
+    <string name="base_reserve">Base Amount</string>
     <string name="trustlines">Trustlines</string>
-    <string name="offers">Offers</string>
-    <string name="signers">Signers</string>
-    <string name="minimum_balance">Minimum Balance</string>
+    <string name="offers">Open Offers</string>
+    <string name="signers">Additional signers</string>
+    <string name="traded">Posted for Trade</string>
     <string name="balance_summary">Balance Summary</string>
 
     <!--View Secret Seed Activity-->

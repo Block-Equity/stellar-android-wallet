@@ -1,5 +1,6 @@
 package com.blockeq.stellarwallet.activities
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -19,15 +20,18 @@ import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
 import com.blockeq.stellarwallet.models.ExchangeApiModel
 import com.blockeq.stellarwallet.models.HorizonException
+import com.blockeq.stellarwallet.mvvm.balance.BalanceRepository
 import com.blockeq.stellarwallet.mvvm.exchange.ExchangeEntity
 import com.blockeq.stellarwallet.mvvm.exchange.ExchangeViewModel
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
+import com.blockeq.stellarwallet.utils.StringFormat
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
 import kotlinx.android.synthetic.main.activity_send_funds.*
+import kotlinx.android.synthetic.main.activity_stellar_address.*
 
 class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallback {
 
@@ -47,6 +51,8 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
     private var amount: Double = 0.0
     private var address: String = ""
     private var exchange : ExchangeApiModel? = null
+
+    private var amountAvailable : Double = 0.0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_send_funds)
@@ -56,11 +62,18 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
     //region User Interface
 
     private fun setupUI() {
-        setSupportActionBar(toolBar)
+        setSupportActionBar(toolBar_send)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance(applicationContext)
-        assetCodeTextView.text = WalletApplication.userSession.getFormattedCurrentAssetCode()
+        BalanceRepository.loadBalance().observe(this, Observer {
+            if (it!=null) {
+                val asset = it.getActiveAssetAvailability()
+                amountAvailable = (asset.totalAvailable-0.0001)
+                @SuppressLint("SetTextI18n")
+                titleText.text = StringFormat.truncateDecimalPlaces(amountAvailable.toString()) + " " + asset.assetCode
+                assetCodeTextView.text = asset.assetCode
+            }
+        })
 
         amountTextView.text = "0"
         numberKeyboard.setListener(this)
@@ -71,7 +84,7 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
             throw IllegalStateException("failed to parse the arguments, please use ${SendActivity::class.java.simpleName}#newIntent(...)")
         }
 
-        addressEditText.text = address
+        addressEditTextSend.text = address
 
         send_button.setOnClickListener {
             if (isAmountValid()) {
@@ -165,7 +178,7 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
     }
 
     private fun isAmountValid() : Boolean {
-        return amount <= WalletApplication.userSession.getAvailableBalance()!!.toDouble() && amount != 0.0
+        return amount <= amountAvailable && amount != 0.0
     }
 
     //endregion

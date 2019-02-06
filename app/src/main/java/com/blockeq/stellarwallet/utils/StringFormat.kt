@@ -4,6 +4,7 @@ import com.blockeq.stellarwallet.helpers.Constants
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
+import java.text.DecimalFormat
 import java.util.*
 
 class StringFormat {
@@ -20,7 +21,8 @@ class StringFormat {
 
         fun truncateDecimalPlaces(string: String?): String {
             if (string == null) return Constants.DEFAULT_ACCOUNT_BALANCE
-            return String.format(Locale.ENGLISH, "%.4f", string.toDouble())
+            val decimalFormat = DecimalFormat("0.#####")
+            return decimalFormat.format(string.toDouble())
         }
 
         /**

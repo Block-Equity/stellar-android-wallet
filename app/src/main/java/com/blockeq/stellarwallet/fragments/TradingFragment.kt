@@ -56,8 +56,9 @@ class TradingFragment : Fragment(), OnTradeCurrenciesChanged, OnRefreshOrderBook
     }
 
     override fun onCurrencyChange(selling: SelectionModel, buying: SelectionModel) {
-        currentSell =  AssetUtil.toDataAssetFrom(selling)
+        currentSell = AssetUtil.toDataAssetFrom(selling)
         currentBuy = AssetUtil.toDataAssetFrom(buying)
+        orderBookListener?.updateTradingCurrencies(selling, buying)
         onRefreshOrderBook()
     }
 
@@ -76,7 +77,6 @@ class TradingFragment : Fragment(), OnTradeCurrenciesChanged, OnRefreshOrderBook
                 if (asks.isNotEmpty() && bids.isNotEmpty()) {
                     tradeTabListener?.onLastOrderBookUpdated(bids, asks)
                 }
-
                 orderBookListener?.updateOrderBook(sellingCode, buyingCode, asks, bids)
             }
 
@@ -84,7 +84,6 @@ class TradingFragment : Fragment(), OnTradeCurrenciesChanged, OnRefreshOrderBook
                 Timber.d("failed to load the order book %s", errorMessage)
                 orderBookListener?.failedToUpdate()
             }
-
         }, buy, sell)
     }
 }

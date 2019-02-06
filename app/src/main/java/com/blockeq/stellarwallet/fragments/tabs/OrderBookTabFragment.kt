@@ -121,9 +121,11 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
 
         Timber.d("loading order book complete items %s", orderBooks.size)
 
-        runOnUiThread {
-            updateList(orderBooks, sellingCode, buyingCode)
-            empty_view_order_book.visibility = View.GONE
+        if (empty_view_order_book != null) {
+            runOnUiThread {
+                updateList(orderBooks, sellingCode, buyingCode)
+                empty_view_order_book.visibility = View.GONE
+            }
         }
 
         if (swipeRefresh != null) {
@@ -138,8 +140,13 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
         buyingAsset = buying
         sellingAsset = selling
 
-        Timber.d("Updating objects in order book")
-        updateList(orderBooks, sellingAsset!!.code, buyingAsset!!.code)
+        orderBooks.clear()
+        if (orderBookRv != null) {
+            orderBookRv.visibility = View.GONE
+        }
+
+//        Timber.d("Updating objects in order book")
+//        updateList(orderBooks, sellingAsset!!.code, buyingAsset!!.code)
     }
 
     override fun failedToUpdate() {
@@ -154,11 +161,13 @@ class OrderBookTabFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, O
 
     private fun updateList(list : MutableList<OrderBook>, sellingCode: String, buyingCode: String) {
         Timber.d("updateTradingCurrencies %s %s", buyingCode, sellingCode)
-        orderBookRv.visibility = View.VISIBLE
-        this.buyingCode = buyingCode
-        this.sellingCode = sellingCode
-        orderBooksAdapter.setOrderBookList(list)
-        orderBooksAdapter.setCurrencies(sellingCode, buyingCode)
-        orderBooksAdapter.notifyDataSetChanged()
+        if (orderBookRv != null && list.isNotEmpty()) {
+            orderBookRv.visibility = View.VISIBLE
+            this.buyingCode = buyingCode
+            this.sellingCode = sellingCode
+            orderBooksAdapter.setOrderBookList(list)
+            orderBooksAdapter.setCurrencies(sellingCode, buyingCode)
+            orderBooksAdapter.notifyDataSetChanged()
+        }
     }
 }

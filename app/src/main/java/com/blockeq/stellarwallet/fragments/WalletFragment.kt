@@ -17,7 +17,6 @@ import com.blockeq.stellarwallet.activities.BalanceSummaryActivity
 import com.blockeq.stellarwallet.activities.ReceiveActivity
 import com.blockeq.stellarwallet.activities.StellarAddressActivity
 import com.blockeq.stellarwallet.adapters.WalletRecyclerViewAdapter
-import com.blockeq.stellarwallet.mvvm.effects.WalletViewModel
 import com.blockeq.stellarwallet.mvvm.effects.WalletViewState
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
@@ -129,7 +128,7 @@ class WalletFragment : BaseFragment() {
         val time = System.currentTimeMillis()
         val list = WalletHeterogeneousWrapper()
         list.array.add(TotalBalance(WalletState.UPDATING,"Refreshing Wallet", "","Updating..."))
-        list.array.add(AvailableBalance("XLM", "-1"))
+        list.array.add(AvailableBalance("XLM", null, "0"))
         list.array.add(Pair("Activity", "Amount"))
         list.hideAvailableBalance()
         val delta = System.currentTimeMillis() - time
@@ -250,7 +249,7 @@ class WalletFragment : BaseFragment() {
                     WalletState.UPDATING -> {
                         noTransactionsTextView.visibility = View.GONE
                         sendButton.isEnabled = false
-                        receiveButton.isEnabled = false
+                        receiveButton.isEnabled = true
                         swipeRefresh_wallet.isRefreshing = false
                         fetchingState.visibility = View.VISIBLE
                         fundingState.visibility = View.GONE
@@ -281,9 +280,13 @@ class WalletFragment : BaseFragment() {
             }
         })
         adapter.setOnLearnMoreButtonListener(object : WalletRecyclerViewAdapter.OnLearnMoreButtonListener {
-            override fun onLearnMoreButtonClicked(view: View, position: Int) {
+            override fun onLearnMoreButtonClicked(view: View, assetCode: String, issuer: String?, position: Int) {
                 val context = view.context
-                startActivity(Intent(context, BalanceSummaryActivity::class.java))
+                if (assetCode == "native" || issuer == null || issuer.isBlank()) {
+                    startActivity(BalanceSummaryActivity.newNativeAssetIntent(context))
+                } else {
+                    startActivity(BalanceSummaryActivity.newIntent(context, assetCode, issuer))
+                }
                 (context as Activity).overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
             }
         })

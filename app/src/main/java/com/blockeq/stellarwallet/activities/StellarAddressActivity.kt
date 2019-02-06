@@ -1,5 +1,7 @@
 package com.blockeq.stellarwallet.activities
 
+import android.annotation.SuppressLint
+import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -16,6 +18,8 @@ import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
 import com.blockeq.stellarwallet.interfaces.ContactsRepository.ContactOperationStatus
 import com.blockeq.stellarwallet.models.Contact
+import com.blockeq.stellarwallet.mvvm.balance.BalanceRepository
+import com.blockeq.stellarwallet.utils.StringFormat
 import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_stellar_address.*
@@ -105,7 +109,13 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
 
         when(mode) {
             Mode.SEND_TO -> {
-                titleBalance.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance(applicationContext)
+                BalanceRepository.loadBalance().observe(this, Observer {
+                    if(it!=null) {
+                        val asset = it.getActiveAssetAvailability()
+                        @SuppressLint("SetTextI18n")
+                        titleBalance.text = StringFormat.truncateDecimalPlaces((asset.totalAvailable-0.0001).toString()) + " " + asset.assetCode
+                    }
+                })
                 bottomButton.text = getString(R.string.next_button_text)
                 ContactNameText.visibility = View.GONE
                 ContactNameEditText.visibility = View.GONE

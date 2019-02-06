@@ -4,11 +4,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder
 import org.stellar.sdk.responses.AccountResponse
 
 interface StellarAccount {
-    fun getAccountId() : String
+    fun getAccountId() : String?
     fun getInflationDestination() : String?
     fun getSequenceNumber() : Long
     fun getSubEntryCount() : Int?
-
     fun getAccountResponse(): AccountResponse
 
     /**
@@ -19,6 +18,7 @@ interface StellarAccount {
                 .append(getAccountId())
                 .append(getInflationDestination())
                 .append(getSubEntryCount())
+                .append(getSequenceNumber())
                 .toHashCode()
     }
 

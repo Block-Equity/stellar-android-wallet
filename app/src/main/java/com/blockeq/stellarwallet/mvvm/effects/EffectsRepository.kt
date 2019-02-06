@@ -38,6 +38,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
 
     fun clear() {
         effectsList.clear()
+        effectListLiveData = MutableLiveData()
     }
 
     private fun notifyLiveData(data : ArrayList<EffectResponse>){

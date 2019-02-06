@@ -5,7 +5,8 @@ import com.blockeq.stellarwallet.models.TotalBalance
 import org.stellar.sdk.responses.effects.EffectResponse
 
 data class WalletViewState(var status: AccountStatus, var accountId:String, var activeAssetCode : String,
-                           var availableBalance : AvailableBalance?, var totalBalance : TotalBalance?,
+                           var availableBalance : AvailableBalance?,
+                           var totalBalance : TotalBalance?,
                            var effectList: ArrayList<EffectResponse>?) {
 
     enum class AccountStatus {

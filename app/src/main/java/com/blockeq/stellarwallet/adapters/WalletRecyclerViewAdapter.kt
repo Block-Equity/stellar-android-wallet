@@ -35,7 +35,7 @@ class WalletRecyclerViewAdapter(var context: Context) : RecyclerView.Adapter<Rec
     }
 
     interface OnLearnMoreButtonListener {
-        fun onLearnMoreButtonClicked(view : View, position : Int)
+        fun onLearnMoreButtonClicked(view : View, assetCode:String, issuer:String?, position : Int)
     }
 
     enum class TransactionViewType(val value :Int) {
@@ -151,17 +151,6 @@ class WalletRecyclerViewAdapter(var context: Context) : RecyclerView.Adapter<Rec
     inner class AvailableBalanceViewHolder(v : View) : RecyclerView.ViewHolder(v) {
         var balance : TextView = v.findViewById(R.id.availableBalanceTextView)
         var learnMoreButton : TextView = v.findViewById(R.id.learnMoreButton)
-
-        init {
-            learnMoreButton.setOnClickListener {
-                onLearnMoreListener?.let { listener ->
-                    val position = adapterPosition
-                    if (position != RecyclerView.NO_POSITION) {
-                        listener.onLearnMoreButtonClicked(v, position)
-                    }
-                }
-            }
-        }
     }
 
     class TransactionHeaderViewHolder(v : View) : RecyclerView.ViewHolder(v) {
@@ -229,6 +218,10 @@ class WalletRecyclerViewAdapter(var context: Context) : RecyclerView.Adapter<Rec
         val availableBalance = items!![position] as AvailableBalance
         @SuppressLint("SetTextI18n")
         viewHolder.balance.text = "${availableBalance.balance} ${getVisibleAssetCode(availableBalance.assetCode)}"
+        viewHolder.learnMoreButton.setOnClickListener { view ->
+            onLearnMoreListener?.
+                    onLearnMoreButtonClicked(view, availableBalance.assetCode, availableBalance.issuer, position)
+        }
     }
 
     private fun getVisibleAssetCode(assetCode : String) : String {
