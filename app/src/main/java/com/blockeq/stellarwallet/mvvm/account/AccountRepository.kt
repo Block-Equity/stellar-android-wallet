@@ -66,8 +66,10 @@ object AccountRepository {
                     }
 
                     override fun onError(error: ErrorResponse) {
+                        val stellarAccountid = WalletApplication.wallet.getStellarAccountId()
+
                         Timber.e("(${error.code}) Error Loading account")
-                        liveData.postValue(AccountEvent(error.code, BasicStellarAccount(WalletApplication.wallet.getStellarAccountId()!!, null, 0L, null)))
+                        liveData.postValue(AccountEvent(error.code, BasicStellarAccount(stellarAccountid, null, 0L, null)))
                         isBusy = false
                     }
 
