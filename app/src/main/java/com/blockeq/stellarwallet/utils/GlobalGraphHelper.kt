@@ -39,7 +39,7 @@ class GlobalGraphHelper {
             return WalletApplication.wallet.clearLocalStore()
         }
 
-        fun restart(activity : FragmentActivity){
+        private fun restart(activity : FragmentActivity){
             val intent = Intent(activity, LaunchActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             activity.startActivity(intent)

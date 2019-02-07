@@ -28,6 +28,7 @@ import timber.log.Timber
 import android.support.v4.content.ContextCompat.getColor
 import android.graphics.*
 import com.blockeq.stellarwallet.models.*
+import com.blockeq.stellarwallet.mvvm.effects.EffectsRepository
 import com.blockeq.stellarwallet.mvvm.effects.WalletViewModelPolling
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 
@@ -70,7 +71,7 @@ class WalletFragment : BaseFragment() {
         lastEffectListSize = 0
 
         // since closing the stream causes so many crashes let's disable the pull to refresh
-        swipeRefresh_wallet.isEnabled = false
+        swipeRefresh_wallet.isEnabled = true
         initViewModels()
 
         swipeRefresh_wallet.setOnRefreshListener {

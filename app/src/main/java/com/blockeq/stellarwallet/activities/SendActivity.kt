@@ -31,7 +31,6 @@ import com.blockeq.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
 import kotlinx.android.synthetic.main.activity_send_funds.*
-import kotlinx.android.synthetic.main.activity_stellar_address.*
 
 class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallback {
 
@@ -88,7 +87,7 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
 
         send_button.setOnClickListener {
             if (isAmountValid()) {
-                if (WalletApplication.wallet.getShowPinOnSend()) {
+                    if (WalletApplication.wallet.getShowPinOnSend()) {
                    startActivityForResult(WalletManagerActivity.verifyPin(it.context), REQUEST_PIN)
                 } else {
                     sendPayment()
