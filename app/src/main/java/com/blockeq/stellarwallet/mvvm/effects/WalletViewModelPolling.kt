@@ -138,7 +138,8 @@ class WalletViewModelPolling(application: Application) : AndroidViewModel(applic
                 WalletState.NOT_FUNDED -> {
                     val availableBalance = AvailableBalance("XLM", null, DEFAULT_ACCOUNT_BALANCE)
                     val totalAvailableBalance = TotalBalance(state, "Lumens", "XLM", DEFAULT_ACCOUNT_BALANCE)
-                    walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.UNFUNDED, WalletApplication.wallet.getStellarAccountId()!!, sessionAsset.assetCode, availableBalance, totalAvailableBalance, null))
+                    val accountId = WalletApplication.wallet.getStellarAccountId()?:""
+                    walletViewState.postValue(WalletViewState(WalletViewState.AccountStatus.UNFUNDED, accountId, sessionAsset.assetCode, availableBalance, totalAvailableBalance, null))
                 }
                 else -> {
                     // nothing
