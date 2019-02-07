@@ -4,7 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 29
+    //noinspection GradleCompatible
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.blockeq.stellarwallet"
         minSdkVersion 19
