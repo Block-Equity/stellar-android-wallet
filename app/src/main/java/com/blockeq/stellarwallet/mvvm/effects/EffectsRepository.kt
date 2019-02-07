@@ -33,10 +33,13 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
             return
         }
         isBusy = true
-        fetchEffectsList(true)
+        currentCursor = ""
+        effectsList.clear()
+        fetchAllEffects(true)
     }
 
-    fun clear() {
+    fun clear() {   
+
         effectsList.clear()
         effectListLiveData = MutableLiveData()
     }
@@ -50,7 +53,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
      * Makes a call to the webservice. Keep it private since the view/viewModel should be 100% abstracted
      * from the data sources implementation.
      */
-    private fun fetchEffectsList(notifyFirsTime : Boolean = false) {
+    private fun fetchAllEffects(notifyFirsTime : Boolean = false) {
         var cursor = ""
         if (!effectsList.isEmpty()) {
             cursor = effectsList.last().pagingToken
@@ -73,7 +76,7 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
                         effectsList.addAll(result)
                         if (isFirstTime) notifyLiveData(effectsList)
                         Timber.d("recursive call to getEffects")
-                        fetchEffectsList()
+                        fetchAllEffects()
                     } else {
                         if (cursor != currentCursor) {
                             if (ENABLE_STREAM) {

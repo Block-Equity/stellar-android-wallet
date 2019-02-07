@@ -2,7 +2,6 @@ package com.blockeq.stellarwallet.fragments
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.v4.app.FragmentActivity
 import android.support.v7.preference.PreferenceFragmentCompat
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.utils.GlobalGraphHelper
@@ -27,7 +26,13 @@ class DebugFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPref
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         key?.let {
            if (getString(R.string.preference_debug_test_server) == key) {
-               GlobalGraphHelper.restart(activity as FragmentActivity)
+               activity?.let { activity ->
+                   GlobalGraphHelper.wipe(activity)
+                   view?.postDelayed({
+                       android.os.Process.killProcess(android.os.Process.myPid())
+                   }, 400)
+
+               }
            }
         }
     }

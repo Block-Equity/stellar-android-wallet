@@ -232,7 +232,9 @@ object Horizon : HorizonTasks {
                 errorMessage = error.message.toString()
             }
 
-            return effectResults?.records
+            val list = effectResults?.records
+            list?.asReversed()
+            return list
         }
 
         override fun onPostExecute(result: ArrayList<EffectResponse>?) {
