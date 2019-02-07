@@ -4,8 +4,8 @@ import com.blockeq.stellarwallet.interfaces.StellarAccount
 import org.stellar.sdk.KeyPair
 import org.stellar.sdk.responses.AccountResponse
 
-class BasicStellarAccount(private val accountId:String?, private val inflationDestination:String?,
-                          private val sequenceNumber:Long, private val subEntryCount:Int?): StellarAccount {
+open class BasicStellarAccount(private val accountId:String?, private val inflationDestination:String?,
+                               private val sequenceNumber:Long, private val subEntryCount:Int?): StellarAccount {
 
     override fun getAccountResponse(): AccountResponse {
         return AccountResponse(KeyPair.fromAccountId(accountId), sequenceNumber)

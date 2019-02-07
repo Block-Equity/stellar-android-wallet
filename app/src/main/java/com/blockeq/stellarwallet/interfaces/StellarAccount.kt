@@ -21,7 +21,7 @@ interface StellarAccount {
                 .append(getSequenceNumber())
 
         // let's check the balance of each entry since sequenceNumber does not
-        getAccountResponse().balances?.forEach {
+        getAccountResponse()?.balances?.forEach {
             builder.append(it.balance)
         }
 

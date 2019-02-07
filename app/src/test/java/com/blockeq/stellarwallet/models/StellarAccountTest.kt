@@ -29,23 +29,28 @@ class StellarAccountTest {
 
     @Test
     fun testHashCodeMockEqual(){
-        val stellarAccount1 = BasicStellarAccount("this_is_an_account", "inflation_destination", 123L, 2345)
-        val stellarAccount2 = BasicStellarAccount("this_is_an_account", "inflation_destination", 123L, 2345)
+        val account1 = "GDXVG5T344TBLPCYYTUTMJTWNU2DN6XV2IH3CQYNTNQ2JVG7IOSPTCP5"
+
+        val stellarAccount1 = BasicStellarAccount(account1, "inflation_destination", 123L, 2345)
+        val stellarAccount2 = BasicStellarAccount(account1, "inflation_destination", 123L, 2345)
 
         assertEquals(stellarAccount1.basicHashCode(), stellarAccount2.basicHashCode())
     }
 
     @Test
     fun testHashCodeMockDiff(){
-        val stellarAccount1 = BasicStellarAccount("this_is_an_account", "inflation_destination", 123L, 2345)
-        val stellarAccount2 = BasicStellarAccount("this_is_an_account2", "inflation_destination", 123L, 2345)
+        val account1 = "GDXVG5T344TBLPCYYTUTMJTWNU2DN6XV2IH3CQYNTNQ2JVG7IOSPTCP5"
+        val account2 = "GA7UNACGPOAITFO2APERDQ3ASUY2OFODYIBIFL42RZVMPBUKWEFW7MPJ"
+
+        val stellarAccount1 = BasicStellarAccount(account1, "inflation_destination", 123L, 2345)
+        val stellarAccount2 = BasicStellarAccount(account2, "inflation_destination", 123L, 2345)
 
         assertNotSame(stellarAccount1.basicHashCode(), stellarAccount2.basicHashCode())
-        val stellarAccount3 = BasicStellarAccount("this_is_an_account", "inflation_destination2", 123L, 2345)
+        val stellarAccount3 = BasicStellarAccount(account1, "inflation_destination2", 123L, 2345)
         assertNotSame(stellarAccount1.basicHashCode(), stellarAccount3.basicHashCode())
-        val stellarAccount4 = BasicStellarAccount("this_is_an_account", "inflation_destination", 1234L, 2345)
+        val stellarAccount4 = BasicStellarAccount(account1, "inflation_destination", 1234L, 2345)
         assertNotSame(stellarAccount1.basicHashCode(), stellarAccount4.basicHashCode())
-        val stellarAccount5 = BasicStellarAccount("this_is_an_account", "inflation_destination", 123L, 23456)
+        val stellarAccount5 = BasicStellarAccount(account1, "inflation_destination", 123L, 23456)
         assertNotSame(stellarAccount1.basicHashCode(), stellarAccount5.basicHashCode())
     }
 
