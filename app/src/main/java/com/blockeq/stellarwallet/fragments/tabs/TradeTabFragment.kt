@@ -228,11 +228,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
             R.id.quarter -> sellingCustomSelector.editText.setText(decimalFormat.format(0.25 * holdingsAmount).toString())
             R.id.half -> sellingCustomSelector.editText.setText(decimalFormat.format(0.5 * holdingsAmount).toString())
             R.id.threeQuarters -> sellingCustomSelector.editText.setText(decimalFormat.format(0.75 * holdingsAmount).toString())
-            R.id.all -> {
-                if (selectedSellingCurrency.label == "XLM") {
-                    sellingCustomSelector.editText.setText(decimalFormat.format(holdingsAmount))
-                }
-            }
+            R.id.all -> sellingCustomSelector.editText.setText(decimalFormat.format(holdingsAmount))
             R.id.toggleMarket -> {
                 orderType = OrderType.MARKET
                 toggleMarket.setTextColor(ContextCompat.getColor(view.context, R.color.white))
@@ -322,6 +318,9 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 setSellingSelectorEnabled(true)
                 setBuyingSelectorEnabled(true)
                 BalanceRepository.refresh()
+                sellingCustomSelector.editText.setText("0.0")
+                buyingCustomSelector.editText.setText("0.0")
+
             }
 
             override fun onFailed(errorMessage : String) {
@@ -330,6 +329,7 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                 createSnackBar("Order failed: $errorMessage", Snackbar.LENGTH_SHORT)?.show()
 
                 submitTrade.isEnabled = true
+
                 setSellingSelectorEnabled(false)
                 setBuyingSelectorEnabled(false)
             }
