@@ -16,6 +16,7 @@ import com.blockeq.stellarwallet.BuildConfig
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.helpers.Constants.Companion.STELLAR_ADDRESS_LENGTH
+import com.blockeq.stellarwallet.helpers.OnTextChanged
 import com.blockeq.stellarwallet.interfaces.ContactsRepository.ContactOperationStatus
 import com.blockeq.stellarwallet.models.Contact
 import com.blockeq.stellarwallet.mvvm.balance.BalanceRepository
@@ -23,6 +24,8 @@ import com.blockeq.stellarwallet.utils.StringFormat
 import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_stellar_address.*
+import org.jetbrains.anko.doAsync
+import org.stellar.sdk.federation.Federation
 import timber.log.Timber
 
 class StellarAddressActivity : BaseActivity(), View.OnClickListener {
@@ -120,6 +123,15 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
                 ContactNameText.visibility = View.GONE
                 ContactNameEditText.visibility = View.GONE
                 addressTitleText.text = getString(R.string.send_to_text)
+                addressEditText.addTextChangedListener(object : OnTextChanged() {
+                    override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
+                        if (text.contains("*")) {
+                            doAsync {
+                                addressEditText.setText(Federation.resolve(text.toString()).accountId)
+                            }
+                        }
+                    }
+                })
             }
             Mode.UPDATE_CONTACT -> {
                 titleBalance.visibility = View.GONE
