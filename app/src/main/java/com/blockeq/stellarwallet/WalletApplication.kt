@@ -62,6 +62,12 @@ class WalletApplication : MultiDexApplication() {
 
         PRNGFixes.apply()
 
+        if (DebugPreferencesHelper(applicationContext).isTestNetServerEnabled) {
+            Horizon.init(ServerType.TEST_NET)
+        } else {
+            Horizon.init(ServerType.PROD)
+        }
+
         setupLifecycleListener()
 
         wallet = BlockEqWallet(LocalStoreImpl(applicationContext))
@@ -81,12 +87,6 @@ class WalletApplication : MultiDexApplication() {
                 // Normal app init code...
             } else {
                 Timber.d("Leak canary is disabled")
-            }
-
-            if (DebugPreferencesHelper(applicationContext).isTestNetServerEnabled) {
-                Horizon.init(ServerType.TEST_NET)
-            } else {
-                Horizon.init(ServerType.PROD)
             }
         }
 
