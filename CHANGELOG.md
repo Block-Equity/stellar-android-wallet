@@ -14,7 +14,7 @@ restore, createWallet, verifyPin, showSecretSeed and showMnemonic
 - Refactored the class StellarAddressActivity (prev EnterAddressActivity) to be used in the following 3 flows: toSend, updateContact and createContact.
 - Stellar SDK upgrade to 0.4.1
 - I added the logic to reuse fragments in the bottom navigation bar (before were created on every switch of the bottom bar)
-- Android studio upgrade to 3.3, kotlin 1.3.11, garde 3.3.0
+- Android studio upgrade to 3.3, kotlin 1.3.11, gradle 3.3.0
 - Adding the logic were you can not open trading if you do not have enough asset pairs.
 - I added the passphrase to the mnemonicView
 - I moved all BlockEQ specific request from volley to retrofit. (Exchange providers, diagnostic and supported assets. I added Stetho and reused the same instance okHttp used in Horizon.
