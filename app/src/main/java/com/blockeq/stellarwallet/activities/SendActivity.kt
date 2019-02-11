@@ -31,6 +31,7 @@ import com.blockeq.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
 import kotlinx.android.synthetic.main.activity_send_funds.*
+import kotlinx.android.synthetic.main.activity_stellar_address.*
 
 class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallback {
 
@@ -65,12 +66,15 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         BalanceRepository.loadBalance().observe(this, Observer {
-            if (it!=null) {
+            if(it!=null) {
                 val asset = it.getActiveAssetAvailability()
-                amountAvailable = (asset.totalAvailable-0.0001)
                 @SuppressLint("SetTextI18n")
-                titleText.text = StringFormat.truncateDecimalPlaces(amountAvailable.toString()) + " " + asset.assetCode
-                assetCodeTextView.text = asset.assetCode
+                amountAvailable = asset.totalAvailable-0.0001
+                if (amountAvailable < 0) {
+                    titleText.text = "< 0.0001"
+                } else {
+                    titleText.text = "${StringFormat.truncateDecimalPlaces(amountAvailable.toString())} ${asset.assetCode}"
+                }
             }
         })
 
@@ -207,6 +211,7 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
         Toast.makeText(applicationContext, getString(R.string.send_success_message), Toast.LENGTH_LONG).show()
         runOnUiThread {
             if (!isFinishing) {
+                setResult(Activity.RESULT_OK)
                 finish()
             }
         }

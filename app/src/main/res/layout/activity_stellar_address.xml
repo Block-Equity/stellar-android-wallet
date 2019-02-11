@@ -20,99 +20,109 @@
         android:layout_marginBottom="16dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <TextView
-        android:id="@+id/titleBalance"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/RegularText"
-        android:textSize="@dimen/text_size_xlarge"
-        android:paddingStart="@dimen/activity_vertical_margin"
-        android:paddingEnd="@dimen/activity_vertical_margin"
-        android:layout_gravity="start"
-        android:background="@color/white"
-        android:layout_marginBottom="16dp"
-        tool:text="1,000,000,000 XLM"
-        android:layout_below="@id/toolBar" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolBar">
 
-    <LinearLayout
-        android:layout_below="@id/titleBalance"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/white"
-        android:padding="16dp">
-
-        <TextView
-            style="@style/NavTitleText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ContactNameText"
-            android:text="@string/name"
-            android:layout_marginBottom="25dp"
-            android:textColor="@color/sendToTextColor"/>
-
-        <EditText
-            android:importantForAutofill="no"
-            android:id="@+id/ContactNameEditText"
-            android:layout_marginBottom="25dp"
-            android:layout_height="0dp"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_weight="0.8"
-            android:padding="14dp"
-            android:background="@color/addressBackGroundColor"
-            android:textSize="15sp"
-            android:scrollHorizontally="true"
-            android:inputType="textCapSentences"
-            android:hint="@string/enter_the_contact_name"
-            tool:ignore="ContentDescription,UnusedAttribute" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/titleBalance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/RegularText"
+                android:textSize="@dimen/text_size_xlarge"
+                android:paddingStart="@dimen/activity_vertical_margin"
+                android:paddingEnd="@dimen/activity_vertical_margin"
+                android:layout_gravity="start"
+                android:background="@color/white"
+                android:layout_marginBottom="16dp"
+                tool:text="1,000,000,000 XLM" />
+
+            <LinearLayout
+                android:layout_below="@id/titleBalance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:padding="16dp">
+
+                <TextView
+                    style="@style/NavTitleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ContactNameText"
+                    android:text="@string/name"
+                    android:layout_marginBottom="25dp"
+                    android:textColor="@color/sendToTextColor"/>
+
+                <EditText
+                    android:importantForAutofill="no"
+                    android:id="@+id/ContactNameEditText"
+                    android:layout_marginBottom="25dp"
+                    android:layout_height="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_weight="0.8"
+                    android:padding="14dp"
+                    android:background="@color/addressBackGroundColor"
+                    android:textSize="15sp"
+                    android:scrollHorizontally="true"
+                    android:inputType="textCapSentences"
+                    android:hint="@string/enter_the_contact_name"
+                    tool:ignore="ContentDescription,UnusedAttribute" />
 
 
-        <TextView
-            android:layout_marginBottom="25dp"
-            tool:text="ADDRESS TITLE"
-            android:id="@+id/addressTitleText"
-            style="@style/NavTitleText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/sendToTextColor"/>
+                <TextView
+                    android:layout_marginBottom="25dp"
+                    tool:text="ADDRESS TITLE"
+                    android:id="@+id/addressTitleText"
+                    style="@style/NavTitleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/sendToTextColor"/>
 
-        <LinearLayout
-            android:id="@+id/addressLayout"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:orientation="horizontal"
-            android:background="@drawable/bg_rounded_button_blue">
+                <LinearLayout
+                    android:id="@+id/addressLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/bg_rounded_button_blue">
 
-            <EditText
-                android:id="@+id/addressEditText"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.8"
-                android:padding="14dp"
-                android:background="@color/addressBackGroundColor"
-                android:textSize="15sp"
-                android:scrollHorizontally="true"
-                android:digits="@string/stellar_address_alphabet"
-                android:inputType="textCapCharacters"
-                android:hint="@string/send_address_hint"
-                android:singleLine="true"
-                android:importantForAutofill="no"
-                tool:text="ALAJSLDJFALSKDFJ2L3K4JLSDKFJL34KJ5LKSZJGFLKSJL4"
-                tool:ignore="UnusedAttribute" />
+                    <EditText
+                        android:id="@+id/addressEditText"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.8"
+                        android:padding="14dp"
+                        android:background="@color/addressBackGroundColor"
+                        android:textSize="15sp"
+                        android:scrollHorizontally="true"
+                        android:digits="@string/stellar_address_alphabet"
+                        android:inputType="textCapCharacters"
+                        android:hint="@string/send_address_hint"
+                        android:singleLine="true"
+                        android:importantForAutofill="no"
+                        tool:text="ALAJSLDJFALSKDFJ2L3K4JLSDKFJL34KJ5LKSZJGFLKSJL4"
+                        tool:ignore="UnusedAttribute" />
 
-            <ImageButton
-                android:contentDescription="@string/open_camera_to_scan_qr"
-                android:id="@+id/cameraImageButton"
-                android:layout_width="0dp"
-                android:layout_weight="0.15"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:src="@drawable/ic_camera"/>
+                    <ImageButton
+                        android:contentDescription="@string/open_camera_to_scan_qr"
+                        android:id="@+id/cameraImageButton"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.15"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:src="@drawable/ic_camera"/>
 
-        </LinearLayout>
+                </LinearLayout>
 
-    </LinearLayout>
+            </LinearLayout>
 
+        </RelativeLayout>
+    </ScrollView>
     <Button
         android:id="@+id/bottomButton"
         android:layout_width="match_parent"
@@ -120,5 +130,4 @@
         style="@style/PrimaryButtonStyle"
         android:layout_margin="@dimen/activity_vertical_margin"
         android:layout_alignParentBottom="true" />
-
 </RelativeLayout>

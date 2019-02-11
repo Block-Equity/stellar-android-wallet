@@ -81,8 +81,8 @@ class BalanceSummaryActivity : BasePopupActivity() {
     }
 
     private fun renderNativeAsset(native : NativeAssetAvailability){
-        totalBalanceTextView.text = native.total.toString()
-        availableBalanceTextView.text = native.totalAvailable.toString()
+        totalBalanceTextView.text = StringFormat.truncateDecimalPlaces(native.total.toString())
+        availableBalanceTextView.text = StringFormat.truncateDecimalPlaces(native.totalAvailable.toString())
 
         baseReserveAmountTextView.text = 1.toString()
         baseReserveXLMTextView.text = native.baseAmount.toString()

@@ -29,7 +29,7 @@
         android:id="@+id/learnMoreButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/learn_more"
+        android:text="@string/balance"
         android:textSize="@dimen/text_size_micro"
         android:padding="8dp"
         android:background="@color/paleSky"

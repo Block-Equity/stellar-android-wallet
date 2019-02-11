@@ -74,6 +74,8 @@ class TradeTabFragment : Fragment(), View.OnClickListener, OnUpdateTradeTab {
                             refreshBalance(selection.holdings)
                         }
                     }
+                    buyingCustomSelector.editText.setText("")
+                    sellingCustomSelector.editText.setText("")
                     refreshSubmitTradeButton()
                     updateBuyingValueIfNeeded()
                 }
