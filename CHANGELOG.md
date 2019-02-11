@@ -3,8 +3,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [2.0.7.4] 2019-02-11
+## Added
+- Major refactor to keep PinActivity with single responsibility, moved the overall logic to activity of result contract in WalletManagementActivity:
+restore, createWallet, verifyPin, showSecretSeed and showMnemonic
+- WalletFragment has been refactored to use mvvm
+- Added 100% test coverage around WalletManagementActivity.
+- Added trade tool tip (will be disable for now)
+- Added contact feature, contactListFragment. Now is possible to add a stellar address to any contact and send fund to them.
+- Refactored the class StellarAddressActivity (prev EnterAddressActivity) to be used in the following 3 flows: toSend, updateContact and createContact.
+- Stellar SDK upgrade to 0.4.1
+- I added the logic to reuse fragments in the bottom navigation bar (before were created on every switch of the bottom bar)
+- Android studio upgrade to 3.3, kotlin 1.3.11, garde 3.3.0
+- Adding the logic were you can not open trading if you do not have enough asset pairs.
+- I added the passphrase to the mnemonicView
+- I moved all BlockEQ specific request from volley to retrofit. (Exchange providers, diagnostic and supported assets. I added Stetho and reused the same instance okHttp used in Horizon.
+- Add more states on the WalletFragment: UnFunded, Refreshing and Active
+- Added retry mechanism and empty placeholders to orderBookFragment and myOffers Fragment.
+- Added Bitrise deployment workflow that uploads a new binary to the internal track.
+- Adding a better balance calculator in AvailableBalanceActivity, and providing a balance for the non native assets.
 
-## [2.0.5] 2018-12-19
+## [2.0.5] 2018-12-19   
 ## Fixed
 - GH-171 Toast crash from background thread
 - GH-173 Fixes `NumberFormatException` with empty buying price
