@@ -34,7 +34,7 @@
     <string name="logoDescription">Block-EQ</string>
     <string name="title_activity_wallets">Wallets</string>
     <string name="title_activity_my_wallet">Wallet</string>
-    <string name="learn_more">Learn more</string>
+    <string name="balance">Balance</string>
     <string name="activity">ACTIVITY</string>
     <string name="amount">AMOUNT</string>
     <string name="no_transactions">You currently have no transactions</string>

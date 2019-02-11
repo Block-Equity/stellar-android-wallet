@@ -22,7 +22,9 @@ import com.blockeq.stellarwallet.mvvm.balance.BalanceRepository
 import com.blockeq.stellarwallet.utils.StringFormat
 import com.blockeq.stellarwallet.vmodels.ContactsRepositoryImpl
 import com.google.zxing.integration.android.IntentIntegrator
+import com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE
 import kotlinx.android.synthetic.main.activity_stellar_address.*
+import org.jetbrains.anko.db.StringParser
 import timber.log.Timber
 
 class StellarAddressActivity : BaseActivity(), View.OnClickListener {
@@ -38,6 +40,9 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
     companion object {
         private const val ARG_MODE = "ARG_MODE"
         private const val ARG_CONTACT = "ARG_CONTACT"
+
+        private const val SEND_MONEY_REQUEST = 0x33
+
 
         fun toSend(context: Context): Intent {
             val intent = Intent(context, StellarAddressActivity::class.java)
@@ -81,16 +86,22 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        if (result != null) {
-            if (result.contents == null) {
-                Toast.makeText(this, "Scan cancelled", Toast.LENGTH_LONG).show()
-            } else {
-                addressEditText.setText(result.contents)
-                bottomButton.isEnabled = true
+        when(requestCode) {
+            REQUEST_CODE -> {
+                val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+                if (result != null) {
+                    if (result.contents == null) {
+                        Toast.makeText(this, "Scan cancelled", Toast.LENGTH_LONG).show()
+                    } else {
+                        addressEditText.setText(result.contents)
+                        bottomButton.isEnabled = true
+                    }
+                }
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
+            SEND_MONEY_REQUEST -> {
+                finish()
+            } else -> super.onActivityResult(requestCode, resultCode, data)
+
         }
     }
 
@@ -113,7 +124,12 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
                     if(it!=null) {
                         val asset = it.getActiveAssetAvailability()
                         @SuppressLint("SetTextI18n")
-                        titleBalance.text = StringFormat.truncateDecimalPlaces((asset.totalAvailable-0.0001).toString()) + " " + asset.assetCode
+                        val amount = asset.totalAvailable-0.0001
+                        if (amount < 0) {
+                            titleBalance.text = "< 0.0001"
+                        } else {
+                            titleBalance.text = "${StringFormat.truncateDecimalPlaces(amount.toString())} ${asset.assetCode}"
+                        }
                     }
                 })
                 bottomButton.text = getString(R.string.next_button_text)
@@ -158,7 +174,7 @@ class StellarAddressActivity : BaseActivity(), View.OnClickListener {
                 when(mode) {
                     Mode.SEND_TO -> {
                         if (address.length == STELLAR_ADDRESS_LENGTH && address != WalletApplication.wallet.getStellarAccountId()) {
-                            startActivity(SendActivity.newIntent(this, address))
+                            startActivityForResult(SendActivity.newIntent(this, address), SEND_MONEY_REQUEST)
                             overridePendingTransition(R.anim.slide_in_up, R.anim.stay)
                         } else {
                             // Shake animation on the text
