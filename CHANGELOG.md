@@ -53,7 +53,7 @@ restore, createWallet, verifyPin, showSecretSeed and showMnemonic
 - GH-147 Update market price once user is back from limit
 - GH-155 Creating asset does not refresh the list
 - GH-151 Sending coins to yourself should be blocked
-- GH-145 [UninitializedPropertyAccessException] crash switching fast form settings to trading
+- GH-145 [UninitializedPropertyAccessException] crash switching fast from settings to trading
 
 Other bug bash issues fixed in this version:
 - Add asset is missing a back arrow on Action Bar
