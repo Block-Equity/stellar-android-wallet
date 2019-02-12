@@ -22,6 +22,7 @@ restore, createWallet, verifyPin, showSecretSeed and showMnemonic
 - Added retry mechanism and empty placeholders to orderBookFragment and myOffers Fragment.
 - Added Bitrise deployment workflow that uploads a new binary to the internal track.
 - Adding a better balance calculator in AvailableBalanceActivity, and providing a balance for the non native assets.
+- Added the ability to use horizon test-net server in debug builds, settings > debug > testnet server)
 
 ## [2.0.5] 2018-12-19   
 ## Fixed
