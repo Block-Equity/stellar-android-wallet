@@ -44,6 +44,6 @@ ext {
     anko_version='0.10.8'
     // this two following libraries are
     // depending on the version of the okhttp
-    stellarVersion = '0.4.1'
+    stellarVersion = '0.5.0'
     retrofit = '2.4.0'
 }

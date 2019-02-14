@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
+    android:orientation="vertical">
+
+<LinearLayout
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:id="@+id/rootLayout">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:layout_width="@dimen/logo_width"
@@ -28,7 +32,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_padding_size_large">
+        android:layout_marginTop="@dimen/margin_padding_size_large"
+        android:layout_marginBottom="@dimen/margin_padding_size_large">
 
         <com.andrognito.pinlockview.IndicatorDots
             android:id="@+id/indicatorDots"
@@ -49,26 +54,21 @@
             app:dotSpacing="@dimen/dot_spacing" />
     </RelativeLayout>
 
-    <LinearLayout
+    <com.andrognito.pinlockview.PinLockView
+        android:gravity="center"
+        android:id="@+id/pinLockView"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center">
-
-        <com.andrognito.pinlockview.PinLockView
-            android:id="@+id/pinLockView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_padding_size_medium_large"
-            android:layout_marginEnd="@dimen/margin_padding_size_medium_large"
-            app:keypadButtonSize="@dimen/margin_padding_size_xxxlarge"
-            app:keypadDeleteButtonPressedColor="@color/deletePressedColor"
-            app:keypadDeleteButtonSize="@dimen/margin_padding_size_medium_large"
-            app:keypadHorizontalSpacing="@dimen/margin_padding_size_xxlarge"
-            app:keypadShowDeleteButton="true"
-            app:keypadTextColor="@color/white"
-            app:keypadTextSize="@dimen/keypad_size"
-            app:keypadVerticalSpacing="@dimen/keybadSpacing"
-            app:pinLength="4" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_padding_size_medium_large"
+        android:layout_marginEnd="@dimen/margin_padding_size_medium_large"
+        app:keypadButtonSize="@dimen/margin_padding_size_xxxlarge"
+        app:keypadDeleteButtonPressedColor="@color/deletePressedColor"
+        app:keypadDeleteButtonSize="@dimen/margin_padding_size_medium_large"
+        app:keypadHorizontalSpacing="@dimen/margin_padding_size_xxlarge"
+        app:keypadShowDeleteButton="true"
+        app:keypadTextColor="@color/white"
+        app:keypadTextSize="@dimen/keypad_size"
+        app:keypadVerticalSpacing="@dimen/keybadSpacing"
+        app:pinLength="4" />
     </LinearLayout>
-
-</LinearLayout>
+</ScrollView>
