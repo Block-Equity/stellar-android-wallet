@@ -17,71 +17,82 @@
         app:titleTextColor="@color/colorPrimaryDark"
         android:theme="@style/ToolbarTheme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-    
-    <RelativeLayout
-        android:id="@+id/qrLayout"
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.60"
-        android:orientation="vertical"
-        android:background="@color/qrCodeLayoutBackGroundColor">
-
-        <ImageView
-            android:id="@+id/qrImageView"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_centerInParent="true"
-            android:background="@color/qrCodeBackGroundColor"/>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/addressLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.40"
-        android:orientation="vertical"
-        android:background="@color/addressLayoutBackGroundColor"
-        android:padding="18dp">
-
-        <TextView
-            android:id="@+id/addressTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/your_wallet_address"
-            android:textColor="@color/addressTextColor"
-            android:textSize="18sp"/>
+        android:layout_height="match_parent">
 
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="25dp"
-            android:layout_below="@+id/addressTitle"
-            android:orientation="horizontal"
-            android:background="@drawable/bg_rounded_button_blue">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/addressEditText"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.8"
-                android:padding="12dp"
-                android:ellipsize="end"
-                android:background="@color/addressBackGroundColor"
-                android:maxLines="1"
-                android:gravity="center"
-                android:textSize="12sp" />
+            <RelativeLayout
+                android:id="@+id/qrLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.60"
+                android:orientation="vertical"
+                android:background="@color/qrCodeLayoutBackGroundColor">
 
-            <ImageButton
-                android:id="@+id/copyImageButton"
-                android:layout_width="0dp"
-                android:layout_weight="0.2"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:src="@drawable/ic_copy"
-                android:contentDescription="@string/copy_address_content_descriptor" />
+                <ImageView
+                    android:id="@+id/qrImageView"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:layout_centerInParent="true"
+                    android:background="@color/qrCodeBackGroundColor"/>
 
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/addressLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.40"
+                android:orientation="vertical"
+                android:background="@color/addressLayoutBackGroundColor"
+                android:padding="18dp">
+
+                <TextView
+                    android:id="@+id/addressTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/your_wallet_address"
+                    android:textColor="@color/addressTextColor"
+                    android:textSize="18sp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_below="@+id/addressTitle"
+                    android:orientation="horizontal"
+                    android:background="@drawable/bg_rounded_button_blue">
+
+                    <TextView
+                        android:id="@+id/addressEditText"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.8"
+                        android:padding="12dp"
+                        android:ellipsize="end"
+                        android:background="@color/addressBackGroundColor"
+                        android:maxLines="1"
+                        android:gravity="center"
+                        android:textSize="12sp" />
+
+                    <ImageButton
+                        android:id="@+id/copyImageButton"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.2"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:src="@drawable/ic_copy"
+                        android:contentDescription="@string/copy_address_content_descriptor" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
         </LinearLayout>
-
-    </RelativeLayout>
+    </ScrollView>
 </LinearLayout>
