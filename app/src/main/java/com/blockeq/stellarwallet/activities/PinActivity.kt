@@ -10,7 +10,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.interfaces.OnPinLockCompleteListener
-import com.blockeq.stellarwallet.utils.GlobalGraphHelper
 import kotlinx.android.synthetic.main.activity_pin.*
 import timber.log.Timber
 
@@ -24,6 +23,7 @@ class PinActivity : AppCompatActivity() {
     companion object {
         private const val INTENT_ARG_MESSAGE: String = "INTENT_ARG_MESSAGE"
         private const val INTENT_ARG_PIN: String = "INTENT_ARG_PIN"
+        const val RESULT_MAX_ATTEMPT_REACH = -2
 
         /**
          * New Instance of Intent to launch a {@link PinActivity}
@@ -41,7 +41,7 @@ class PinActivity : AppCompatActivity() {
                     }
                     intent.putExtra(INTENT_ARG_PIN, pin)
                 } else {
-                    throw IllegalStateException("pin ahs to contain 4 characters, found = '${pin.length}")
+                    throw IllegalStateException("pin has to contain 4 characters, found = '${pin.length}")
                 }
             }
             return intent
@@ -66,8 +66,7 @@ class PinActivity : AppCompatActivity() {
                     val intent = Intent()
                     intent.putExtra(INTENT_ARG_PIN, pin)
                     setResult(Activity.RESULT_OK, intent)
-                    overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
-                    finish()
+                    finishWithTransition()
                 } else {
                     processIncorrectPin()
                 }
@@ -99,8 +98,8 @@ class PinActivity : AppCompatActivity() {
                 customMessageTextView.text = resources.getQuantityString(R.plurals.attempts_template,
                         MAX_ATTEMPTS - numAttempts, MAX_ATTEMPTS - numAttempts)
                 if (numAttempts == MAX_ATTEMPTS) {
-                    //TODO move this to WalletManager
-                    GlobalGraphHelper.wipeAndRestart(this@PinActivity)
+                    setResult(RESULT_MAX_ATTEMPT_REACH)
+                    finishWithTransition()
                 }
             }
         })
@@ -116,6 +115,11 @@ class PinActivity : AppCompatActivity() {
         setResult(RESULT_CANCELED)
         super.onBackPressed()
         overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
+    }
+
+    private fun finishWithTransition(){
+        overridePendingTransition(R.anim.stay, R.anim.slide_out_down)
+        finish()
     }
     //endregion
 }
