@@ -1,5 +1,6 @@
 package com.blockeq.stellarwallet.activities
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -7,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.text.Html
 import android.text.Spanned
@@ -20,22 +20,25 @@ import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
 import com.blockeq.stellarwallet.models.ExchangeApiModel
 import com.blockeq.stellarwallet.models.HorizonException
-import com.blockeq.stellarwallet.models.PinType
+import com.blockeq.stellarwallet.mvvm.balance.BalanceRepository
+import com.blockeq.stellarwallet.mvvm.exchange.ExchangeEntity
+import com.blockeq.stellarwallet.mvvm.exchange.ExchangeViewModel
 import com.blockeq.stellarwallet.remote.Horizon
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
+import com.blockeq.stellarwallet.utils.StringFormat
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.getNumDecimals
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.hasDecimalPoint
-import com.blockeq.stellarwallet.vmodels.ExchangeEntity
-import com.blockeq.stellarwallet.vmodels.ExchangeViewModel
 import com.davidmiguel.numberkeyboard.NumberKeyboardListener
-import kotlinx.android.synthetic.main.contents_send.*
+import kotlinx.android.synthetic.main.activity_send_funds.*
+import kotlinx.android.synthetic.main.activity_stellar_address.*
 
 class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallback {
 
     companion object {
         private const val MAX_ALLOWED_DECIMALS = 7
         private const val ARG_ADDRESS_DATA = "ARG_ADDRESS_DATA"
+        private const val REQUEST_PIN = 0x0
 
         fun newIntent(context: Context, address: String): Intent {
             val intent = Intent(context, SendActivity::class.java)
@@ -48,20 +51,32 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
     private var amount: Double = 0.0
     private var address: String = ""
     private var exchange : ExchangeApiModel? = null
+
+    private var amountAvailable : Double = 0.0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.contents_send)
+        setContentView(R.layout.activity_send_funds)
         setupUI()
     }
 
     //region User Interface
 
     private fun setupUI() {
-        setSupportActionBar(toolBar)
+        setSupportActionBar(toolBar_send)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        titleText.text = WalletApplication.userSession.getFormattedCurrentAvailableBalance(applicationContext)
-        assetCodeTextView.text = WalletApplication.userSession.getFormattedCurrentAssetCode()
+        BalanceRepository.loadBalance().observe(this, Observer {
+            if(it!=null) {
+                val asset = it.getActiveAssetAvailability()
+                @SuppressLint("SetTextI18n")
+                amountAvailable = asset.totalAvailable-0.0001
+                if (amountAvailable < 0) {
+                    titleText.text = "< 0.0001"
+                } else {
+                    titleText.text = "${StringFormat.truncateDecimalPlaces(amountAvailable.toString())} ${asset.assetCode}"
+                }
+            }
+        })
 
         amountTextView.text = "0"
         numberKeyboard.setListener(this)
@@ -72,12 +87,12 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
             throw IllegalStateException("failed to parse the arguments, please use ${SendActivity::class.java.simpleName}#newIntent(...)")
         }
 
-        addressEditText.text = address
+        addressEditTextSend.text = address
 
         send_button.setOnClickListener {
             if (isAmountValid()) {
-                if (WalletApplication.localStore.showPinOnSend) {
-                    launchPINView(PinType.CHECK, "", "", null, false)
+                    if (WalletApplication.wallet.getShowPinOnSend()) {
+                   startActivityForResult(WalletManagerActivity.verifyPin(it.context), REQUEST_PIN)
                 } else {
                     sendPayment()
                 }
@@ -105,13 +120,11 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PinActivity.PIN_REQUEST_CODE) {
-            when (resultCode) {
-                Activity.RESULT_OK -> {
-                    sendPayment()
-                }
-                Activity.RESULT_CANCELED -> {}
-                else -> finish()
+        if (requestCode == REQUEST_PIN) {
+            if (resultCode == Activity.RESULT_OK) {
+                sendPayment()
+            } else {
+                finish()
             }
         }
     }
@@ -168,7 +181,7 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
     }
 
     private fun isAmountValid() : Boolean {
-        return amount <= WalletApplication.userSession.getAvailableBalance().toDouble() && amount != 0.0
+        return amount <= amountAvailable && amount != 0.0
     }
 
     //endregion
@@ -196,11 +209,12 @@ class SendActivity : BaseActivity(), NumberKeyboardListener, SuccessErrorCallbac
     override fun onSuccess() {
         progressBar.visibility = View.GONE
         Toast.makeText(applicationContext, getString(R.string.send_success_message), Toast.LENGTH_LONG).show()
-        val handler = Handler()
-        val runnableCode = Runnable {
-            launchWallet()
+        runOnUiThread {
+            if (!isFinishing) {
+                setResult(Activity.RESULT_OK)
+                finish()
+            }
         }
-        handler.postDelayed(runnableCode, 1000)
     }
 
     override fun onError(error: HorizonException) {

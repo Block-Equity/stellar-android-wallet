@@ -6,20 +6,20 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
-import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.models.Diagnostic
-import com.blockeq.stellarwallet.models.Fields
+import com.blockeq.stellarwallet.models.Values
+import com.blockeq.stellarwallet.remote.BlockEqRetrofit
+import com.blockeq.stellarwallet.remote.DiagnosticApi
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.DiagnosticUtils
 import com.blockeq.stellarwallet.utils.StringFormat
+import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_diagnostic.*
-import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import timber.log.Timber
 
 
 class DiagnosticActivity : BaseActivity() {
@@ -35,16 +35,16 @@ class DiagnosticActivity : BaseActivity() {
 
     fun setupUI() {
         setSupportActionBar(toolBar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val isPassphrase = WalletApplication.localStore.encryptedPassphrase != null
+        val isPassphrase = WalletApplication.wallet.getEncryptedPhrase() != null
         recoveryType = getRecoveryType()
 
         deviceModelTextView.text = DiagnosticUtils.getDeviceName()
         androidVersionTextView.text = DiagnosticUtils.getAndroidVersion()
         localeTextView.text = DiagnosticUtils.getLocale()
         appVersionTextView.text = DiagnosticUtils.getAppVersion()
-        publicAddressTextView.text = WalletApplication.localStore.stellarAccountId
+        publicAddressTextView.text = WalletApplication.wallet.getStellarAccountId()
         passphraseUsedTextView.text = isPassphrase.toString()
         recoveryTypeTextView.text = recoveryType
 
@@ -52,36 +52,46 @@ class DiagnosticActivity : BaseActivity() {
             if (recoveryType.isEmpty()) {
                 Toast.makeText(applicationContext, getString(R.string.empty_fields), Toast.LENGTH_SHORT).show()
             } else {
-                val queue = Volley.newRequestQueue(this)
-
-                val fields = Fields(appVersionTextView.text.toString(), deviceModelTextView.text.toString(),
-                        localeTextView.text.toString(), "Android " + androidVersionTextView.text,
-                        publicAddressTextView.text.toString(), explanationEditText.text.toString(), isPassphrase, recoveryType)
-
-                val json = Diagnostic(fields).toJSON()
-
-                val emailBody = "Issue report details:\n" + explanationEditText.text + "\n\nJSON format details:\n\n" + json.toString()
-
-                val postRequest = object : JsonObjectRequest(Request.Method.POST,
-                        Constants.BLOCKEQ_DIAGNOSTIC_URL, json,
-                        Response.Listener {
-                            val issueId = (it["fields"] as JSONObject).get("Report Id").toString()
-                            callEmailClient(emailBody, issueId)
-                        },
-                        Response.ErrorListener {
-                            Toast.makeText(applicationContext, "Problem sending diagnostic", Toast.LENGTH_SHORT).show()
-                        }) {}
-
-                queue.add(postRequest)
+                sendDiagnostic(isPassphrase)
                 finish()
             }
         }
     }
 
+    private fun sendDiagnostic(isPassphrase:Boolean) {
+        val diagnosticModel = Diagnostic(
+                Values(
+                        appVersionTextView.text.toString(),
+                        deviceModelTextView.text.toString(),
+                        localeTextView.text.toString(),
+                        "Android ${androidVersionTextView.text}",
+                        publicAddressTextView.text.toString(),
+                        explanationEditText.text.toString(),
+                        isPassphrase,
+                        recoveryType)
+        )
+
+        val emailBody = "Issue report details:\n" + explanationEditText.text + "\n\nJSON format details:\n\n" + diagnosticModel.toString()
+
+        BlockEqRetrofit.create(DiagnosticApi::class.java).uploadDiagnostic(
+                diagnosticModel).enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: retrofit2.Response<JsonObject>) {
+                val issueId = ((response.body() as JsonObject)["fields"] as JsonObject).get("Report Id").toString()
+                callEmailClient(emailBody, issueId)
+                Timber.v("diagnostic created id = {$issueId}")
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Timber.e("Error uploading diagnostic")
+            }
+        })
+
+    }
+
     private fun getRecoveryType(): String {
         val recoveryType : String
-        val encryptedPhrase = WalletApplication.localStore.encryptedPhrase
-        val masterKey = AccountUtils.getPinMasterKey(this, WalletApplication.userSession.pin!!)
+        val encryptedPhrase = WalletApplication.wallet.getEncryptedPhrase()
+        val masterKey = AccountUtils.getPinMasterKey(this, WalletApplication.userSession.getPin()!!)
 
         if (encryptedPhrase != null && masterKey!= null) {
             val decryptedPhrase = AccountUtils.getDecryptedString(encryptedPhrase, masterKey)

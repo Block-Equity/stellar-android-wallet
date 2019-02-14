@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
 
     <application
         android:name=".WalletApplication"
@@ -38,7 +40,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activities.EnterAddressActivity"
+            android:name=".activities.StellarAddressActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
@@ -94,6 +96,9 @@
         <activity android:name=".activities.DebugPreferenceActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
+
+        <activity android:name=".activities.WalletManagerActivity"
+            android:theme="@style/TransparentTheme"/>
 
         <activity android:name=".activities.AboutAnimationActivity"
             android:theme="@style/TransparentTheme"/>

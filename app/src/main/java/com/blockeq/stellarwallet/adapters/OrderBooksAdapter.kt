@@ -18,26 +18,36 @@ import kotlinx.android.synthetic.main.row_order_books_title.view.*
 import java.lang.IllegalStateException
 import java.text.DecimalFormat
 
-class OrderBooksAdapter(private val orderBooksList: MutableList<OrderBook>,
-                        private var currencyCodeTo: String?,
-                        private var currencyCodeFrom: String?,
-                        private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyHeaderHandler {
+class OrderBooksAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), StickyHeaderHandler {
+    override fun getAdapterData(): MutableList<*>? {
+        return orderBooksList
+    }
+
+    private var orderBooksList: MutableList<OrderBook>? = null
+    private var currencyCodeTo: String? = null
+    private var currencyCodeFrom: String? = null
 
     fun setCurrencies(currencyCodeTo: String, currencyCodeFrom: String) {
         this.currencyCodeTo = currencyCodeTo
         this.currencyCodeFrom = currencyCodeFrom
     }
 
-    override fun getAdapterData(): MutableList<*> {
-        return orderBooksList
+    fun setOrderBookList(list: MutableList<OrderBook>) {
+        orderBooksList = list
     }
 
     override fun getItemViewType(position: Int): Int {
-        return orderBooksList[position].type.value
+        orderBooksList?.let {
+            return it[position].type.value
+        }
+        return 0
     }
 
     override fun getItemCount(): Int {
-        return orderBooksList.size
+        orderBooksList?.let {
+            return it.size
+        }
+        return 0
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -66,30 +76,32 @@ class OrderBooksAdapter(private val orderBooksList: MutableList<OrderBook>,
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val orderBook = orderBooksList[position]
-        when(holder){
-           is TitleViewHolder -> holder.title.text = context.getString(R.string.orderBooksTitle, currencyCodeTo, currencyCodeFrom)
-           is HeaderViewHolder -> {
-               if (orderBook.type == OrderBookAdapterTypes.BUY_HEADER) {
-                   holder.header.text = context.getText(R.string.buyOffers)
-               } else if (orderBook.type == OrderBookAdapterTypes.SELL_HEADER) {
-                   holder.header.text = context.getText(R.string.sellOffers)
-               }
-           }
-           is SubHeaderViewHolder -> {
-               holder.currencyFrom.text = context.getString(R.string.offerPrice, currencyCodeFrom)
-               holder.amountTo.text = context.getString(R.string.offerAmount, currencyCodeTo)
-               holder.amountFrom.text = context.getString(R.string.offerValue, currencyCodeFrom)
-           }
-           is ItemViewHolder -> {
-               val format = DecimalFormat("0.#######")
-               holder.fromPrice.text = format.format(orderBook.fromPrice)
-               holder.toAmount.text =format.format(orderBook.toAmount)
-               holder.fromValue.text = format.format(orderBook.fromValue)
-           }
-           is EmptyViewHolder -> {
-               // nothing
-           }
+        orderBooksList?.let {
+            val orderBook = it[position]
+            when(holder){
+                is TitleViewHolder -> holder.title.text = context.getString(R.string.orderBooksTitle, currencyCodeTo, currencyCodeFrom)
+                is HeaderViewHolder -> {
+                    if (orderBook.type == OrderBookAdapterTypes.BUY_HEADER) {
+                        holder.header.text = context.getText(R.string.buyOffers)
+                    } else if (orderBook.type == OrderBookAdapterTypes.SELL_HEADER) {
+                        holder.header.text = context.getText(R.string.sellOffers)
+                    }
+                }
+                is SubHeaderViewHolder -> {
+                    holder.currencyFrom.text = context.getString(R.string.offerPrice, currencyCodeFrom)
+                    holder.amountTo.text = context.getString(R.string.offerAmount, currencyCodeTo)
+                    holder.amountFrom.text = context.getString(R.string.offerValue, currencyCodeFrom)
+                }
+                is ItemViewHolder -> {
+                    val format = DecimalFormat("0.#######")
+                    holder.fromPrice.text = format.format(orderBook.fromPrice)
+                    holder.toAmount.text =format.format(orderBook.toAmount)
+                    holder.fromValue.text = format.format(orderBook.fromValue)
+                }
+                is EmptyViewHolder -> {
+                    // nothing
+                }
+            }
         }
     }
 

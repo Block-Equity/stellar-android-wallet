@@ -16,6 +16,7 @@
     <color name="puce">#C7808E</color>
     <color name="toryBlue">#0b55b3</color>
     <color name="alabaster">#f7f7f7</color>
+    <color name="transparent_alabaster">#77f7f7f7</color>
     <color name="lightGray">#cccccc</color>
     <color name="alto">#D8D8D8</color>
     <color name="frenchGray">#c8c8cd</color>
@@ -25,11 +26,14 @@
     <color name="mantis">#71CD5C</color>
     <color name="apricot">#ee7a70</color>
     <color name="paleSky">#6f7785</color>
+    <color name="purple">#800080</color>
+    <color name="pink">#ffa5d2</color>
+    <color name="brown">#964b00</color>
 
     <!--Branding Colors-->
     <color name="blue1">#0043FF</color>
     <color name="blue2">#006AFF</color>
-    <color name="blue3">#008FFF</color>
+    <!-- not used <color name="blue3">#008FFF</color>-->
     <color name="blue4">#04B2FF</color>
     <color name="lightBlue">#2ED6FF</color>
     <color name="darkBlue">#151B26</color>

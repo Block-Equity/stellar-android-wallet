@@ -3,6 +3,7 @@ package com.blockeq.stellarwallet.encryption
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
+import android.os.Build.VERSION_CODES.LOLLIPOP_MR1
 import android.security.KeyPairGeneratorSpec
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
@@ -45,6 +46,9 @@ class KeyStoreWrapper(private val context: Context) {
         }
     }
 
+    fun getAliases() : List<String> {
+        return Collections.list(keyStore.aliases())
+    }
     /**
      * @return asymmetric keypair from Android Key Store or null if any key with given alias exists
      */
@@ -136,11 +140,13 @@ class KeyStoreWrapper(private val context: Context) {
         return generator.generateKeyPair()
     }
 
+    @TargetApi(LOLLIPOP_MR1)
     private fun initGeneratorWithKeyPairGeneratorSpec(generator: KeyPairGenerator, alias: String) {
         val startDate = Calendar.getInstance()
         val endDate = Calendar.getInstance()
         endDate.add(Calendar.YEAR, 20)
 
+        @Suppress("DEPRECATION")
         val builder = KeyPairGeneratorSpec.Builder(context)
                 .setAlias(alias)
                 .setSerialNumber(BigInteger.ONE)

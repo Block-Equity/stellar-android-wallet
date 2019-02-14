@@ -7,10 +7,14 @@
         android:title="@string/nav_wallet"/>
 
     <item
-        android:enabled="false"
         android:id="@+id/nav_trading"
         android:icon="@drawable/ic_trading"
         android:title="@string/nav_trading"/>
+
+    <item
+        android:id="@+id/nav_contacts"
+        android:icon="@drawable/contact_badge"
+        android:title="@string/nav_contacts"/>
 
     <item
         android:id="@+id/nav_settings"

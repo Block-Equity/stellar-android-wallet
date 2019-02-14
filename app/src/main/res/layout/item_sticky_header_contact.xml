@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list_item_section_text"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/contact_header"
+    android:background="@color/alabaster"
+    android:paddingRight="15dp"
+    android:paddingLeft="15dp"
+    android:gravity="center_vertical"
+    tools:text="HEADER"
+    android:textColor="@color/black"
+    android:textSize="16sp" />
+

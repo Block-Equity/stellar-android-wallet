@@ -1,0 +1,86 @@
+{
+  "_links": {
+    "self": {
+      "href": "https://horizon.stellar.org/accounts/GCVZE5C7GGDWSKG7V44HHXKVQSXSFC5WKTNSAX6QG2TMZNJL2UUM476D"
+    },
+    "transactions": {
+      "href": "https://horizon.stellar.org/accounts/GCVZE5C7GGDWSKG7V44HHXKVQSXSFC5WKTNSAX6QG2TMZNJL2UUM476D/transactions{?cursor,limit,order}",
+      "templated": true
+    },
+    "operations": {
+      "href": "https://horizon.stellar.org/accounts/GCVZE5C7GGDWSKG7V44HHXKVQSXSFC5WKTNSAX6QG2TMZNJL2UUM476D/operations{?cursor,limit,order}",
+      "templated": true
+    },
+    "payments": {
+      "href": "https://horizon.stellar.org/accounts/GCVZE5C7GGDWSKG7V44HHXKVQSXSFC5WKTNSAX6QG2TMZNJL2UUM476D/payments{?cursor,limit,order}",
+      "templated": true
+    },
+    "effects": {
+      "href": "https://horizon.stellar.org/accounts/GCVZE5C7GGDWSKG7V44HHXKVQSXSFC5WKTNSAX6QG2TMZNJL2UUM476D/effects{?cursor,limit,order}",
+      "templated": true
+    },
+    "offers": {
+      "href": "https://horizon.stellar.org/accounts/GCVZE5C7GGDWSKG7V44HHXKVQSXSFC5WKTNSAX6QG2TMZNJL2UUM476D/offers{?cursor,limit,order}",
+      "templated": true
+    },
+    "trades": {
+      "href": "https://horizon.stellar.org/accounts/GCVZE5C7GGDWSKG7V44HHXKVQSXSFC5WKTNSAX6QG2TMZNJL2UUM476D/trades{?cursor,limit,order}",
+      "templated": true
+    },
+    "data": {
+      "href": "https://horizon.stellar.org/accounts/GCVZE5C7GGDWSKG7V44HHXKVQSXSFC5WKTNSAX6QG2TMZNJL2UUM476D/data/{key}",
+      "templated": true
+    }
+  },
+  "id": "GCVZE5C7GGDWSKG7V44HHXKVQSXSFC5WKTNSAX6QG2TMZNJL2UUM476D",
+  "paging_token": "",
+  "account_id": "GCVZE5C7GGDWSKG7V44HHXKVQSXSFC5WKTNSAX6QG2TMZNJL2UUM476D",
+  "sequence": "89016409845137584",
+  "subentry_count": 6,
+  "inflation_destination": "GCCD6AJOYZCUAQLX32ZJF2MKFFAUJ53PVCFQI3RHWKL3V47QYE2BNAUT",
+  "thresholds": {
+    "low_threshold": 0,
+    "med_threshold": 0,
+    "high_threshold": 0
+  },
+  "flags": {
+    "auth_required": false,
+    "auth_revocable": false,
+    "auth_immutable": false
+  },
+  "balances": [
+    {
+      "balance": "0.1714677",
+      "limit": "922337203685.4775807",
+      "buying_liabilities": "12.0000000",
+      "selling_liabilities": "0.0000000",
+      "asset_type": "credit_alphanum4",
+      "asset_code": "CAD",
+      "asset_issuer": "GABK2IHWW7BCRPP3BL6WMOMDBPHCBJR2SLP5HAUBYKNZG5J5RJSROS5S"
+    },
+    {
+      "balance": "10006191.4050287",
+      "limit": "922337203685.4775807",
+      "buying_liabilities": "0.0000000",
+      "selling_liabilities": "3500.0000000",
+      "asset_type": "credit_alphanum4",
+      "asset_code": "PTS",
+      "asset_issuer": "GBPG7KRYC3PTKHBXQGRD3GMZ5DB4C3D553ZN2ZLH57LBAQIULVY46Z5F"
+    },
+    {
+      "balance": "54.0527304",
+      "buying_liabilities": "2.9999500",
+      "selling_liabilities": "11.0000000",
+      "asset_type": "native"
+    }
+  ],
+  "signers": [
+    {
+      "public_key": "GCVZE5C7GGDWSKG7V44HHXKVQSXSFC5WKTNSAX6QG2TMZNJL2UUM476D",
+      "weight": 1,
+      "key": "GCVZE5C7GGDWSKG7V44HHXKVQSXSFC5WKTNSAX6QG2TMZNJL2UUM476D",
+      "type": "ed25519_public_key"
+    }
+  ],
+  "data": {}
+}

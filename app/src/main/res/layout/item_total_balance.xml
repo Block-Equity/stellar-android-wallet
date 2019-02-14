@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/balanceRoot"
     android:background="@color/blue2"
     android:padding="@dimen/activity_vertical_margin">
 
@@ -23,11 +24,20 @@
         android:textSize="@dimen/title_text_size" />
 
     <ImageView
+        android:visibility="gone"
         android:id="@+id/assetsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"
         android:src="@drawable/ic_dropdown" />
+
+    <ProgressBar
+        android:padding="4dp"
+        android:id="@+id/progressRefreshingWallet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>

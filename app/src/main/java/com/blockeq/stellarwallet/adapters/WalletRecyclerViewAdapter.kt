@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
@@ -16,24 +17,34 @@ import com.blockeq.stellarwallet.models.*
 import com.blockeq.stellarwallet.utils.StringFormat
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.getFormattedDate
 import com.blockeq.stellarwallet.utils.StringFormat.Companion.truncateDecimalPlaces
-import timber.log.Timber
+import android.support.v4.graphics.drawable.DrawableCompat
+import android.graphics.drawable.Drawable
+import android.os.Build
+import android.support.annotation.ColorInt
+import android.support.v4.content.ContextCompat.getColor
 
-class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+class WalletRecyclerViewAdapter(var context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var onAssetsDropdownListener : OnAssetDropdownListener? = null
     private var onLearnMoreListener : OnLearnMoreButtonListener? = null
+    private var items : ArrayList<Any>? = null
 
     interface OnAssetDropdownListener {
         fun onAssetDropdownClicked(view : View, position : Int)
     }
 
     interface OnLearnMoreButtonListener {
-        fun onLearnMoreButtonClicked(view : View, position : Int)
+        fun onLearnMoreButtonClicked(view : View, assetCode:String, issuer:String?, position : Int)
     }
 
     enum class TransactionViewType(val value :Int) {
         TOTAL(0), AVAILABLE(1), HEADER(2),
         ACCOUNT_EFFECT(3), TRADE_EFFECT(4)
+    }
+
+    fun setItems(list : ArrayList<Any>) {
+        items = list
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -64,18 +75,23 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        if (items == null) return 0
+        return items!!.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when {
-            items[position] is TotalBalance -> TransactionViewType.TOTAL.value
-            items[position] is AvailableBalance -> TransactionViewType.AVAILABLE.value
-            items[position] is Pair<*, *> -> TransactionViewType.HEADER.value
-            items[position] is AccountEffect -> TransactionViewType.ACCOUNT_EFFECT.value
-            items[position] is TradeEffect -> TransactionViewType.TRADE_EFFECT.value
-            else -> 0
+        items?.let{
+            return when {
+                it[position] is TotalBalance -> TransactionViewType.TOTAL.value
+                it[position] is AvailableBalance -> TransactionViewType.AVAILABLE.value
+                it[position] is Pair<*, *> -> TransactionViewType.HEADER.value
+                it[position] is AccountEffect -> TransactionViewType.ACCOUNT_EFFECT.value
+                it[position] is TradeEffect -> TransactionViewType.TRADE_EFFECT.value
+                else -> 0
+            }
         }
+
+        return 0
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -114,9 +130,11 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
 
     //region View Holders
     inner class TotalBalanceViewHolder(v : View) : RecyclerView.ViewHolder(v) {
+        var root: View = v.findViewById(R.id.balanceRoot)
         var balance: TextView = v.findViewById(R.id.balanceTextView)
         var assetName: TextView = v.findViewById(R.id.assetNameTextView)
         var assetsButton: ImageView = v.findViewById(R.id.assetsButton)
+        var progressBar: ProgressBar = v.findViewById(R.id.progressRefreshingWallet)
 
         init {
             assetsButton.setOnClickListener {
@@ -133,17 +151,6 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     inner class AvailableBalanceViewHolder(v : View) : RecyclerView.ViewHolder(v) {
         var balance : TextView = v.findViewById(R.id.availableBalanceTextView)
         var learnMoreButton : TextView = v.findViewById(R.id.learnMoreButton)
-
-        init {
-            learnMoreButton.setOnClickListener {
-                onLearnMoreListener?.let { listener ->
-                    val position = adapterPosition
-                    if (position != RecyclerView.NO_POSITION) {
-                        listener.onLearnMoreButtonClicked(v, position)
-                    }
-                }
-            }
-        }
     }
 
     class TransactionHeaderViewHolder(v : View) : RecyclerView.ViewHolder(v) {
@@ -166,20 +173,66 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
     }
 
     private fun configureTotalBalanceViewHolder(viewHolder : TotalBalanceViewHolder, position : Int) {
-        val totalBalance = items[position] as TotalBalance
+        val totalBalance = items!![position] as TotalBalance
 
-        viewHolder.balance.text = truncateDecimalPlaces(totalBalance.balance)
-        viewHolder.assetName.text = String.format(context.getString(R.string.asset_template),
-                WalletApplication.userSession.currAssetName, WalletApplication.userSession.getFormattedCurrentAssetCode())
+        viewHolder.balance.text = totalBalance.balance
+        val code = getVisibleAssetCode(totalBalance.assetCode)
+
+        //TODO move this to states
+        if (code.isEmpty()) {
+            tintProgressBar(viewHolder.progressBar, getColor(context, R.color.white))
+            viewHolder.progressBar.visibility = View.VISIBLE
+            viewHolder.assetsButton.visibility = View.GONE
+            viewHolder.assetName.text = totalBalance.assetName
+        } else {
+            viewHolder.progressBar.visibility = View.GONE
+            viewHolder.assetsButton.visibility = View.VISIBLE
+            viewHolder.assetName.text = String.format(context.getString(com.blockeq.stellarwallet.R.string.asset_template),
+                    totalBalance.assetName, getVisibleAssetCode(totalBalance.assetCode))
+        }
+
+        when(totalBalance.state) {
+            WalletState.ERROR, WalletState.NOT_FUNDED -> {
+                viewHolder.root.setBackgroundColor(getColor(context, R.color.paleSky))
+                viewHolder.progressBar.visibility = View.GONE
+            }
+            WalletState.ACTIVE, WalletState.UPDATING -> {
+                viewHolder.root.setBackgroundColor(getColor(context, R.color.blue2))
+            }
+            else -> { //nothing
+            }
+        }
+    }
+
+    private fun tintProgressBar(progressBar: ProgressBar, @ColorInt color : Int){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            val wrapDrawable = DrawableCompat.wrap(progressBar.indeterminateDrawable)
+            DrawableCompat.setTint(wrapDrawable, color)
+            progressBar.indeterminateDrawable = DrawableCompat.unwrap<Drawable>(wrapDrawable)
+        } else {
+            progressBar.indeterminateDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+        }
     }
 
     private fun configureAvailableBalanceViewHolder(viewHolder : AvailableBalanceViewHolder, position : Int) {
-        val availableBalance = items[position] as AvailableBalance
-        viewHolder.balance.text = truncateDecimalPlaces(availableBalance.balance)
+        val availableBalance = items!![position] as AvailableBalance
+        @SuppressLint("SetTextI18n")
+        viewHolder.balance.text = "${availableBalance.balance} ${getVisibleAssetCode(availableBalance.assetCode)}"
+        viewHolder.learnMoreButton.setOnClickListener { view ->
+            onLearnMoreListener?.
+                    onLearnMoreButtonClicked(view, availableBalance.assetCode, availableBalance.issuer, position)
+        }
     }
 
+    private fun getVisibleAssetCode(assetCode : String) : String {
+        return if (assetCode != "native") {
+            assetCode
+        } else {
+            "XLM"
+        }
+    }
     private fun configureTransactionHeaderViewHolder(viewHolder : TransactionHeaderViewHolder, position : Int) {
-        val pair = items[position] as Pair<*, *>
+        val pair = items!![position] as Pair<*, *>
         viewHolder.activityTextView.text = pair.first.toString()
         viewHolder.amountTextView.text = pair.second.toString()
     }
@@ -195,7 +248,7 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
 
     @SuppressLint("SetTextI18n")
     private fun configureAccountEffectViewHolder(viewHolder : AccountEffectViewHolder, position : Int) {
-        val transaction = items[position] as AccountEffect
+        val transaction = items!![position] as AccountEffect
 
         viewHolder.amount.text = formatNumber4Decimals(transaction.amount)
         viewHolder.date.text = getFormattedDate(transaction.createdAt)
@@ -230,25 +283,23 @@ class WalletRecyclerViewAdapter(var context: Context, var items : ArrayList<Any>
             transaction.type == EffectType.RECEIVED.value -> viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.mantis), PorterDuff.Mode.SRC_IN)
             transaction.type == EffectType.SENT.value -> {
                 viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.apricot), PorterDuff.Mode.SRC_IN)
-                viewHolder.amount.text = String.format(context.getString(R.string.bracket_template), formatNumber4Decimals(viewHolder.amount.text.toString()))
+                viewHolder.amount.text = String.format(context.getString(R.string.bracket_template), viewHolder.amount.text.toString())
             }
             else -> viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.paleSky), PorterDuff.Mode.SRC_IN)
         }
     }
 
     private fun configureTradeEffectViewHolder(viewHolder : TradeEffectViewHolder, position : Int) {
-        val trade = items[position] as TradeEffect
+        val trade = items!![position] as TradeEffect
 
         viewHolder.transactionType.text = String.format(context.getString(R.string.trade_item_template),
                 StringFormat.formatAssetCode(trade.soldAsset), StringFormat.formatAssetCode(trade.boughtAsset))
         viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.paleSky), PorterDuff.Mode.SRC_IN)
-        if (WalletApplication.userSession.currAssetCode == trade.boughtAsset) {
+        if (WalletApplication.userSession.getSessionAsset().assetCode == trade.boughtAsset) {
             viewHolder.amount.text = truncateDecimalPlaces(trade.boughtAmount)
-            // viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.mantis), PorterDuff.Mode.SRC_IN)
         } else {
             viewHolder.amount.text = String.format(context.getString(R.string.bracket_template),
                     truncateDecimalPlaces(trade.soldAmount))
-            // viewHolder.dot.setColorFilter(ContextCompat.getColor(context, R.color.apricot), PorterDuff.Mode.SRC_IN)
         }
         viewHolder.date.text = getFormattedDate(trade.createdAt)
     }

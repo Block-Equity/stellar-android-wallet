@@ -9,10 +9,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.WalletApplication
 import com.blockeq.stellarwallet.adapters.AssetsRecyclerViewAdapter
@@ -20,18 +16,22 @@ import com.blockeq.stellarwallet.helpers.Constants
 import com.blockeq.stellarwallet.interfaces.ChangeTrustlineListener
 import com.blockeq.stellarwallet.interfaces.OnLoadAccount
 import com.blockeq.stellarwallet.interfaces.SuccessErrorCallback
+import com.blockeq.stellarwallet.models.DefaultAsset
 import com.blockeq.stellarwallet.models.HorizonException
 import com.blockeq.stellarwallet.models.SupportedAsset
 import com.blockeq.stellarwallet.models.SupportedAssetType
+import com.blockeq.stellarwallet.remote.BlockEqRetrofit
 import com.blockeq.stellarwallet.remote.Horizon
+import com.blockeq.stellarwallet.remote.SupportedAssetsApi
 import com.blockeq.stellarwallet.utils.AccountUtils
 import com.blockeq.stellarwallet.utils.NetworkUtils
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.content_assets_activity.*
 import org.stellar.sdk.Asset
 import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
+import retrofit2.Call
+import retrofit2.Callback
+
 
 class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
 
@@ -39,6 +39,12 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
     private var assetsList: ArrayList<Any> = ArrayList()
     private lateinit var context : Context
     private lateinit var adapter : AssetsRecyclerViewAdapter
+
+    companion object {
+        fun newInstance(context: Context) : Intent {
+            return Intent(context, AssetsActivity::class.java)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +57,7 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
 
     private fun setupUI() {
         setSupportActionBar(toolBar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         progressBar.visibility = View.VISIBLE
         bindAdapter()
         manuallyAddAssetButton.setOnClickListener {
@@ -70,7 +75,7 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
 
     private fun updateAdapter() {
         assetsList.clear()
-        assetsList.addAll(convertBalanceToSupportedAsset(WalletApplication.localStore.balances!!, map!!))
+        assetsList.addAll(convertBalanceToSupportedAsset(WalletApplication.wallet.getBalances(), map!!))
         val filteredList = getFilteredSupportedAssets(map!!)
         if (!filteredList.isEmpty()) {
             assetsList.add(getString(R.string.supported_assets_header))
@@ -140,29 +145,25 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
     }
 
     private fun getFilteredSupportedAssets(map: Map<String, SupportedAsset>): List<SupportedAsset> {
-        return map.values.filter { it ->
-            it.code.toUpperCase() !in WalletApplication.localStore.balances!!.map { it.assetCode }
+        return map.values.filter {
+            it.code.toUpperCase() !in WalletApplication.wallet.getBalances().map { it.assetCode }
         }
     }
 
     private fun loadSupportedAssets() {
-        val queue = Volley.newRequestQueue(this)
+        BlockEqRetrofit.create(SupportedAssetsApi::class.java).assets.enqueue(object : Callback<Map<String, SupportedAsset>> {
+            override fun onResponse(call: Call<Map<String, SupportedAsset>>, response: retrofit2.Response<Map<String, SupportedAsset>>) {
+                map = response.body()
+                updateAdapter()
+            }
 
-        // TODO: Use retrofit and dagger
-        val request = JsonObjectRequest(Request.Method.GET, Constants.BLOCKEQ_BASE_URL, null,
-                Response.Listener { response ->
-                    // display response
-                    val gson = GsonBuilder().create()
-                    val token = object : TypeToken<Map<String, SupportedAsset>>(){}.type
+            override fun onFailure(call: Call<Map<String, SupportedAsset>>, t: Throwable) {
+                Toast.makeText(applicationContext, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
 
-                    map = gson.fromJson<Map<String, SupportedAsset>>(response.toString(), token)
-                    updateAdapter()
-                },
-                Response.ErrorListener {
-                    Toast.makeText(this, getString(R.string.error_supported_assets_message), Toast.LENGTH_SHORT).show()
-                })
+            }
+        })
 
-        queue.add(request)
+
     }
 
     //region Call backs
@@ -185,9 +186,7 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
                     }
                     progressBar.visibility = View.GONE
                     if (isRemove) {
-                        WalletApplication.userSession.currAssetCode = Constants.LUMENS_ASSET_TYPE
-                        WalletApplication.userSession.currAssetName = Constants.LUMENS_ASSET_NAME
-                        WalletApplication.userSession.currAssetIssuer = ""
+                        WalletApplication.userSession.setSessionAsset(DefaultAsset())
                         finish()
                     }
                 }
@@ -209,7 +208,7 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
 
                 override fun onLoadAccount(result: AccountResponse?) {
                     if (result != null) {
-                        WalletApplication.localStore.balances = result.balances
+                        WalletApplication.wallet.setBalances(result.balances)
                         updateAdapter()
                     }
                 }

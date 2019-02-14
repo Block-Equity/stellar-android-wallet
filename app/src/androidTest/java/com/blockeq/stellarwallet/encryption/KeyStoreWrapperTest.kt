@@ -7,7 +7,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class KeyStoreWrapperTest {
-    val aliases = arrayOf("1234", "5678", "0987")
+    private val aliases = arrayOf("1234", "5678", "0987")
 
     @Test
     fun clear_aliases() {

@@ -29,4 +29,10 @@
     <dimen name="progress_snackbar_height">45dp</dimen>
     <dimen name="progress_snackbar_width">45dp</dimen>
 
+    <!-- Contact list -->
+    <dimen name="badge_width">38dp</dimen>
+    <dimen name="badge_height">38dp</dimen>
+
+    <dimen name="contact_header">48dp</dimen>
+
 </resources>

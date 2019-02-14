@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.models.SelectionModel
 
-open class CustomArrayAdapter(context: Context, private var resource: Int, private var itemsList: MutableList<SelectionModel>?) :
+open class CustomArrayAdapter(context: Context, private var resource: Int, private var itemsList: MutableList<SelectionModel>) :
         ArrayAdapter<SelectionModel>(context, resource, itemsList) {
 
     private var inflater: LayoutInflater? = null
@@ -24,7 +24,7 @@ open class CustomArrayAdapter(context: Context, private var resource: Int, priva
             vi = inflater!!.inflate(resource, parent, false)
 
         val itemTv = vi?.findViewById(R.id.itemLabel) as TextView
-        itemTv.text = itemsList?.elementAt(position)?.label
+        itemTv.text = itemsList.elementAt(position).label
 
         return vi
     }
