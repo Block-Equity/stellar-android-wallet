@@ -12,7 +12,7 @@
 - [Introduction](#introduction)
 - [Features](#features)
 - [Feedback](#feedback)
-- [Contributors](#contributors)
+- [Contributing](./CONTRIBUTING.md)
 - [Development](#development)
   - [Getting Started](#getting-started)
   - [Building the Project](#building-the-project)
