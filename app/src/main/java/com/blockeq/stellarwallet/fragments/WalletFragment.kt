@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.activities.AssetsActivity
 import com.blockeq.stellarwallet.activities.BalanceSummaryActivity
 import com.blockeq.stellarwallet.activities.ReceiveActivity
@@ -27,10 +26,14 @@ import org.stellar.sdk.responses.effects.EffectResponse
 import timber.log.Timber
 import android.support.v4.content.ContextCompat.getColor
 import android.graphics.*
+import android.support.design.widget.Snackbar
+import com.blockeq.stellarwallet.R
 import com.blockeq.stellarwallet.models.*
-import com.blockeq.stellarwallet.mvvm.effects.EffectsRepository
 import com.blockeq.stellarwallet.mvvm.effects.WalletViewModelPolling
 import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
+import org.jetbrains.anko.support.v4.defaultSharedPreferences
+import android.net.Uri
+
 
 class WalletFragment : BaseFragment() {
     private lateinit var appContext : Context
@@ -57,6 +60,14 @@ class WalletFragment : BaseFragment() {
         }
     }
 
+    private fun openStellarX(){
+        val appPackageName = "com.stellarx.app" // getPackageName() from Context or Activity object
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackageName")))
+        } catch (anfe: android.content.ActivityNotFoundException) {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")))
+        }
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -67,12 +78,26 @@ class WalletFragment : BaseFragment() {
             mainTitle.text = "Wallet (TEST-NET SERVER)"
         }
 
+        stellarIcon.setOnClickListener {
+            openStellarX()
+        }
+
+        downloadNowView.setOnClickListener {
+            openStellarX()
+        }
+
         updateState(WalletState.UPDATING)
         lastEffectListSize = 0
 
         // since closing the stream causes so many crashes let's disable the pull to refresh
         swipeRefresh_wallet.isEnabled = true
         initViewModels()
+
+        if (isBannerShown()) {
+            stellarxContainer.visibility = View.VISIBLE
+        } else {
+            stellarxContainer.visibility = View.GONE
+        }
 
         swipeRefresh_wallet.setOnRefreshListener {
             updateState(WalletState.UPDATING)
@@ -83,6 +108,11 @@ class WalletFragment : BaseFragment() {
                     }
                 }
             }, REFRESH_EFFECT_DELAY)
+        }
+
+        closeIcon.setOnClickListener {
+            stellarxContainer.visibility = View.GONE
+            createSnackBar("Do you want to hide stellarX info?", 2000)!!.show()
         }
 
         receiveButton.setOnClickListener {
@@ -107,6 +137,25 @@ class WalletFragment : BaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         qrRendered = false
+    }
+
+    private fun createSnackBar(text : CharSequence, duration: Int) : Snackbar? {
+        activity?.let {
+            return Snackbar.make(it.findViewById(R.id.content_container), text, duration).setAction("HIDE", object:View.OnClickListener {
+                override fun onClick(v: View?) {
+                    disableBannerShow()
+                }
+            })
+        }
+        return null
+    }
+
+    private fun isBannerShown(): Boolean{
+        return defaultSharedPreferences.getBoolean("SHOW_STELLAR_X_BANNER", true)
+    }
+
+    private fun disableBannerShow(){
+        defaultSharedPreferences.edit().putBoolean("SHOW_STELLAR_X_BANNER", false).apply()
     }
 
     private fun generateQRCode(data: String, imageView: ImageView, size: Int) {
