@@ -26,6 +26,8 @@ import timber.log.Timber
 import android.net.Uri
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import com.blockeq.stellarwallet.R
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Fragment that holds the RecyclerView
@@ -218,7 +220,7 @@ class ContactsFragment : Fragment() {
         val filterList : ArrayList<Contact> = ArrayList()
         currentContactList.forEach {
             it.name.let { name ->
-                if (name.toLowerCase().contains(input.toLowerCase())) {
+                if (name.toLowerCase(Locale.getDefault()).contains(input.toLowerCase(Locale.getDefault()))) {
                     filterList.add(it)
                 }
             }

@@ -26,6 +26,8 @@ import com.blockeq.stellarwallet.utils.StringFormat
 import com.squareup.picasso.Picasso
 import org.stellar.sdk.Asset
 import org.stellar.sdk.KeyPair
+import java.util.*
+import kotlin.collections.ArrayList
 
 class AssetsRecyclerViewAdapter(var context: Context, private var listener: ChangeTrustlineListener, private var items : ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
@@ -114,7 +116,7 @@ class AssetsRecyclerViewAdapter(var context: Context, private var listener: Chan
         viewHolder.assetButton.visibility = View.VISIBLE
         viewHolder.assetName.text = asset.name
         viewHolder.assetAmount.text = String.format(context.getString(R.string.balance_template),
-                StringFormat.truncateDecimalPlaces(asset.amount), asset.code.toUpperCase())
+                StringFormat.truncateDecimalPlaces(asset.amount), asset.code.toUpperCase(Locale.getDefault()))
 
         if (asset.image.isNotEmpty()) {
             viewHolder.defaultImage.visibility = View.GONE
@@ -151,7 +153,7 @@ class AssetsRecyclerViewAdapter(var context: Context, private var listener: Chan
             if (asset.code == Constants.LUMENS_ASSET_CODE) {
                 WalletApplication.userSession.setSessionAsset(DefaultAsset())
             } else {
-                WalletApplication.userSession.setSessionAsset(SessionAssetImpl(asset.code.toUpperCase(), asset.name, asset.issuer))
+                WalletApplication.userSession.setSessionAsset(SessionAssetImpl(asset.code.toUpperCase(Locale.getDefault()), asset.name, asset.issuer))
             }
             (context as Activity).finish()
         }
@@ -164,10 +166,10 @@ class AssetsRecyclerViewAdapter(var context: Context, private var listener: Chan
 
     private fun configureSupportedAssetViewHolder(viewHolder: SupportedAssetViewHolder, position: Int) {
         val asset = items[position] as SupportedAsset
-        val trustLineAsset = Asset.createNonNativeAsset(asset.code.toUpperCase(), KeyPair.fromAccountId(asset.issuer))
+        val trustLineAsset = Asset.createNonNativeAsset(asset.code.toUpperCase(Locale.getDefault()), KeyPair.fromAccountId(asset.issuer))
 
         viewHolder.assetName.text = String.format(context.getString(R.string.asset_template),
-                asset.name, asset.code.toUpperCase())
+                asset.name, asset.code.toUpperCase(Locale.getDefault()))
 
         viewHolder.assetAmount.visibility = View.GONE
         viewHolder.defaultImage.visibility = View.GONE

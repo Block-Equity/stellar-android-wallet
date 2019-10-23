@@ -82,6 +82,7 @@ dependencies {
     implementation "com.andrognito.pinlockview:pinlockview:$pinlockviewVersion"
     implementation "com.toptoche.searchablespinner:searchablespinnerlibrary:$searchablespinnerVersion"
     implementation "com.journeyapps:zxing-android-embedded:$zxingAndroidVersion"
+    //noinspection GradleDependency
     implementation "com.github.davidmigloz:number-keyboard:$numberKeyBoardVersion"
     implementation "com.brandongogetap:stickyheaders:$stickyheadersVersion"
     testImplementation "junit:junit:$junitVersion"
@@ -148,6 +149,5 @@ dependencies {
     implementation 'com.github.mancj:MaterialSearchBar:0.8.1'
     implementation 'com.github.abdularis:CircularImageView:v1.2'
 
-    implementation 'com.google.android.gms:play-services-wearable:16.0.1'
     implementation 'commons-lang:commons-lang:2.6'
 }

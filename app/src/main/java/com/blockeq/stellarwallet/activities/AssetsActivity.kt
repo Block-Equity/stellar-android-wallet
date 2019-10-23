@@ -31,6 +31,8 @@ import org.stellar.sdk.requests.ErrorResponse
 import org.stellar.sdk.responses.AccountResponse
 import retrofit2.Call
 import retrofit2.Callback
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
@@ -120,15 +122,15 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
                        list[0].amount = it.balance
                        return@map null
                    }
-                   supportedAssetsMap.containsKey(it.assetCode.toLowerCase()) -> {
-                       val asset = supportedAssetsMap[it.assetCode.toLowerCase()]!!
+                   supportedAssetsMap.containsKey(it.assetCode.toLowerCase(Locale.getDefault())) -> {
+                       val asset = supportedAssetsMap[it.assetCode.toLowerCase(Locale.getDefault())]!!
                        asset.amount = it.balance
                        asset.type = SupportedAssetType.ADDED
                        asset.asset = it.asset
                        return@map asset
                    }
                    else -> {
-                       val asset = SupportedAsset(0, it.assetCode.toLowerCase(), "",
+                       val asset = SupportedAsset(0, it.assetCode.toLowerCase(Locale.getDefault()), "",
                                it.assetIssuer.accountId, it.limit, it.assetCode, "",
                                "", it.balance, SupportedAssetType.ADDED, it.asset)
                        return@map asset
@@ -146,7 +148,7 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
 
     private fun getFilteredSupportedAssets(map: Map<String, SupportedAsset>): List<SupportedAsset> {
         return map.values.filter {
-            it.code.toUpperCase() !in WalletApplication.wallet.getBalances().map { it.assetCode }
+            it.code.toUpperCase(Locale.getDefault()) !in WalletApplication.wallet.getBalances().map { it.assetCode }
         }
     }
 

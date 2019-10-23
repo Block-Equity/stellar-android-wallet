@@ -155,7 +155,7 @@ class WalletFragment : BaseFragment() {
     }
 
     private fun disableBannerShow(){
-        defaultSharedPreferences.edit().putBoolean("SHOW_STELLAR_X_BANNER", false).commit()
+        defaultSharedPreferences.edit().putBoolean("SHOW_STELLAR_X_BANNER", false).apply()
     }
 
     private fun generateQRCode(data: String, imageView: ImageView, size: Int) {
