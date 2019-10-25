@@ -258,7 +258,7 @@
     <string name="trade_alert_negative_button">Not now</string>
     <string name="fund_account_string">This account requires activation. Send at least 1 XLM to fund and activate the account</string>
     <string name="fetching_account_state">Fetching account transactions, please wait</string>
-    <string name="stellarx_banner_message">BlockEQ is now only for OSS learning purposes, We recommend you to move export your account to StellarX.</string>
+    <string name="stellarx_banner_message">BlockEQ is now only for OSS learning purposes, We recommend you to move and export your account to StellarX.</string>
     <string name="stellarx_download_action">Download Now</string>
 
 

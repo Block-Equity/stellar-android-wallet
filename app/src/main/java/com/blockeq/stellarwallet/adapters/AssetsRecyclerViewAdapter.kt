@@ -129,6 +129,9 @@ class AssetsRecyclerViewAdapter(var context: Context, private var listener: Chan
         }
 
         if (asset.code == Constants.LUMENS_ASSET_CODE) {
+            //TODO: disabling inflation since in protocol 12 will be removed.
+            viewHolder.assetButton.visibility = View.GONE
+
             viewHolder.assetButton.text = context.getString(R.string.set_inflation_message)
             viewHolder.assetButton.setBackgroundColor(ContextCompat.getColor(context, R.color.mantis))
             viewHolder.assetButton.setOnClickListener {
