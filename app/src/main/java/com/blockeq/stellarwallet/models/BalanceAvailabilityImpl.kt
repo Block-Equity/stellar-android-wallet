@@ -21,7 +21,7 @@ class BalanceAvailabilityImpl(private val account: AccountResponse,
     }
 
     override fun getAccountId(): String {
-        return account.keypair.accountId
+        return account.accountId
     }
 
     private val nativeBalance: NativeAssetAvailability
@@ -94,7 +94,7 @@ class BalanceAvailabilityImpl(private val account: AccountResponse,
                 }
                 is AssetTypeCreditAlphaNum -> {
                     if (assetCode == asset.code
-                            && issuer == asset.issuer.accountId) {
+                            && issuer == asset.issuer) {
                         postedForTrade += it.amount.toFloat()
                     }
                 }
@@ -108,7 +108,7 @@ class BalanceAvailabilityImpl(private val account: AccountResponse,
         balances.add(getNativeAssetAvailability())
         account.balances.forEach {
             if (it.assetType != "native") {
-                balances.add(getAssetAvailability(it.assetCode, it.assetIssuer.accountId))
+                balances.add(getAssetAvailability(it.assetCode, it.assetIssuer))
             }
         }
         return balances

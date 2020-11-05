@@ -33,7 +33,7 @@ class AddAssetActivity : BaseActivity() {
                 val asset : Asset
                 try {
                     asset = Asset.createNonNativeAsset(assetCodeEditText.text.toString().toUpperCase(),
-                            KeyPair.fromAccountId(addressEditText.text.toString().toUpperCase()))
+                            KeyPair.fromAccountId(addressEditText.text.toString().toUpperCase()).accountId)
 
                 } catch (e: Exception) {
                     Toast.makeText(applicationContext, "Invalid input for code or issuer", Toast.LENGTH_SHORT).show()

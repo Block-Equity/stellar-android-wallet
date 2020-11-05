@@ -5,7 +5,7 @@ import org.stellar.sdk.responses.AccountResponse
 
 data class StellarAccountImpl(private val accountResponse: AccountResponse) : StellarAccount {
     override fun getAccountId() : String {
-        return accountResponse.keypair.accountId
+        return accountResponse.accountId
     }
 
     override  fun getInflationDestination() : String? {

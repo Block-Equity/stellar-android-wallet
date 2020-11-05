@@ -131,7 +131,7 @@ class AssetsActivity : BaseActivity(), ChangeTrustlineListener {
                    }
                    else -> {
                        val asset = SupportedAsset(0, it.assetCode.toLowerCase(Locale.getDefault()), "",
-                               it.assetIssuer.accountId, it.limit, it.assetCode, "",
+                               it.assetIssuer, it.limit, it.assetCode, "",
                                "", it.balance, SupportedAssetType.ADDED, it.asset)
                        return@map asset
                    }

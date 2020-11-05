@@ -169,7 +169,7 @@ class AssetsRecyclerViewAdapter(var context: Context, private var listener: Chan
 
     private fun configureSupportedAssetViewHolder(viewHolder: SupportedAssetViewHolder, position: Int) {
         val asset = items[position] as SupportedAsset
-        val trustLineAsset = Asset.createNonNativeAsset(asset.code.toUpperCase(Locale.getDefault()), KeyPair.fromAccountId(asset.issuer))
+        val trustLineAsset = Asset.createNonNativeAsset(asset.code.toUpperCase(Locale.getDefault()), KeyPair.fromAccountId(asset.issuer).accountId)
 
         viewHolder.assetName.text = String.format(context.getString(R.string.asset_template),
                 asset.name, asset.code.toUpperCase(Locale.getDefault()))
