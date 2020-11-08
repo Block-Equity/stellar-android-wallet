@@ -25,19 +25,24 @@ import java.util.concurrent.TimeUnit
 
 object Horizon : HorizonTasks {
     private lateinit var HORIZON_SERVER : Server
+    private lateinit var serverNetwork : Network
     override fun init(server: ServerType) {
         var serverAddress = ""
         when(server) {
            ServerType.PROD -> {
                serverAddress = "https://horizon.stellar.org"
-               Network.usePublicNetwork()
+               serverNetwork = Network.PUBLIC
            }
            ServerType.TEST_NET -> {
                serverAddress = "https://horizon-testnet.stellar.org"
-               Network.useTestNetwork()
+               serverNetwork = Network.TESTNET
            }
        }
         HORIZON_SERVER = createServer(serverAddress)
+    }
+
+    public fun getServerNetwork():Network {
+        return serverNetwork
     }
 
     override fun getLoadEffectsTask(cursor: String, limit: Int, listener: OnLoadEffects): AsyncTask<Void, Void, ArrayList<EffectResponse>?> {
@@ -63,13 +68,13 @@ object Horizon : HorizonTasks {
     override fun deleteOffer(id:Long, secretSeed : CharArray, selling: Asset, buying: Asset, price: String, listener: Horizon.OnMarketOfferListener) {
         AsyncTask.execute {
             val server = getServer()
-            val offerOperation = ManageOfferOperation.Builder(selling, buying, "0", price).setOfferId(id).build()
+            val offerOperation = ManageSellOfferOperation.Builder(selling, buying, "0", price).setOfferId(id).build()
             val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
 
             try {
-                val sourceAccount = server.accounts().account(sourceKeyPair)
+                val sourceAccount = server.accounts().account(sourceKeyPair.accountId)
 
-                val transaction = Transaction.Builder(sourceAccount).setTimeout(TIMEOUT_INFINITE).addOperation(offerOperation).build()
+                val transaction = Transaction.Builder(sourceAccount, getServerNetwork()).setTimeout(TIMEOUT_INFINITE).addOperation(offerOperation).build()
                 transaction.sign(sourceKeyPair)
                 val response = server.submitTransaction(transaction)
 
@@ -103,7 +108,7 @@ object Horizon : HorizonTasks {
             return server.effects()
                     .cursor(cursor)
                     .order(RequestBuilder.Order.ASC)
-                    .forAccount(sourceKeyPair).stream(listener)
+                    .forAccount(sourceKeyPair.accountId).stream(listener)
         } catch (error : Exception) {
             Timber.e(error.message.toString())
         }
@@ -113,11 +118,11 @@ object Horizon : HorizonTasks {
     override fun getCreateMarketOffer(listener: OnMarketOfferListener, secretSeed: CharArray, sellingAsset: Asset, buyingAsset: Asset, amount: String, price: String) {
         AsyncTask.execute {
             val server = getServer()
-            val managedOfferOperation = ManageOfferOperation.Builder(sellingAsset, buyingAsset, amount, price).build()
+            val managedOfferOperation = ManageSellOfferOperation.Builder(sellingAsset, buyingAsset, amount, price).build()
             val sourceKeyPair = KeyPair.fromSecretSeed(secretSeed)
-            val sourceAccount = server.accounts().account(sourceKeyPair)
+            val sourceAccount = server.accounts().account(sourceKeyPair.accountId)
 
-            val transaction = Transaction.Builder(sourceAccount).setTimeout(TIMEOUT_INFINITE).addOperation(managedOfferOperation).build()
+            val transaction = Transaction.Builder(sourceAccount, getServerNetwork()).setTimeout(TIMEOUT_INFINITE).addOperation(managedOfferOperation).build()
             transaction.sign(sourceKeyPair)
             val response = server.submitTransaction(transaction)
             Handler(Looper.getMainLooper()).post {
@@ -166,7 +171,7 @@ object Horizon : HorizonTasks {
             val server = getServer()
             try {
                 val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
-                val response = server.offers().forAccount(sourceKeyPair).execute()
+                val response = server.offers().forAccount(sourceKeyPair.accountId).execute()
                 if(response != null) {
                     list = response.records
                 }
@@ -198,7 +203,7 @@ object Horizon : HorizonTasks {
             val sourceKeyPair = KeyPair.fromAccountId(WalletApplication.wallet.getStellarAccountId())
             var account : AccountResponse? = null
             try {
-                account = server.accounts().account(sourceKeyPair)
+                account = server.accounts().account(sourceKeyPair.accountId)
 
             } catch (error : Exception) {
                 Timber.d(error.message.toString())
@@ -228,7 +233,7 @@ object Horizon : HorizonTasks {
                 effectResults = server.effects().order(RequestBuilder.Order.DESC)
                         .cursor(cursor)
                         .limit(limit)
-                        .forAccount(sourceKeyPair).execute()
+                        .forAccount(sourceKeyPair.accountId).execute()
             } catch (error : Exception) {
                 Timber.e(error.message.toString())
                 errorMessage = error.message.toString()
@@ -261,7 +266,7 @@ object Horizon : HorizonTasks {
 
             try {
                 try {
-                    server.accounts().account(destKeyPair)
+                    server.accounts().account(destKeyPair.accountId)
                 } catch (error : Exception) {
                     Timber.e(error.message.toString())
                     if (error is ErrorResponse && error.code == 404) {
@@ -273,13 +278,13 @@ object Horizon : HorizonTasks {
                     }
                 }
 
-                val sourceAccount = server.accounts().account(sourceKeyPair)
+                val sourceAccount = server.accounts().account(sourceKeyPair.accountId)
 
-                val transactionBuilder = Transaction.Builder(sourceAccount).setTimeout(TIMEOUT_INFINITE)
+                val transactionBuilder = Transaction.Builder(sourceAccount, getServerNetwork()).setTimeout(TIMEOUT_INFINITE)
                 if (isCreateAccount) {
-                    transactionBuilder.addOperation(CreateAccountOperation.Builder(destKeyPair, amount).build())
+                    transactionBuilder.addOperation(CreateAccountOperation.Builder(destKeyPair.accountId, amount).build())
                 } else {
-                    transactionBuilder.addOperation(PaymentOperation.Builder(destKeyPair, getCurrentAsset(), amount).build())
+                    transactionBuilder.addOperation(PaymentOperation.Builder(destKeyPair.accountId, getCurrentAsset(), amount).build())
                 }
 
                 if (memo.isNotEmpty()) {
@@ -325,11 +330,11 @@ object Horizon : HorizonTasks {
             val destKeyPair = KeyPair.fromAccountId(inflationDest)
 
             try {
-                val sourceAccount = server.accounts().account(sourceKeyPair)
+                val sourceAccount = server.accounts().account(sourceKeyPair.accountId)
 
-                val transaction = Transaction.Builder(sourceAccount).setTimeout(TIMEOUT_INFINITE)
+                val transaction = Transaction.Builder(sourceAccount, getServerNetwork()).setTimeout(TIMEOUT_INFINITE)
                         .addOperation(SetOptionsOperation.Builder()
-                                .setInflationDestination(destKeyPair)
+                                .setInflationDestination(destKeyPair.accountId)
                                 .build())
                         .build()
 
@@ -371,9 +376,9 @@ object Horizon : HorizonTasks {
             val limit = if (removeTrust) "0.0000000" else Constants.MAX_ASSET_STRING_VALUE
 
             try {
-                val sourceAccount = server.accounts().account(sourceKeyPair)
+                val sourceAccount = server.accounts().account(sourceKeyPair.accountId)
 
-                val transaction = Transaction.Builder(sourceAccount).setTimeout(TIMEOUT_INFINITE)
+                val transaction = Transaction.Builder(sourceAccount, getServerNetwork()).setTimeout(TIMEOUT_INFINITE)
                         .addOperation(ChangeTrustOperation.Builder(asset, limit).build())
                         .build()
 
@@ -426,7 +431,7 @@ object Horizon : HorizonTasks {
         return if (assetCode == Constants.LUMENS_ASSET_TYPE) {
             AssetTypeNative()
         } else {
-            Asset.createNonNativeAsset(assetCode, KeyPair.fromAccountId(assetIssuer))
+            Asset.createNonNativeAsset(assetCode, KeyPair.fromAccountId(assetIssuer).accountId)
         }
     }
 

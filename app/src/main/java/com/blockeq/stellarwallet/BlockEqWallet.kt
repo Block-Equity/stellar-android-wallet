@@ -74,7 +74,7 @@ class BlockEqWallet(private val localStore: LocalStore) : WalletStore {
                 if (assetCode == null) {
                     assetCode = "LMX"
                 } else {
-                    issuer = that.assetIssuer.accountId
+                    issuer = that.assetIssuer
                 }
                 simpleBalances.add(BasicBalance(that.balance, that.assetType, assetCode, issuer))
             }

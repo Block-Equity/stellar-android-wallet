@@ -34,11 +34,11 @@ class AssetUtil {
                 dataAsset = when (assetType) {
                     AssetType.ASSET_TYPE_CREDIT_ALPHANUM12 -> {
                         val concreteAsset = asset as AssetTypeCreditAlphaNum12
-                        DataAsset(concreteAsset.type, concreteAsset.code, concreteAsset.issuer.accountId)
+                        DataAsset(concreteAsset.type, concreteAsset.code, concreteAsset.issuer)
                     }
                     AssetType.ASSET_TYPE_CREDIT_ALPHANUM4 -> {
                         val concreteAsset = asset as AssetTypeCreditAlphaNum4
-                        DataAsset(concreteAsset.type, concreteAsset.code, concreteAsset.issuer.accountId)
+                        DataAsset(concreteAsset.type, concreteAsset.code, concreteAsset.issuer)
                     }
                     AssetType.ASSET_TYPE_NATIVE -> {
                         val concreteAsset = asset as AssetTypeNative
