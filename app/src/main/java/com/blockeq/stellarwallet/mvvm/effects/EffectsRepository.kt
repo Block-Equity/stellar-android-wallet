@@ -7,6 +7,7 @@ import com.blockeq.stellarwallet.mvvm.effects.remote.RemoteRepository
 import org.stellar.sdk.requests.EventListener
 import org.stellar.sdk.requests.SSEStream
 import org.stellar.sdk.responses.effects.EffectResponse
+import shadow.com.google.common.base.Optional
 import timber.log.Timber
 
 class EffectsRepository private constructor(private val remoteRepository: RemoteRepository) {
@@ -82,10 +83,16 @@ class EffectsRepository private constructor(private val remoteRepository: Remote
                             if (ENABLE_STREAM) {
                                 closeStream()
                                 Timber.d("Opening the stream")
-                                eventSource = remoteRepository.registerForEffects("now", EventListener {
-                                    Timber.d("Stream response {$it}, created at: ${it.createdAt}")
-                                    effectsList.add(0, it)
-                                    notifyLiveData(effectsList)
+                                eventSource = remoteRepository.registerForEffects("now", object:EventListener<EffectResponse> {
+                                    override fun onEvent(effect: EffectResponse?) {
+                                        Timber.d("Stream response {$effect}, created at: ${effect!!.createdAt}")
+                                        effectsList.add(0, effect)
+                                        notifyLiveData(effectsList)
+                                    }
+
+                                    override fun onFailure(p0: Optional<Throwable>?, p1: Optional<Int>?) {
+
+                                    }
                                 })
                             }
                             currentCursor = cursor

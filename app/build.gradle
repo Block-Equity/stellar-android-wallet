@@ -10,8 +10,8 @@ android {
         applicationId "com.blockeq.stellarwallet"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 36
-        versionName "2.0.7.5"
+        versionCode 39
+        versionName "2.0.7.8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
@@ -77,11 +77,12 @@ dependencies {
     kapt "android.arch.lifecycle:compiler:$lifecycleVersion"
     implementation "com.google.android:flexbox:$flexboxVersion"
 
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.0'
+//    implementation 'com.jakewharton.threetenabp:threetenabp:1.3.0'
     implementation "io.github.novacrypto:BIP39:$novaCryptoVersion"
     implementation "com.andrognito.pinlockview:pinlockview:$pinlockviewVersion"
     implementation "com.toptoche.searchablespinner:searchablespinnerlibrary:$searchablespinnerVersion"
     implementation "com.journeyapps:zxing-android-embedded:$zxingAndroidVersion"
+    //noinspection GradleDependency
     implementation "com.github.davidmigloz:number-keyboard:$numberKeyBoardVersion"
     implementation "com.brandongogetap:stickyheaders:$stickyheadersVersion"
     testImplementation "junit:junit:$junitVersion"
@@ -148,6 +149,5 @@ dependencies {
     implementation 'com.github.mancj:MaterialSearchBar:0.8.1'
     implementation 'com.github.abdularis:CircularImageView:v1.2'
 
-    implementation 'com.google.android.gms:play-services-wearable:16.0.1'
     implementation 'commons-lang:commons-lang:2.6'
 }

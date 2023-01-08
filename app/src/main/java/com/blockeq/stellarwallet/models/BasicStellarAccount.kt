@@ -8,7 +8,7 @@ open class BasicStellarAccount(private val accountId:String?, private val inflat
                                private val sequenceNumber:Long, private val subEntryCount:Int?): StellarAccount {
 
     override fun getAccountResponse(): AccountResponse {
-        return AccountResponse(KeyPair.fromAccountId(accountId), sequenceNumber)
+        return AccountResponse(KeyPair.fromAccountId(accountId).accountId, sequenceNumber)
     }
 
     override fun getAccountId(): String? {

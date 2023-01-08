@@ -10,7 +10,7 @@ class DiagnosticUtils {
         fun getDeviceName(): String {
             val manufacturer = Build.MANUFACTURER
             val model = Build.MODEL
-            return if (model.toLowerCase().startsWith(manufacturer.toLowerCase())) {
+            return if (model.toLowerCase(Locale.getDefault()).startsWith(manufacturer.toLowerCase(Locale.getDefault()))) {
                 StringFormat.capitalize(model)
             } else {
                 StringFormat.capitalize(manufacturer) + " " + model

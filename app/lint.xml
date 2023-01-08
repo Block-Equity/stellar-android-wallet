@@ -23,6 +23,7 @@
 
     <issue id="IconDensities">
         <ignore regexp="popup_bg.9.png" />
+        <ignore regexp="stellarx.png" />
     </issue>
     <issue id="IconColors">
         <ignore regexp="ic_trading.png" />

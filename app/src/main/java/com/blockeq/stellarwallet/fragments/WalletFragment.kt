@@ -5,7 +5,9 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.graphics.*
 import android.os.Bundle
+import android.support.v4.content.ContextCompat.getColor
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +19,10 @@ import com.blockeq.stellarwallet.activities.BalanceSummaryActivity
 import com.blockeq.stellarwallet.activities.ReceiveActivity
 import com.blockeq.stellarwallet.activities.StellarAddressActivity
 import com.blockeq.stellarwallet.adapters.WalletRecyclerViewAdapter
+import com.blockeq.stellarwallet.models.*
+import com.blockeq.stellarwallet.mvvm.effects.WalletViewModelPolling
 import com.blockeq.stellarwallet.mvvm.effects.WalletViewState
+import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.android.synthetic.main.fragment_wallet.*
@@ -25,12 +30,7 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.support.v4.runOnUiThread
 import org.stellar.sdk.responses.effects.EffectResponse
 import timber.log.Timber
-import android.support.v4.content.ContextCompat.getColor
-import android.graphics.*
-import com.blockeq.stellarwallet.models.*
-import com.blockeq.stellarwallet.mvvm.effects.EffectsRepository
-import com.blockeq.stellarwallet.mvvm.effects.WalletViewModelPolling
-import com.blockeq.stellarwallet.utils.DebugPreferencesHelper
+
 
 class WalletFragment : BaseFragment() {
     private lateinit var appContext : Context
@@ -56,6 +56,7 @@ class WalletFragment : BaseFragment() {
             viewModel = ViewModelProviders.of(it).get(WalletViewModelPolling::class.java)
         }
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
